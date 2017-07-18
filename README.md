@@ -46,10 +46,6 @@ and use `terraform plan`, `terraform apply`, and `terraform destroy` instead.
 
 The Consul data is available under the `consul` directory.
 
-## Who?
-
-- Brian Shumate <brian at brianshumate dot com>
-
 ## Notes and Resources
 
 ### Regarding Best Practices
@@ -70,3 +66,7 @@ Here are some links to the websites for technologies used in this project:
 5. [Consul](https://www.consul.io/)
 6. [Vault](https://www.vaultproject.io/)
 7. [Docker for Mac](https://www.docker.com/docker-mac)
+
+## Who?
+
+- [Brian Shumate](http://brianshumate.com/)

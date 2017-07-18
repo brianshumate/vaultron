@@ -50,8 +50,6 @@ resource "docker_container" "consul_oss_one" {
              "-bootstrap-expect=3",
              "-node=consul1",
              "-client=0.0.0.0",
-             #"-bind=0.0.0.0",
-             # "-dns-port=53",
              "-recursor=84.200.69.80",
              "-recursor=84.200.70.40",
              "-data-dir=/consul/data",
@@ -246,7 +244,7 @@ variable "vault_plus_one_port" {
 
 # Set TF_VAR_disable_clustering to set this
 variable "disable_clustering" {
-  default = true
+  default = "true"
 }
 
 data "template_file" "vault_oss_one_config" {
