@@ -38,7 +38,8 @@ After Vaultron is formed, some immediate next steps are available to you:
 1. Browse the Consul UI at [http://localhost:8500](http://localhost:8500)
 2. Execute `./bin/vault_kitchen_sink` to enable several authentication and
    secret backends
-3. Disassemble Vaultron with `make clean`
+3. Use Vault and Consul on your Mac!
+4. Disassemble Vaultron with `make clean`
 
 Of course, if you are familiar with Terraform you can skip the `make` commands
 and use `terraform plan`, `terraform apply`, and `terraform destroy` instead.
