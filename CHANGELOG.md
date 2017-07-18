@@ -13,4 +13,9 @@
 
 - Add sad hack to disable registration since we have Vault talking to
   Consul server directly and health checks don't always work that way
-  
+
+## v1.1.0
+
+- Removed Makefile and switched to direct script sourcing/executing
+- Why so blue, vault_kitchen_sink?
+- Updated README

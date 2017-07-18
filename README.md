@@ -25,30 +25,35 @@ Consul and Vault Docker images.
 
 ### Quick Start
 
-Make sure to first install Terraform and Docker for Mac, then:
+Make sure to first install the macOS binaries for Consul, Vault, Terraform,
+and of course Docker for Mac, then:
 
 1. Clone this repository
 2. `cd vaultron`
-3. `make vaultron`
+3. `source ./form`
 
 ### What's Next?
 
 After Vaultron is formed, some immediate next steps are available to you:
 
 1. Browse the Consul UI at [http://localhost:8500](http://localhost:8500)
-2. Execute `./bin/vault_kitchen_sink` to enable several authentication and
+2. Execute `./vault_kitchen_sink` to enable several Vault authentication and
    secret backends
 3. Use Vault and Consul on your Mac!
-4. Disassemble Vaultron with `make clean`
+4. Disassemble Vaultron with `./unform`
 
-Of course, if you are familiar with Terraform you can skip the `make` commands
-and use `terraform plan`, `terraform apply`, and `terraform destroy` instead.
+If you are familiar with Terraform you can skip the `form` and `unform`
+commands and use `terraform plan`, `terraform apply`, and `terraform destroy`
+instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables:
 
-The Consul data is available under the `consul` directory.
+```
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+```
 
 ## Notes and Resources
 
-### Regarding Best Practices
+### Regarding Vault Best Practices
 
 Please note that while this project connects the Vault instance directly to
 a Consul server for the sake of simplicity, the best approach in production
@@ -58,6 +63,10 @@ the cluster of Consul servers.
 Along these lines, this project also has to disable Consul health checks
 for Vault since they are not designed to work with a Vault instance talking
 directly to Consul server.
+
+### Where's My Data?
+
+The when in operation Consul data is available under the `consul` directory.
 
 ### Handy Links
 
