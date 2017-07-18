@@ -8,3 +8,9 @@
 
 - Configuration cleanup
 - Variable translation fix for disable_clustering
+
+## v1.0.2
+
+- Add sad hack to disable registration since we have Vault talking to
+  Consul server directly and health checks don't always work that way
+  

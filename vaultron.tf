@@ -247,6 +247,12 @@ variable "disable_clustering" {
   default = "true"
 }
 
+# TODO: Fix this hack to deal with connecting Vault directly to Consul server
+# Set TF_VAR_disable_registration to set this
+variable "disable_registration" {
+  default = "true"
+}
+
 data "template_file" "vault_oss_one_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
   vars {
@@ -257,6 +263,7 @@ data "template_file" "vault_oss_one_config" {
     cluster_address = "http://${docker_container.consul_oss_one.ip_address}:${var.vault_plus_one_port}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
+    disable_registration = "${var.disable_registration}"
     tls_disable = 1
   }
 }

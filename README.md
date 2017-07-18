@@ -55,6 +55,10 @@ a Consul server for the sake of simplicity, the best approach in production
 is to always connect each Vault instance to a local Consul agent which joins
 the cluster of Consul servers.
 
+Along these lines, this project also has to disable Consul health checks
+for Vault since they are not designed to work with a Vault instance talking
+directly to Consul server.
+
 ### Handy Links
 
 Here are some links to the websites for technologies used in this project:
