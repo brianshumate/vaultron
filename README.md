@@ -50,7 +50,18 @@ The Consul data is available under the `consul` directory.
 
 - Brian Shumate <brian at brianshumate dot com>
 
-## Resources
+## Notes and Resources
+
+### Regarding Best Practices
+
+Please note that while this project connects the Vault instance directly to
+a Consul server for the sake of simplicity, the best approach in production
+is to always connect each Vault instance to a local Consul agent which joins
+the cluster of Consul servers.
+
+### Handy Links
+
+Here are some links to the websites for technologies used in this project:
 
 1. [Vault Docker repository](https://hub.docker.com/_/vault/)
 3. [Consul Docker repository](https://hub.docker.com/_/consul/)
