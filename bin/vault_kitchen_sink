@@ -1,0 +1,190 @@
+#!/bin/bash
+#
+# Automatically starts a Vault cluster for use in development or other
+# evaluation style use cases:
+#
+# - Initializes Vault and saves key material to temporary file
+# - Unseals Vault with the key material from the temporary file
+#
+# ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
+#
+# shellcheck disable=SC2059
+
+set -e
+
+export txtblu='\e[0;34m' # Blue
+export txtgrn='\e[0;32m' # Green
+export txtred='\e[0;31m' # Red
+export txtylw='\e[0;33m' # Yellow
+export txtwht='\e[0;37m' # White
+vault_port="8200"
+
+# Log stuff
+_logmsg() {
+    msgtype="$1"
+    msgtxt="$2"
+    case "${msgtype}" in
+        greeting)
+            printf "🌊  ${txtylw}${msgtxt}\n"
+            ;;
+        info)
+            printf "ℹ️  ${txtblu}${msgtxt}\n"
+            ;;
+        success)
+            printf "✅  ${txtgrn}${msgtxt}\n"
+            ;;
+        notice)
+            printf "✴️  ${txtylw}${msgtxt}\n"
+            ;;
+        alert)
+            printf "⛔️  ${txtred}${msgtxt}\n" >&2
+            ;;
+        *)
+            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
+            ;;
+    esac
+}
+
+# Check for the existence of a temporary key material file
+_check_vault_file() {
+    for file in vault_*.tmp
+        do
+            if [ -e "$file" ];
+                then
+                    _logmsg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
+                    exit 0
+            fi
+        done
+}
+
+_usage() {
+    _logmsg alert "Usage: vault_kitchen_sink [vault_dat.tmp]"
+    exit 1
+}
+
+_auth_root() {
+    _logmsg info "Authenticating with Vault root token ..."
+    _get_initial_root_token "${vault_dat}"
+    vault auth "${init_root_token}"  > /dev/null 2>&1
+}
+
+_enable_audit_backends() {
+    _logmsg info "Enabling Vault audit backends ..."
+    _auth_root
+    vault audit-enable file \
+    file_path=/var/log/vault/vault_audit.log \
+     > /dev/null 2>&1
+}
+
+_enable_auth_backends() {
+    _logmsg info "Enabling Vault authentication backends ..."
+    _auth_root
+    vault auth-enable app-id > /dev/null 2>&1
+    _logmsg success "Enabled App ID authentication backend!"
+    vault auth-enable approle > /dev/null 2>&1
+    _logmsg success "Enabled AppRole authentication backend!"
+    vault auth-enable aws > /dev/null 2>&1
+    _logmsg success "Enabled AWS authentication backend!"
+    vault auth-enable ldap > /dev/null 2>&1
+    _logmsg success "Enabled LDAP authentication backend!"
+    vault auth-enable userpass > /dev/null 2>&1
+    _logmsg success "Enabled Username & Password authentication backend!"
+}
+
+_get_unseal_keys() {
+    vkey1=$(sed '1q;d' "${vault_dat}" | awk '{print $NF}')
+    vkey2=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
+    vkey3=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}')
+}
+
+function _get_initial_root_token() {
+    init_root_token=$(sed '6q;d' "${1}" | awk '{print $NF}')
+}
+
+_initialize_vault() {
+    _logmsg info "Initializing Vault ..."
+    vault_dat="vault_$(date +%s).tmp"
+    vault init > "${vault_dat}" 2>&1
+    vault_init_now="$(date)"
+    printf "\nGenerated on %s\n" "${vault_init_now}" >> \
+           "${vault_dat}"
+    _logmsg success "Vault initialized!"
+}
+
+_mount_secret_backends() {
+    _logmsg info "Mounting Vault secret backends ..."
+    _get_initial_root_token "${vault_dat}"
+    vault mount aws > /dev/null 2>&1
+    _logmsg success "Mounted AWS secret backend!"
+    vault mount consul > /dev/null 2>&1
+    _logmsg success "Mounted Consul secret backend!"
+    vault mount pki > /dev/null 2>&1
+    _logmsg success "Mounted PKI secret backend!"
+    vault mount postgresql > /dev/null 2>&1
+    _logmsg success "Mounted PostgreSQL secret backend!"
+    vault mount transit > /dev/null 2>&1
+    _logmsg success "Mounted Transit secret backend!"
+    vault mount -path ssh-host-signer ssh > /dev/null 2>&1
+    _logmsg success "Mounted SSH host signer backend!"
+    vault mount -path ssh-client-signer ssh > /dev/null 2>&1
+    _logmsg success "Mounted SSH client signer backend!"
+}
+
+_run() {
+    "$@"
+    local status=$?
+    if [ $status -ne 0 ]; then
+        _logmsg alert "Problem with $1"
+        exit 1
+    fi
+    return $status
+}
+
+_status() {
+    _logmsg info "Vault status ..."
+    vault status
+}
+
+_unseal_vault() {
+    _logmsg info "Unsealing Vault ..."
+    _get_unseal_keys
+    for i in {1..3}; do
+        VAULT_ADDR="http://localhost:${vault_port}" \
+        vault unseal "${vkey1}" > /dev/null 2>&1 && \
+        vault unseal "${vkey2}" > /dev/null 2>&1 && \
+        vault unseal "${vkey3}" > /dev/null 2>&1;
+    done
+}
+
+if [ $# -gt 1 ]
+  then
+    _usage
+fi
+
+if (set -u; : "${1}") 2> /dev/null; then
+    _logmsg info "Filename argument specified; Use file: ${1}"
+    vault_dat="${1}"
+    vkey1=$(sed '1q;d' "${vault_dat}" | awk '{print $NF}');
+    vkey2=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}');
+    vkey3=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}');
+    _logmsg info "Unsealing by default since filename used ..."
+    for i in {1..3}; do
+        VAULT_ADDR="http://localhost:${vault_port}" \
+        vault unseal "${vkey1}" > /dev/null 2>&1 && \
+        vault unseal "${vkey2}" > /dev/null 2>&1 && \
+        vault unseal "${vkey3}" > /dev/null 2>&1;
+    done
+    _auth_root
+    _status
+    exit 0
+else
+    _logmsg info "Assuming new install and initializing ..."
+fi
+
+unset VAULT_TOKEN
+_initialize_vault
+_unseal_vault
+_auth_root
+_enable_auth_backends
+_mount_secret_backends
+_status

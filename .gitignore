@@ -1,0 +1,4 @@
+consul/*/data
+consul/*/config
+terraform.tfstate*
+vault_*.tmp
