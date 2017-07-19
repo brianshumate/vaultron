@@ -57,12 +57,15 @@ export VAULT_ADDR="http://localhost:8200"
 
 Please note that while this project connects the Vault instance directly to
 a Consul server for the sake of simplicity, the best approach in production
-is to always connect each Vault instance to a local Consul agent which joins
-the cluster of Consul servers.
+is to always connect each Vault instance to a local Consul agent in
+_client mode_ which in turn joins the cluster of Consul servers.
 
-Along these lines, this project also has to disable Consul health checks
-for Vault since they are not designed to work with a Vault instance talking
-directly to Consul server.
+While Vault functions as expected in this configuration, the built in Vault
+health checks for Consul do not work, so Vault does not register itself
+into Consul to avoid issues.
+
+This will be remedied with a configuration that more closely matches
+a best practices production setup in an upcoming release.
 
 ### Where's My Data?
 
