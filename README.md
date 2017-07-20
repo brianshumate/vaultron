@@ -20,13 +20,14 @@ A reasonably useful Vault environment on your Mac in about 60 seconds...
 
 ## How?
 
-Terraform assembles the individual pieces to form Vaultron from the official
+Terraform assembles individual pieces to form Vaultron from the official
 Consul and Vault Docker images.
 
 ### Quick Start
 
-Make sure to first install the macOS binaries for Consul, Vault, Terraform,
-and of course Docker for Mac, then:
+Make sure that you have first installed the macOS binaries for Consul, Vault,
+Terraform, and Docker for Mac. After doing so, it's just 3 steps to forming
+your own Vaultron:
 
 1. Clone this repository
 2. `cd vaultron`
@@ -36,15 +37,16 @@ and of course Docker for Mac, then:
 
 After Vaultron is formed, some immediate next steps are available to you:
 
-1. Browse the Consul UI at [http://localhost:8500](http://localhost:8500)
-2. Execute `./vault_kitchen_sink` to enable several Vault authentication and
-   secret backends
-3. Use Vault and Consul on your Mac!
-4. Disassemble Vaultron with `./unform`
+
+1. Execute `./vault_kitchen_sink` to initialize Vault, unseal it, and
+   enable several authentication and secret backends
+2. Use the `vault` CLI on your Mac to interact with your new Vault server
+3. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
+4. When done having fun, disassemble Vaultron with `./unform`
 
 If you are familiar with Terraform you can skip the `form` and `unform`
-commands and use `terraform plan`, `terraform apply`, and `terraform destroy`
-instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables:
+commands and use Terraform commands instead, but you'll need to manually
+specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables:
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
@@ -62,14 +64,34 @@ _client mode_ which in turn joins the cluster of Consul servers.
 
 While Vault functions as expected in this configuration, the built in Vault
 health checks for Consul do not work, so Vault does not register itself
-into Consul to avoid issues.
+into Consul as a service.
 
-This will be remedied with a configuration that more closely matches
+This will be addressed with a configuration that more closely matches
 a best practices production setup in an upcoming release.
 
 ### Where's My Data?
 
-The when in operation Consul data is available under the `consul` directory.
+Vault data is kept in Consul's key/value store, which in turn is written into
+the `consul/oss_*/data` directory for each of the three Consul servers. Here
+is the tree showing the first server's directory structure:
+
+```
+├── consul
+│   ├── oss_one
+│   │   ├── README.md
+│   │   ├── config
+│   │   └── data
+│   │       ├── checkpoint-signature
+│   │       ├── node-id
+│   │       ├── raft
+│   │       │   ├── peers.info
+│   │       │   ├── raft.db
+│   │       │   └── snapshots
+│   │       └── serf
+│   │           ├── local.snapshot
+│   │           └── remote.snapshot
+```
+
 
 ### Handy Links
 
