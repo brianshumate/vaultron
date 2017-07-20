@@ -8,6 +8,12 @@
         `\/__/  \/__/\/_/ \/___/  \/____/ \/__/ \/_/ \/___/  \/_/\/_/
 
 
+> From days of long ago, from uncharted regions of the universe, comes a
+> legend; the legend of Voltron, Defender of the Universe, a mighty robot,
+> loved by good, feared by evil.
+>
+> — Voltron: Defender of the Universe
+
 ## What?
 
 Vaultron uses [Terraform](https://www.terraform.io/) to build a
@@ -46,7 +52,7 @@ Speaking of which, here are some next steps for after Vaultron is formed:
 
 1. Initialize Vault with `vault init`
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented
-   to you initialized Vault
+   when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during the
    initialization
 4. Use the `vault` CLI on your Mac to interact with your new Vault server
