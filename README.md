@@ -46,8 +46,9 @@ Speaking of which, here are some next steps for after Vaultron is formed:
 
 1. Initialize Vault with `vault init`
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented
-   to you when Vault was initialized in step 1.
-3. Authenticate to Vault with the initial root token provided in step 1.
+   to you initialized Vault
+3. Authenticate to Vault with the initial root token presented during the
+   initialization
 4. Use the `vault` CLI on your Mac to interact with your new Vault server
 5. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 6. View Vault operational logs with `docker logs vault_oss_node_1`
@@ -56,14 +57,13 @@ Speaking of which, here are some next steps for after Vaultron is formed:
 8. When done having fun, disassemble Vaultron with `./unform`
 
 If you are already familiar with Vault and would like to save time by
-rapidly initializing Vault, unsealing it, and enabling a wide range
-of authentication and secret backends, execute `./blazing_sword` to do
-all of this for you.
+rapidly initializing, unsealing, and enabling a wide range of authentication
+and secret backends, execute `./blazing_sword` to do all of this for you.
 
 If you are familiar with Terraform you also can skip the `form` and `unform`
 commands and just use Terraform commands instead, but you'll need to manually
 specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables
-before you can access either the Consul or Vault instances:
+before you can access either the Consul or Vault instances, however:
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
