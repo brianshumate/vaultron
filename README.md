@@ -35,18 +35,22 @@ your own Vaultron:
 
 ### What's Next?
 
-After Vaultron is formed, some immediate next steps are available to you:
-
+After Vaultron is formed, some immediate next steps are available to you
+regardless of your familiarity with Vault:
 
 1. Execute `./vault_kitchen_sink` to initialize Vault, unseal it, and
    enable several authentication and secret backends
 2. Use the `vault` CLI on your Mac to interact with your new Vault server
 3. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-4. When done having fun, disassemble Vaultron with `./unform`
+4. View Vault operational logs with `docker logs vault_oss_node_1`
+5. View Consul server operational logs with `docker logs consul_oss_node_1`,
+   `docker logs consul_oss_node_2`, and `docker logs consul_oss_node_3`
+6. When done having fun, disassemble Vaultron with `./unform`
 
 If you are familiar with Terraform you can skip the `form` and `unform`
 commands and use Terraform commands instead, but you'll need to manually
-specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables:
+specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables
+before you can access either the Consul or Vault instances:
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
