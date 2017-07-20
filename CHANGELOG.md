@@ -19,3 +19,8 @@
 - Removed Makefile and switched to direct script sourcing/executing
 - Why so blue, vault_kitchen_sink?
 - Updated README
+
+## V1.1.1
+
+- Keep with Voltron theme by renaming `vault_kitchen_sink` to `blazing_sword`
+- Update documentation

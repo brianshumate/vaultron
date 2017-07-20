@@ -35,20 +35,33 @@ your own Vaultron:
 
 ### What's Next?
 
-After Vaultron is formed, some immediate next steps are available to you
-regardless of your familiarity with Vault:
+If you are new to Vault, then using Vaultron is a nice way to get quickly
+acquainted! Be sure to also check out the official Vault
+[Getting Started](https://www.vaultproject.io/intro/getting-started/install.html) documentation as well.
 
-1. Execute `./vault_kitchen_sink` to initialize Vault, unseal it, and
-   enable several authentication and secret backends
-2. Use the `vault` CLI on your Mac to interact with your new Vault server
-3. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-4. View Vault operational logs with `docker logs vault_oss_node_1`
-5. View Consul server operational logs with `docker logs consul_oss_node_1`,
+You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing and
+unsealing your Vault.
+
+Speaking of which, here are some next steps for after Vaultron is formed:
+
+1. Initialize Vault with `vault init`
+2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented
+   to you when Vault was initialized in step 1.
+3. Authenticate to Vault with the initial root token provided in step 1.
+4. Use the `vault` CLI on your Mac to interact with your new Vault server
+5. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
+6. View Vault operational logs with `docker logs vault_oss_node_1`
+7. View Consul server operational logs with `docker logs consul_oss_node_1`,
    `docker logs consul_oss_node_2`, and `docker logs consul_oss_node_3`
-6. When done having fun, disassemble Vaultron with `./unform`
+8. When done having fun, disassemble Vaultron with `./unform`
 
-If you are familiar with Terraform you can skip the `form` and `unform`
-commands and use Terraform commands instead, but you'll need to manually
+If you are already familiar with Vault and would like to save time by
+rapidly initializing Vault, unsealing it, and enabling a wide range
+of authentication and secret backends, execute `./blazing_sword` to do
+all of this for you.
+
+If you are familiar with Terraform you also can skip the `form` and `unform`
+commands and just use Terraform commands instead, but you'll need to manually
 specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables
 before you can access either the Consul or Vault instances:
 
