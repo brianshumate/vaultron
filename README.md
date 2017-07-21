@@ -124,6 +124,9 @@ published ports scheme only, so the addresses of the Vault servers are:
 - localhost:8201
 - localhost:8202
 
+When you `. ./form` Vaultron, `VAULT_ADDR` will be set to
+`http://localhost:8200`.
+
 ### Where's the Data?
 
 Vault data is kept in Consul's key/value store, which in turn is written into
