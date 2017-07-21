@@ -16,9 +16,10 @@
 
 ## What?
 
-Vaultron uses [Terraform](https://www.terraform.io/) to build a
-[Consul](https://www.consul.io/) backed [Vault](https://www.vaultproject.io/)
-server for development, evaluation, and issue reproduction on Docker for Mac.
+Vaultron is a toy project that uses [Terraform](https://www.terraform.io/)
+to build a tiny cluster of [Consul](https://www.consul.io/) backed
+[Vault](https://www.vaultproject.io/) servers for development, evaluation,
+and issue reproduction on Docker for Mac.
 
 ## Why?
 
@@ -59,6 +60,7 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron with `./unform`
+ - NOTE: **`./unform` removes the existing Vault data — be careful!**
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
@@ -171,6 +173,11 @@ docker logs vault_oss_server_1
 
 If you have not yet unsealed Vault, it will appear as failing in the Consul
 UI, but simply unsealing it should solve that.
+
+### Something Something HA Problem!
+
+High Availability mode has not been well tested, and no promises can currently
+be made about HA functionality at this time.
 
 ## Resources
 
