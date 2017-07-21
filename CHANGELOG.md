@@ -40,3 +40,8 @@
 - Enable file based audit logging on initially active server
 - Update scripts
 - Update documentation
+
+## v1.3.1
+
+- HA mode confirmed working
+- Update documentation

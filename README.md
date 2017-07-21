@@ -161,11 +161,17 @@ The Docker containers are named as follows:
 - consul_oss_server_2
 - consul_oss_server_3
 
-You can view logs for any container with `docker logs` like so:
+You can view operational logs for any container with `docker logs` like so:
 
 ```
 docker logs vault_oss_server_1
 ```
+
+The Vault audit logs for each server are available as:
+
+- `./vault/oss_one/audit_log/audit.log`
+- `./vault/oss_two/audit_log/audit.log`
+- `./vault/oss_three/audit_log/audit.log`
 
 ## Basic Troubleshooting Questions
 
@@ -177,7 +183,9 @@ UI, but simply unsealing it should solve that.
 ### Something Something HA Problem!
 
 High Availability mode has not been well tested, and no promises can currently
-be made about HA functionality at this time.
+be made about HA functionality at this time. It does work as expected, however
+you must be sure to point your client to the correct Vault server
+with `VAULT_ADDR` once that server is the new active server.
 
 ## Resources
 

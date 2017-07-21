@@ -228,7 +228,7 @@ variable "vault_plus_one_port" {
 
 # Set TF_VAR_disable_clustering to set this
 variable "disable_clustering" {
-  default = "true"
+  default = "false"
 }
 
 data "template_file" "vault_oss_one_config" {
