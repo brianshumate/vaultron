@@ -1,4 +1,6 @@
+vault/config/main.hcl
 consul/*/data
 consul/*/config
+vault/*/config/*
 terraform.tfstate*
 vault_*.tmp

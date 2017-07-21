@@ -77,16 +77,54 @@ export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 ```
 
-## Notes and Questions
+## What's in the Box?
 
-Here are some notes and questions about how Vaultron works.
+Here are some notes and questions about what Vaultron is and how it works.
 
-### Vault is Orange/Failing in the Consul Web UI
+### Basic Architecture Overview
 
-If you have not yet unsealed Vault, it will appear as failing in the Consul
-UI, but simply unsealing it should solve that.
+Vaultron has to work around some quirks of Docker on Mac to do its thing, but
+here is basically what you are getting:
 
-### Where's My Data?
+```
++---------------+ +---------------+ +---------------+
+|               | |               | |               |
+|   Vault One   | |   Vault Two   | |  Vault Three  |
+|               | |               | |               |
++-------+-------+ +-------+-------+ +-------+-------+
+        |                 |                 |
+        |                 |                 |
+        |                 |                 |
++-------v-------+ +-------v-------+ +-------v-------+
+|               | |               | |               |
+| Consul Client | | Consul Client | | Consul Client |
+|     One       | |     Two       | |    Three      |
+|               | |               | |               |
++-------+-------+ +-------+-------+ +-------+-------+
+        |                 |                 |
+        |                 |                 |
+        |                 |                 |
++-------v-------+ +-------v-------+ +-------v-------+
+|               | |               | |               |
+| Consul Server | | Consul Server | | Consul Server |
+|     One       | |     Two       | |    Three      |
+|               | |               | |               |
++---------------+ +---------------+ +---------------+
+```
+
+Vaultron consists of three Vault server containers, three Consul client
+containers, and three Consul server containers. Vault servers connect
+directly to the Consul clients, and the Consul clients connect to the
+Consul server cluster.
+
+Note that each Vault instance is available to the Mac locally, but via
+published ports scheme only, so the addresses of the Vault servers are:
+
+- localhost:8200
+- localhost:8201
+- localhost:8202
+
+### Where's the Data?
 
 Vault data is kept in Consul's key/value store, which in turn is written into
 the `consul/oss_*/data` directory for each of the three Consul servers. Here
@@ -94,9 +132,7 @@ is the tree showing the first server's directory structure:
 
 ```
 ├── consul
-│   ├── oss_one
-│   │   ├── README.md
-│   │   ├── config
+│   ├── oss_server_one
 │   │   └── data
 │   │       ├── checkpoint-signature
 │   │       ├── node-id
@@ -109,15 +145,12 @@ is the tree showing the first server's directory structure:
 │   │           └── remote.snapshot
 ```
 
-### What About Multiple Vault Servers with High Availability?
+## Frequently Asked Questions
 
-C'mon! It's Vault running with Consul on your Mac! Are you not satisfied? ;)
+### Vault is Orange/Failing in the Consul Web UI
 
-Seriously though— you might want this for a valid reason, and it'd certainly
-add a cool touch, too! Unfortunately, this is not yet possible because Vault
-requires the address to advertise to other Vault servers in the cluster for
-HA request forwarding to be deterministic, and Docker for Mac
-does not yet support assigning specific IPs to containers. :sadparrot:
+If you have not yet unsealed Vault, it will appear as failing in the Consul
+UI, but simply unsealing it should solve that.
 
 ## Resources
 

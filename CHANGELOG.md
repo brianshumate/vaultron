@@ -31,3 +31,12 @@
 - Stubbed a pre-0.7.x config file so that 0.6.x versions can be run soon
 - Reworked naming to distinguish clients and servers
 - Update documentation
+
+## v1.3.0
+
+- Three Consul client agents
+- Three Vault servers
+- Provide audit logs directory mapping
+- Enable file based audit logging on initially active server
+- Update scripts
+- Update documentation

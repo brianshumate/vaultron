@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-echo "🤖  Vaultron unform ..."
+echo "🤖  Unform Vaultron ..."
 terraform destroy -force > /dev/null 2>&1
 rm -rf consul/oss_*_one/data/*
 rm -rf consul/oss_*_two/data/*
 rm -rf consul/oss_*_three/data/*
+rm -rf vault/oss_*/logs/*
 rm -rf vault_*.tmp
 echo "💥  Vaultron unformed!"

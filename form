@@ -3,7 +3,7 @@
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 
-echo "✨  Vaultron form..."
+echo "✨  Form Vaultron ..."
 echo "✨  Set CONSUL_HTTP_ADDR to ${CONSUL_HTTP_ADDR}"
 echo "✨  Set VAULT_ADDR to ${VAULT_ADDR}"
 

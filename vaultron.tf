@@ -37,10 +37,6 @@ resource "docker_container" "consul_oss_server_one" {
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_server_one/config"
-    container_path = "/consul/config"
-  }
-  volumes {
     host_path = "${path.module}/consul/oss_server_one/data"
     container_path = "/consul/data"
   }
@@ -100,10 +96,6 @@ resource "docker_container" "consul_oss_server_two" {
   name  = "consul_oss_server_2"
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_server_two/config"
-    container_path = "/consul/config"
-  }
-  volumes {
     host_path = "${path.module}/consul/oss_server_two/data"
     container_path = "/consul/data"
   }
@@ -125,10 +117,6 @@ resource "docker_container" "consul_oss_server_two" {
 resource "docker_container" "consul_oss_server_three" {
   name  = "consul_oss_server_3"
   image = "${docker_image.consul.latest}"
-  volumes {
-    host_path = "${path.module}/consul/oss_server_three/config"
-    container_path = "/consul/config"
-  }
   volumes {
     host_path = "${path.module}/consul/oss_server_three/data"
     container_path = "/consul/data"
@@ -152,10 +140,6 @@ resource "docker_container" "consul_oss_client_one" {
   name  = "consul_oss_client_1"
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_client_one/config"
-    container_path = "/consul/config"
-  }
-  volumes {
     host_path = "${path.module}/consul/oss_client_one/data"
     container_path = "/consul/data"
   }
@@ -177,10 +161,6 @@ resource "docker_container" "consul_oss_client_one" {
 resource "docker_container" "consul_oss_client_two" {
   name  = "consul_oss_client_2"
   image = "${docker_image.consul.latest}"
-  volumes {
-    host_path = "${path.module}/consul/oss_client_two/config"
-    container_path = "/consul/config"
-  }
   volumes {
     host_path = "${path.module}/consul/oss_client_two/data"
     container_path = "/consul/data"
@@ -204,10 +184,6 @@ resource "docker_container" "consul_oss_client_three" {
   name  = "consul_oss_client_3"
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_client_three/config"
-    container_path = "/consul/config"
-  }
-  volumes {
     host_path = "${path.module}/consul/oss_client_three/data"
     container_path = "/consul/data"
   }
@@ -225,70 +201,6 @@ resource "docker_container" "consul_oss_client_three" {
   #
   # network_mode = "host"
 }
-
-#############################################################################
-## Consul Enterprise
-#############################################################################
-
-# TODO: Get this going next
-#
-#resource "docker_container" "consul_enterprise_one" {
-#  name  = "consul_enterprise_server_1"
-#  image = "${var.consul_ent_id}"
-#  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
-#    entrypoint = ["consul",
-#             "agent",
-#             "-server",
-#             "-bootstrap-expect=3",
-#             "-node=consul1",
-#             "-client=0.0.0.0",
-#             #"-bind=0.0.0.0",
-#             # "-dns-port=53",
-#             "-recursor=84.200.69.80",
-#             "-recursor=84.200.70.40",
-#             "-data-dir=/consul/data",
-#             "-ui"
-#             ]
-#  must_run = true
-#  # TODO: Network mode host will work when the Docker macOS networking
-#  #      features become more than an experimental feature.
-#  #      See: https://github.com/docker/for-mac/issues/155
-#  #
-#  # network_mode = "host"
-#  #
-#  # We define some exposed ports here for the purpose of connecting into
-#  # the cluster from the host system:
-#  ports {
-#    internal = "8300"
-#    external = "8300"
-#    protocol = "tcp"
-#  }
-#  ports {
-#    internal = "8301"
-#    external = "8301"
-#    protocol = "tcp"
-#  }
-#  ports {
-#    internal = "8301"
-#    external = "8301"
-#    protocol = "udp"
-#  }
-#  ports {
-#    internal = "8302"
-#    external = "8302"
-#    protocol = "tcp"
-#  }
-#  ports {
-#    internal = "8302"
-#    external = "8302"
-#    protocol = "udp"
-#  }
-#  ports {
-#    internal = "8500"
-#    external = "8500"
-#    protocol = "tcp"
-#  }
-#}
 
 resource "docker_image" "consul" {
   name = "consul"
@@ -332,6 +244,32 @@ data "template_file" "vault_oss_one_config" {
   }
 }
 
+data "template_file" "vault_oss_two_config" {
+  template = "${file("${path.module}/templates/vault_config.tpl")}"
+  vars {
+    address = "0.0.0.0:8200"
+    consul_address = "${docker_container.consul_oss_client_two.ip_address}"
+    datacenter = "${var.datacenter}"
+    vault_path = "${var.vault_path}"
+    cluster_name = "${var.vault_cluster_name}"
+    disable_clustering = "${var.disable_clustering}"
+    tls_disable = 1
+  }
+}
+
+data "template_file" "vault_oss_three_config" {
+  template = "${file("${path.module}/templates/vault_config.tpl")}"
+  vars {
+    address = "0.0.0.0:8200"
+    consul_address = "${docker_container.consul_oss_client_three.ip_address}"
+    datacenter = "${var.datacenter}"
+    vault_path = "${var.vault_path}"
+    cluster_name = "${var.vault_cluster_name}"
+    disable_clustering = "${var.disable_clustering}"
+    tls_disable = 1
+  }
+}
+
 resource "docker_container" "vault_oss_one" {
   name  = "vault_oss_server_1"
   image = "${docker_image.vault.latest}"
@@ -340,11 +278,15 @@ resource "docker_container" "vault_oss_one" {
     file = "/vault/config/main.hcl"
   }
   volumes {
-    host_path = "${path.module}/vault/config"
+    host_path = "${path.module}/vault/oss_one/audit_log"
+    container_path = "/vault/logs"
+  }
+  volumes {
+    host_path = "${path.module}/vault/oss_one/config"
     container_path = "/vault/config"
   }
   #
-  # TODO: Investigate
+  # TODO: We can do DNS things later...
   #
   # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
   # dns_search = ["consul"]
@@ -359,42 +301,88 @@ resource "docker_container" "vault_oss_one" {
   #      See: https://github.com/docker/for-mac/issues/155
   #
   # network_mode = "host"
-    ports {
+  ports {
     internal = "8200"
     external = "8200"
     protocol = "tcp"
   }
 }
 
-#############################################################################
-## Vault Enterprise
-#############################################################################
+resource "docker_container" "vault_oss_two" {
+  name  = "vault_oss_server_2"
+  image = "${docker_image.vault.latest}"
+  upload = {
+    content = "${data.template_file.vault_oss_two_config.rendered}"
+    file = "/vault/config/main.hcl"
+  }
+  volumes {
+    host_path = "${path.module}/vault/oss_two/audit_log"
+    container_path = "/vault/logs"
+  }
+  volumes {
+    host_path = "${path.module}/vault/oss_two/config"
+    container_path = "/vault/config"
+  }
+  #
+  # TODO: We can do DNS things later...
+  #
+  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
+  # dns_search = ["consul"]
+  #
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  capabilities {
+    add = ["IPC_LOCK"]
+  }
+  must_run = true
+  # TODO: Network mode host will work when the Docker macOS networking
+  #      features become more than an experimental feature.
+  #      See: https://github.com/docker/for-mac/issues/155
+  #
+  # network_mode = "host"
+  ports {
+    internal = "8200"
+    external = "8201"
+    protocol = "tcp"
+  }
+}
 
-# TODO: Get this going next
-#
-#resource "docker_container" "vault_enterprise_one" {
-#  name  = "vault_ent_server_1"
-#  image = "${vault_ent_id}"
-#  provisioner "remote-exec" {
-#    inline = [
-#      "echo 'Check for Consul here'"
-#    ]
-#  }
-#  capabilities {
-#    add = ["IP_LOCK"]
-#  }
-#    must_run = true
-#  # TODO: Network mode host will work when the Docker macOS networking
-#  #      features become more than an experimental feature.
-#  #      See: https://github.com/docker/for-mac/issues/155
-#  #
-#  # network_mode = "host"
-#    ports {
-#    internal = "8200"
-#    external = "8200"
-#    protocol = "tcp"
-#  }
-#}
+resource "docker_container" "vault_oss_three" {
+  name  = "vault_oss_server_3"
+  image = "${docker_image.vault.latest}"
+  upload = {
+    content = "${data.template_file.vault_oss_three_config.rendered}"
+    file = "/vault/config/main.hcl"
+  }
+  volumes {
+    host_path = "${path.module}/vault/oss_three/audit_log"
+    container_path = "/vault/logs"
+  }
+  volumes {
+    host_path = "${path.module}/vault/oss_three/config"
+    container_path = "/vault/config"
+  }
+  #
+  # TODO: We can do DNS things later...
+  #
+  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
+  # dns_search = ["consul"]
+  #
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  capabilities {
+    add = ["IPC_LOCK"]
+  }
+  must_run = true
+  # TODO: Network mode host will work when the Docker macOS networking
+  #      features become more than an experimental feature.
+  #      See: https://github.com/docker/for-mac/issues/155
+  #
+  # network_mode = "host"
+  ports {
+    internal = "8200"
+    external = "8202"
+    protocol = "tcp"
+  }
+}
 
 resource "docker_image" "vault" {
   name = "vault"
