@@ -55,13 +55,10 @@ Speaking of which, here are some things you can do after Vaultron is formed:
    when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during
    initialization
-4. Use the `vault` CLI on your Mac to interact with your new Vault server
+4. Use the `vault` CLI on your Mac to interact with your new Vault servers
 5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-7. View Vault operational logs with `docker logs vault_oss_server_1`
-8. View Consul server operational logs with `docker logs consul_oss_server_1`,
-   `docker logs consul_oss_server_2`, and `docker logs consul_oss_server_3`
-9. When done having fun, disassemble Vaultron with `./unform`
+7. When done having fun, disassemble Vaultron with `./unform`
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
@@ -148,7 +145,27 @@ is the tree showing the first server's directory structure:
 │   │           └── remote.snapshot
 ```
 
-## Frequently Asked Questions
+### What About Logs?
+
+The Docker containers are named as follows:
+
+- vault_oss_server_1
+- vault_oss_server_2
+- vault_oss_server_3
+- consul_oss_client_1
+- consul_oss_client_2
+- consul_oss_client_3
+- consul_oss_server_1
+- consul_oss_server_2
+- consul_oss_server_3
+
+You can view logs for any container with `docker logs` like so:
+
+```
+docker logs vault_oss_server_1
+```
+
+## Basic Troubleshooting Questions
 
 ### Vault is Orange/Failing in the Consul Web UI
 
