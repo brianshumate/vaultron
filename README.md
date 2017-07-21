@@ -53,7 +53,7 @@ Speaking of which, here are some next steps for after Vaultron is formed:
 1. Initialize Vault with `vault init`
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented
    when you initialized Vault
-3. Authenticate to Vault with the initial root token presented during the
+3. Authenticate to Vault with the initial root token presented during
    initialization
 4. Use the `vault` CLI on your Mac to interact with your new Vault server
 5. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
@@ -87,10 +87,10 @@ _client mode_ which in turn joins the cluster of Consul servers.
 
 While Vault functions as expected in this configuration, the built in Vault
 health checks for Consul do not work, so Vault does not register itself
-into Consul as a service.
+into Consul as a service for this reason.
 
-This will be addressed with a configuration that more closely matches
-a best practices production setup in an upcoming release.
+This issue will be addressed with a configuration that more closely matches
+a best practices production setup in an upcoming release. Stay tuned!
 
 ### Where's My Data?
 
