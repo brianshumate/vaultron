@@ -1,5 +1,5 @@
 #############################################################################
-## This is Vaultron: Consul backed Vault on Docker for macOS
+## This is Vaultron: A Consul backed Vault server on Docker for macOS
 #############################################################################
 
 provider "docker" {
@@ -32,16 +32,16 @@ variable "vault_ent_id" {
 ## Consul Open Source
 #############################################################################
 
-resource "docker_container" "consul_oss_one" {
-  name  = "consul_oss_node_1"
+resource "docker_container" "consul_oss_server_one" {
+  name  = "consul_oss_server_1"
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_one/config"
+    host_path = "${path.module}/consul/oss_server_one/config"
     container_path = "/consul/config"
   }
   volumes {
-    host_path = "${path.module}/consul/oss_one/data"
+    host_path = "${path.module}/consul/oss_server_one/data"
     container_path = "/consul/data"
   }
   entrypoint = ["consul",
@@ -96,25 +96,22 @@ resource "docker_container" "consul_oss_one" {
   }
 }
 
-resource "docker_container" "consul_oss_two" {
-  name  = "consul_oss_node_2"
-  depends_on = ["docker_container.consul_oss_one"]
+resource "docker_container" "consul_oss_server_two" {
+  name  = "consul_oss_server_2"
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_two/config"
+    host_path = "${path.module}/consul/oss_server_two/config"
     container_path = "/consul/config"
   }
   volumes {
-    host_path = "${path.module}/consul/oss_two/data"
+    host_path = "${path.module}/consul/oss_server_two/data"
     container_path = "/consul/data"
   }
-  dns = ["${docker_container.consul_oss_one.ip_address}"]
-  dns_search = ["consul"]
   entrypoint = ["consul",
              "agent",
              "-server",
              "-node=consul2",
-             "-retry-join=${docker_container.consul_oss_one.ip_address}",
+             "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
              "-data-dir=/consul/data"
              ]
   must_run = true
@@ -125,25 +122,100 @@ resource "docker_container" "consul_oss_two" {
   # network_mode = "host"
 }
 
-resource "docker_container" "consul_oss_three" {
-  name  = "consul_oss_node_3"
-  depends_on = ["docker_container.consul_oss_one"]
+resource "docker_container" "consul_oss_server_three" {
+  name  = "consul_oss_server_3"
   image = "${docker_image.consul.latest}"
   volumes {
-    host_path = "${path.module}/consul/oss_three/config"
+    host_path = "${path.module}/consul/oss_server_three/config"
     container_path = "/consul/config"
   }
   volumes {
-    host_path = "${path.module}/consul/oss_three/data"
+    host_path = "${path.module}/consul/oss_server_three/data"
     container_path = "/consul/data"
   }
-  dns = ["${docker_container.consul_oss_one.ip_address}"]
-  dns_search = ["consul"]
   entrypoint = ["consul",
                 "agent",
                 "-server",
                 "-node=consul3",
-                "-retry-join=${docker_container.consul_oss_one.ip_address}",
+                "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
+                "-data-dir=/consul/data"
+                ]
+  must_run = true
+  # TODO: Network mode host will work when the Docker macOS networking
+  #      features become more than an experimental feature.
+  #      See: https://github.com/docker/for-mac/issues/155
+  #
+  # network_mode = "host"
+}
+
+resource "docker_container" "consul_oss_client_one" {
+  name  = "consul_oss_client_1"
+  image = "${docker_image.consul.latest}"
+  volumes {
+    host_path = "${path.module}/consul/oss_client_one/config"
+    container_path = "/consul/config"
+  }
+  volumes {
+    host_path = "${path.module}/consul/oss_client_one/data"
+    container_path = "/consul/data"
+  }
+  entrypoint = ["consul",
+                "agent",
+                "-client=0.0.0.0",
+                "-node=consul4",
+                "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
+                "-data-dir=/consul/data"
+                ]
+  must_run = true
+  # TODO: Network mode host will work when the Docker macOS networking
+  #      features become more than an experimental feature.
+  #      See: https://github.com/docker/for-mac/issues/155
+  #
+  # network_mode = "host"
+}
+
+resource "docker_container" "consul_oss_client_two" {
+  name  = "consul_oss_client_2"
+  image = "${docker_image.consul.latest}"
+  volumes {
+    host_path = "${path.module}/consul/oss_client_two/config"
+    container_path = "/consul/config"
+  }
+  volumes {
+    host_path = "${path.module}/consul/oss_client_two/data"
+    container_path = "/consul/data"
+  }
+  entrypoint = ["consul",
+                "agent",
+                "-client=0.0.0.0",
+                "-node=consul5",
+                "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
+                "-data-dir=/consul/data"
+                ]
+  must_run = true
+  # TODO: Network mode host will work when the Docker macOS networking
+  #      features become more than an experimental feature.
+  #      See: https://github.com/docker/for-mac/issues/155
+  #
+  # network_mode = "host"
+}
+
+resource "docker_container" "consul_oss_client_three" {
+  name  = "consul_oss_client_3"
+  image = "${docker_image.consul.latest}"
+  volumes {
+    host_path = "${path.module}/consul/oss_client_three/config"
+    container_path = "/consul/config"
+  }
+  volumes {
+    host_path = "${path.module}/consul/oss_client_three/data"
+    container_path = "/consul/data"
+  }
+  entrypoint = ["consul",
+                "agent",
+                "-client=0.0.0.0",
+                "-node=consul6",
+                "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
                 ]
   must_run = true
@@ -161,7 +233,7 @@ resource "docker_container" "consul_oss_three" {
 # TODO: Get this going next
 #
 #resource "docker_container" "consul_enterprise_one" {
-#  name  = "consul_enterprise_node_1"
+#  name  = "consul_enterprise_server_1"
 #  image = "${var.consul_ent_id}"
 #  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
 #    entrypoint = ["consul",
@@ -247,29 +319,21 @@ variable "disable_clustering" {
   default = "true"
 }
 
-# TODO: Fix this hack to deal with connecting Vault directly to Consul server
-# Set TF_VAR_disable_registration to set this
-variable "disable_registration" {
-  default = "true"
-}
-
 data "template_file" "vault_oss_one_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
   vars {
     address = "0.0.0.0:8200"
-    consul_address = "${docker_container.consul_oss_one.ip_address}"
+    consul_address = "${docker_container.consul_oss_client_one.ip_address}"
     datacenter = "${var.datacenter}"
     vault_path = "${var.vault_path}"
-    cluster_address = "http://${docker_container.consul_oss_one.ip_address}:${var.vault_plus_one_port}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    disable_registration = "${var.disable_registration}"
     tls_disable = 1
   }
 }
 
 resource "docker_container" "vault_oss_one" {
-  name  = "vault_oss_node_1"
+  name  = "vault_oss_server_1"
   image = "${docker_image.vault.latest}"
   upload = {
     content = "${data.template_file.vault_oss_one_config.rendered}"
@@ -279,11 +343,10 @@ resource "docker_container" "vault_oss_one" {
     host_path = "${path.module}/vault/config"
     container_path = "/vault/config"
   }
-  depends_on = ["docker_container.consul_oss_one"]
   #
   # TODO: Investigate
   #
-  # dns = ["${docker_container.consul_oss_one.ip_address}"]
+  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
   # dns_search = ["consul"]
   #
   entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
@@ -310,7 +373,7 @@ resource "docker_container" "vault_oss_one" {
 # TODO: Get this going next
 #
 #resource "docker_container" "vault_enterprise_one" {
-#  name  = "vault_ent_node_1"
+#  name  = "vault_ent_server_1"
 #  image = "${vault_ent_id}"
 #  provisioner "remote-exec" {
 #    inline = [

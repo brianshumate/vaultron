@@ -22,7 +22,7 @@ server for development, evaluation, and issue reproduction on Docker for Mac.
 
 ## Why?
 
-A reasonably useful Vault environment on your Mac in about 60 seconds...
+A reasonably cool and useful Vault environment on macOS in about 60 seconds...
 
 ## How?
 
@@ -48,7 +48,7 @@ acquainted! Be sure to also check out the official Vault
 You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing and
 unsealing your Vault.
 
-Speaking of which, here are some next steps for after Vaultron is formed:
+Speaking of which, here are some things you can do after Vaultron is formed:
 
 1. Initialize Vault with `vault init`
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented
@@ -56,11 +56,12 @@ Speaking of which, here are some next steps for after Vaultron is formed:
 3. Authenticate to Vault with the initial root token presented during
    initialization
 4. Use the `vault` CLI on your Mac to interact with your new Vault server
-5. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-6. View Vault operational logs with `docker logs vault_oss_node_1`
-7. View Consul server operational logs with `docker logs consul_oss_node_1`,
-   `docker logs consul_oss_node_2`, and `docker logs consul_oss_node_3`
-8. When done having fun, disassemble Vaultron with `./unform`
+5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
+6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
+7. View Vault operational logs with `docker logs vault_oss_server_1`
+8. View Consul server operational logs with `docker logs consul_oss_server_1`,
+   `docker logs consul_oss_server_2`, and `docker logs consul_oss_server_3`
+9. When done having fun, disassemble Vaultron with `./unform`
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
@@ -76,21 +77,14 @@ export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 ```
 
-## Notes and Resources
+## Notes and Questions
 
-### Regarding Vault Best Practices
+Here are some notes and questions about how Vaultron works.
 
-Please note that while this project connects the Vault instance directly to
-a Consul server for the sake of simplicity, the best approach in production
-is to always connect each Vault instance to a local Consul agent in
-_client mode_ which in turn joins the cluster of Consul servers.
+### Vault is Orange/Failing in the Consul Web UI
 
-While Vault functions as expected in this configuration, the built in Vault
-health checks for Consul do not work, so Vault does not register itself
-into Consul as a service for this reason.
-
-This issue will be addressed with a configuration that more closely matches
-a best practices production setup in an upcoming release. Stay tuned!
+If you have not yet unsealed Vault, it will appear as failing in the Consul
+UI, but simply unsealing it should solve that.
 
 ### Where's My Data?
 
@@ -115,8 +109,17 @@ is the tree showing the first server's directory structure:
 │   │           └── remote.snapshot
 ```
 
+### What About Multiple Vault Servers with High Availability?
 
-### Handy Links
+C'mon! It's Vault running with Consul on your Mac! Are you not satisfied? ;)
+
+Seriously though— you might want this for a valid reason, and it'd certainly
+add a cool touch, too! Unfortunately, this is not yet possible because Vault
+requires the address to advertise to other Vault servers in the cluster for
+HA request forwarding to be deterministic, and Docker for Mac
+does not yet support assigning specific IPs to containers. :sadparrot:
+
+## Resources
 
 Here are some links to the websites for technologies used in this project:
 

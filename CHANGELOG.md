@@ -20,7 +20,14 @@
 - Why so blue, vault_kitchen_sink?
 - Updated README
 
-## V1.1.1
+## v1.1.1
 
 - Keep with Voltron theme by renaming `vault_kitchen_sink` to `blazing_sword`
+- Update documentation
+
+## v1.2.0
+
+- Cluster is now using Consul client agents to which Vault servers connect
+- Stubbed a pre-0.7.x config file so that 0.6.x versions can be run soon
+- Reworked naming to distinguish clients and servers
 - Update documentation

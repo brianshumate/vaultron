@@ -1,10 +1,10 @@
 cluster_name = "vaultron"
 
 storage "consul" {
-  address = "172.17.0.2:8500"
+  address = "172.17.0.7:8500"
   path = "vault/"
   disable_clustering = "true"
-  disable_registration = "true"
+  disable_registration = "false"
 }
 
 listener "tcp" {
