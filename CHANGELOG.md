@@ -56,3 +56,8 @@
 - Enable script checks
 - Update documentation
 - Update ignores
+
+## v1.4.1 (UNRELEASED)
+
+- Update form script
+- Update Consul client configuration to match architectural diagram
