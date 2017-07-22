@@ -62,9 +62,7 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
-<Warning>
-**NOTE: `./unform` removes the existing Vault data — be careful!**
-</Warning>
+> **NOTE: `./unform` removes the existing Vault data — be careful!**
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
