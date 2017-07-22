@@ -9,6 +9,14 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
+variable "consul_version" {
+  default ""
+}
+
+variable "vault_version" {
+  default ""
+}
+
 variable "datacenter" {
   default ="dc1"
 }
@@ -55,6 +63,7 @@ resource "docker_container" "consul_oss_server_one" {
              "-recursor=84.200.69.80",
              "-recursor=84.200.70.40",
              "-data-dir=/consul/data",
+             -dns-port=53,
              "-ui"
              ]
   must_run = true
@@ -117,7 +126,8 @@ resource "docker_container" "consul_oss_server_two" {
              "-server",
              "-node=consul2",
              "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-             "-data-dir=/consul/data"
+             "-data-dir=/consul/data".
+             -dns-port=53
              ]
   must_run = true
 }
@@ -137,7 +147,8 @@ resource "docker_container" "consul_oss_server_three" {
                 "-server",
                 "-node=consul3",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-                "-data-dir=/consul/data"
+                "-data-dir=/consul/data",
+                -dns-port=53
                 ]
   must_run = true
   # TODO: Network mode host will work when the Docker macOS networking
@@ -163,7 +174,9 @@ resource "docker_container" "consul_oss_client_one" {
                 "-node=consul4",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
-                ]
+                ],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}"],
+  dns_search = ["consul"],
   must_run = true
 }
 
@@ -183,7 +196,9 @@ resource "docker_container" "consul_oss_client_two" {
                 "-node=consul5",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
-                ]
+                ],
+  dns = ["${docker_container.consul_oss_server_two.ip_address}"],
+  dns_search = ["consul"],
   must_run = true
 }
 
@@ -203,7 +218,9 @@ resource "docker_container" "consul_oss_client_three" {
                 "-node=consul6",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
-                ]
+                ],
+  dns = ["${docker_container.consul_oss_server_three.ip_address}"],
+  dns_search = ["consul"],
   must_run = true
 }
 
@@ -250,7 +267,9 @@ data "template_file" "vault_oss_one_config" {
     vault_path = "${var.vault_path}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable = 1
+    tls_disable = 1,
+    dns = ["${docker_container.consul_oss_server_one.ip_address}"],
+    dns_search = ["consul"],
   }
 }
 
@@ -266,7 +285,9 @@ data "template_file" "vault_oss_two_config" {
     vault_path = "${var.vault_path}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable = 1
+    tls_disable = 1,
+    dns = ["${docker_container.consul_oss_server_two.ip_address}"],
+    dns_search = ["consul"],
   }
 }
 
@@ -282,7 +303,9 @@ data "template_file" "vault_oss_three_config" {
     vault_path = "${var.vault_path}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable = 1
+    tls_disable = 1,
+    dns = ["${docker_container.consul_oss_server_three.ip_address}"],
+    dns_search = ["consul"],
   }
 }
 

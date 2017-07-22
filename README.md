@@ -89,26 +89,26 @@ here is basically what you are getting:
 
 ```
 +---------------+ +---------------+ +---------------+
-|               | |               | |               |
-|   Vault One   | |   Vault Two   | |  Vault Three  |
+|               | |               | |               |  vault_oss_server_1
+|   Vault One   | |   Vault Two   | |  Vault Three  |  vault_oss_server_2
+|               | |               | |               |  vault_oss_server_3
++-------+-------+ +-------+-------+ +-------+-------+
+        |                 |                 |
+        |                 |                 |
+        |                 |                 |
++-------v-------+ +-------v-------+ +-------v-------+
+|               | |               | |               |  consul_oss_client_1
+| Consul Client | | Consul Client | | Consul Client |  consul_oss_client_2
+|     One       | |     Two       | |    Three      |  consul_oss_client_3
 |               | |               | |               |
 +-------+-------+ +-------+-------+ +-------+-------+
         |                 |                 |
         |                 |                 |
         |                 |                 |
 +-------v-------+ +-------v-------+ +-------v-------+
-|               | |               | |               |
-| Consul Client | | Consul Client | | Consul Client |
-|     One       | |     Two       | |    Three      |
-|               | |               | |               |
-+-------+-------+ +-------+-------+ +-------+-------+
-        |                 |                 |
-        |                 |                 |
-        |                 |                 |
-+-------v-------+ +-------v-------+ +-------v-------+
-|               | |               | |               |
-| Consul Server | | Consul Server | | Consul Server |
-|     One       | |     Two       | |    Three      |
+|               | |               | |               |  consul_oss_server_1
+| Consul Server | | Consul Server | | Consul Server |  consul_oss_server_2
+|     One       | |     Two       | |    Three      |  consul_oss_server_3
 |               | |               | |               |
 +---------------+ +---------------+ +---------------+
 ```
@@ -151,17 +151,7 @@ is the tree showing the first server's directory structure:
 
 ### What About Logs?
 
-The Docker containers are named as follows:
-
-- vault_oss_server_1
-- vault_oss_server_2
-- vault_oss_server_3
-- consul_oss_client_1
-- consul_oss_client_2
-- consul_oss_client_3
-- consul_oss_server_1
-- consul_oss_server_2
-- consul_oss_server_3
+The Docker containers are named as shown in the Basic Architecture Overview.
 
 You can view operational logs for any container with `docker logs` like so:
 
