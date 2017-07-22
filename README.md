@@ -97,29 +97,29 @@ Vaultron has to work around some quirks of Docker on Mac to do its thing, but
 here is basically what you are getting:
 
 ```
-+---------------+ +---------------+ +---------------+
-|               | |               | |               |  vault_oss_server_1
-|   Vault One   | |   Vault Two   | |  Vault Three  |  vault_oss_server_2
-|               | |               | |               |  vault_oss_server_3
-+-------+-------+ +-------+-------+ +-------+-------+
-        |                 |                 |
-        |                 |                 |
-        |                 |                 |
-+-------v-------+ +-------v-------+ +-------v-------+
-|               | |               | |               |  consul_oss_client_1
-| Consul Client | | Consul Client | | Consul Client |  consul_oss_client_2
-|     One       | |     Two       | |    Three      |  consul_oss_client_3
-|               | |               | |               |
-+-------+-------+ +-------+-------+ +-------+-------+
-        |                 |                 |
-        |                 |                 |
-        |                 |                 |
-+-------v-------+ +-------v-------+ +-------v-------+
-|               | |               | |               |  consul_oss_server_1
-| Consul Server | | Consul Server | | Consul Server |  consul_oss_server_2
-|     One       | |     Two       | |    Three      |  consul_oss_server_3
-|               | |               | |               |
-+---------------+ +---------------+ +---------------+
++---------------+   +---------------+   +---------------+
+|               |   |               |   |               |  vault_oss_server_1
+|   Vault One   |   |   Vault Two   |   |  Vault Three  |  vault_oss_server_2
+|               |   |               |   |               |  vault_oss_server_3
++-------+-------+   +-------+-------+   +-------+-------+
+        |                   |                   |
+        |                   |                   |
+        |                   |                   |
++-------v-------+   +-------v-------+   +-------v-------+
+|               |   |               |   |               |  consul_oss_client_1
+| Consul Client |   | Consul Client |   | Consul Client |  consul_oss_client_2
+|     One       |   |     Two       |   |    Three      |  consul_oss_client_3
+|               |   |               |   |               |
++-------+-------+   +-------+-------+   +-------+-------+
+        |                   |                   |
+        |                   |                   |
+        |                   |                   |
++-------v-------+   +-------v-------+   +-------v-------+
+|               |   |               |   |               |  consul_oss_server_1
+| Consul Server |<->| Consul Server |<->| Consul Server |  consul_oss_server_2
+|     One       |   |     Two       |   |    Three      |  consul_oss_server_3
+|               |   |               |   |               |
++---------------+   +---------------+   +---------------+
 ```
 
 Vaultron consists of three Vault server containers, three Consul client
