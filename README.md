@@ -62,7 +62,16 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
-> **NOTE: `./unform` removes the existing Vault data — be careful!**
+
+**NOTE: `./unform` REMOVES EVERYTHING including the existing Vault data, logs,
+and Terraform state — be careful!**
+
+If you want to tear down the containers, but preserve data, logs, and state,
+use `terraform destroy` instead:
+
+```
+terraform destroy -state=./tfstate/terraform.tfstate
+```
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
@@ -142,25 +151,42 @@ That said, here are some resources for configuring those sorts of things:
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
 
-### Where's the Data?
+### Where are the Data?
 
 Vault data is kept in Consul's key/value store, which in turn is written into
 the `consul/oss_*/data` directory for each of the three Consul servers. Here
-is the tree showing the first server's directory structure:
+is the tree showing the directory structure for a Consul client and server:
 
 ```
-├── consul
-│   ├── oss_server_one
-│   │   └── data
-│   │       ├── checkpoint-signature
-│   │       ├── node-id
-│   │       ├── raft
-│   │       │   ├── peers.info
-│   │       │   ├── raft.db
-│   │       │   └── snapshots
-│   │       └── serf
-│   │           ├── local.snapshot
-│   │           └── remote.snapshot
+└── consul
+    ├── consul_oss_client_1
+    │   ├── config
+    │   │   └── extra_config.hcl
+    │   └── data
+    │       ├── checkpoint-signature
+    │       ├── checks
+    │       │   ├── f6c7ee2019ed6055eef2b3e4facb36eb
+    │       │   └── state
+    │       │       └── f6c7ee2019ed6055eef2b3e4facb36eb
+    │       ├── node-id
+    │       ├── serf
+    │       │   └── local.snapshot
+    │       └── services
+    │           └── 9d6114573a8a933df24da735fca223cf
+    ├...
+    └── consul_oss_server_1
+        ├── config
+        │   └── extra_config.hcl
+        └── data
+            ├── checkpoint-signature
+            ├── node-id
+            ├── raft
+            │   ├── peers.info
+            │   ├── raft.db
+            │   └── snapshots
+            └── serf
+                ├── local.snapshot
+                └── remote.snapshot
 ```
 
 ### What About Logs?
@@ -188,10 +214,36 @@ UI, but simply unsealing it should solve that.
 
 ### Something Something HA Problem!
 
-High Availability mode has not been well tested, and no promises can currently
-be made about HA functionality at this time. It does work as expected, however
+High Availability mode has been shown to work as expected, however because
+of the current published ports method for exposing the Vault servers,
 you must be sure to point your client to the correct Vault server
-with `VAULT_ADDR` once that server is the new active server.
+with `VAULT_ADDR` once that server becomes the new active server.
+
+Here is simple method to watch HA mode in action using two terminal sessions:
+
+```
+Terminal 1                              Terminal 2
++-----------------------------------+   +------------------------------------+
+| VAULT_ADDR=http://localhost:8201 \|   | docker stop vault_oss_server_1     |
+| watch -n 1 vault status           |   |                                    |
+|                                   |   |                                    |
+| ...                               |   |                                    |
+| High-Availability Enabled: true   |   |                                    |
+|         Mode: standby             |   |                                    |
+|         Leader: http://172.17...  |   |                                    |
+| ...                               |   |                                    |
+|                                   |   |                                    |
+|                                   |   |                                    |
++-----------------------------------+   +------------------------------------+
+```
+
+1. In Terminal 1, set `VAULT_ADDR` to one of the two Vault standby containers
+   and use `watch` to keep an eye on the output of `vault status`
+   while noting the values of `Mode:` and `Leader:`
+2. In Terminal 2, stop the *active* Vault instance with `docker stop`
+3. You should notice that the value of `Leader:` changes instantly and if
+   the second standby Vault is elected the new active, the value of `Mode:`
+   will also reflect that instantly as well
 
 ## Resources
 

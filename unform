@@ -1,10 +1,34 @@
 #!/usr/bin/env bash
 
 echo "🤖  Unform Vaultron ..."
-terraform destroy -force > /dev/null 2>&1
-rm -rf consul/oss_*_one/data/*
-rm -rf consul/oss_*_two/data/*
-rm -rf consul/oss_*_three/data/*
-rm -rf vault/oss_*/logs/*
-rm -rf vault_*.tmp
+
+terraform destroy -force -state=./tfstate/terraform.tfstate > /dev/null 2>&1
+
+###
+### Remove Consul client data
+###
+rm -rf ./consul/consul_oss_client_1
+rm -rf ./consul/consul_oss_client_2
+rm -rf ./consul/consul_oss_client_3
+
+###
+### Remove Consul server data
+###
+rm -rf ./consul/consul_oss_server_1
+rm -rf ./consul/consul_oss_server_2
+rm -rf ./consul/consul_oss_server_3
+
+###
+### Remove Vault server data
+###
+rm -rf ./vault/vault_oss_server_1
+rm -rf ./vault/vault_oss_server_2
+rm -rf ./vault/vault_oss_server_3
+rm -rf ./vault/vault_*.tmp
+
+###
+### Remove Terraform state
+###
+rm -rf ./tfstate/terraform.tfstate*
+
 echo "💥  Vaultron unformed!"

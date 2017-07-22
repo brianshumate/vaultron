@@ -71,7 +71,7 @@ _auth_root() {
 }
 
 _enable_audit_logging() {
-    _logmsg info "Enabling a file based audit log at ./vault/logs/audit.log ..."
+    _logmsg success "Enabled file based audit log at ./vault/logs/audit.log!"
     _auth_root
     vault audit-enable file file_path=/vault/logs/audit.log  > /dev/null 2>&1
 }
@@ -103,7 +103,7 @@ function _get_initial_root_token() {
 
 _initialize_vault() {
     _logmsg info "Initializing Vault ..."
-    vault_dat="vault_$(date +%s).tmp"
+    vault_dat="./vault/vault_$(date +%s).tmp"
     vault init > "${vault_dat}" 2>&1
     vault_init_now="$(date)"
     printf "\nGenerated on %s\n" "${vault_init_now}" >> \

@@ -46,10 +46,13 @@
 - HA mode confirmed working
 - Update documentation
 
-## v1.3.2 (UNRELEASED)
+## v1.4.0
 
-- Expose DNS from Consul server one
+- Expose DNS from Consul server one to host Mac (tcp/udp 8600)
 - Tidy up Terraform configuration
+- Use consistent naming for Consul and Vault instances throughout
+- Enable support for Consul and Vault version-specific configuration
 - Use Consul servers for DNS
 - Enable script checks
 - Update documentation
+- Update ignores
