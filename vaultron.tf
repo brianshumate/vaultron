@@ -61,6 +61,16 @@ resource "docker_container" "consul_oss_server_one" {
   # We define some exposed ports here for the purpose of connecting into
   # the cluster from the host system:
   ports {
+    internal = "8600"
+    external = "8600"
+    protocol = "udp"
+  }
+  ports {
+    internal = "8600"
+    external = "8600"
+    protocol = "udp"
+  }
+  ports {
     internal = "8300"
     external = "8300"
     protocol = "tcp"

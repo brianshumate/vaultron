@@ -45,3 +45,8 @@
 
 - HA mode confirmed working
 - Update documentation
+
+## v1.3.2 (UNRELEASED)
+
+- Expose DNS from Consul server one
+- Update documentation

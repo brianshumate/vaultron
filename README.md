@@ -19,7 +19,7 @@
 Vaultron is a toy project that uses [Terraform](https://www.terraform.io/)
 to build a tiny cluster of [Consul](https://www.consul.io/) backed
 [Vault](https://www.vaultproject.io/) servers for development, evaluation,
-and issue reproduction on Docker for Mac.
+and issue reproduction on [Docker for Mac](https://www.docker.com/docker-mac).
 
 ## Why?
 
@@ -28,7 +28,8 @@ A reasonably cool and useful Vault environment on macOS in about 60 seconds...
 ## How?
 
 Terraform assembles individual pieces to form Vaultron from the official
-Consul and Vault Docker images.
+[Consul Docker image](https://hub.docker.com/_/consul/) and
+[Vault Docker image](https://hub.docker.com/_/vault/).
 
 ### Quick Start
 
