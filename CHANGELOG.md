@@ -49,4 +49,5 @@
 ## v1.3.2 (UNRELEASED)
 
 - Expose DNS from Consul server one
+- Tidy up Terraform configuration
 - Update documentation

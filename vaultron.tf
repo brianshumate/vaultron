@@ -1,7 +1,10 @@
 #############################################################################
-## This is Vaultron: A Consul backed Vault server on Docker for macOS
+## Vaultron: A Terraformed, Consul-backed, Vault server on Docker for macOS
 #############################################################################
 
+###
+### Global variables
+###
 provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
@@ -32,6 +35,9 @@ variable "vault_ent_id" {
 ## Consul Open Source
 #############################################################################
 
+###
+### Consul Open Source Server 1
+###
 resource "docker_container" "consul_oss_server_one" {
   name  = "consul_oss_server_1"
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
@@ -52,12 +58,6 @@ resource "docker_container" "consul_oss_server_one" {
              "-ui"
              ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
-  #
   # We define some exposed ports here for the purpose of connecting into
   # the cluster from the host system:
   ports {
@@ -102,6 +102,9 @@ resource "docker_container" "consul_oss_server_one" {
   }
 }
 
+###
+### Consul Open Source Server 2
+###
 resource "docker_container" "consul_oss_server_two" {
   name  = "consul_oss_server_2"
   image = "${docker_image.consul.latest}"
@@ -117,13 +120,11 @@ resource "docker_container" "consul_oss_server_two" {
              "-data-dir=/consul/data"
              ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
 }
 
+###
+### Consul Open Source Server 3
+###
 resource "docker_container" "consul_oss_server_three" {
   name  = "consul_oss_server_3"
   image = "${docker_image.consul.latest}"
@@ -146,6 +147,9 @@ resource "docker_container" "consul_oss_server_three" {
   # network_mode = "host"
 }
 
+###
+### Consul Open Source Client 1
+###
 resource "docker_container" "consul_oss_client_one" {
   name  = "consul_oss_client_1"
   image = "${docker_image.consul.latest}"
@@ -161,13 +165,11 @@ resource "docker_container" "consul_oss_client_one" {
                 "-data-dir=/consul/data"
                 ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
 }
 
+###
+### Consul Open Source Client 2
+###
 resource "docker_container" "consul_oss_client_two" {
   name  = "consul_oss_client_2"
   image = "${docker_image.consul.latest}"
@@ -183,13 +185,11 @@ resource "docker_container" "consul_oss_client_two" {
                 "-data-dir=/consul/data"
                 ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
 }
 
+###
+### Consul Open Source Client 3
+###
 resource "docker_container" "consul_oss_client_three" {
   name  = "consul_oss_client_3"
   image = "${docker_image.consul.latest}"
@@ -205,11 +205,6 @@ resource "docker_container" "consul_oss_client_three" {
                 "-data-dir=/consul/data"
                 ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
 }
 
 resource "docker_image" "consul" {
@@ -219,8 +214,10 @@ resource "docker_image" "consul" {
 #############################################################################
 ## Vault Open Source
 #############################################################################
-#
 
+###
+### Vault global variables
+###
 # Set TF_VAR_vault_path to set this
 variable "vault_path" {
   default = "vault"
@@ -241,6 +238,9 @@ variable "disable_clustering" {
   default = "false"
 }
 
+###
+### Vault Open Source server 1 configuration
+###
 data "template_file" "vault_oss_one_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
   vars {
@@ -254,6 +254,9 @@ data "template_file" "vault_oss_one_config" {
   }
 }
 
+###
+### Vault Open Source server 2 configuration
+###
 data "template_file" "vault_oss_two_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
   vars {
@@ -267,6 +270,9 @@ data "template_file" "vault_oss_two_config" {
   }
 }
 
+###
+### Vault Open Source server 2 configuration
+###
 data "template_file" "vault_oss_three_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
   vars {
@@ -280,6 +286,9 @@ data "template_file" "vault_oss_three_config" {
   }
 }
 
+###
+### Vault Open Source Server 1
+###
 resource "docker_container" "vault_oss_one" {
   name  = "vault_oss_server_1"
   image = "${docker_image.vault.latest}"
@@ -306,11 +315,6 @@ resource "docker_container" "vault_oss_one" {
     add = ["IPC_LOCK"]
   }
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
   ports {
     internal = "8200"
     external = "8200"
@@ -318,6 +322,9 @@ resource "docker_container" "vault_oss_one" {
   }
 }
 
+###
+### Vault Open Source Server 2
+###
 resource "docker_container" "vault_oss_two" {
   name  = "vault_oss_server_2"
   image = "${docker_image.vault.latest}"
@@ -344,11 +351,6 @@ resource "docker_container" "vault_oss_two" {
     add = ["IPC_LOCK"]
   }
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
   ports {
     internal = "8200"
     external = "8201"
@@ -356,6 +358,9 @@ resource "docker_container" "vault_oss_two" {
   }
 }
 
+###
+### Vault Open Source Server 3
+###
 resource "docker_container" "vault_oss_three" {
   name  = "vault_oss_server_3"
   image = "${docker_image.vault.latest}"
@@ -382,11 +387,6 @@ resource "docker_container" "vault_oss_three" {
     add = ["IPC_LOCK"]
   }
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
   ports {
     internal = "8200"
     external = "8202"
