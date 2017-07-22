@@ -4,6 +4,7 @@ storage "consul" {
   address = "${consul_address}:8500"
   path = "vault/"
   disable_clustering = "${disable_clustering}"
+  service_tags = "${service_tags}"
 }
 
 listener "tcp" {

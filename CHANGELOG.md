@@ -50,4 +50,5 @@
 
 - Expose DNS from Consul server one
 - Tidy up Terraform configuration
+- Use Consul servers for DNS
 - Update documentation

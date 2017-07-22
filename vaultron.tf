@@ -9,14 +9,6 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-variable "consul_version" {
-  default ""
-}
-
-variable "vault_version" {
-  default ""
-}
-
 variable "datacenter" {
   default ="dc1"
 }
@@ -43,6 +35,10 @@ variable "vault_ent_id" {
 ## Consul Open Source
 #############################################################################
 
+resource "docker_image" "consul" {
+  name = "consul:latest"
+}
+
 ###
 ### Consul Open Source Server 1
 ###
@@ -58,27 +54,17 @@ resource "docker_container" "consul_oss_server_one" {
              "agent",
              "-server",
              "-bootstrap-expect=3",
-             "-node=consul1",
+             "-node=consul_server_1",
              "-client=0.0.0.0",
              "-recursor=84.200.69.80",
              "-recursor=84.200.70.40",
              "-data-dir=/consul/data",
-             -dns-port=53,
+             "-dns-port=53",
              "-ui"
              ]
   must_run = true
-  # We define some exposed ports here for the purpose of connecting into
+  # We define some published ports here for the purpose of connecting into
   # the cluster from the host system:
-  ports {
-    internal = "8600"
-    external = "8600"
-    protocol = "udp"
-  }
-  ports {
-    internal = "8600"
-    external = "8600"
-    protocol = "udp"
-  }
   ports {
     internal = "8300"
     external = "8300"
@@ -109,6 +95,16 @@ resource "docker_container" "consul_oss_server_one" {
     external = "8500"
     protocol = "tcp"
   }
+  ports {
+    internal = "53"
+    external = "8600"
+    protocol = "tcp"
+  }
+  ports {
+    internal = "53"
+    external = "8600"
+    protocol = "udp"
+  }
 }
 
 ###
@@ -124,10 +120,10 @@ resource "docker_container" "consul_oss_server_two" {
   entrypoint = ["consul",
              "agent",
              "-server",
-             "-node=consul2",
+             "-node=consul_server_2",
              "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-             "-data-dir=/consul/data".
-             -dns-port=53
+             "-data-dir=/consul/data",
+             "-dns-port=53"
              ]
   must_run = true
 }
@@ -145,17 +141,12 @@ resource "docker_container" "consul_oss_server_three" {
   entrypoint = ["consul",
                 "agent",
                 "-server",
-                "-node=consul3",
+                "-node=consul_server_3",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data",
-                -dns-port=53
+                "-dns-port=53"
                 ]
   must_run = true
-  # TODO: Network mode host will work when the Docker macOS networking
-  #      features become more than an experimental feature.
-  #      See: https://github.com/docker/for-mac/issues/155
-  #
-  # network_mode = "host"
 }
 
 ###
@@ -171,11 +162,11 @@ resource "docker_container" "consul_oss_client_one" {
   entrypoint = ["consul",
                 "agent",
                 "-client=0.0.0.0",
-                "-node=consul4",
+                "-node=consul_client_1",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
                 ],
-  dns = ["${docker_container.consul_oss_server_one.ip_address}"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
   must_run = true
 }
@@ -193,11 +184,11 @@ resource "docker_container" "consul_oss_client_two" {
   entrypoint = ["consul",
                 "agent",
                 "-client=0.0.0.0",
-                "-node=consul5",
+                "-node=consul_client_2",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
                 ],
-  dns = ["${docker_container.consul_oss_server_two.ip_address}"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
   must_run = true
 }
@@ -215,22 +206,22 @@ resource "docker_container" "consul_oss_client_three" {
   entrypoint = ["consul",
                 "agent",
                 "-client=0.0.0.0",
-                "-node=consul6",
+                "-node=consul_client_3",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data"
                 ],
-  dns = ["${docker_container.consul_oss_server_three.ip_address}"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
   must_run = true
-}
-
-resource "docker_image" "consul" {
-  name = "consul"
 }
 
 #############################################################################
 ## Vault Open Source
 #############################################################################
+
+resource "docker_image" "vault" {
+  name = "vault:latest"
+}
 
 ###
 ### Vault global variables
@@ -268,8 +259,7 @@ data "template_file" "vault_oss_one_config" {
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     tls_disable = 1,
-    dns = ["${docker_container.consul_oss_server_one.ip_address}"],
-    dns_search = ["consul"],
+    service_tags = "vaultron"
   }
 }
 
@@ -286,13 +276,12 @@ data "template_file" "vault_oss_two_config" {
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     tls_disable = 1,
-    dns = ["${docker_container.consul_oss_server_two.ip_address}"],
-    dns_search = ["consul"],
+    service_tags = "vaultron"
   }
 }
 
 ###
-### Vault Open Source server 2 configuration
+### Vault Open Source server 3 configuration
 ###
 data "template_file" "vault_oss_three_config" {
   template = "${file("${path.module}/templates/vault_config.tpl")}"
@@ -304,8 +293,7 @@ data "template_file" "vault_oss_three_config" {
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     tls_disable = 1,
-    dns = ["${docker_container.consul_oss_server_three.ip_address}"],
-    dns_search = ["consul"],
+    service_tags = "vaultron"
   }
 }
 
@@ -327,13 +315,9 @@ resource "docker_container" "vault_oss_one" {
     host_path = "${path.module}/vault/oss_one/config"
     container_path = "/vault/config"
   }
-  #
-  # TODO: We can do DNS things later...
-  #
-  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
-  # dns_search = ["consul"]
-  #
-  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
+  dns_search = ["consul"]
   capabilities {
     add = ["IPC_LOCK"]
   }
@@ -363,13 +347,9 @@ resource "docker_container" "vault_oss_two" {
     host_path = "${path.module}/vault/oss_two/config"
     container_path = "/vault/config"
   }
-  #
-  # TODO: We can do DNS things later...
-  #
-  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
-  # dns_search = ["consul"]
-  #
-  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
+  dns_search = ["consul"]
   capabilities {
     add = ["IPC_LOCK"]
   }
@@ -399,13 +379,9 @@ resource "docker_container" "vault_oss_three" {
     host_path = "${path.module}/vault/oss_three/config"
     container_path = "/vault/config"
   }
-  #
-  # TODO: We can do DNS things later...
-  #
-  # dns = ["${docker_container.consul_oss_server_one.ip_address}"]
-  # dns_search = ["consul"]
-  #
-  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"],
+  dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
+  dns_search = ["consul"]
   capabilities {
     add = ["IPC_LOCK"]
   }
@@ -415,8 +391,4 @@ resource "docker_container" "vault_oss_three" {
     external = "8202"
     protocol = "tcp"
   }
-}
-
-resource "docker_image" "vault" {
-  name = "vault"
 }
