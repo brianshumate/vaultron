@@ -44,8 +44,8 @@ your own Vaultron:
 ### What's Next?
 
 If you are new to Vault, then using Vaultron is a nice way to get quickly
-acquainted! Be sure to also check out the official Vault
-[Getting Started](https://www.vaultproject.io/intro/getting-started/install.html) documentation as well.
+acquainted! Be sure to also check out the official [Vault
+Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html) as well.
 
 You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing and
 unsealing your Vault.
