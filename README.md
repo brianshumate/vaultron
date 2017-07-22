@@ -39,7 +39,7 @@ your own Vaultron:
 
 1. Clone this repository
 2. `cd vaultron`
-3. `source ./form`
+3. `. ./form`
 
 ### What's Next?
 
@@ -125,7 +125,22 @@ published ports scheme only, so the addresses of the Vault servers are:
 - localhost:8201
 - localhost:8202
 
-When you `source ./form`, `VAULT_ADDR` will be set to `http://localhost:8200`.
+> NOTE: When you source the `./form` script, it sets `VAULT_ADDR` to `http://localhost:8200` by default.
+
+### Access Control Lists and Transport Layer Security
+
+Given the intended use cases for this project, the working solution is
+essentially a blank canvas, so there are no in-depth changes to configuration
+from the perspective of Consul ACLs, end-to-end TLS, and so on.
+
+Those kinds of changes are left to configuration as developed by the user for
+their own specific use cases.
+
+That said, here are some resources for configuring those sorts of things:
+
+- [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
+- [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
+- [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
 
 ### Where's the Data?
 
