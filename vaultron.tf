@@ -59,6 +59,7 @@ resource "docker_container" "consul_oss_server_one" {
              "-recursor=84.200.69.80",
              "-recursor=84.200.70.40",
              "-data-dir=/consul/data",
+             "-enable-script-checks=true",
              "-dns-port=53",
              "-ui"
              ]
@@ -123,6 +124,7 @@ resource "docker_container" "consul_oss_server_two" {
              "-node=consul_server_2",
              "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
              "-data-dir=/consul/data",
+             "-enable-script-checks=true",
              "-dns-port=53"
              ]
   must_run = true
@@ -144,6 +146,7 @@ resource "docker_container" "consul_oss_server_three" {
                 "-node=consul_server_3",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
                 "-data-dir=/consul/data",
+                "-enable-script-checks=true",
                 "-dns-port=53"
                 ]
   must_run = true
@@ -164,7 +167,8 @@ resource "docker_container" "consul_oss_client_one" {
                 "-client=0.0.0.0",
                 "-node=consul_client_1",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-                "-data-dir=/consul/data"
+                "-data-dir=/consul/data",
+                "-enable-script-checks=true",
                 ],
   dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
@@ -186,7 +190,8 @@ resource "docker_container" "consul_oss_client_two" {
                 "-client=0.0.0.0",
                 "-node=consul_client_2",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-                "-data-dir=/consul/data"
+                "-data-dir=/consul/data",
+                "-enable-script-checks=true",
                 ],
   dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
@@ -208,7 +213,8 @@ resource "docker_container" "consul_oss_client_three" {
                 "-client=0.0.0.0",
                 "-node=consul_client_3",
                 "-retry-join=${docker_container.consul_oss_server_one.ip_address}",
-                "-data-dir=/consul/data"
+                "-data-dir=/consul/data",
+                "-enable-script-checks=true",
                 ],
   dns = ["${docker_container.consul_oss_server_one.ip_address}", "${docker_container.consul_oss_server_two.ip_address}", "${docker_container.consul_oss_server_three.ip_address}"],
   dns_search = ["consul"],
