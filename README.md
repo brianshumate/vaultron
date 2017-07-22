@@ -60,8 +60,11 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 4. Use the `vault` CLI on your Mac to interact with your new Vault servers
 5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-7. When done having fun, disassemble Vaultron with `./unform`
- - NOTE: **`./unform` removes the existing Vault data — be careful!**
+7. When done having fun, disassemble Vaultron and clean up with `./unform`
+
+<Warning>
+**NOTE: `./unform` removes the existing Vault data — be careful!**
+</Warning>
 
 If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
