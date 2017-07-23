@@ -254,7 +254,7 @@ Instead of seeing the glorious interlocks activated, dyna-therms connected,
 infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
 
 ```
-🚫  Vaultron cannot form! Check terraform plan output.
+🚫  Vaultron cannot form! Check terraform apply output.
 ```
 
 or this:
