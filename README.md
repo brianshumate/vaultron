@@ -143,9 +143,7 @@ essentially a blank canvas, so there are no in-depth changes to configuration
 from the perspective of Consul ACLs, end-to-end TLS, and so on.
 
 Those kinds of changes are left to configuration as developed by the user for
-their own specific use cases.
-
-That said, here are some resources for configuring those sorts of things:
+their own specific use cases. That said, here are some resources for configuring those sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
@@ -154,8 +152,9 @@ That said, here are some resources for configuring those sorts of things:
 ### Where are the Data?
 
 Vault data is kept in Consul's key/value store, which in turn is written into
-the `consul/oss_*/data` directory for each of the three Consul servers. Here
-is the tree showing the directory structure for a Consul client and server:
+the `consul/oss_server_*/data` directories for each of the three Consul
+servers. Here is the tree showing the directory structure for both a Consul
+client and server:
 
 ```
 └── consul
@@ -199,11 +198,11 @@ You can view operational logs for any container with `docker logs` like so:
 docker logs vault_oss_server_1
 ```
 
-The Vault audit logs for each server are available as:
+The Vault audit logs for each _active server_ are available as:
 
-- `./vault/oss_one/audit_log/audit.log`
-- `./vault/oss_two/audit_log/audit.log`
-- `./vault/oss_three/audit_log/audit.log`
+- `./vault/vault_oss_server_1/audit_log/audit.log`
+- `./vault/vault_oss_server_2/audit_log/audit.log`
+- `./vault/vault_oss_server_3/audit_log/audit.log`
 
 ## Basic Troubleshooting Questions
 
@@ -245,17 +244,39 @@ Terminal 1                              Terminal 2
    the second standby Vault is elected the new active, the value of `Mode:`
    will also reflect that instantly as well
 
+### Vaultron Does Not Form, Halp!
+
+Instead of seeing the glorious interlocks activated, dyna-therms connected,
+infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
+
+```
+🚫  Vaultron cannot form! Check terraform plan output.
+```
+
+or this:
+
+```
+🚫  Vaultron cannot form! Check terraform plan output.
+```
+
+This means that Vaultron had problems durring the `terraform plan` or
+`terraform apply` steps. You can run those commands manually and inspect their
+output to troublshoot the issue.
+
 ## Resources
 
 Here are some links to the websites for technologies used in this project:
 
 1. [Vault Docker repository](https://hub.docker.com/_/vault/)
-3. [Consul Docker repository](https://hub.docker.com/_/consul/)
-3. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
-4. [Terraform](https://www.terraform.io/)
-5. [Consul](https://www.consul.io/)
-6. [Vault](https://www.vaultproject.io/)
-7. [Docker for Mac](https://www.docker.com/docker-mac)
+2. [Consul Docker repository](https://hub.docker.com/_/consul/)
+3. [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
+4. [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
+5. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
+6. [Terraform](https://www.terraform.io/)
+7. [Consul](https://www.consul.io/)
+8. [Vault](https://www.vaultproject.io/)
+9. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
+10. [Docker for Mac](https://www.docker.com/docker-mac)
 
 ## Who?
 

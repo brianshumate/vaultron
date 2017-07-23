@@ -19,8 +19,8 @@ if _plan; then
     if _apply; then
         echo "🤖  Vaultron formed!"
     else
-        echo "🚫  Vaultron cannot form! Check terraform plan/apply output."
+        echo "🚫  Vaultron cannot form! Check `terraform apply` output."
     fi
 else
-    echo "🚫  Vaultron cannot form! Check terraform plan/apply output."
+    echo "🚫  Vaultron cannot form! Check `terraform plan` output."
 fi

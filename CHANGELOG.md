@@ -61,3 +61,5 @@
 
 - Update form script
 - Update Consul client configuration to match architectural diagram
+- Improve form error output
+- Update documentation
