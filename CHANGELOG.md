@@ -62,4 +62,6 @@
 - Update form script
 - Update Consul client configuration to match architectural diagram
 - Improve form error output
+- Switch from notion of "extra configuration" to "common configuration"
+  and limit items pulled in to breaking change diffs between versions
 - Update documentation

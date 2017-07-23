@@ -17,9 +17,10 @@
 ## What?
 
 Vaultron is a toy project that uses [Terraform](https://www.terraform.io/)
-to build a tiny cluster of [Consul](https://www.consul.io/) backed
-[Vault](https://www.vaultproject.io/) servers for development, evaluation,
-and issue reproduction on [Docker for Mac](https://www.docker.com/docker-mac).
+to build a tiny cluster of [Consul](https://www.consul.io/) backed highly
+available [Vault](https://www.vaultproject.io/) servers for development,
+evaluation, and issue reproduction on
+[Docker for Mac](https://www.docker.com/docker-mac).
 
 ## Why?
 
