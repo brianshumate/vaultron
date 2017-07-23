@@ -29,24 +29,25 @@ A reasonably cool and useful Vault environment on macOS in about 60 seconds...
 ## How?
 
 Terraform assembles individual pieces to form Vaultron from the official
-[Consul Docker image](https://hub.docker.com/_/consul/) and
-[Vault Docker image](https://hub.docker.com/_/vault/).
+[Vault Docker image](https://hub.docker.com/_/vault/) and
+[Consul Docker image](https://hub.docker.com/_/consul/).
 
 ### Quick Start
 
 Make sure that you have first installed the macOS binaries for Consul, Vault,
-Terraform, and Docker for Mac. After doing so, it's just 3 steps to forming
-your own Vaultron:
+Terraform, and Docker for Mac.
 
-1. Clone this repository
+After doing so, it's just 3 steps to forming your own Vaultron:
+
+1. `git clone https://github.com/brianshumate/vaultron.git`
 2. `cd vaultron`
 3. `. ./form`
 
 ### What's Next?
 
 If you are new to Vault, then using Vaultron is a nice way to get quickly
-acquainted! Be sure to also check out the official [Vault
-Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html) as well.
+acquainted! Please begin by checking out the official [Vault
+Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html).
 
 You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing and
 unsealing your Vault.
@@ -93,6 +94,22 @@ export VAULT_ADDR="http://localhost:8200"
 ```
 
 ## What's in the Box?
+
+Vaultron technical specifications quick reference card:
+
+```
+Name:          Vaultron
+Type:          Secret Management Unit V (using latest Vault software)
+Builder:       Terraform
+Blueprints:    vaultron.tf
+Datacenter:    arus
+Infra-cell:    Distributed network storage cell (using latest Consul software)
+Universe:      Docker for Mac
+Agility:       ★★★★
+Damage:        ★★★
+Mass:          ★★
+Speed:         ★★★★★
+```
 
 Here are some notes and questions about what Vaultron is and how it works.
 
