@@ -77,6 +77,10 @@ If you are already familiar with Vault and would like to save time by
 rapidly initializing, unsealing, and enabling a wide range of authentication
 and secret backends, execute `./blazing_sword` to do all of this for you.
 
+**NOTE**: This will persist the unseal keys and initial root authentication
+token in a file in the `vault` directory named like
+`./vault/vault_1500766014.tmp`.
+
 If you are familiar with Terraform you also can skip the `form` and `unform`
 commands and just use Terraform commands instead, but you'll need to manually
 specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables
