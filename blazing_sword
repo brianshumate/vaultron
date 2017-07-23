@@ -27,7 +27,7 @@ _logmsg() {
     msgtxt="$2"
     case "${msgtype}" in
         greeting)
-            printf "🌊  ${txtylw}${msgtxt}\n"
+            printf "✨  ${txtylw}${msgtxt}\n"
             ;;
         info)
             printf "ℹ️  ${txtblu}${msgtxt}\n"
@@ -211,7 +211,7 @@ if (set -u; : "${1}") 2> /dev/null; then
     _status
     exit 0
 else
-    _logmsg info "✨  Form Blazing Sword! ..."
+    _logmsg greeting "Form Blazing Sword! ..."
 fi
 
 unset VAULT_TOKEN
