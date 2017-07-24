@@ -63,8 +63,14 @@
 - Update Consul client configuration to match architectural diagram
 - Improve form error output
 - Switch from notion of "extra configuration" to "common configuration"
+- Create server common configuration
 - Add initial version-specific common configuration template stubs
 - Have fun with "Technical Specifications" (remember the roots!)
 - Add support for supported Vault docker image versions (0.6.1-CURRENT)
 - Add support for supported Consul docker image versions (0.6.0-CURRENT)
 - Update documentation
+
+## v1.4.2
+
+- Update OSS server common configuration template
+- Move common configuration from entry point to templates

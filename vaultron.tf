@@ -87,6 +87,11 @@ variable "consul_acl_datacenter" {
   default = "arus"
 }
 
+# Set TF_VAR_consul_data_dir to set this
+variable "consul_data_dir" {
+  default = "/consul/data"
+}
+
 #############################################################################
 ## Consul Open Source
 #############################################################################
@@ -106,6 +111,12 @@ data "template_file" "consul_oss_server_common_config" {
   template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
   vars {
     acl_datacenter = "arus"
+    bootstrap_expect = 3
+    datacenter = "${var.datacenter_name}"
+    data_dir = "${var.consul_data_dir}"
+    client = "0.0.0.0"
+    recursor1 = "${var.consul_recursor_1}"
+    recursor2 = "${var.consul_recursor_2}"
     ui = "true"
   }
 }
@@ -132,14 +143,9 @@ resource "docker_container" "consul_oss_server_1" {
   entrypoint = ["consul",
              "agent",
              "-server",
-             "-bootstrap-expect=3",
              "-config-dir=/consul/config",
              "-node=consul_oss_server_1",
              "-client=0.0.0.0",
-             "-recursor=${var.consul_recursor_1}",
-             "-recursor=${var.consul_recursor_2}",
-             "-datacenter=${var.datacenter_name}",
-             "-data-dir=/consul/data",
              "-dns-port=53"
              ]
   must_run = true
@@ -210,11 +216,7 @@ resource "docker_container" "consul_oss_server_2" {
              "-server",
              "-config-dir=/consul/config",
              "-node=consul_oss_server_2",
-             "-recursor=${var.consul_recursor_1}",
-             "-recursor=${var.consul_recursor_2}",
              "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
-             "-datacenter=${var.datacenter_name}",
-             "-data-dir=/consul/data",
              "-dns-port=53"
              ]
   must_run = true
@@ -243,11 +245,7 @@ resource "docker_container" "consul_oss_server_3" {
                 "-server",
                 "-config-dir=/consul/config",
                 "-node=consul_oss_server_3",
-                "-recursor=${var.consul_recursor_1}",
-                "-recursor=${var.consul_recursor_2}",
                 "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
-                "-datacenter=${var.datacenter_name}",
-                "-data-dir=/consul/data",
                 "-dns-port=53"
                 ]
   must_run = true
