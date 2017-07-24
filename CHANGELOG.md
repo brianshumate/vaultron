@@ -91,3 +91,8 @@
 - Add examples directory and initial Vault PKI policy example
 - Add CONTRIBUTING.md
 - Add CONTRIBUTORS.md
+
+## v1.4.5 (UNRELEASED)
+
+- Add error tracking to unform (thanks @fprimex)
+- Update documentation

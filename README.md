@@ -24,7 +24,7 @@ evaluation, and issue reproduction on
 
 ## Why?
 
-A reasonably cool and useful Vault environment on macOS in about 60 seconds...
+A reasonably cool and useful Vault environment on macOS in less than 1 minute
 
 ## How?
 
