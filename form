@@ -7,8 +7,8 @@ cat << 'EOF'
 Now that Vaultron is formed, you can visit the Consul web UI
 at http://localhost:8500
 
-Or you can interact with the Vault and Consul at the command line level by
-first setting the following environment variables as shown:
+Or you can interact with the Vault and Consul at the command line by
+first exporting the following environment variables:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"

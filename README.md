@@ -270,10 +270,27 @@ The Vault audit logs for each _active server_ are available as:
 
 ## Basic Troubleshooting Questions
 
+### I Typed `vault status` and got an Error!
+
+```
+vault status
+Error checking seal status: Get https://127.0.0.1:8200/v1/sys/seal-status: http: server gave HTTP response to HTTPS client
+```
+
+If your Vaultron successfully formed, then tThis is likely due to not
+exporting the environment variables shown at the conclusion of `./form`:
+
+```
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+```
+
+Once you execute the above, you should be good to go!
+
 ### Vault is Orange/Failing in the Consul Web UI
 
-If you have not yet unsealed Vault, it will appear as failing in the Consul
-UI, but simply unsealing it should solve that.
+If you have not yet unsealed Vault, it is expected to appear as failing in
+the Consul UI. Unsealing Vault should solve that.
 
 ### Something Something HA Problem!
 
