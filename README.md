@@ -99,7 +99,7 @@ Vaultron technical specifications quick reference card:
 
 ```
 Name:          Vaultron
-Type:          Secret Management Unit V (deafults to latest Vault software)
+Type:          Secret Management Unit V (defaults to latest Vault software)
 Builder:       Terraform
 Blueprints:    vaultron.tf
 Datacenter:    arus
