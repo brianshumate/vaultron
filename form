@@ -1,7 +1,39 @@
-# VAULTRON FORM!
+#!/usr/bin/env bash
+
+###
+### TerraFORM Vaultron!
+###
+CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+
+CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+
+export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
+export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
+
+_check_consul_version() {
+  if [ ! -z "$TF_VAR_consul_version" ]; then
+    USER_CONSUL_CONFIG="./templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
+    if [ ! -f "$USER_CONSUL_CONFIG" ]; then
+       echo "🚫  Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
+       unset TF_VAR_consul_version
+       kill -INT $$;
+    fi
+  fi
+}
+
+_check_vault_version() {
+  if [ ! -z "$TF_VAR_vault_version" ]; then
+    USER_VAULT_CONFIG="./templates/vault_config_${TF_VAR_vault_version}.tpl";
+    if [ ! -f "$USER_VAULT_CONFIG" ]; then
+       echo "🚫  Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
+       unset TF_VAR_vault_version
+       kill -INT $$;
+    fi
+  fi
+}
 
 _apply() {
     terraform apply -state=./tfstate/terraform.tfstate > /dev/null 2>&1;
@@ -11,7 +43,12 @@ _plan() {
     terraform plan -state=./tfstate/terraform.tfstate > /dev/null 2>&1;
 }
 
+_check_vault_version
+_check_consul_version
+
 echo "✨  Form Vaultron ..."
+echo "✨  Consul version: ${TF_VAR_consul_version}"
+echo "✨  Vault version: ${TF_VAR_vault_version}"
 echo "✨  Set CONSUL_HTTP_ADDR to ${CONSUL_HTTP_ADDR}"
 echo "✨  Set VAULT_ADDR to ${VAULT_ADDR}"
 
@@ -19,8 +56,8 @@ if _plan; then
     if _apply; then
         echo "🤖  Vaultron formed!"
     else
-        echo "🚫  Vaultron cannot form! Check `terraform apply` output."
+        echo "🚫  Vaultron cannot form! Check terraform apply output."
     fi
 else
-    echo "🚫  Vaultron cannot form! Check `terraform plan` output."
+    echo "🚫  Vaultron cannot form! Check terraform plan output."
 fi
