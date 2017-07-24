@@ -323,6 +323,23 @@ Other red and equally frightening errors could occur, and these are usually
 accompanied by an explanation from Terraform regarding the nature of the
 problem.
 
+### Unsupported Versions?
+
+If you try exporting `TF_VAR_consul_version` or `TF_VAR_vault_version` to a
+specific version, but got this error when you attempt to form Vaultron:
+
+```
+🚫  Sorry, Vaultron does not support Consul version: 0.6.4
+```
+
+or:
+
+```
+🚫  Sorry, Vaultron does not support Vault version: 0.6.0
+```
+
+then you are trying to use a version for which no Docker images exists.
+
 ## Resources
 
 Here are some links to the websites for technologies used in this project:
