@@ -162,7 +162,8 @@ published ports scheme only, so the addresses of the Vault servers are:
 ### Changing Vault and Consul Versions
 
 Vaultron runs the `:latest` official Vault container image, but if you would
-prefer a prior version, you can export the `TF_VAR_vault_version` to override:
+prefer a prior version, you can export the `TF_VAR_vault_version` environment
+variable to override:
 
 ```
 export TF_VAR_vault_version=0.6.5

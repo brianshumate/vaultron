@@ -86,3 +86,7 @@
 
 - Disable script checks in 0.9.0 configurations
 - Spruce up scripts
+- Add execute versus source checking to form script (thanks @fprimex)
+- Add examples directory and initial Vault PKI policy example
+- Add CONTRIBUTING.md
+- Add CONTRIBUTORS.md
