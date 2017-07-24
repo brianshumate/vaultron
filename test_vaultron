@@ -1,0 +1,29 @@
+#!/bin/sh
+
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+
+./unform
+if [ 0 -ne $? ]; then
+    echo "🚫  Error unforming any previous Vaultron."
+    exit 1
+fi
+
+./form
+if [ 0 -ne $? ]; then
+    echo "🚫  Error forming Vaultron!"
+    exit 1
+fi
+
+./blazing_sword
+if [ 0 -ne $? ]; then
+    echo "🚫  Error forming Blazing Sword!"
+    exit 1
+fi
+
+./unform
+if [ 0 -ne $? ]; then
+    echo "🚫  Error unforming Vaultron."
+    exit 1
+fi
+
