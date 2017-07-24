@@ -2,8 +2,6 @@
 
 # shellcheck disable=SC2059
 
-set -e
-
 export txtblu="\e[0;34m" # Blue
 export txtgrn="\e[0;32m" # Green
 export txtred="\e[0;31m" # Red
@@ -57,8 +55,8 @@ _check_consul_version() {
     USER_CONSUL_CONFIG="./templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
        echo "🚫  Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
-       unset TF_VAR_consul_version
-       kill -INT $$;
+       unset TF_VAR_consul_version;
+       kill -INT $$
     fi
   fi
 }
@@ -68,8 +66,8 @@ _check_vault_version() {
     USER_VAULT_CONFIG="./templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
        echo "🚫  Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
-       unset TF_VAR_vault_version
-       kill -INT $$;
+       unset TF_VAR_vault_version;
+       kill -INT $$
     fi
   fi
 }

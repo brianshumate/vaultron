@@ -10,8 +10,6 @@
 #
 # shellcheck disable=SC2059
 
-set -e
-
 export txtblu="\e[0;34m" # Blue
 export txtgrn="\e[0;32m" # Green
 export txtred="\e[0;31m" # Red

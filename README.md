@@ -173,7 +173,8 @@ Version: 0.6.5
 ...
 ```
 
-You can do the same to run a different version of the Consul container, too:
+You can do the same to run a different version of the Consul container with
+the `TF_VAR_consul_version` environment variable as well:
 
 ```
 export TF_VAR_consul_version=0.7.5
