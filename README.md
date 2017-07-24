@@ -171,6 +171,25 @@ Version: 0.6.5
 ...
 ```
 
+You can do the same for the Consul container, should you need a different
+version of Consul:
+
+```
+export TF_VAR_consul_version=0.7.5
+. ./form
+consul members
+Node                 Address          Status  Type    Build  Protocol  DC
+consul_oss_client_1  172.17.0.6:8301  alive   client  0.7.5  2         arus
+consul_oss_client_2  172.17.0.7:8301  alive   client  0.7.5  2         arus
+consul_oss_client_3  172.17.0.5:8301  alive   client  0.7.5  2         arus
+consul_oss_server_1  172.17.0.2:8301  alive   server  0.7.5  2         arus
+consul_oss_server_2  172.17.0.3:8301  alive   server  0.7.5  2         arus
+consul_oss_server_3  172.17.0.4:8301  alive   server  0.7.5  2         arus
+```
+
+Note, that you'll of course want to make sure your macOS binary version for
+Consul or Vault matches the one installed into the Docker containers.
+
 ### Access Control Lists and Transport Layer Security
 
 Given the intended use cases for this project, the working solution is
