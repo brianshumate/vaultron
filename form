@@ -2,14 +2,28 @@
 
 # shellcheck disable=SC2059
 
-read -r -d '' EXECUTE_MESSAGE <<'EOF'
+execute_message () {
+cat << 'EOF'
 It appears that you have executed the form script; the preferred
 method is to source it like '. ./form'. If you execute it, you need
-to first manually export the following environment variables:
+to first manually export the following environment variables as shown:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 EOF
+}
+
+if ! awk -v name="form" -v p=$0 'BEGIN{
+        exit substr(p, length(p)-length(name)+1, length(name)) == name
+      }'; then
+    # This script was run instead of sourced, which is fine if required
+    # variables are set correctly.
+    if [ "localhost:8500" != "$CONSUL_HTTP_ADDR" -a \
+         "http://localhost:8200" != "$VAULT_ADDR" ]; then
+        execute_message
+        exit 1
+    fi
+fi
 
 CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
 
