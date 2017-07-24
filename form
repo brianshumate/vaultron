@@ -113,9 +113,12 @@ _logmsg greeting "Set VAULT_ADDR to ${VAULT_ADDR}"
 if _plan; then
     if _apply; then
         _logmsg success "Vaultron formed!"
+        printf "${txtrst}"
     else
         _logmsg alert "Vaultron cannot form! Check terraform apply output."
+        printf "${txtrst}"
     fi
 else
     _logmsg alert "Vaultron cannot form! Check terraform plan output."
+    printf "${txtrst}"
 fi
