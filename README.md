@@ -159,6 +159,8 @@ published ports scheme only, so the addresses of the Vault servers are:
 
 > NOTE: When you source the `./form` script, it sets `VAULT_ADDR` to `http://localhost:8200` by default.
 
+### Changing Vault and Consul Versions
+
 Vaultron runs the `:latest` official Vault container image, but if you would
 prefer a prior version, you can export the `TF_VAR_vault_version` to override:
 
@@ -186,8 +188,9 @@ consul_oss_server_2  172.17.0.3:8301  alive   server  0.7.5  2         arus
 consul_oss_server_3  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
-Note that you'll want to ensure that your macOS binary version for Consul or
-Vault matches the one installed into the Docker containers.
+It's always best practice to use the same versions for the CLI and containers,
+so you'll want to ensure that your macOS binary version for Vault and
+Consul match the ones you specify to run on the Docker containers.
 
 ### Access Control Lists and Transport Layer Security
 
