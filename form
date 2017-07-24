@@ -2,6 +2,23 @@
 
 # shellcheck disable=SC2059
 
+read -r -d '' EXECUTE_MESSAGE <<'EOF'
+It appears that you have executed the form script; the preferred
+method is to source it like '. ./form'. If you execute it, you need
+to first manually export the following environment variables:
+
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+EOF
+
+CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+
+CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+
+export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
+export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
 export txtblu="\e[0;34m" # Blue
 export txtgrn="\e[0;32m" # Green
 export txtred="\e[0;31m" # Red
@@ -40,16 +57,6 @@ _logmsg() {
 ###
 ### TerraFORM Vaultron!
 ###
-CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
-
-CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
-
-export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
-export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
-
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
-
 _check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
