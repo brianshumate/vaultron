@@ -6,7 +6,7 @@
       \ \ \_/ \/\ \L\.\_\ \ \_\ \ \_\ \_\ \ \_\ \ \//\ \L\ \/\ \/\ \
        \ `\___/\ \__/.\_\\ \____/ /\____\\ \__\\ \_\\ \____/\ \_\ \_\
         `\/__/  \/__/\/_/ \/___/  \/____/ \/__/ \/_/ \/___/  \/_/\/_/
-
+          ================================--------------------• • • •
 
 > From days of long ago, from uncharted regions of the universe, comes a
 > legend; the legend of Voltron, Defender of the Universe, a mighty robot,
@@ -99,11 +99,11 @@ Vaultron technical specifications quick reference card:
 
 ```
 Name:          Vaultron
-Type:          Secret Management Unit V (using latest Vault software)
+Type:          Secret Management Unit V (deafults to latest Vault software)
 Builder:       Terraform
 Blueprints:    vaultron.tf
 Datacenter:    arus
-Infra-cell:    Distributed network storage cell (using latest Consul software)
+Infra-cell:    Distributed storage cell (defaults to latest Consul software)
 Universe:      Docker for Mac
 Agility:       ★★★★
 Damage:        ★★★
@@ -111,7 +111,8 @@ Mass:          ★★
 Speed:         ★★★★★
 ```
 
-Here are some notes and questions about what Vaultron is and how it works.
+Here are some slightly more serious notes and questions about what Vaultron
+is and how it can work for you.
 
 ### Basic Architecture Overview
 
@@ -157,6 +158,18 @@ published ports scheme only, so the addresses of the Vault servers are:
 - localhost:8202
 
 > NOTE: When you source the `./form` script, it sets `VAULT_ADDR` to `http://localhost:8200` by default.
+
+Vaultron runs the `:latest` official Vault container image, but if you would
+prefer a prior version, you can export the `TF_VAR_vault_version` to override:
+
+```
+export TF_VAR_vault_version=0.6.5
+. ./form
+./blazing_sword
+...
+Version: 0.6.5
+...
+```
 
 ### Access Control Lists and Transport Layer Security
 
@@ -284,6 +297,10 @@ or this:
 This means that Vaultron had problems durring the `terraform plan` or
 `terraform apply` steps. You can run those commands manually and inspect their
 output to troublshoot the issue.
+
+Other red and equally frightening errors could occur, and these are usually
+accompanied by an explanation from Terraform regarding the nature of the
+problem.
 
 ## Resources
 

@@ -106,6 +106,7 @@ data "template_file" "consul_oss_server_common_config" {
   template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
   vars {
     acl_datacenter = "arus"
+    ui = "true"
   }
 }
 
@@ -118,7 +119,7 @@ resource "docker_container" "consul_oss_server_1" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_server_1/config"
@@ -132,14 +133,14 @@ resource "docker_container" "consul_oss_server_1" {
              "agent",
              "-server",
              "-bootstrap-expect=3",
+             "-config-dir=/consul/config",
              "-node=consul_oss_server_1",
              "-client=0.0.0.0",
              "-recursor=${var.consul_recursor_1}",
              "-recursor=${var.consul_recursor_2}",
              "-datacenter=${var.datacenter_name}",
              "-data-dir=/consul/data",
-             "-dns-port=53",
-             "-ui"
+             "-dns-port=53"
              ]
   must_run = true
   # Define some published ports here for the purpose of connecting into
@@ -194,7 +195,7 @@ resource "docker_container" "consul_oss_server_2" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_server_2/config"
@@ -207,6 +208,7 @@ resource "docker_container" "consul_oss_server_2" {
   entrypoint = ["consul",
              "agent",
              "-server",
+             "-config-dir=/consul/config",
              "-node=consul_oss_server_2",
              "-recursor=${var.consul_recursor_1}",
              "-recursor=${var.consul_recursor_2}",
@@ -226,7 +228,7 @@ resource "docker_container" "consul_oss_server_3" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_server_3/config"
@@ -239,6 +241,7 @@ resource "docker_container" "consul_oss_server_3" {
   entrypoint = ["consul",
                 "agent",
                 "-server",
+                "-config-dir=/consul/config",
                 "-node=consul_oss_server_3",
                 "-recursor=${var.consul_recursor_1}",
                 "-recursor=${var.consul_recursor_2}",
@@ -268,7 +271,7 @@ resource "docker_container" "consul_oss_client_1" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_client_1/config"
@@ -280,6 +283,7 @@ resource "docker_container" "consul_oss_client_1" {
   }
   entrypoint = ["consul",
                 "agent",
+                "-config-dir=/consul/config",
                 "-client=0.0.0.0",
                 "-node=consul_oss_client_1",
                 "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
@@ -299,7 +303,7 @@ resource "docker_container" "consul_oss_client_2" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_client_2/config"
@@ -311,6 +315,7 @@ resource "docker_container" "consul_oss_client_2" {
   }
   entrypoint = ["consul",
                 "agent",
+                "-config-dir=/consul/config",
                 "-client=0.0.0.0",
                 "-node=consul_oss_client_2",
                 "-retry-join=${docker_container.consul_oss_server_2.ip_address}",
@@ -330,7 +335,7 @@ resource "docker_container" "consul_oss_client_3" {
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.hcl"
+    file = "/consul/config/common_config.json"
   }
   volumes {
     host_path = "${path.module}/consul/consul_oss_client_3/config"
@@ -342,6 +347,7 @@ resource "docker_container" "consul_oss_client_3" {
   }
   entrypoint = ["consul",
                 "agent",
+                "-config-dir=/consul/config",
                 "-client=0.0.0.0",
                 "-node=consul_oss_client_3",
                 "-retry-join=${docker_container.consul_oss_server_3.ip_address}",

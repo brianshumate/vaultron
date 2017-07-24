@@ -57,11 +57,14 @@
 - Update documentation
 - Update ignores
 
-## v1.4.1 (UNRELEASED)
+## v1.4.1
 
 - Update form script
 - Update Consul client configuration to match architectural diagram
 - Improve form error output
 - Switch from notion of "extra configuration" to "common configuration"
-  and limit items pulled in to breaking change diffs between versions
+- Add initial version-specific common configuration template stubs
+- Have fun with "Technical Specifications" (remember the roots!)
+- Add support for supported Vault docker image versions (0.6.1-CURRENT)
+- Add support for supported Consul docker image versions (0.6.0-CURRENT)
 - Update documentation

@@ -97,8 +97,10 @@ _enable_auth_backends() {
     _logmsg success "Enabled App ID authentication backend!"
     vault auth-enable approle > /dev/null 2>&1
     _logmsg success "Enabled AppRole authentication backend!"
-    vault auth-enable aws > /dev/null 2>&1
-    _logmsg success "Enabled AWS authentication backend!"
+    # TODO:
+    # This needs to be conditionally added based on installed Vault version
+    #vault auth-enable aws > /dev/null 2>&1
+    #_logmsg success "Enabled AWS authentication backend!"
     vault auth-enable ldap > /dev/null 2>&1
     _logmsg success "Enabled LDAP authentication backend!"
     vault auth-enable userpass > /dev/null 2>&1
