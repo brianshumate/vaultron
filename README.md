@@ -195,17 +195,18 @@ Consul match the ones you specify to run on the Docker containers.
 ### Access Control Lists and Transport Layer Security
 
 Given the intended use cases for this project, the working solution is
-essentially a blank canvas, so there are no in-depth changes to configuration
-from the perspective of Consul ACLs, end-to-end TLS, and so on.
+essentially a blank canvas and there are no in-depth changes to configuration
+from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc.
 
 Those kinds of changes are left to configuration as developed by the user for
-their own specific use cases. That said, here are some resources for configuring those sorts of things:
+their own specific use cases. That said, here are some resources to help you
+in configuring those sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
 
-### Where are the Data?
+### Where's My Vault Data?
 
 Vault data is kept in Consul's key/value store, which in turn is written into
 the `consul/oss_server_*/data` directories for each of the three Consul
@@ -300,7 +301,7 @@ Terminal 1                              Terminal 2
    the second standby Vault is elected the new active, the value of `Mode:`
    will also reflect that instantly as well
 
-### Vaultron Does Not Form, Halp!
+### Vaultron Does Not Form — Halp!
 
 Instead of seeing the glorious interlocks activated, dyna-therms connected,
 infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
@@ -326,7 +327,7 @@ problem.
 ### Unsupported Versions?
 
 If you try exporting `TF_VAR_consul_version` or `TF_VAR_vault_version` to a
-specific version, but got this error when you attempt to form Vaultron:
+specific version, but get this error when you attempt to form Vaultron:
 
 ```
 🚫  Sorry, Vaultron does not support Consul version: 0.6.4
@@ -338,7 +339,10 @@ or:
 🚫  Sorry, Vaultron does not support Vault version: 0.6.0
 ```
 
-then you are trying to use a version for which no Docker images exists.
+You are specifying either a non-existent version (maybe a typo?) or you are
+specifying a version for which no Docker images exists. This second case is
+not a problem with Vaultron, there are some versions which were released as
+binaries, but not Docker images.
 
 ## Resources
 

@@ -75,8 +75,9 @@
 - Update OSS server common configuration template
 - Move common configuration from entry point to templates
 
-## v1.4.3 (UNRELEASED)
+## v1.4.3
 
 - Reduce range of acceptable Consul versions to those actually published
   to DockerHub (0.7.0-CURRENT)
 - Remove templates for invalid Consul versions
+- Update documentation
