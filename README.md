@@ -171,8 +171,7 @@ Version: 0.6.5
 ...
 ```
 
-You can do the same for the Consul container, should you need a different
-version of Consul:
+You can do the same to run a different version of the Consul container, too:
 
 ```
 export TF_VAR_consul_version=0.7.5
@@ -187,8 +186,8 @@ consul_oss_server_2  172.17.0.3:8301  alive   server  0.7.5  2         arus
 consul_oss_server_3  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
-Note, that you'll of course want to make sure your macOS binary version for
-Consul or Vault matches the one installed into the Docker containers.
+Note that you'll want to ensure that your macOS binary version for Consul or
+Vault matches the one installed into the Docker containers.
 
 ### Access Control Lists and Transport Layer Security
 
