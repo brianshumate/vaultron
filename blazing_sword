@@ -39,7 +39,7 @@ _logmsg() {
             printf "✴️  ${txtylw}${msgtxt}\n"
             ;;
         alert)
-            printf "⛔️  ${txtred}${msgtxt}\n" >&2
+            printf "🚫  ${txtred}${msgtxt}\n" >&2
             ;;
         *)
             printf "⁉️  ${txtwht}${msgtxt}\n" >&2

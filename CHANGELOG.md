@@ -81,3 +81,8 @@
   to DockerHub (0.7.0-CURRENT)
 - Remove templates for invalid Consul versions
 - Update documentation
+
+## v1.4.4 (UNRELEASED)
+
+- Disable script checks in 0.9.0 configurations
+- Spruce up scripts

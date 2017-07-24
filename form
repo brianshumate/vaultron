@@ -1,5 +1,44 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2059
+
+set -e
+
+export txtblu="\e[0;34m" # Blue
+export txtgrn="\e[0;32m" # Green
+export txtred="\e[0;31m" # Red
+export txtylw="\e[0;33m" # Yellow
+export txtwht="\e[0;37m" # White
+export txtrst="\e[0m"    # Text Reset
+
+###
+### Log stuff
+###
+_logmsg() {
+    msgtype="$1"
+    msgtxt="$2"
+    case "${msgtype}" in
+        greeting)
+            printf "✨  ${txtylw}${msgtxt}\n"
+            ;;
+        info)
+            printf "ℹ️  ${txtblu}${msgtxt}\n"
+            ;;
+        success)
+            printf "🤖  ${txtgrn}${msgtxt}\n"
+            ;;
+        notice)
+            printf "✴️  ${txtylw}${msgtxt}\n"
+            ;;
+        alert)
+            printf "🚫  ${txtred}${msgtxt}\n" >&2
+            ;;
+        *)
+            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
+            ;;
+    esac
+}
+
 ###
 ### TerraFORM Vaultron!
 ###
@@ -46,18 +85,18 @@ _plan() {
 _check_vault_version
 _check_consul_version
 
-echo "✨  Form Vaultron ..."
-echo "✨  Consul version: ${TF_VAR_consul_version}"
-echo "✨  Vault version: ${TF_VAR_vault_version}"
-echo "✨  Set CONSUL_HTTP_ADDR to ${CONSUL_HTTP_ADDR}"
-echo "✨  Set VAULT_ADDR to ${VAULT_ADDR}"
+_logmsg greeting "Form Vaultron! ..."
+_logmsg greeting "Consul version: ${TF_VAR_consul_version}"
+_logmsg greeting "Vault version: ${TF_VAR_vault_version}"
+_logmsg greeting "Set CONSUL_HTTP_ADDR to ${CONSUL_HTTP_ADDR}"
+_logmsg greeting "Set VAULT_ADDR to ${VAULT_ADDR}"
 
 if _plan; then
     if _apply; then
-        echo "🤖  Vaultron formed!"
+        _logmsg success "Vaultron formed!"
     else
-        echo "🚫  Vaultron cannot form! Check terraform apply output."
+        _logmsg alert "Vaultron cannot form! Check terraform apply output."
     fi
 else
-    echo "🚫  Vaultron cannot form! Check terraform plan output."
+    _logmsg alert "Vaultron cannot form! Check terraform plan output."
 fi
