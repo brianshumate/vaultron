@@ -41,7 +41,12 @@ After doing so, it's just 3 steps to forming your own Vaultron:
 
 1. `git clone https://github.com/brianshumate/vaultron.git`
 2. `cd vaultron`
-3. `. ./form`
+3. `./form`
+
+Note the completion message about setting important environment variables
+before executing the `vault` and `consul` CLI commands. You'll want to set
+those environment variables in your shell before trying to use the CLI tools
+with Vaultron.
 
 ### What's Next?
 
@@ -167,7 +172,7 @@ variable to override:
 
 ```
 export TF_VAR_vault_version=0.6.5
-. ./form
+./form
 ./blazing_sword
 ...
 Version: 0.6.5
@@ -179,7 +184,7 @@ the `TF_VAR_consul_version` environment variable as well:
 
 ```
 export TF_VAR_consul_version=0.7.5
-. ./form
+./form
 consul members
 Node                 Address          Status  Type    Build  Protocol  DC
 consul_oss_client_1  172.17.0.6:8301  alive   client  0.7.5  2         arus

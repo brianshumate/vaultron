@@ -2,28 +2,21 @@
 
 # shellcheck disable=SC2059
 
-execute_message () {
+_form_message () {
 cat << 'EOF'
-It appears that you have executed the form script; the preferred
-method is to source it like '. ./form'. If you execute it, you need
-to first manually export the following environment variables as shown:
+Now that Vaultron is formed, you can visit the Consul web UI
+at http://localhost:8500
+
+Or you can interact with the Vault and Consul at the command line level by
+first setting the following environment variables as shown:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
+
+Then you can use the vault and consul commands as needed.
 EOF
 }
 
-if ! awk -v name="form" -v p=$0 'BEGIN{
-        exit substr(p, length(p)-length(name)+1, length(name)) == name
-      }'; then
-    # This script was run instead of sourced, which is fine if required
-    # variables are set correctly.
-    if [ "localhost:8500" != "$CONSUL_HTTP_ADDR" -a \
-         "http://localhost:8200" != "$VAULT_ADDR" ]; then
-        execute_message
-        exit 1
-    fi
-fi
 
 CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
 
@@ -31,8 +24,7 @@ CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '
 
 export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+
 export txtblu="\e[0;34m" # Blue
 export txtgrn="\e[0;32m" # Green
 export txtred="\e[0;31m" # Red
@@ -107,13 +99,12 @@ _check_consul_version
 _logmsg greeting "Form Vaultron! ..."
 _logmsg greeting "Consul version: ${TF_VAR_consul_version}"
 _logmsg greeting "Vault version: ${TF_VAR_vault_version}"
-_logmsg greeting "Set CONSUL_HTTP_ADDR to ${CONSUL_HTTP_ADDR}"
-_logmsg greeting "Set VAULT_ADDR to ${VAULT_ADDR}"
 
 if _plan; then
     if _apply; then
         _logmsg success "Vaultron formed!"
         printf "${txtrst}"
+        _form_message
     else
         _logmsg alert "Vaultron cannot form! Check terraform apply output."
         printf "${txtrst}"

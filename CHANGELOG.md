@@ -82,11 +82,12 @@
 - Remove templates for invalid Consul versions
 - Update documentation
 
-## v1.4.4 (UNRELEASED)
+## v1.4.4
 
 - Disable script checks in 0.9.0 configurations
 - Spruce up scripts
 - Add execute versus source checking to form script (thanks @fprimex)
+- Drop to executing form instead of sourcing and prompt user to set env vars
 - Add examples directory and initial Vault PKI policy example
 - Add CONTRIBUTING.md
 - Add CONTRIBUTORS.md
