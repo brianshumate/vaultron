@@ -315,7 +315,7 @@ or this:
 
 This means that Vaultron had problems durring the `terraform plan` or
 `terraform apply` steps. You can run those commands manually and inspect their
-output to troublshoot the issue.
+output to troubleshoot the issue.
 
 Other red and equally frightening errors could occur, and these are usually
 accompanied by an explanation from Terraform regarding the nature of the
