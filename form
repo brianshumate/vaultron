@@ -18,9 +18,9 @@ EOF
 }
 
 
-CURRENT_CONSUL_VERSION="$(grep 'variable "consul_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
 
-CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '/default/ { print $3; }' | sed 's/\"//g')"
+CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
 
 export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
