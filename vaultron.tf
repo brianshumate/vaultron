@@ -105,7 +105,7 @@ resource "docker_image" "consul" {
 }
 
 ###
-### Consul Open Source server extra configuration
+### Consul Open Source server common configuration
 ###
 data "template_file" "consul_oss_server_common_config" {
   template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
@@ -252,7 +252,7 @@ resource "docker_container" "consul_oss_server_3" {
 }
 
 ###
-### Consul Open Source client extra configuration
+### Consul Open Source client common configuration
 ###
 data "template_file" "consul_oss_client_common_config" {
   template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
