@@ -99,4 +99,6 @@
 - Use terraform console to get config values (thanks @fprimex)
 - Start a testing script (thanks @fprimex)
 - Verified working in both Linux and Docker for Mac environments
+- Log Terraform operations, store and use plan (thanks @fprimex)
+- Move common things to Skydome, fixes to state handling (thanks @fprimex)
 - Update documentation
