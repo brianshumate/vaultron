@@ -2,6 +2,8 @@
 
 # shellcheck disable=SC2059
 
+. ./skydome
+
 _form_message () {
 cat << 'EOF'
 Now that Vaultron is formed, you can visit the Consul web UI
@@ -15,49 +17,6 @@ export VAULT_ADDR="http://localhost:8200"
 
 Then you can use the vault and consul commands as needed.
 EOF
-}
-
-
-CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
-
-CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
-
-export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
-export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
-
-export txtblu="\033[0;34m" # Blue
-export txtgrn="\033[0;32m" # Green
-export txtred="\033[0;31m" # Red
-export txtylw="\033[0;33m" # Yellow
-export txtwht="\033[0;37m" # White
-export txtrst="\033[0m"    # Text Reset
-
-###
-### Log stuff
-###
-_logmsg() {
-    msgtype="$1"
-    msgtxt="$2"
-    case "${msgtype}" in
-        greeting)
-            printf "✨  ${txtylw}${msgtxt}\n"
-            ;;
-        info)
-            printf "ℹ️  ${txtblu}${msgtxt}\n"
-            ;;
-        success)
-            printf "🤖  ${txtgrn}${msgtxt}\n"
-            ;;
-        notice)
-            printf "✴️  ${txtylw}${msgtxt}\n"
-            ;;
-        alert)
-            printf "🚫  ${txtred}${msgtxt}\n" >&2
-            ;;
-        *)
-            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
-            ;;
-    esac
 }
 
 ###
@@ -85,57 +44,41 @@ _check_vault_version() {
   fi
 }
 
-_tfmsg () {
-    tfmsg_out="$(echo "$1" | awk '{
-           # strip control characters for printing and matching
-           gsub(/\033\[[0-9]+m/,"")
-        }
-        /^(Apply complete|Destroy complete|Plan:)/ {
-            print "greeting"
-            print
-        }
-        /error\(s\) occurred:/ {
-            print "alert"
-            sub(/:/,"")
-            print
-        }')"
+_logmsg greeting "Form Vaultron! ..."
 
-    if [ -n "$tfmsg_out" ]; then
-        _logmsg "$(echo "$tfmsg_out" | head -1)" \
-                "$(echo "$tfmsg_out" | tail -1)"
-    fi
-}
+_init
+if [ 0 -ne $? ]; then
+    _logmsg alert "Vaultron cannot form! Check terraform init output."
+    exit 1
+fi
 
-_apply() {
-    _tfmsg "$(terraform apply $1 2>&1 \
-        | tee ./log/tf-apply-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log)"
-}
+CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
+CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
 
-_plan() {
-    _tfmsg "$(terraform plan -out=$1 -state=./tfstate/terraform.tfstate 2>&1 \
-        | tee ./log/tf-plan-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log)"
-}
+export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
+export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 _check_vault_version
 _check_consul_version
 
-_logmsg greeting "Form Vaultron! ..."
 _logmsg greeting "Consul version: ${TF_VAR_consul_version}"
 _logmsg greeting "Vault version: ${TF_VAR_vault_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
-if _plan $plan_file; then
-    if _apply $plan_file; then
-        rm -f $plan_file
-        _logmsg success "Vaultron formed!"
-        printf "${txtrst}"
-        _form_message
-    else
-        _logmsg alert "Vaultron cannot form! Check terraform apply output."
-        printf "${txtrst}"
-    fi
-else
+_plan $plan_file
+if [ 0 -ne $? ]; then
     _logmsg alert "Vaultron cannot form! Check terraform plan output."
-    printf "${txtrst}"
+    exit 1
 fi
+
+_apply $plan_file
+if [ 0 -ne $? ]; then
+    _logmsg alert "Vaultron cannot form! Check terraform apply output."
+    exit 1
+fi
+
+rm -f $plan_file
+_logmsg success "Vaultron formed!"
+_form_message
+

@@ -1,0 +1,100 @@
+#!/bin/sh
+
+# shellcheck disable=SC2059
+
+txtblu="\033[0;34m" # Blue
+txtgrn="\033[0;32m" # Green
+txtred="\033[0;31m" # Red
+txtylw="\033[0;33m" # Yellow
+txtwht="\033[0;37m" # White
+txtrst="\033[0m"    # Text Reset
+
+###
+### Log stuff
+###
+_logmsg() {
+    msgtype="$1"
+    msgtxt="$2"
+    case "${msgtype}" in
+        greeting)
+            printf "✨  ${txtylw}${msgtxt}\n"
+            ;;
+        info)
+            printf "ℹ️  ${txtblu}${msgtxt}\n"
+            ;;
+        success)
+            printf "🤖  ${txtgrn}${msgtxt}\n"
+            ;;
+        complete)
+            printf "✅  ${txtgrn}${msgtxt}\n"
+            ;;
+        boom)
+            printf "💥  ${txtwht}${msgtxt}\n" >&2
+            ;;
+        notice)
+            printf "✴️  ${txtylw}${msgtxt}\n"
+            ;;
+        alert)
+            printf "🚫  ${txtred}${msgtxt}\n" >&2
+            ;;
+        *)
+            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
+            ;;
+    esac
+    printf "${txtrst}"
+}
+
+_tfmsg() {
+    tfmsg_out="$(echo "$1" | awk '{
+           # strip control characters for printing and matching
+           gsub(/\033\[[0-9]+m/,"")
+        }
+        /^(Apply complete|Destroy complete|Plan:|Terraform.*initialized!)/ {
+            print "greeting"
+            print
+            exit
+        }
+        /^([0-9]+ error\(s\) occurred:|Failed to load backend)/ {
+            print "alert"
+            sub(/:.*/,"")
+            print
+            exit
+        }')"
+
+    if [ -n "$tfmsg_out" ]; then
+        _logmsg "$(echo "$tfmsg_out" | head -1)" \
+                "$(echo "$tfmsg_out" | tail -1)"
+    fi
+}
+
+_init() {
+    tfout="$(terraform init 2>&1)"
+    ret=$?
+    echo "$tfout" > ./log/tf-init-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    _tfmsg "$tfout"
+    return $ret
+}
+
+_apply() {
+    tfout="$(terraform apply $1 2>&1)"
+    ret=$?
+    echo "$tfout" > ./log/tf-apply-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    _tfmsg "$tfout"
+    return $ret
+}
+
+_plan() {
+    tfout="$(terraform plan -out=$1 2>&1)"
+    ret=$?
+    echo "$tfout" > ./log/tf-plan-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    _tfmsg "$tfout"
+    return $ret
+}
+
+_destroy() {
+    tfout="$(terraform destroy -force -state=./tfstate/terraform.tfstate 2>&1)"
+    echo "$tfout" > ./log/tf-destroy-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    _tfmsg "$tfout"
+    return $ret
+}
+

@@ -10,53 +10,18 @@
 #
 # shellcheck disable=SC2059
 
-export txtblu="\033[0;34m" # Blue
-export txtgrn="\033[0;32m" # Green
-export txtred="\033[0;31m" # Red
-export txtylw="\033[0;33m" # Yellow
-export txtwht="\033[0;37m" # White
-export txtrst="\033[0m"    # Text Reset
-
-###
-### Log stuff
-###
-_logmsg() {
-    msgtype="$1"
-    msgtxt="$2"
-    case "${msgtype}" in
-        greeting)
-            printf "✨  ${txtylw}${msgtxt}\n"
-            ;;
-        info)
-            printf "ℹ️  ${txtblu}${msgtxt}\n"
-            ;;
-        success)
-            printf "✅  ${txtgrn}${msgtxt}\n"
-            ;;
-        notice)
-            printf "✴️  ${txtylw}${msgtxt}\n"
-            ;;
-        alert)
-            printf "🚫  ${txtred}${msgtxt}\n" >&2
-            ;;
-        *)
-            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
-            ;;
-    esac
-}
+. ./skydome
 
 ###
 ### Check for the existence of a temporary key material file
 ###
 _check_vault_file() {
-    for file in vault_*.tmp
-        do
-            if [ -e "$file" ];
-                then
-                    _logmsg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
-                    exit 0
-            fi
-        done
+    for file in vault_*.tmp; do
+        if [ -e "$file" ]; then
+            _logmsg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
+            exit 0
+        fi
+    done
 }
 
 ###
@@ -80,7 +45,7 @@ _auth_root() {
 ### Enable audit log
 ###
 _enable_audit_logging() {
-    _logmsg success "Enabled file based audit log at ./vault/logs/audit.log!"
+    _logmsg complete "Enabled file based audit log at ./vault/logs/audit.log!"
     _auth_root
     vault audit-enable file file_path=/vault/logs/audit.log  > /dev/null 2>&1
 }
@@ -92,17 +57,17 @@ _enable_auth_backends() {
     _logmsg info "Enabling Vault authentication backends ..."
     _auth_root
     vault auth-enable app-id > /dev/null 2>&1
-    _logmsg success "Enabled App ID authentication backend!"
+    _logmsg complete "Enabled App ID authentication backend!"
     vault auth-enable approle > /dev/null 2>&1
-    _logmsg success "Enabled AppRole authentication backend!"
+    _logmsg complete "Enabled AppRole authentication backend!"
     # TODO:
     # This needs to be conditionally added based on installed Vault version
     #vault auth-enable aws > /dev/null 2>&1
-    #_logmsg success "Enabled AWS authentication backend!"
+    #_logmsg complete "Enabled AWS authentication backend!"
     vault auth-enable ldap > /dev/null 2>&1
-    _logmsg success "Enabled LDAP authentication backend!"
+    _logmsg complete "Enabled LDAP authentication backend!"
     vault auth-enable userpass > /dev/null 2>&1
-    _logmsg success "Enabled Username & Password authentication backend!"
+    _logmsg complete "Enabled Username & Password authentication backend!"
 }
 
 ###
@@ -132,7 +97,7 @@ _initialize_vault() {
     vault_init_now="$(date)"
     printf "\nGenerated on %s\n" "${vault_init_now}" >> \
            "${vault_dat}"
-    _logmsg success "Vault initialized!"
+    _logmsg complete "Vault initialized!"
 }
 
 ###
@@ -142,19 +107,19 @@ _mount_secret_backends() {
     _logmsg info "Mounting Vault secret backends ..."
     _get_initial_root_token "${vault_dat}"
     vault mount aws > /dev/null 2>&1
-    _logmsg success "Mounted AWS secret backend!"
+    _logmsg complete "Mounted AWS secret backend!"
     vault mount consul > /dev/null 2>&1
-    _logmsg success "Mounted Consul secret backend!"
+    _logmsg complete "Mounted Consul secret backend!"
     vault mount pki > /dev/null 2>&1
-    _logmsg success "Mounted PKI secret backend!"
+    _logmsg complete "Mounted PKI secret backend!"
     vault mount postgresql > /dev/null 2>&1
-    _logmsg success "Mounted PostgreSQL secret backend!"
+    _logmsg complete "Mounted PostgreSQL secret backend!"
     vault mount transit > /dev/null 2>&1
-    _logmsg success "Mounted Transit secret backend!"
+    _logmsg complete "Mounted Transit secret backend!"
     vault mount -path ssh-host-signer ssh > /dev/null 2>&1
-    _logmsg success "Mounted SSH host signer backend!"
+    _logmsg complete "Mounted SSH host signer backend!"
     vault mount -path ssh-client-signer ssh > /dev/null 2>&1
-    _logmsg success "Mounted SSH client signer backend!"
+    _logmsg complete "Mounted SSH client signer backend!"
 }
 
 ###
@@ -162,8 +127,7 @@ _mount_secret_backends() {
 ###
 _status() {
     _logmsg info "Vault status ..."
-    vault status
-    printf "${txtrst}"
+    printf "${txtblu}$(vault status)${txtrst}"
 }
 
 ###
