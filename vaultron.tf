@@ -6,6 +6,12 @@
 ### Global variables
 ###
 
+terraform {
+  backend "local" {
+    path = "tfstate/terraform.tfstate"
+  }
+}
+
 # "This is fine"
 provider "docker" {
   host = "unix:///var/run/docker.sock"

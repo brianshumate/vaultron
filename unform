@@ -1,12 +1,13 @@
 #!/bin/sh
 
-echo "🤖  Unform Vaultron ..."
+. ./skydome
 
-terraform destroy -force -state=./tfstate/terraform.tfstate \
-    > ./log/tf-destroy-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log 2>&1
+_logmsg success "Unform Vaultron ..."
+
+_destroy
 errors=$?
 if [ 0 -ne $errors ]; then
-    echo "🚫   Terraform destroy failed, infrastructure may still exist."
+    _logmsg alter "Terraform destroy failed, infrastructure may still exist."
 fi
 
 ###
@@ -42,15 +43,19 @@ rm -rf ./vault/vault_*.tmp
 errors=$(( $errors + $?))
 
 ###
-### Remove Terraform state
+### Remove Terraform state, plans, and backend configs
 ###
 rm -rf ./tfstate/terraform.tfstate*
 errors=$(( $errors + $?))
+rm -rf ./tfstate/vaultron*.plan
+errors=$(( $errors + $?))
+rm -rf ./.terraform
+errors=$(( $errors + $?))
 
 if [ $errors -gt 0 ]; then
-    echo "💥  Vaultron unformed (with $errors errors)!"
+    _logmsg boom "Vaultron unformed (with $errors errors)!"
 else
-    echo "💥  Vaultron unformed!"
+    _logmsg boom "Vaultron unformed!"
 fi
 
 exit $errors

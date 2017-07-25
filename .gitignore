@@ -7,6 +7,7 @@ consul_oss_server_3
 vault_oss_server_1
 vault_oss_server_2
 vault_oss_server_3
+.terraform
 terraform.tfstate*
 vault*.tmp
 tf-apply*.log
