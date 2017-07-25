@@ -20,11 +20,12 @@ Vaultron is a toy project that uses [Terraform](https://www.terraform.io/)
 to build a tiny cluster of [Consul](https://www.consul.io/) backed highly
 available [Vault](https://www.vaultproject.io/) servers for development,
 evaluation, and issue reproduction on
-[Docker for Mac](https://www.docker.com/docker-mac).
+[Docker](https://www.docker.com/).
 
 ## Why?
 
-A reasonably cool and useful Vault environment on macOS in less than 1 minute
+A reasonably cool and useful Vault environment on your macOS or Linux
+computer in less than 1 minute
 
 ## How?
 
@@ -34,8 +35,8 @@ Terraform assembles individual pieces to form Vaultron from the official
 
 ### Quick Start
 
-Make sure that you have first installed the macOS binaries for Consul, Vault,
-Terraform, and Docker for Mac.
+Make sure that you have first installed the binaries for Consul, Vault,
+Terraform, and Docker for your preferred platform.
 
 After doing so, it's just 3 steps to forming your own Vaultron:
 
@@ -64,11 +65,11 @@ Speaking of which, here are some things you can do after Vaultron is formed:
    when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during
    initialization
-4. Use the `vault` CLI on your Mac to interact with your new Vault servers
+4. Use your local `consul` and `vault` binaries in CLI mdoe to interact with
+   Vault servers
 5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
-
 
 **NOTE: `./unform` REMOVES EVERYTHING including the existing Vault data, logs,
 and Terraform state — be careful!**
@@ -109,7 +110,7 @@ Builder:       Terraform
 Blueprints:    vaultron.tf
 Datacenter:    arus
 Infra-cell:    Distributed storage cell (defaults to latest Consul software)
-Universe:      Docker for Mac
+Universe:      Docker
 Agility:       ★★★★
 Damage:        ★★★
 Mass:          ★★
@@ -121,8 +122,9 @@ is and how it can work for you.
 
 ### Basic Architecture Overview
 
-Vaultron has to work around some quirks of Docker on Mac to do its thing, but
-here is basically what you are getting:
+Note that Vaultron has to work around some current quirks of Docker for Mac
+to do its thing, and is only currently tested on Linux and macOS, but here is
+basically what you are getting:
 
 ```
 +---------------+   +---------------+   +---------------+
@@ -155,7 +157,7 @@ containers, and three Consul server containers. Vault servers connect
 directly to the Consul clients, and the Consul clients connect to the
 Consul server cluster.
 
-Note that each Vault instance is available to the Mac locally, but via
+Note that each Vault instance is available to the local computer, but via
 published ports scheme only, so the addresses of the Vault servers are:
 
 - localhost:8200
@@ -381,8 +383,10 @@ Here are some links to the websites for technologies used in this project:
 7. [Consul](https://www.consul.io/)
 8. [Vault](https://www.vaultproject.io/)
 9. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
-10. [Docker for Mac](https://www.docker.com/docker-mac)
+10. [Docker](https://www.docker.com/)
 
 ## Who?
 
-- [Brian Shumate](http://brianshumate.com/)
+Valtron was created by [Brian Shumate](https://github.com/brianshumate)
+and made possible through the generous time of the good people named in
+[CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)

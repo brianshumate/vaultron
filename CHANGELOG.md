@@ -95,7 +95,8 @@
 ## v1.4.5 (UNRELEASED)
 
 - Add error tracking to unform (thanks @fprimex)
-  0c0d5d8 POSIX changes that make dash happy (thanks @fprimex)
-  35e38ad use terraform console to get config values (thanks @fprimex)
-  be7f17b start a testing script (thanks @fprimex)
+- POSIX changes that make dash happy (thanks @fprimex)
+- Use terraform console to get config values (thanks @fprimex)
+- Start a testing script (thanks @fprimex)
+- Verified working in both Linux and Docker for Mac environments
 - Update documentation
