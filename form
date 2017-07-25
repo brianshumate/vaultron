@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # shellcheck disable=SC2059
 
@@ -25,12 +25,12 @@ CURRENT_VAULT_VERSION="$(grep 'variable "vault_version"' -A2 vaultron.tf | awk '
 export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
-export txtblu="\e[0;34m" # Blue
-export txtgrn="\e[0;32m" # Green
-export txtred="\e[0;31m" # Red
-export txtylw="\e[0;33m" # Yellow
-export txtwht="\e[0;37m" # White
-export txtrst="\e[0m"    # Text Reset
+export txtblu="\033[0;34m" # Blue
+export txtgrn="\033[0;32m" # Green
+export txtred="\033[0;31m" # Red
+export txtylw="\033[0;33m" # Yellow
+export txtwht="\033[0;37m" # White
+export txtrst="\033[0m"    # Text Reset
 
 ###
 ### Log stuff
