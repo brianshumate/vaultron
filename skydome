@@ -78,7 +78,7 @@ _tfmsg() {
 _init() {
     tfout="$(terraform init 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-init-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-init.log
     _tfmsg "$tfout"
     return $ret
 }
@@ -86,7 +86,7 @@ _init() {
 _apply() {
     tfout="$(terraform apply $1 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-apply-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-apply.log
     _tfmsg "$tfout"
     return $ret
 }
@@ -94,14 +94,14 @@ _apply() {
 _plan() {
     tfout="$(terraform plan -out=$1 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-plan-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-plan.log
     _tfmsg "$tfout"
     return $ret
 }
 
 _destroy() {
     tfout="$(terraform destroy -force -state=./tfstate/terraform.tfstate 2>&1)"
-    echo "$tfout" > ./log/tf-destroy-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log
+    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-destroy.log
     _tfmsg "$tfout"
     return $ret
 }
