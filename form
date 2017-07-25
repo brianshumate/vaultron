@@ -44,6 +44,12 @@ _check_vault_version() {
   fi
 }
 
+if [ -z "$(command -v terraform)" ]; then
+    _logmsg alert "Vaultron cannot form! Could not locate terraform command."
+    _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
+    exit 1
+fi
+
 _logmsg greeting "Form Vaultron! ..."
 
 _init
