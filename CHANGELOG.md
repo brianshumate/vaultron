@@ -104,3 +104,7 @@
 - Check for Terraform (fixes #6) and better Terraform output (thanks @fprimex)
 - Set variables and ignore logs (thanks @fprimex)
 - Update documentation
+
+## v1.4.6 (UNRELEASED)
+
+- Flip date and op in log names for easy reading (thanks @fprimex)
