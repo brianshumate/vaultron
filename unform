@@ -2,7 +2,8 @@
 
 echo "🤖  Unform Vaultron ..."
 
-terraform destroy -force -state=./tfstate/terraform.tfstate > /dev/null 2>&1
+terraform destroy -force -state=./tfstate/terraform.tfstate \
+    > ./log/tf-destroy-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log 2>&1
 errors=$?
 if [ 0 -ne $errors ]; then
     echo "🚫   Terraform destroy failed, infrastructure may still exist."
