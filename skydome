@@ -2,6 +2,9 @@
 
 # shellcheck disable=SC2059
 
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+
 txtblu="\033[0;34m" # Blue
 txtgrn="\033[0;32m" # Green
 txtred="\033[0;31m" # Red

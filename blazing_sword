@@ -127,7 +127,7 @@ _mount_secret_backends() {
 ###
 _status() {
     _logmsg info "Vault status ..."
-    printf "${txtblu}$(vault status)${txtrst}"
+    printf "${txtblu}$(vault status)${txtrst}\n"
 }
 
 ###
