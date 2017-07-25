@@ -49,7 +49,12 @@ _tfmsg() {
            # strip control characters for printing and matching
            gsub(/\033\[[0-9]+m/,"")
         }
-        /^(Apply complete|Destroy complete|Plan:|Terraform.*initialized!)/ {
+        /^(Apply complete|Destroy complete|Plan:)/ {
+            print "greeting"
+            print "Terraform", tolower($0)
+            exit
+        }
+        /^Terraform.*initialized!/ {
             print "greeting"
             print
             exit
@@ -57,7 +62,7 @@ _tfmsg() {
         /^([0-9]+ error\(s\) occurred:|Failed to load backend)/ {
             print "alert"
             sub(/:.*/,"")
-            print
+            print "Terraform", tolower($0)
             exit
         }')"
 

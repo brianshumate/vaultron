@@ -2,6 +2,12 @@
 
 . ./skydome
 
+if [ -z "$(command -v terraform)" ]; then
+    _logmsg alert "Vaultron cannot unform! Could not locate terraform command."
+    _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
+    exit 1
+fi
+
 _logmsg success "Unform Vaultron ..."
 
 _destroy
