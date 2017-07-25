@@ -85,12 +85,35 @@ _check_vault_version() {
   fi
 }
 
+_tfmsg () {
+    tfmsg_out="$(echo "$1" | awk '{
+           # strip control characters for printing and matching
+           gsub(/\033\[[0-9]+m/,"")
+        }
+        /^(Apply complete|Destroy complete|Plan:)/ {
+            print "greeting"
+            print
+        }
+        /error\(s\) occurred:/ {
+            print "alert"
+            sub(/:/,"")
+            print
+        }')"
+
+    if [ -n "$tfmsg_out" ]; then
+        _logmsg "$(echo "$tfmsg_out" | head -1)" \
+                "$(echo "$tfmsg_out" | tail -1)"
+    fi
+}
+
 _apply() {
-    terraform apply -state=./tfstate/terraform.tfstate > /dev/null 2>&1;
+    _tfmsg "$(terraform apply $1 2>&1 \
+        | tee ./log/tf-apply-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log)"
 }
 
 _plan() {
-    terraform plan -state=./tfstate/terraform.tfstate > /dev/null 2>&1;
+    _tfmsg "$(terraform plan -out=$1 -state=./tfstate/terraform.tfstate 2>&1 \
+        | tee ./log/tf-plan-$(date -u "+%Y-%m-%dT%H:%M:%SZ").log)"
 }
 
 _check_vault_version
@@ -100,8 +123,11 @@ _logmsg greeting "Form Vaultron! ..."
 _logmsg greeting "Consul version: ${TF_VAR_consul_version}"
 _logmsg greeting "Vault version: ${TF_VAR_vault_version}"
 
-if _plan; then
-    if _apply; then
+plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
+
+if _plan $plan_file; then
+    if _apply $plan_file; then
+        rm -f $plan_file
         _logmsg success "Vaultron formed!"
         printf "${txtrst}"
         _form_message
