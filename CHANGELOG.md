@@ -92,7 +92,7 @@
 - Add CONTRIBUTING.md
 - Add CONTRIBUTORS.md
 
-## v1.4.5 (UNRELEASED)
+## v1.4.5
 
 - Add error tracking to unform (thanks @fprimex)
 - POSIX changes that make dash happy (thanks @fprimex)
@@ -101,4 +101,6 @@
 - Verified working in both Linux and Docker for Mac environments
 - Log Terraform operations, store and use plan (thanks @fprimex)
 - Move common things to Skydome, fixes to state handling (thanks @fprimex)
+- Check for Terraform (fixes #6) and better Terraform output (thanks @fprimex)
+- Set variables and ignore logs (thanks @fprimex)
 - Update documentation
