@@ -5,7 +5,6 @@
 ###
 ### Global variables
 ###
-
 terraform {
   backend "local" {
     path = "tfstate/terraform.tfstate"
@@ -127,4 +126,3 @@ module "vaultron" {
   consul_client_2_ip = "${module.consul_cluster.consul_oss_client_2_ip}"
   consul_client_3_ip = "${module.consul_cluster.consul_oss_client_3_ip}"
 }
-

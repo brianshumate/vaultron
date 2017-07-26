@@ -1,6 +1,9 @@
 #!/bin/sh
-
+#
+# This script is used to form Vaultron with Terraform
+#
 # shellcheck disable=SC2059
+#
 
 . ./skydome
 
@@ -87,4 +90,3 @@ fi
 rm -f $plan_file
 _logmsg success "Vaultron formed!"
 _form_message
-

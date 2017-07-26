@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# This script unforms Vaultron!
+# Caution! This removes all Vault data and Terraform state!
+# Use `terraform destroy` instead if you wish to preserve data and state.
+#
 
 . ./skydome
 
@@ -65,4 +70,3 @@ else
 fi
 
 exit $errors
-

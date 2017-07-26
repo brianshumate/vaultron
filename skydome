@@ -1,6 +1,10 @@
 #!/bin/sh
-
+#
+# This script contains common functions and is sourced by the
+# the other Vaultron scripts; there's nothing useful in here to run directly.
+#
 # shellcheck disable=SC2059
+#
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
