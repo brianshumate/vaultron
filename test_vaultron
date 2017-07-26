@@ -15,6 +15,44 @@ if [ 0 -ne $? ]; then
     exit 1
 fi
 
+if [ ! -f "tfstate/terraform.tfstate" ]; then
+    echo "🚫  No Terraform state generated after forming:"
+    echo "tfstate/terraform.tfstate"
+    exit 1
+fi
+
+for i in 1 2 3; do
+    if [ ! -d "consul/consul_oss_server_$i" ]; then
+        echo "🚫  Missing directory after forming:"
+        echo " $d"
+        exit 1
+    fi
+    if [ ! -d "consul/consul_oss_client_$i" ]; then
+        echo "🚫  Missing directory after forming:"
+        echo " $d"
+        exit 1
+    fi
+    if [ ! -d "vault/vault_oss_server_$i" ]; then
+        echo "🚫  Missing directory after forming:"
+        echo " $d"
+        exit 1
+    fi
+done
+
+if [ ! -d ".terraform" ]; then
+    echo "🚫  No Terraform configuration directory after forming:"
+    echo ".terraform"
+    exit 1
+fi
+
+for l in init plan apply; do
+    if [ -z "$(find log -type f -name "tf-*-$l.log")" ]; then
+        echo "🚫  Should be at least one log file of the form:"
+        echo "log/tf-*-$l.log"
+        exit 1
+    fi
+done
+
 ./blazing_sword
 if [ 0 -ne $? ]; then
     echo "🚫  Error forming Blazing Sword!"
@@ -24,6 +62,41 @@ fi
 ./unform
 if [ 0 -ne $? ]; then
     echo "🚫  Error unforming Vaultron."
+    exit 1
+fi
+
+if [ -f "tfstate/terraform.tfstate" ]; then
+    echo "🚫  Terraform state file still present after unforming."
+    exit 1
+fi
+
+for i in 1 2 3; do
+    if [ -d "consul/consul_oss_server_$i" ]; then
+        echo "🚫  Directory still present after forming:"
+        echo " $d"
+        exit 1
+    fi
+    if [ -d "consul/consul_oss_client_$i" ]; then
+        echo "🚫  Directory still present after forming:"
+        echo " $d"
+        exit 1
+    fi
+    if [ -d "vault/vault_oss_server_$i" ]; then
+        echo "🚫  Directory still present after forming:"
+        echo " $d"
+        exit 1
+    fi
+done
+
+if [ -d ".terraform" ]; then
+    echo "🚫  Terraform configuration directory still present after unforming:"
+    echo ".terraform"
+    exit 1
+fi
+
+if [ -z "$(find log -type f -name "tf-*-destroy.log")" ]; then
+    echo "🚫  Should be at least one log file after destroy of the form:"
+    echo "log/tf-*-destroy.log"
     exit 1
 fi
 
