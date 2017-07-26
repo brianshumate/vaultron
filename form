@@ -24,7 +24,7 @@ EOF
 ###
 _check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
-    USER_CONSUL_CONFIG="./templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
+    USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
        echo "🚫  Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
        unset TF_VAR_consul_version;
@@ -35,7 +35,7 @@ _check_consul_version() {
 
 _check_vault_version() {
   if [ ! -z "$TF_VAR_vault_version" ]; then
-    USER_VAULT_CONFIG="./templates/vault_config_${TF_VAR_vault_version}.tpl";
+    USER_VAULT_CONFIG="./black_lion/templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
        echo "🚫  Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
        unset TF_VAR_vault_version;
