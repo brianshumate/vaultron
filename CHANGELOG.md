@@ -108,3 +108,4 @@
 ## v1.4.6 (UNRELEASED)
 
 - Flip date and op in log names for easy reading (thanks @fprimex)
+- Modularize Terraform configuration and more tests (thanks @fprimex)
