@@ -9,6 +9,7 @@ vault_oss_server_2
 vault_oss_server_3
 .terraform
 terraform.tfstate*
+vault-enterprise*
 vault*.tmp
 tf-apply*.log
 tf-plan*.log
