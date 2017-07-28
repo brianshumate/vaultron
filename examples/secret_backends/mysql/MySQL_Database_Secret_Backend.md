@@ -37,7 +37,7 @@ Write the MySQL secret backend configuration:
 ```
 vault write database/config/mysql \
     plugin_name=mysql-database-plugin \
-    connection_url="root:zcheZhCWOvCS@tcp(172.17.0.2:3306)/" \
+    connection_url="root:vaultron@tcp(172.17.0.2:3306)/" \
     allowed_roles="readonly"
 
 The following warnings were returned from the Vault server:
