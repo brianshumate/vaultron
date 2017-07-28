@@ -48,6 +48,7 @@ variable "consul_data_dir" { }
 ### This is the official Consul Docker image that Vaultron uses by default.
 ### See also: https://hub.docker.com/_/consul/
 ###
+
 resource "docker_image" "consul" {
   name = "consul:${var.consul_version}"
 }
@@ -55,6 +56,7 @@ resource "docker_image" "consul" {
 ###
 ### Consul Open Source server common configuration
 ###
+
 data "template_file" "consul_oss_server_common_config" {
   template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
   vars {
@@ -72,10 +74,16 @@ data "template_file" "consul_oss_server_common_config" {
 ###
 ### Consul Open Source Server 1
 ###
+
 resource "docker_container" "consul_oss_server_1" {
   name  = "consul_oss_server_1"
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
+  # TODO: make GELF logging a conditional thing
+  # log_driver = "gelf"
+  # log_opts = {
+  #   gelf-address = "udp://${var.log_server_ip}:5114"
+  # }
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file = "/consul/config/common_config.json"
@@ -144,9 +152,15 @@ resource "docker_container" "consul_oss_server_1" {
 ###
 ### Consul Open Source Server 2
 ###
+
 resource "docker_container" "consul_oss_server_2" {
   name  = "consul_oss_server_2"
   image = "${docker_image.consul.latest}"
+  # TODO: make GELF logging a conditional thing
+  # log_driver = "gelf"
+  # log_opts = {
+  #   gelf-address = "udp://${var.log_server_ip}:5114"
+  # }
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file = "/consul/config/common_config.json"
@@ -173,9 +187,15 @@ resource "docker_container" "consul_oss_server_2" {
 ###
 ### Consul Open Source Server 3
 ###
+
 resource "docker_container" "consul_oss_server_3" {
   name  = "consul_oss_server_3"
   image = "${docker_image.consul.latest}"
+  # TODO: make GELF logging a conditional thing
+  # log_driver = "gelf"
+  # log_opts = {
+  #   gelf-address = "udp://${var.log_server_ip}:5114"
+  # }
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file = "/consul/config/common_config.json"
@@ -202,6 +222,7 @@ resource "docker_container" "consul_oss_server_3" {
 ###
 ### Consul Open Source client common configuration
 ###
+
 data "template_file" "consul_oss_client_common_config" {
   template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
   vars {
@@ -212,6 +233,7 @@ data "template_file" "consul_oss_client_common_config" {
 ###
 ### Consul Open Source Client 1
 ###
+
 resource "docker_container" "consul_oss_client_1" {
   name  = "consul_oss_client_1"
   image = "${docker_image.consul.latest}"
@@ -244,6 +266,7 @@ resource "docker_container" "consul_oss_client_1" {
 ###
 ### Consul Open Source Client 2
 ###
+
 resource "docker_container" "consul_oss_client_2" {
   name  = "consul_oss_client_2"
   image = "${docker_image.consul.latest}"
@@ -276,6 +299,7 @@ resource "docker_container" "consul_oss_client_2" {
 ###
 ### Consul Open Source Client 3
 ###
+
 resource "docker_container" "consul_oss_client_3" {
   name  = "consul_oss_client_3"
   image = "${docker_image.consul.latest}"

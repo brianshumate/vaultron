@@ -109,3 +109,6 @@
 
 - Flip date and op in log names for easy reading (thanks @fprimex)
 - Modularize Terraform configuration and more tests (thanks @fprimex)
+- Consistent comment banners in configs
+- Remove TF logs on successful unform run
+- Add some miscellaneous test scripts for Vault

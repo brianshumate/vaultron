@@ -97,7 +97,6 @@ variable "consul_data_dir" {
   default = "/consul/data"
 }
 
-
 module "consul_cluster" {
   source = "red_lion"
   datacenter_name = "${var.datacenter_name}"

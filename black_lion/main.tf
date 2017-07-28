@@ -38,6 +38,7 @@ variable "consul_client_3_ip" { }
 ### This is the official Vault Docker image that Vaultron uses by default.
 ### See also: https://hub.docker.com/_/vault/
 ###
+
 resource "docker_image" "vault" {
   name = "vault:${var.vault_version}"
 }
@@ -45,6 +46,7 @@ resource "docker_image" "vault" {
 ###
 ### Vault Open Source server 1 configuration
 ###
+
 data "template_file" "vault_oss_server_1_config" {
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
   vars {
@@ -62,6 +64,7 @@ data "template_file" "vault_oss_server_1_config" {
 ###
 ### Vault Open Source server 2 configuration
 ###
+
 data "template_file" "vault_oss_server_2_config" {
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
   vars {
@@ -79,6 +82,7 @@ data "template_file" "vault_oss_server_2_config" {
 ###
 ### Vault Open Source server 3 configuration
 ###
+
 data "template_file" "vault_oss_server_3_config" {
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
   vars {
@@ -96,6 +100,7 @@ data "template_file" "vault_oss_server_3_config" {
 ###
 ### Vault Open Source Server 1
 ###
+
 resource "docker_container" "vault_oss_server_1" {
   name  = "vault_oss_server_1"
   image = "${docker_image.vault.latest}"
@@ -128,6 +133,7 @@ resource "docker_container" "vault_oss_server_1" {
 ###
 ### Vault Open Source Server 2
 ###
+
 resource "docker_container" "vault_oss_server_2" {
   name  = "vault_oss_server_2"
   image = "${docker_image.vault.latest}"
@@ -160,6 +166,7 @@ resource "docker_container" "vault_oss_server_2" {
 ###
 ### Vault Open Source Server 3
 ###
+
 resource "docker_container" "vault_oss_server_3" {
   name  = "vault_oss_server_3"
   image = "${docker_image.vault.latest}"

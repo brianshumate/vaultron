@@ -54,7 +54,7 @@ rm -rf ./vault/vault_*.tmp
 errors=$(( $errors + $?))
 
 ###
-### Remove Terraform state, plans, and backend configs
+### Remove Terraform state, plans, backend configs, and logs
 ###
 rm -rf ./tfstate/terraform.tfstate*
 errors=$(( $errors + $?))
@@ -67,6 +67,8 @@ if [ $errors -gt 0 ]; then
     _logmsg boom "Vaultron unformed (with $errors errors)!"
 else
     _logmsg boom "Vaultron unformed!"
+    # Since unform was a success, let's also clean up the TF logs too
+    rm -rf ./log/*.log
 fi
 
 exit $errors

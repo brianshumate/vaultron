@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+## Vault PKI backend test
+## - Generates CA, certs, etc.
+## - Revokes certs
+## - Tidies CRL via API
+
+set -e
+
+serials="cert_serials.txt"
+
+_new_pki() {
+  rm -f ${serials} > /dev/null 2>&1
+
+  if vault mounts | grep pki; then
+      echo "PKI backend mounted already";
+    else
+      vault mount pki;
+  fi
+
+  vault mount-tune -max-lease-ttl=87600h pki
+
+  vault write pki/root/generate/internal common_name=crepes.local ttl=87600h
+
+  vault write pki/config/urls \
+  issuing_certificates="$VAULT_ADDR/v1/pki/ca" \
+  crl_distribution_points="$VAULT_ADDR/v1/pki/crl"
+
+  vault write pki/roles/crepes-local \
+    allowed_domains="crepes.local" \
+    allow_subdomains="true" max_ttl="2m"
+}
+
+_gen_certs() {
+  for c in {1..50}; do
+    vault write pki/issue/crepes-local common_name=taco-x$c.crepes.local \
+    | grep serial_number | cut -d ' ' -f4 | tr -d "\t" | tee -a ${serials}
+  done
+}
+
+_revoke_cert() {
+  curl -X POST $VAULT_ADDR/v1/pki/revoke \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -d '{"serial_number":"'$1'"}'
+}
+
+## generate
+
+_gen_500() {
+  echo "[i] Attempting to generate 500 certs ..."
+  for i in {1..10}; do
+      _gen_certs &
+  done
+}
+
+_gen_100() {
+  echo "[i] Attempting to generate 100 certs ..."
+  for i in {1..2}; do
+      _gen_certs &
+  done
+}
+
+## revoke
+
+_revoke_all() {
+  while read s; do
+    _revoke_cert $s
+  done <${serials}
+}
+
+## clean
+
+_tidy_pki() {
+  curl $VAULT_ADDR/v1/pki/tidy \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -d '{"safety_buffer": "1m","tidy_revocation_list": true}'
+}
+
+## new cycle
+
+#_new_pki
+#_gen_certs
+#_revoke_certs
+#_clean
+
+## tests
+
+#_gen_100
+_revoke_all
+#_tidy_pki
+
+echo "Done!"
