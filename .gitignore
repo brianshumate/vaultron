@@ -16,3 +16,4 @@ tf-plan*.log
 tf-destroy*.log
 *.swp
 *.log
+tmp
