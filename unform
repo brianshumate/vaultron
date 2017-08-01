@@ -18,7 +18,7 @@ _logmsg success "Unform Vaultron ..."
 _destroy
 errors=$?
 if [ 0 -ne $errors ]; then
-    _logmsg alter "Terraform destroy failed, infrastructure may still exist."
+    _logmsg alert "Terraform destroy failed, infrastructure may still exist."
 fi
 
 ###
@@ -67,8 +67,8 @@ if [ $errors -gt 0 ]; then
     _logmsg boom "Vaultron unformed (with $errors errors)!"
 else
     _logmsg boom "Vaultron unformed!"
-    # Since unform was a success, let's also clean up the TF logs too
-    rm -rf ./log/*.log
+    # TODO: Since unform was a success, let's also clean up the TF logs too?
+    # rm -rf ./log/*.log
 fi
 
 exit $errors

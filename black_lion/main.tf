@@ -41,6 +41,7 @@ variable "consul_client_3_ip" { }
 
 resource "docker_image" "vault" {
   name = "vault:${var.vault_version}"
+  keep_locally  = true
 }
 
 ###

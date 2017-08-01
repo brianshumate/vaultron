@@ -51,6 +51,7 @@ variable "consul_data_dir" { }
 
 resource "docker_image" "consul" {
   name = "consul:${var.consul_version}"
+  keep_locally  = true
 }
 
 ###

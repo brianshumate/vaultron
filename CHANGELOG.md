@@ -105,10 +105,13 @@
 - Set variables and ignore logs (thanks @fprimex)
 - Update documentation
 
-## v1.4.6 (UNRELEASED)
+## v1.4.6
 
 - Flip date and op in log names for easy reading (thanks @fprimex)
 - Modularize Terraform configuration and more tests (thanks @fprimex)
-- Consistent comment banners in configs
+- Consistent comment banners in configurations
 - Remove TF logs on successful unform run
 - Add some miscellaneous test scripts for Vault
+- Fix a user message type
+- Disable log cleanup (needs more discussion)
+- Set `keep_locally` to true (addresses 2 TF errors during unform issue) \o/
