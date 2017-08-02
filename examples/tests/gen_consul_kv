@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# gen_consul_kv
+#
+# Create various oddball entries in the Consul K/V for testing, etc.
+#
+
+. ../../skydome
+
+create_kv() {
+    for i in {1..100}; do
+        HW_ADDR="$(openssl rand -hex 6)"
+        curl \
+        --request PUT \
+        --data "hwaddr=${HW_ADDR}" \
+        "${CONSUL_HTTP_ADDR}/v1/kv/${1}/vaultron-test-key-${i}";
+    done
+}
+
+for n in foo bar baz qux; do
+    _logmsg info "PUT keys in ${CONSUL_HTTP_ADDR}/v1/kv/${n}/"
+    create_kv "${n}";
+done

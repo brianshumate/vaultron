@@ -115,3 +115,8 @@
 - Fix a user message type
 - Disable log cleanup (needs more discussion)
 - Set `keep_locally` to true (addresses 2 TF errors during unform issue) \o/
+
+## v1.4.7 (UNRELEASED)
+
+- Update and reflow on the README (shoutout to CV for the inspiration!)
+- Update example test scripts

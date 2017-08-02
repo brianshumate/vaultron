@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/user/bin/env bash
 #
-# An example use case test for Vault secret addition/deletion/restoration
-#
+# An example use case test for Vault secret
+# addition/deletion/restoration
 
 SECRET="secret/bar"
 SECRET_VALUE="baz"
