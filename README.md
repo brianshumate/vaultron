@@ -311,11 +311,11 @@ or:
 🚫  Sorry, Vaultron does not support Vault version: 0.6.0
 ```
 
-You are specifying either a non-existent version (maybe a typo?) or you are specifying a version for which no Docker images exists. This second case is not a problem with Vaultron, there are some versions which were released as binaries, but not Docker images.
+You are specifying either a non-existent version (maybe a typo?) or you are specifying a version for which no Docker images exists. This second case is not a problem with Vaultron, there are some versions of Consul and Vault which were released as binaries, but not available as Docker images.
 
 ## Resources
 
-Here are some links to the websites for technologies used in this project:
+Here are some links to resources for the technologies used in this project:
 
 1. [Vault Docker repository](https://hub.docker.com/_/vault/)
 2. [Consul Docker repository](https://hub.docker.com/_/consul/)
