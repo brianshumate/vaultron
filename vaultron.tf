@@ -119,9 +119,6 @@ module "vaultron" {
   vault_cluster_name = "${var.vault_cluster_name}"
   vault_plus_one_port = "${var.vault_plus_one_port}"
   disable_clustering = "${var.disable_clustering}"
-  consul_server_1_ip = "${module.consul_cluster.consul_oss_server_1_ip}"
-  consul_server_2_ip = "${module.consul_cluster.consul_oss_server_2_ip}"
-  consul_server_3_ip = "${module.consul_cluster.consul_oss_server_3_ip}"
-  consul_client_2_ip = "${module.consul_cluster.consul_oss_client_2_ip}"
-  consul_client_3_ip = "${module.consul_cluster.consul_oss_client_3_ip}"
+  consul_server_ips = ["${module.consul_cluster.consul_oss_server_ips}"]
+  consul_client_ips = ["${module.consul_cluster.consul_oss_client_ips}"]
 }
