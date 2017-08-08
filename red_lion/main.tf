@@ -6,29 +6,22 @@
 ### Consul module outputs
 ###
 
-output "consul_oss_server_1_ip" {
-  description = "Consul OSS Server 1 IP address"
-  value = "${docker_container.consul_oss_server_1.ip_address}"
+output "consul_oss_server_ips" {
+  description = "Consul OSS Server IP addresses"
+  value = [
+    "${docker_container.consul_oss_server_0.ip_address}",
+    "${docker_container.consul_oss_server_1.ip_address}",
+    "${docker_container.consul_oss_server_2.ip_address}"
+  ]
 }
 
-output "consul_oss_server_2_ip" {
-  description = "Consul OSS Server 2 IP address"
-  value = "${docker_container.consul_oss_server_2.ip_address}"
-}
-
-output "consul_oss_server_3_ip" {
-  description = "Consul OSS Server 3 IP address"
-  value = "${docker_container.consul_oss_server_3.ip_address}"
-}
-
-output "consul_oss_client_2_ip" {
-  description = "Consul OSS Server 2 IP address"
-  value = "${docker_container.consul_oss_client_2.ip_address}"
-}
-
-output "consul_oss_client_3_ip" {
-  description = "Consul OSS Client 3 IP address"
-  value = "${docker_container.consul_oss_client_3.ip_address}"
+output "consul_oss_client_ips" {
+  description = "Consul OSS Client IP addresses"
+  value = [
+    "${docker_container.consul_oss_client_0.ip_address}",
+    "${docker_container.consul_oss_client_1.ip_address}",
+    "${docker_container.consul_oss_client_2.ip_address}"
+  ]
 }
 
 ###
@@ -76,8 +69,8 @@ data "template_file" "consul_oss_server_common_config" {
 ### Consul Open Source Server 1
 ###
 
-resource "docker_container" "consul_oss_server_1" {
-  name  = "consul_oss_server_1"
+resource "docker_container" "consul_oss_server_0" {
+  name  = "consul_oss_server_0"
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
   # TODO: make GELF logging a conditional thing
@@ -90,18 +83,18 @@ resource "docker_container" "consul_oss_server_1" {
     file = "/consul/config/common_config.json"
   }
   volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_server_1/config"
+    host_path = "${path.module}/../../../consul/consul_oss_server_0/config"
     container_path = "/consul/config"
   }
   volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_server_1/data"
+    host_path = "${path.module}/../../../consul/consul_oss_server_0/data"
     container_path = "/consul/data"
   }
   entrypoint = ["consul",
              "agent",
              "-server",
              "-config-dir=/consul/config",
-             "-node=consul_oss_server_1",
+             "-node=consul_oss_server_0",
              "-client=0.0.0.0",
              "-dns-port=53"
              ]
@@ -154,6 +147,41 @@ resource "docker_container" "consul_oss_server_1" {
 ### Consul Open Source Server 2
 ###
 
+resource "docker_container" "consul_oss_server_1" {
+  name  = "consul_oss_server_1"
+  image = "${docker_image.consul.latest}"
+  # TODO: make GELF logging a conditional thing
+  # log_driver = "gelf"
+  # log_opts = {
+  #   gelf-address = "udp://${var.log_server_ip}:5114"
+  # }
+  upload = {
+    content = "${data.template_file.consul_oss_server_common_config.rendered}"
+    file = "/consul/config/common_config.json"
+  }
+  volumes {
+    host_path = "${path.module}/../../../consul/consul_oss_server_1/config"
+    container_path = "/consul/config"
+  }
+  volumes {
+    host_path = "${path.module}/../../../consul/consul_oss_server_1/data"
+    container_path = "/consul/data"
+  }
+  entrypoint = ["consul",
+             "agent",
+             "-server",
+             "-config-dir=/consul/config",
+             "-node=consul_oss_server_1",
+             "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
+             "-dns-port=53"
+             ]
+  must_run = true
+}
+
+###
+### Consul Open Source Server 3
+###
+
 resource "docker_container" "consul_oss_server_2" {
   name  = "consul_oss_server_2"
   image = "${docker_image.consul.latest}"
@@ -175,46 +203,11 @@ resource "docker_container" "consul_oss_server_2" {
     container_path = "/consul/data"
   }
   entrypoint = ["consul",
-             "agent",
-             "-server",
-             "-config-dir=/consul/config",
-             "-node=consul_oss_server_2",
-             "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
-             "-dns-port=53"
-             ]
-  must_run = true
-}
-
-###
-### Consul Open Source Server 3
-###
-
-resource "docker_container" "consul_oss_server_3" {
-  name  = "consul_oss_server_3"
-  image = "${docker_image.consul.latest}"
-  # TODO: make GELF logging a conditional thing
-  # log_driver = "gelf"
-  # log_opts = {
-  #   gelf-address = "udp://${var.log_server_ip}:5114"
-  # }
-  upload = {
-    content = "${data.template_file.consul_oss_server_common_config.rendered}"
-    file = "/consul/config/common_config.json"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_server_3/config"
-    container_path = "/consul/config"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_server_3/data"
-    container_path = "/consul/data"
-  }
-  entrypoint = ["consul",
                 "agent",
                 "-server",
                 "-config-dir=/consul/config",
-                "-node=consul_oss_server_3",
-                "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
+                "-node=consul_oss_server_2",
+                "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
                 "-dns-port=53"
                 ]
   must_run = true
@@ -233,6 +226,39 @@ data "template_file" "consul_oss_client_common_config" {
 
 ###
 ### Consul Open Source Client 1
+###
+
+resource "docker_container" "consul_oss_client_0" {
+  name  = "consul_oss_client_0"
+  image = "${docker_image.consul.latest}"
+  upload = {
+    content = "${data.template_file.consul_oss_client_common_config.rendered}"
+    file = "/consul/config/common_config.json"
+  }
+  volumes {
+    host_path = "${path.module}/../../../consul/consul_oss_client_0/config"
+    container_path = "/consul/config"
+  }
+  volumes {
+    host_path = "${path.module}/../../../consul/consul_oss_client_0/data"
+    container_path = "/consul/data"
+  }
+  entrypoint = ["consul",
+                "agent",
+                "-config-dir=/consul/config",
+                "-client=0.0.0.0",
+                "-node=consul_oss_client_0",
+                "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
+                "-datacenter=${var.datacenter_name}",
+                "-data-dir=/consul/data",
+                ],
+  dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
+  dns_search = ["consul"],
+  must_run = true
+}
+
+###
+### Consul Open Source Client 2
 ###
 
 resource "docker_container" "consul_oss_client_1" {
@@ -259,13 +285,13 @@ resource "docker_container" "consul_oss_client_1" {
                 "-datacenter=${var.datacenter_name}",
                 "-data-dir=/consul/data",
                 ],
-  dns = ["${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}", "${docker_container.consul_oss_server_3.ip_address}"],
+  dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
   dns_search = ["consul"],
   must_run = true
 }
 
 ###
-### Consul Open Source Client 2
+### Consul Open Source Client 3
 ###
 
 resource "docker_container" "consul_oss_client_2" {
@@ -292,40 +318,7 @@ resource "docker_container" "consul_oss_client_2" {
                 "-datacenter=${var.datacenter_name}",
                 "-data-dir=/consul/data",
                 ],
-  dns = ["${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}", "${docker_container.consul_oss_server_3.ip_address}"],
-  dns_search = ["consul"],
-  must_run = true
-}
-
-###
-### Consul Open Source Client 3
-###
-
-resource "docker_container" "consul_oss_client_3" {
-  name  = "consul_oss_client_3"
-  image = "${docker_image.consul.latest}"
-  upload = {
-    content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.json"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_3/config"
-    container_path = "/consul/config"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_3/data"
-    container_path = "/consul/data"
-  }
-  entrypoint = ["consul",
-                "agent",
-                "-config-dir=/consul/config",
-                "-client=0.0.0.0",
-                "-node=consul_oss_client_3",
-                "-retry-join=${docker_container.consul_oss_server_3.ip_address}",
-                "-datacenter=${var.datacenter_name}",
-                "-data-dir=/consul/data",
-                ],
-  dns = ["${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}", "${docker_container.consul_oss_server_3.ip_address}"],
+  dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
   dns_search = ["consul"],
   must_run = true
 }
