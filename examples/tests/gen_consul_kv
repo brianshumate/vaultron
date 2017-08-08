@@ -4,6 +4,8 @@
 #
 # Create various oddball entries in the Consul K/V for testing, etc.
 #
+# shellcheck disable=SC1091
+#
 
 . ../../skydome
 

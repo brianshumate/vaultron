@@ -4,71 +4,73 @@
 # Caution! This removes all Vault data and Terraform state!
 # Use `terraform destroy` instead if you wish to preserve data and state.
 #
+# shellcheck disable=SC1091
+#
 
 . ./skydome
 
 if [ -z "$(command -v terraform)" ]; then
-    _logmsg alert "Vaultron cannot unform! Could not locate terraform command."
-    _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
-    exit 1
+  _logmsg alert "Vaultron cannot unform! Could not locate terraform command."
+  _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
+  exit 1
 fi
 
 _logmsg success "Unform Vaultron ..."
 
-_destroy
-errors=$?
-if [ 0 -ne $errors ]; then
-    _logmsg alert "Terraform destroy failed, infrastructure may still exist."
+if ! _destroy; then
+  _logmsg alert "Terraform destroy failed, infrastructure may still exist."
 fi
 
 ###
 ### Remove Consul client data
 ###
 rm -rf ./consul/consul_oss_client_1
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./consul/consul_oss_client_2
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./consul/consul_oss_client_3
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 
 ###
 ### Remove Consul server data
 ###
 rm -rf ./consul/consul_oss_server_1
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./consul/consul_oss_server_2
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./consul/consul_oss_server_3
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 
 ###
 ### Remove Vault server data
 ###
 rm -rf ./vault/vault_oss_server_1
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./vault/vault_oss_server_2
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./vault/vault_oss_server_3
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./vault/vault_*.tmp
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 
 ###
 ### Remove Terraform state, plans, backend configs, and logs
 ###
 rm -rf ./tfstate/terraform.tfstate*
-errors=$(( $errors + $?))
+errors=$((errors + $?))
 rm -rf ./tfstate/vaultron*.plan
-errors=$(( $errors + $?))
-rm -rf ./.terraform
-errors=$(( $errors + $?))
+errors=$((errors + $?))
+rm -rf ./.terraform/modules
+errors=$((errors + $?))
+rm -rf ./.terraform/terraform.tfstate*
+errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then
-    _logmsg boom "Vaultron unformed (with $errors errors)!"
+  _logmsg boom "Vaultron unformed (with $errors errors)!"
 else
-    _logmsg boom "Vaultron unformed!"
-    # TODO: Since unform was a success, let's also clean up the TF logs too?
-    # rm -rf ./log/*.log
+  _logmsg boom "Vaultron unformed!"
+  # TODO: Since unform was successful, clean up the TF logs too?
+  # rm -rf ./log/*.log
 fi
 
 exit $errors

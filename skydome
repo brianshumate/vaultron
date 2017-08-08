@@ -9,12 +9,12 @@
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 
-txtblu="\033[0;34m" # Blue
-txtgrn="\033[0;32m" # Green
-txtred="\033[0;31m" # Red
-txtylw="\033[0;33m" # Yellow
-txtwht="\033[0;37m" # White
-txtrst="\033[0m"    # Text Reset
+export txtblu="\033[0;34m" # Blue
+export txtgrn="\033[0;32m" # Green
+export txtred="\033[0;31m" # Red
+export txtylw="\033[0;33m" # Yellow
+export txtwht="\033[0;37m" # White
+export txtrst="\033[0m"    # Text Reset
 
 ###
 ### Log stuff
@@ -82,31 +82,30 @@ _tfmsg() {
 _init() {
     tfout="$(terraform init 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-init.log
+    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-init.log
     _tfmsg "$tfout"
     return $ret
 }
 
 _apply() {
-    tfout="$(terraform apply $1 2>&1)"
+    tfout="$(terraform apply "$1" 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-apply.log
+    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-apply.log
     _tfmsg "$tfout"
     return $ret
 }
 
 _plan() {
-    tfout="$(terraform plan -out=$1 2>&1)"
+    tfout="$(terraform plan -out="$1" 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-plan.log
+    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-plan.log
     _tfmsg "$tfout"
     return $ret
 }
 
 _destroy() {
     tfout="$(terraform destroy -force -state=./tfstate/terraform.tfstate 2>&1)"
-    echo "$tfout" > ./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-destroy.log
+    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-destroy.log
     _tfmsg "$tfout"
     return $ret
 }
-

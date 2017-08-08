@@ -8,10 +8,14 @@
 #   - Revokes certs
 #   - Tidies CRL via API
 #
+# shellcheck disable=SC2086
+# shellcheck disable=SC1091
+#
 
-. ../../skydome
+. ./skydome
 
-serials="cert_serials.txt"
+export i=0
+export serials="cert_serials.txt"
 
 _new_pki() {
   rm -f ${serials} > /dev/null 2>&1
@@ -43,7 +47,7 @@ _gen_certs() {
 }
 
 _revoke_cert() {
-  curl -X POST $VAULT_ADDR/v1/pki/revoke \
+  curl -X POST "$VAULT_ADDR"/v1/pki/revoke \
     -H "X-Vault-Token: $VAULT_TOKEN" \
     -d '{"serial_number":"'$1'"}'
 }
@@ -67,15 +71,15 @@ _gen_100() {
 ## revoke
 
 _revoke_all() {
-  while read s; do
-    _revoke_cert $s
+  while read -r s; do
+    _revoke_cert "${s}"
   done <${serials}
 }
 
 ## clean
 
 _tidy_pki() {
-  curl $VAULT_ADDR/v1/pki/tidy \
+  curl "$VAULT_ADDR"/v1/pki/tidy \
     -H "X-Vault-Token: $VAULT_TOKEN" \
     -d '{"safety_buffer": "1m","tidy_revocation_list": true}'
 }

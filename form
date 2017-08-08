@@ -3,7 +3,7 @@
 # This script is used to form Vaultron with Terraform
 #
 # shellcheck disable=SC2059
-#
+# shellcheck disable=SC1091
 
 . ./skydome
 
@@ -12,13 +12,13 @@ cat << 'EOF'
 Now that Vaultron is formed, you can visit the Consul web UI
 at http://localhost:8500
 
-Or you can interact with the Vault and Consul at the command line by
-first exporting the following environment variables:
+Or you can interact with Vault and Consul at the command line by first
+exporting the following environment variables:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 
-Then you can use the vault and consul commands as needed.
+Then you can use your local vault and consul commands.
 EOF
 }
 
@@ -48,17 +48,16 @@ _check_vault_version() {
 }
 
 if [ -z "$(command -v terraform)" ]; then
-    _logmsg alert "Vaultron cannot form! Could not locate terraform command."
-    _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
-    exit 1
+  _logmsg alert "Vaultron cannot form! Could not locate terraform command."
+  _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
+  exit 1
 fi
 
 _logmsg greeting "Form Vaultron! ..."
 
-_init
-if [ 0 -ne $? ]; then
-    _logmsg alert "Vaultron cannot form! Check terraform init output."
-    exit 1
+if ! _init; then
+  _logmsg alert "Vaultron cannot form! Check terraform init output."
+  exit 1
 fi
 
 CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
@@ -75,18 +74,16 @@ _logmsg greeting "Vault version: ${TF_VAR_vault_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
-_plan $plan_file
-if [ 0 -ne $? ]; then
-    _logmsg alert "Vaultron cannot form! Check terraform plan output."
-    exit 1
+if ! _plan "${plan_file}"; then
+  _logmsg alert "Vaultron cannot form! Check terraform plan output."
+  exit 1
 fi
 
-_apply $plan_file
-if [ 0 -ne $? ]; then
-    _logmsg alert "Vaultron cannot form! Check terraform apply output."
-    exit 1
+if ! _apply "${plan_file}"; then
+  _logmsg alert "Vaultron cannot form! Check terraform apply output."
+  exit 1
 fi
 
-rm -f $plan_file
+rm -f "${plan_file}"
 _logmsg success "Vaultron formed!"
 _form_message

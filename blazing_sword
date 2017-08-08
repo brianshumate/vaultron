@@ -8,7 +8,11 @@
 #
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
+# shellcheck disable=SC2154
 # shellcheck disable=SC2059
+# shellcheck disable=SC2039
+# shellcheck disable=SC1091
+#
 
 . ./skydome
 
@@ -60,10 +64,12 @@ _enable_auth_backends() {
     _logmsg complete "Enabled App ID authentication backend!"
     vault auth-enable approle > /dev/null 2>&1
     _logmsg complete "Enabled AppRole authentication backend!"
-    # TODO:
-    # This needs to be conditionally added based on installed Vault version
-    #vault auth-enable aws > /dev/null 2>&1
-    #_logmsg complete "Enabled AWS authentication backend!"
+    # TODO: This needs to be conditionally added based on installed Vault
+    # version as aws auth does not exist in older Vault versions
+    #
+    # vault auth-enable aws > /dev/null 2>&1
+    # _logmsg complete "Enabled AWS authentication backend!"
+    #
     vault auth-enable ldap > /dev/null 2>&1
     _logmsg complete "Enabled LDAP authentication backend!"
     vault auth-enable userpass > /dev/null 2>&1

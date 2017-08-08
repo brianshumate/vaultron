@@ -1,22 +1,26 @@
-#!/user/bin/env bash
+#!/usr/bin/env bash
 #
 # vault_snap_test
 #
 # An example use case test for Vault secret
 # addition/deletion/restoration
 #
+# shellcheck disable=SC1091
+#
+
+. ./skydome
 
 SECRET="secret/bar"
 SECRET_VALUE="baz"
 SNAPSHOT="newBack.snap"
 
-_logmsg() {
-    if [ "$1" == "error" ]; then
-        echo >&2  "[e] $2";
-    else
-        echo "[+] $2";
-    fi
-}
+#_logmsg() {
+#    if [ "$1" == "alert" ]; then
+#        echo >&2  "[e] $2";
+#    else
+#        echo "[+] $2";
+#    fi
+#}
 
 _delete() {
   if vault delete "${SECRET}" > /dev/null 2>&1 ; then
@@ -66,83 +70,83 @@ _write() {
 if _write; then
   _logmsg info "Write 1 OK";
 else
-  _logmsg error "Write 1 Failed";
+  _logmsg alert "Write 1 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 1 OK";
 else
-  _logmsg error "Read 1 Failed";
+  _logmsg alert "Read 1 Failed";
 
 fi
 
 if _snapshot_save "$SNAPSHOT"; then
   _logmsg info "Snapshot save 1 OK";
 else
-  _logmsg error "Snapshot save 1 Failed";
+  _logmsg alert "Snapshot save 1 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 2 OK";
 else
-  _logmsg error "Read 2 Failed";
+  _logmsg alert "Read 2 Failed";
 
 fi
 
 if _delete; then
   _logmsg info "Delete 1 OK";
 else
-  _logmsg error "Delete 1 Failed";
+  _logmsg alert "Delete 1 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 3 (immediately after delete 1) OK";
 else
-  _logmsg error "Read 3 (immediately after delete 1) Failed";
+  _logmsg alert "Read 3 (immediately after delete 1) Failed";
 
 fi
 
 if _snapshot_restore "${SNAPSHOT}"; then
   _logmsg info "Snapshot restore 1 OK";
 else
-  _logmsg error "Snapshot restore 1 Failed";
+  _logmsg alert "Snapshot restore 1 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 4 OK";
 else
-  _logmsg error "Read 4 Failed";
+  _logmsg alert "Read 4 Failed";
 
 fi
 
 if _delete; then
   _logmsg info "Delete 2 OK";
 else
-  _logmsg error "Delete 2 Failed";
+  _logmsg alert "Delete 2 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 5 (immediately after delete 2) OK";
 else
-  _logmsg error "Read 5 (immediately after delete 2) Failed";
+  _logmsg alert "Read 5 (immediately after delete 2) Failed";
 
 fi
 
 if _snapshot_restore "${SNAPSHOT}"; then
   _logmsg info "Snapshot restore 2 OK";
 else
-  _logmsg error "Snapshot restore 2 Failed";
+  _logmsg alert "Snapshot restore 2 Failed";
 
 fi
 
 if _read; then
   _logmsg info "Read 6 OK";
 else
-  _logmsg error "Read 6 Failed";
+  _logmsg alert "Read 6 Failed";
 
 fi

@@ -116,7 +116,13 @@
 - Disable log cleanup (needs more discussion)
 - Set `keep_locally` to true (addresses 2 TF errors during unform issue) \o/
 
-## v1.4.7 (UNRELEASED)
+## v1.4.7
 
-- Update and reflow on the README (shoutout to CV for the inspiration!)
+- Add support for Vault version 0.8.0-rc1
+- Update and reflow on the README (shoutout to @angrycub for the inspiration!)
 - Update example test scripts
+- Address SC2181 in form
+- Address SC2004 in unform
+- Address SC2046 in skydome
+- Preserve provider modules for Terraform 0.10.0+
+- Add example for MongoDB secret backend
