@@ -140,3 +140,7 @@
 ## v1.5.1
 
 - Fix for Consul server with count issue
+
+## v1.5.2 (UNRELEASED)
+
+- Update test_vaultron
