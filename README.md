@@ -59,10 +59,9 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
-**NOTE: `./unform` REMOVES ALMOST EVERYTHING* including the existing Vault data, logs, and Terraform state — be careful!**
+**NOTE: `./unform` REMOVES ALMOST EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!**
 
-`*` The Terraform provider modules are not removed to save time on
-re-downloading them.
+Note that the Terraform provider modules are not removed to save resources and time on re-downloading them.
 
 If you want to tear down the containers, but preserve data, logs, and state, use `terraform destroy` instead:
 
@@ -154,8 +153,7 @@ Version: 0.6.5
 ...
 ```
 
-You can do the same to run a different version of the Consul container with
-the `TF_VAR_consul_version` environment variable as well:
+You can do the same to run a different version of the Consul container with the `TF_VAR_consul_version` environment variable as well:
 
 ```
 export TF_VAR_consul_version=0.7.5
@@ -236,9 +234,7 @@ The Vault audit logs for each _active server_ are available as:
 
 ### A note about custom Binaries
 
-Vaultron installs the official open source binaries, but if you'd prefer to
-use recent source builds or some other Consul or Vault binaries, just drop
-`consul` or `vault` into `custom/` and set these environment variables:
+Vaultron installs the official open source binaries, but if you'd prefer to use recent source builds or some other Consul or Vault binaries, just drop `consul` or `vault` into `custom/` and set these environment variables:
 
 ```
 export TF_VAR_vault_oss_instance_count=0 \
@@ -346,6 +342,4 @@ Here are some links to resources for the technologies used in this project:
 
 ## Who?
 
-Valtron was created by [Brian Shumate](https://github.com/brianshumate)
-and made possible through the generous time of the good people named in
-[CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)
+Valtron was created by [Brian Shumate](https://github.com/brianshumate) and made possible through the generous time of the good people named in [CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)
