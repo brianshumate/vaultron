@@ -89,7 +89,7 @@ resource "docker_container" "consul_oss_server" {
 														 "-config-dir=/consul/config",
 														 "-dns-port=53",
                              "-node=consul_oss_server_${count.index}",
-														 "count.index != 0 ? -retry-join=${docker_container.consul_oss_server.0.ip_address} : --"
+														 "count.index == 0 ? -- : -retry-join=$$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' consul_oss_server_${count.index})"
                              )
                         )}"]
   must_run = true
