@@ -234,6 +234,17 @@ The Vault audit logs for each _active server_ are available as:
 - `./vault/vault_oss_server_1/audit_log/audit.log`
 - `./vault/vault_oss_server_2/audit_log/audit.log`
 
+### A note about custom Binaries
+
+Vaultron installs the official open source binaries, but if you'd prefer to
+use recent source builds or some other Consul or Vault binaries, just drop
+`consul` or `vault` into `custom/` and set these environment variables:
+
+```
+export TF_VAR_vault_oss_instance_count=0 \
+       TF_VAR_vault_custom_instance_count=3
+```
+
 ## Basic Troubleshooting Questions
 
 ### I Typed `vault status` and got an Error!

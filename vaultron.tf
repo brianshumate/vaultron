@@ -36,7 +36,7 @@ variable "use_vault_oss" {
 
 # Set TF_VAR_vault_ent_id to set this
 variable "vault_ent_id" {
-  default = ""
+  default = "vault:latest"
 }
 
 # Set TF_VAR_vault_path to set this
@@ -57,6 +57,16 @@ variable "vault_plus_one_port" {
 # Set TF_VAR_disable_clustering to set this
 variable "disable_clustering" {
   default = "false"
+}
+
+# Set TF_VAR_vault_oss_instance_count to set this
+variable "vault_oss_instance_count" {
+  default = "3"
+}
+
+# Set TF_VAR_vault_custom_instance_count to set this
+variable "vault_custom_instance_count" {
+  default = "0"
 }
 
 ###
@@ -111,6 +121,8 @@ module "consul_cluster" {
 
 module "vaultron" {
   source = "black_lion"
+  vault_oss_instance_count = "${var.vault_oss_instance_count}"
+  vault_custom_instance_count = "${var.vault_custom_instance_count}"
   datacenter_name = "${var.datacenter_name}"
   vault_version = "${var.vault_version}"
   use_vault_oss = "${var.use_vault_oss}"
