@@ -26,7 +26,7 @@ variable "datacenter_name" {
 ###
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.7.3"
+  default = "0.8.0"
 }
 
 # Set TF_VAR_use_vault_oss to set this
