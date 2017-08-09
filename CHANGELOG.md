@@ -133,3 +133,4 @@
 - Update indexes in naming for count usage
  - Fix unform script
 - Even more blazing from Blazing Sword!
+- TF count rebase (thanks @fprimex)
