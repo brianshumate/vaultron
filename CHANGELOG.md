@@ -126,3 +126,10 @@
 - Address SC2046 in skydome
 - Preserve provider modules for Terraform 0.10.0+
 - Add example for MongoDB secret backend
+
+## v1.5.0 (UNRELEASED)
+
+- Reduced resource usage via count pattern in Vault module (thanks @fprimex)
+- Update indexes in naming for count usage
+ - Fix unform script
+- Even more blazing from Blazing Sword!

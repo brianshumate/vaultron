@@ -59,7 +59,10 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
-**NOTE: `./unform` REMOVES EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!**
+**NOTE: `./unform` REMOVES ALMOST EVERYTHING* including the existing Vault data, logs, and Terraform state — be careful!**
+
+`*` The Terraform provider modules are not removed to save time on
+re-downloading them.
 
 If you want to tear down the containers, but preserve data, logs, and state, use `terraform destroy` instead:
 
@@ -104,26 +107,26 @@ Note that Vaultron has to work around some current quirks of Docker for Mac to d
 
 ```
 +---------------+   +---------------+   +---------------+
-|               |   |               |   |               |  vault_oss_server_1
-|   Vault One   |   |   Vault Two   |   |  Vault Three  |  vault_oss_server_2
-|               |   |               |   |               |  vault_oss_server_3
+|               |   |               |   |               |  vault_oss_server_0
+|   Vault One   |   |   Vault Two   |   |  Vault Three  |  vault_oss_server_1
+|               |   |               |   |               |  vault_oss_server_2
 +-------+-------+   +-------+-------+   +-------+-------+
         |                   |                   |
         |                   |                   |
         |                   |                   |
 +-------v-------+   +-------v-------+   +-------v-------+
-|               |   |               |   |               |  consul_oss_client_1
-| Consul Client |   | Consul Client |   | Consul Client |  consul_oss_client_2
-|     One       |   |     Two       |   |    Three      |  consul_oss_client_3
+|               |   |               |   |               |  consul_oss_client_0
+| Consul Client |   | Consul Client |   | Consul Client |  consul_oss_client_1
+|     One       |   |     Two       |   |    Three      |  consul_oss_client_2
 |               |   |               |   |               |
 +-------+-------+   +-------+-------+   +-------+-------+
         |                   |                   |
         |                   |                   |
         |                   |                   |
 +-------v-------+   +-------v-------+   +-------v-------+
-|               |   |               |   |               |  consul_oss_server_1
-| Consul Server |<->| Consul Server |<->| Consul Server |  consul_oss_server_2
-|     One       |   |     Two       |   |    Three      |  consul_oss_server_3
+|               |   |               |   |               |  consul_oss_server_0
+| Consul Server |<->| Consul Server |<->| Consul Server |  consul_oss_server_1
+|     One       |   |     Two       |   |    Three      |  consul_oss_server_2
 |               |   |               |   |               |
 +---------------+   +---------------+   +---------------+
 ```
@@ -159,12 +162,12 @@ export TF_VAR_consul_version=0.7.5
 ./form
 consul members
 Node                 Address          Status  Type    Build  Protocol  DC
-consul_oss_client_1  172.17.0.6:8301  alive   client  0.7.5  2         arus
-consul_oss_client_2  172.17.0.7:8301  alive   client  0.7.5  2         arus
-consul_oss_client_3  172.17.0.5:8301  alive   client  0.7.5  2         arus
-consul_oss_server_1  172.17.0.2:8301  alive   server  0.7.5  2         arus
-consul_oss_server_2  172.17.0.3:8301  alive   server  0.7.5  2         arus
-consul_oss_server_3  172.17.0.4:8301  alive   server  0.7.5  2         arus
+consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
+consul_oss_client_1  172.17.0.7:8301  alive   client  0.7.5  2         arus
+consul_oss_client_2  172.17.0.5:8301  alive   client  0.7.5  2         arus
+consul_oss_server_0  172.17.0.2:8301  alive   server  0.7.5  2         arus
+consul_oss_server_1  172.17.0.3:8301  alive   server  0.7.5  2         arus
+consul_oss_server_2  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
 It's always best practice to use the same versions for the CLI and containers, so you'll want to ensure that your macOS binary version for Vault and Consul match the ones you specify to run on the Docker containers.
@@ -185,7 +188,7 @@ Vault data is kept in Consul's key/value store, which in turn is written into th
 
 ```
 └── consul
-    ├── consul_oss_client_1
+    ├── consul_oss_client_0
     │   ├── config
     │   │   └── extra_config.hcl
     │   └── data
@@ -200,7 +203,7 @@ Vault data is kept in Consul's key/value store, which in turn is written into th
     │       └── services
     │           └── 9d6114573a8a933df24da735fca223cf
     ├...
-    └── consul_oss_server_1
+    └── consul_oss_server_0
         ├── config
         │   └── extra_config.hcl
         └── data
@@ -222,14 +225,14 @@ The Docker containers are named as shown in the Basic Architecture Overview.
 You can view operational logs for any container with `docker logs` like so:
 
 ```
-docker logs vault_oss_server_1
+docker logs vault_oss_server_0
 ```
 
 The Vault audit logs for each _active server_ are available as:
 
+- `./vault/vault_oss_server_0/audit_log/audit.log`
 - `./vault/vault_oss_server_1/audit_log/audit.log`
 - `./vault/vault_oss_server_2/audit_log/audit.log`
-- `./vault/vault_oss_server_3/audit_log/audit.log`
 
 ## Basic Troubleshooting Questions
 
@@ -262,7 +265,7 @@ Here is simple method to watch HA mode in action using two terminal sessions:
 ```
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=http://localhost:8201 \|   | docker stop vault_oss_server_1     |
+| VAULT_ADDR=http://localhost:8201 \|   | docker stop vault_oss_server_0     |
 | watch -n 1 vault status           |   |                                    |
 |                                   |   |                                    |
 | ...                               |   |                                    |
@@ -317,16 +320,18 @@ You are specifying either a non-existent version (maybe a typo?) or you are spec
 
 Here are some links to resources for the technologies used in this project:
 
-1. [Vault Docker repository](https://hub.docker.com/_/vault/)
-2. [Consul Docker repository](https://hub.docker.com/_/consul/)
-3. [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
-4. [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
-5. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
-6. [Terraform](https://www.terraform.io/)
-7. [Consul](https://www.consul.io/)
-8. [Vault](https://www.vaultproject.io/)
-9. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
-10. [Docker](https://www.docker.com/)
+1. [Vault Docker Hub repository](https://hub.docker.com/_/vault/)
+2. [hashicorp/docker-consul](https://github.com/hashicorp/docker-consul)
+3. [Consul Docker Hub repository](https://hub.docker.com/_/consul/)
+4. [hashicorp/docker-vault](https://github.com/hashicorp/docker-vault)
+5. [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
+6. [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
+7. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
+8. [Terraform](https://www.terraform.io/)
+9. [Consul](https://www.consul.io/)
+10. [Vault](https://www.vaultproject.io/)
+11. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
+12. [Docker](https://www.docker.com/)
 
 ## Who?
 

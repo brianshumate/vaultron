@@ -1,12 +1,12 @@
+consul_oss_client_0
 consul_oss_client_1
 consul_oss_client_2
-consul_oss_client_3
+consul_oss_server_0
 consul_oss_server_1
 consul_oss_server_2
-consul_oss_server_3
+vault_oss_server_0
 vault_oss_server_1
 vault_oss_server_2
-vault_oss_server_3
 .terraform
 terraform.tfstate*
 vault-enterprise*

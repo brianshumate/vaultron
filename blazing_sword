@@ -8,6 +8,8 @@
 #
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
+# Pick one, fix one!
+#
 # shellcheck disable=SC2154
 # shellcheck disable=SC2059
 # shellcheck disable=SC2039
@@ -20,7 +22,7 @@
 ### Check for the existence of a temporary key material file
 ###
 _check_vault_file() {
-    for file in vault_*.tmp; do
+    for file in ./vault/vault_*.tmp; do
         if [ -e "$file" ]; then
             _logmsg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
             exit 0
@@ -80,9 +82,10 @@ _enable_auth_backends() {
 ### Get a subset of unseal keys
 ###
 _get_unseal_keys() {
-    vkey1=$(sed '1q;d' "${vault_dat}" | awk '{print $NF}')
-    vkey2=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
-    vkey3=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}')
+    _logmsg info "Get unseal keys ..."
+    vkey1=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
+    vkey2=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}')
+    vkey3=$(sed '4q;d' "${vault_dat}" | awk '{print $NF}')
 }
 
 ###
@@ -99,7 +102,7 @@ _get_initial_root_token() {
 _initialize_vault() {
     _logmsg info "Initializing Vault ..."
     vault_dat="./vault/vault_$(date +%s).tmp"
-    vault init > "${vault_dat}" 2>&1
+    vault init > "${vault_dat}"
     vault_init_now="$(date)"
     printf "\nGenerated on %s\n" "${vault_init_now}" >> \
            "${vault_dat}"
@@ -143,14 +146,30 @@ _unseal_vault() {
     _logmsg info "Unsealing Vault ..."
     _get_unseal_keys
     for i in {0..2}; do
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey1}" > /dev/null 2>&1 && \
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey2}" > /dev/null 2>&1 && \
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey3}" > /dev/null 2>&1;
+        if ! VAULT_ADDR="http://localhost:820${i}" \
+        vault unseal "$vkey1" > /dev/null 2>&1; then
+        _logmsg alert "Failed to unseal Vault 1"
+        exit 1
+    else
+        _logmsg complete "Unsealed with one shard for Vault 1!"
+    fi
+        if ! VAULT_ADDR="http://localhost:820${i}" \
+        vault unseal "$vkey2" > /dev/null 2>&1; then
+        _logmsg alert "Failed to unseal vault 2"
+        exit 1
+    else
+        _logmsg complete "Unsealed with one shard for Vault 2!"
+    fi
+        if ! VAULT_ADDR="http://localhost:820${i}" \
+        vault unseal "$vkey3" > /dev/null 2>&1; then
+        _logmsg alert "Failed to unseal Vault 3"
+        exit 1
+    else
+        _logmsg complete "Unsealed with one shard for Vault 3!"
+    fi
+
     done
-    _logmsg info "Vault unsealed!"
+    _logmsg success "Vault unsealed!"
 }
 
 ###
