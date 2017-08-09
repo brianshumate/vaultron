@@ -127,8 +127,9 @@
 - Preserve provider modules for Terraform 0.10.0+
 - Add example for MongoDB secret backend
 
-## v1.5.0 (UNRELEASED)
+## v1.5.0
 
+- Vault version 0.8.0!
 - Reduced resource usage via count pattern in Vault module (thanks @fprimex)
 - Update indexes in naming for count usage
  - Fix unform script
