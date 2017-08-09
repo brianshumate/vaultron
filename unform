@@ -54,6 +54,18 @@ rm -rf ./vault/vault_*.tmp
 errors=$((errors + $?))
 
 ###
+### Remove Vault custom server data
+###
+rm -rf ./vault/vault_custom_server_0
+errors=$((errors + $?))
+rm -rf ./vault/vault_custom_server_1
+errors=$((errors + $?))
+rm -rf ./vault/vault_custom_server_2
+errors=$((errors + $?))
+rm -rf ./vault/vault_*.tmp
+errors=$((errors + $?))
+
+###
 ### Remove Terraform state, plans, backend configs, and logs
 ###
 rm -rf ./tfstate/terraform.tfstate*

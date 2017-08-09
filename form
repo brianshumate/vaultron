@@ -69,8 +69,14 @@ export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 _check_vault_version
 _check_consul_version
 
-_logmsg greeting "Consul version: ${TF_VAR_consul_version}"
-_logmsg greeting "Vault version: ${TF_VAR_vault_version}"
+_logmsg greeting "Consul image version: ${TF_VAR_consul_version}"
+
+if [ "$TF_VAR_vault_custom_instance_count" = 3 ]; then
+  _logmsg greeting "Vault image version: ${TF_VAR_vault_version} (with custom binary)"
+else
+  _logmsg greeting "Vault image version: ${TF_VAR_vault_version}"
+fi
+
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 

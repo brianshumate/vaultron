@@ -134,3 +134,4 @@
  - Fix unform script
 - Even more blazing from Blazing Sword!
 - TF count rebase (thanks @fprimex)
+- Custom Vault binary support!
