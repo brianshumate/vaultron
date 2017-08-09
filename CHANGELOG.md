@@ -136,3 +136,7 @@
 - Even more blazing from Blazing Sword!
 - TF count rebase (thanks @fprimex)
 - Custom Vault binary support!
+
+## v1.5.1
+
+- Fix for Consul server with count issue
