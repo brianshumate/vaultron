@@ -146,3 +146,4 @@
 - Update test_vaultron
 - Reintroduce count on Consul clients (needs refinement)
 - Correct Vault custom template configuration
+- Terraform apply, init, and plan failures now show most recent output
