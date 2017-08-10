@@ -96,7 +96,7 @@ resource "docker_container" "vault_oss_server" {
 
 data "template_file" "vault_custom_server_config" {
   count = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
+  template = "${file("${path.module}/templates/vault_config_custom.tpl")}"
   vars {
     address = "0.0.0.0:8200"
     # Query Consul DNS to determine Consul client IP
@@ -109,6 +109,7 @@ data "template_file" "vault_custom_server_config" {
     disable_clustering = "${var.disable_clustering}"
     tls_disable = 1,
     service_tags = "vaultron"
+    ui = true
   }
 }
 

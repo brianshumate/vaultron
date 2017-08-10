@@ -145,3 +145,4 @@
 
 - Update test_vaultron
 - Reintroduce count on Consul clients (needs refinement)
+- Correct Vault custom template configuration

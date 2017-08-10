@@ -2,23 +2,24 @@
 #
 # This script is used to form Vaultron with Terraform
 #
+# Some of these would work only for pure POSIX
+# shellcheck disable=SC2039
 # shellcheck disable=SC2059
 # shellcheck disable=SC1091
 
 . ./skydome
 
+TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:0}"
+
 _form_message () {
 cat << 'EOF'
-Now that Vaultron is formed, you can visit the Consul web UI
-at http://localhost:8500
+You can now visit the Consul web UI at http://localhost:8500
 
-Or you can interact with Vault and Consul at the command line by first
-exporting the following environment variables:
+or you can interact with vault and consul CLI utilities after
+exporting the following environment variables in your shell:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
-
-Then you can use your local vault and consul commands.
 EOF
 }
 
@@ -72,9 +73,9 @@ _check_consul_version
 _logmsg greeting "Consul image version: ${TF_VAR_consul_version}"
 
 if [ "$TF_VAR_vault_custom_instance_count" = 3 ]; then
-  _logmsg greeting "Vault image version: ${TF_VAR_vault_version} (with custom binary)"
+  _logmsg greeting "Vault Docker image version: ${txtblu}custom binary${txtrst}"
 else
-  _logmsg greeting "Vault image version: ${TF_VAR_vault_version}"
+  _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
 fi
 
 

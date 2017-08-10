@@ -1,7 +1,9 @@
 ###
-### Vaultron: Vault custom version 0.7.3 configuration file
+### Vaultron: Vault custom configuration file
 ###
+
 cluster_name = "${cluster_name }"
+ui = true
 
 storage "consul" {
   address = "${consul_address}:8500"
@@ -14,5 +16,3 @@ listener "tcp" {
   address = "${address}"
   tls_disable = "${tls_disable}"
 }
-
-ui = "true"
