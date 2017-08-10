@@ -14,14 +14,25 @@ output "consul_oss_server_ips" {
     "${docker_container.consul_oss_server_2.ip_address}"
   ]
 }
+#
+#output "consul_oss_client_ips" {
+#  description = "Consul OSS Client IP addresses"
+#  value = [
+#    "${docker_container.consul_oss_client_0.ip_address}",
+#    "${docker_container.consul_oss_client_1.ip_address}",
+#    "${docker_container.consul_oss_client_2.ip_address}"
+#  ]
+#}
+
+
+#output "consul_oss_server_ips" {
+#  description = "Consul OSS Server IP addresses"
+#  value = ["${docker_container.consul_oss_server.*.ip_address}"]
+#}
 
 output "consul_oss_client_ips" {
   description = "Consul OSS Client IP addresses"
-  value = [
-    "${docker_container.consul_oss_client_0.ip_address}",
-    "${docker_container.consul_oss_client_1.ip_address}",
-    "${docker_container.consul_oss_client_2.ip_address}"
-  ]
+  value = ["${docker_container.consul_oss_client.*.ip_address}"]
 }
 
 ###
@@ -225,99 +236,36 @@ data "template_file" "consul_oss_client_common_config" {
 }
 
 ###
-### Consul Open Source Client 1
+### Consul Open Source Clients
 ###
 
-resource "docker_container" "consul_oss_client_0" {
-  name  = "consul_oss_client_0"
+resource "docker_container" "consul_oss_client" {
+  count = "3"
+  name  = "${format("consul_oss_client_%d", count.index)}"
   image = "${docker_image.consul.latest}"
   upload = {
     content = "${data.template_file.consul_oss_client_common_config.rendered}"
     file = "/consul/config/common_config.json"
   }
   volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_0/config"
+    host_path = "${path.module}/../../../consul/consul_oss_client_${count.index}/config"
     container_path = "/consul/config"
   }
   volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_0/data"
+    host_path = "${path.module}/../../../consul/consul_oss_client_${count.index}/data"
     container_path = "/consul/data"
   }
-  entrypoint = ["consul",
-                "agent",
-                "-config-dir=/consul/config",
-                "-client=0.0.0.0",
-                "-node=consul_oss_client_0",
-                "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
-                "-datacenter=${var.datacenter_name}",
-                "-data-dir=/consul/data",
-                ],
-  dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
-  dns_search = ["consul"],
-  must_run = true
-}
-
-###
-### Consul Open Source Client 2
-###
-
-resource "docker_container" "consul_oss_client_1" {
-  name  = "consul_oss_client_1"
-  image = "${docker_image.consul.latest}"
-  upload = {
-    content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.json"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_1/config"
-    container_path = "/consul/config"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_1/data"
-    container_path = "/consul/data"
-  }
-  entrypoint = ["consul",
-                "agent",
-                "-config-dir=/consul/config",
-                "-client=0.0.0.0",
-                "-node=consul_oss_client_1",
-                "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
-                "-datacenter=${var.datacenter_name}",
-                "-data-dir=/consul/data",
-                ],
-  dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
-  dns_search = ["consul"],
-  must_run = true
-}
-
-###
-### Consul Open Source Client 3
-###
-
-resource "docker_container" "consul_oss_client_2" {
-  name  = "consul_oss_client_2"
-  image = "${docker_image.consul.latest}"
-  upload = {
-    content = "${data.template_file.consul_oss_client_common_config.rendered}"
-    file = "/consul/config/common_config.json"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_2/config"
-    container_path = "/consul/config"
-  }
-  volumes {
-    host_path = "${path.module}/../../../consul/consul_oss_client_2/data"
-    container_path = "/consul/data"
-  }
-  entrypoint = ["consul",
-                "agent",
-                "-config-dir=/consul/config",
-                "-client=0.0.0.0",
-                "-node=consul_oss_client_2",
-                "-retry-join=${docker_container.consul_oss_server_2.ip_address}",
-                "-datacenter=${var.datacenter_name}",
-                "-data-dir=/consul/data",
-                ],
+ entrypoint = ["${list("consul",
+                     "agent",
+                     "-config-dir=/consul/config",
+                     "-client=0.0.0.0",
+                     "-data-dir=/consul/data",
+                     "-node=consul_oss_client_${count.index}",
+                     "-datacenter=${var.datacenter_name}",
+                     "-retry-join=${docker_container.consul_oss_server_2.ip_address}",
+                     "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
+                     "-retry-join=${docker_container.consul_oss_server_0.ip_address}"
+                     )}"]
   dns = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"],
   dns_search = ["consul"],
   must_run = true

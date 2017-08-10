@@ -144,3 +144,4 @@
 ## v1.5.2 (UNRELEASED)
 
 - Update test_vaultron
+- Reintroduce count on Consul clients (needs refinement)
