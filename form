@@ -3,6 +3,7 @@
 # This script is used to form Vaultron with Terraform
 #
 # Some of these would work only for pure POSIX
+# shellcheck disable=SC2154
 # shellcheck disable=SC2039
 # shellcheck disable=SC2059
 # shellcheck disable=SC1091
@@ -48,16 +49,28 @@ _check_vault_version() {
   fi
 }
 
+_check_custom_binary() {
+  if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+    if [ ! -f ./custom/"$1" ]; then
+      _logmsg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
+      exit 1
+    fi
+  fi
+}
+
 if [ -z "$(command -v terraform)" ]; then
   _logmsg alert "Vaultron cannot form! Could not locate terraform command."
   _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
   exit 1
 fi
 
+_check_custom_binary vault
+
 _logmsg greeting "Form Vaultron! ..."
 
 if ! _init; then
-  _logmsg alert "Vaultron cannot form! Check terraform init output."
+  _logmsg alert "Vaultron cannot form! terraform init output from $init_out:"
+  cat "$init_out"
   exit 1
 fi
 
@@ -70,24 +83,25 @@ export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 _check_vault_version
 _check_consul_version
 
-_logmsg greeting "Consul image version: ${TF_VAR_consul_version}"
+_logmsg greeting "Vault Docker image version: ${TF_VAR_consul_version}"
 
-if [ "$TF_VAR_vault_custom_instance_count" = 3 ]; then
-  _logmsg greeting "Vault Docker image version: ${txtblu}custom binary${txtrst}"
+if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+  _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version} ${txtrst}(${txtblu}custom binary${txtrst})"
 else
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
 fi
 
-
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
 if ! _plan "${plan_file}"; then
-  _logmsg alert "Vaultron cannot form! Check terraform plan output."
+  _logmsg alert "Vaultron cannot form! terraform plan output from $plan_out:"
+  cat "$plan_out"
   exit 1
 fi
 
 if ! _apply "${plan_file}"; then
-  _logmsg alert "Vaultron cannot form! Check terraform apply output."
+  _logmsg alert "Vaultron cannot form! terraform apply output from $apply_out:"
+  cat "$apply_out"
   exit 1
 fi
 

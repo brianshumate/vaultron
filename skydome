@@ -82,7 +82,8 @@ _tfmsg() {
 _init() {
     tfout="$(terraform init 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-init.log
+    init_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-init.log"
+    echo "$tfout" > "$init_out"
     _tfmsg "$tfout"
     return $ret
 }
@@ -90,7 +91,8 @@ _init() {
 _apply() {
     tfout="$(terraform apply "$1" 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-apply.log
+    apply_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-apply.log"
+    echo "$tfout" > "$apply_out"
     _tfmsg "$tfout"
     return $ret
 }
@@ -98,7 +100,8 @@ _apply() {
 _plan() {
     tfout="$(terraform plan -out="$1" 2>&1)"
     ret=$?
-    echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-plan.log
+    plan_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-plan.log"
+    echo "$tfout" > "$plan_out"
     _tfmsg "$tfout"
     return $ret
 }

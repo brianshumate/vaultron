@@ -71,8 +71,8 @@ resource "docker_container" "vault_oss_server" {
     host_path = "${path.module}/../../../vault/vault_oss_server_${count.index}/config"
     container_path = "/vault/config"
   }
-  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"],
-  dns = ["${var.consul_server_ips}"],
+  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  dns = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
   capabilities {
     add = ["IPC_LOCK"]
