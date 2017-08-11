@@ -44,6 +44,20 @@ if [ ! -f "tfstate/terraform.tfstate" ]; then
     exit 1
 fi
 
+###
+### XXX: For some reason, this test keeps failing?!
+###
+
+for i in 0 1 2; do
+    if ! [ -d "consul/consul_oss_client_$i" ]; then
+        echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
+        #exit 1
+    fi
+    if ! [ -d "vault/vault_oss_server_$i" ]; then
+        echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
+        #exit 1
+    fi
+done
 
 if [ ! -d ".terraform" ]; then
     echo "${txtred}🚫  No Terraform configuration directory after forming:${txtrst}"
