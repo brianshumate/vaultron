@@ -234,7 +234,7 @@ The Vault audit logs for each _active server_ are available as:
 
 ### A note about custom Binaries
 
-Vaultron installs the official open source binaries, but if you'd prefer to use recent source builds or some other Consul or Vault binaries, just drop `consul` or `vault` into `custom/` and set these environment variables:
+Vaultron installs the official open source Vault binaries, but if you'd prefer to use recent source builds or some other Consul or Vault binaries, just drop `vault` into `custom/` and set these environment variables:
 
 ```
 export TF_VAR_vault_oss_instance_count=0 \
