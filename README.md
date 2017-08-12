@@ -107,7 +107,7 @@ Note that Vaultron has to work around some current quirks of Docker for Mac to d
 ```
 +---------------+   +---------------+   +---------------+
 |               |   |               |   |               |  vault_oss_server_0
-|   Vault One   |   |   Vault Two   |   |  Vault Three  |  vault_oss_server_1
+|    Vault 0    |   |    Vault 1    |   |    Vault 2    |  vault_oss_server_1
 |               |   |               |   |               |  vault_oss_server_2
 +-------+-------+   +-------+-------+   +-------+-------+
         |                   |                   |
@@ -116,7 +116,7 @@ Note that Vaultron has to work around some current quirks of Docker for Mac to d
 +-------v-------+   +-------v-------+   +-------v-------+
 |               |   |               |   |               |  consul_oss_client_0
 | Consul Client |   | Consul Client |   | Consul Client |  consul_oss_client_1
-|     One       |   |     Two       |   |    Three      |  consul_oss_client_2
+|               |   |               |   |               |  consul_oss_client_2
 |               |   |               |   |               |
 +-------+-------+   +-------+-------+   +-------+-------+
         |                   |                   |
@@ -125,7 +125,7 @@ Note that Vaultron has to work around some current quirks of Docker for Mac to d
 +-------v-------+   +-------v-------+   +-------v-------+
 |               |   |               |   |               |  consul_oss_server_0
 | Consul Server |<->| Consul Server |<->| Consul Server |  consul_oss_server_1
-|     One       |   |     Two       |   |    Three      |  consul_oss_server_2
+|               |   |               |   |               |  consul_oss_server_2
 |               |   |               |   |               |
 +---------------+   +---------------+   +---------------+
 ```
