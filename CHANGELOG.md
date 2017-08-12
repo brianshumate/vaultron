@@ -153,6 +153,7 @@
 
 ## v1.5.3
 
+- Consul v0.9.2
 - Implement `VAULT_CLUSTER_INTERFACE` from the default entrypoint script
 - Explicitly set Raft protocol 3 in >= 0.8.x templates
 - Improve form script
