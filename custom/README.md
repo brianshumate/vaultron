@@ -1,4 +1,4 @@
-Place your custom `consul` and vault` binaries here and set the following
+Place your custom `consul` and `vault` binaries here and set the following
 to use them:
 
 ```

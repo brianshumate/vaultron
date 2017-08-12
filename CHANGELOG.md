@@ -141,10 +141,11 @@
 
 - Fix for Consul server with count issue
 
-## v1.5.2 (UNRELEASED)
+## v1.5.2
 
 - Update test_vaultron
 - Reintroduce count on Consul clients (needs refinement)
 - Correct Vault custom template configuration
 - Terraform apply, init, and plan failures now show most recent output
 - Fix test default var value
+- Update documentation
