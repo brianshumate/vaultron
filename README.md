@@ -266,7 +266,7 @@ vault status
 Error checking seal status: Get https://127.0.0.1:8200/v1/sys/seal-status: http: server gave HTTP response to HTTPS client
 ```
 
-If your Vaultron successfully formed, then tThis is likely due to not exporting the environment variables shown at the conclusion of `./form`:
+If your Vaultron successfully formed, then this is likely due to not exporting the environment variables shown at the conclusion of `./form`:
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
