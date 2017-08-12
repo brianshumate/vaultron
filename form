@@ -84,7 +84,7 @@ export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 _check_vault_version
 _check_consul_version
 
-_logmsg greeting "Vault Docker image version: ${TF_VAR_consul_version}"
+_logmsg greeting "Consul Docker image version: ${TF_VAR_consul_version}"
 
 # integer expression expected error...
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then

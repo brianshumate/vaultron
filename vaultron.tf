@@ -74,7 +74,7 @@ variable "vault_custom_instance_count" {
 ###
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "0.9.0"
+  default = "0.9.2"
 }
 
 # Set TF_VAR_use_consul_oss to set this

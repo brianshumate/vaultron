@@ -151,7 +151,9 @@
 - Update documentation
 
 
-## v1.5.3 (UNRELEASED)
+## v1.5.3
 
 - Implement `VAULT_CLUSTER_INTERFACE` from the default entrypoint script
+- Explicitly set Raft protocol 3 in >= 0.8.x templates
+- Improve form script
 - Update documentation
