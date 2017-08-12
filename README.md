@@ -32,15 +32,15 @@ Make sure that you have first installed the binaries for Consul, Vault, Terrafor
 
 After doing so, it's just 3 steps to forming your own Vaultron:
 
-1. `git clone https://github.com/brianshumate/vaultron.git`
-2. `cd vaultron`
-3. `./form`
+1. `$ git clone https://github.com/brianshumate/vaultron.git`
+2. `$ cd vaultron`
+3. `$ ./form`
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
 
 ```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="localhost:8500"
+$ export VAULT_ADDR="http://localhost:8200"
 ```
 
 ### What's Next?
@@ -66,7 +66,7 @@ Note that the Terraform provider modules are not removed to save resources and t
 If you want to tear down the containers, but preserve data, logs, and state, use `terraform destroy` instead:
 
 ```
-terraform destroy -state=./tfstate/terraform.tfstate
+$ terraform destroy -state=./tfstate/terraform.tfstate
 ```
 
 If you are already familiar with Vault and would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute `./blazing_sword` to do all of this for you.
@@ -76,8 +76,8 @@ If you are already familiar with Vault and would like to save time by rapidly in
 If you are familiar with Terraform you also can skip the `form` and `unform` commands and just use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances, however:
 
 ```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="localhost:8500"
+$ export VAULT_ADDR="http://localhost:8200"
 ```
 
 ## What's in the Box?
@@ -85,6 +85,8 @@ export VAULT_ADDR="http://localhost:8200"
 Vaultron technical specifications quick reference card:
 
 ```
+=============================================================================
+-----------------------------------------------------------------------------
 Name:          Vaultron
 Type:          Secret Management Unit V (defaults to latest Vault software)
 Builder:       Terraform
@@ -96,6 +98,8 @@ Agility:       ★★★★
 Damage:        ★★★
 Mass:          ★★
 Speed:         ★★★★★
+-----------------------------------------------------------------------------
+=============================================================================
 ```
 
 Here are some slightly more serious notes and questions about what Vaultron is and how it can work for you.
@@ -143,9 +147,9 @@ Note that each Vault instance is available to the local computer, but via Docker
 Vaultron runs the `:latest` official Vault container image, but if you would prefer a prior version, you can export the `TF_VAR_vault_version` environment variable to override:
 
 ```
-export TF_VAR_vault_version=0.6.5
-./form
-./blazing_sword
+$ export TF_VAR_vault_version=0.6.5
+$ ./form
+$ ./blazing_sword
 ...
 Version: 0.6.5
 ...
@@ -154,9 +158,9 @@ Version: 0.6.5
 To run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
 
 ```
-export TF_VAR_consul_version=0.7.5
-./form
-consul members
+$ export TF_VAR_consul_version=0.7.5
+$ ./form
+$ consul members
 Node                 Address          Status  Type    Build  Protocol  DC
 consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
 consul_oss_client_1  172.17.0.7:8301  alive   client  0.7.5  2         arus
@@ -175,7 +179,7 @@ The 3 Consul servers have DNS exposed to port 53 of their internal container add
 Additionally Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
 
 ```
-dig -p 8600 @localhost consul.service.consul
+$ dig -p 8600 @localhost consul.service.consul
 ...
 ;; ANSWER SECTION:
 consul.service.consul.  0 IN  A 172.17.0.3
@@ -186,7 +190,7 @@ consul.service.consul.  0 IN  A 172.17.0.4
 or
 
 ```
-dig -p 8600 @localhost active.vault.service.consul
+$ dig -p 8600 @localhost active.vault.service.consul
 ;; ANSWER SECTION:
 active.vault.service.consul. 0  IN  A 172.17.0.5
 ```
@@ -194,11 +198,20 @@ active.vault.service.consul. 0  IN  A 172.17.0.5
 or
 
 ```
-dig -p 8600 @localhost vault.service.consul SRV
+$ dig -p 8600 @localhost vault.service.consul SRV
 ;; ANSWER SECTION:
 vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_0.node.arus.consul.
 vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_2.node.arus.consul.
 vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_1.node.arus.consul.
+```
+
+or
+
+```
+$ dig -p 8600 @localhost consul_oss_server_0.node.consul
+...
+;; ANSWER SECTION:
+consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 ```
 
 ### Security Configuration?
@@ -358,4 +371,4 @@ Here are some links to resources for the technologies used in this project:
 
 ## Who?
 
-Valtron was created by [Brian Shumate](https://github.com/brianshumate) and made possible through the generous time of the good people named in [CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)
+Vaultron was created by [Brian Shumate](https://github.com/brianshumate) and made possible through the generous time of the good people named in [CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)

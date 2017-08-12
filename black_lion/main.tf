@@ -75,6 +75,7 @@ resource "docker_container" "vault_oss_server" {
     add = ["IPC_LOCK"]
   }
   must_run = true
+  env = ["VAULT_CLUSTER_INTERFACE=eth0"]
   ports {
     internal = "8200"
     external = "${format("820%d", count.index)}"

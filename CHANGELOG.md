@@ -149,3 +149,9 @@
 - Terraform apply, init, and plan failures now show most recent output
 - Fix test default var value
 - Update documentation
+
+
+## v1.5.3 (UNRELEASED)
+
+- Implement `VAULT_CLUSTER_INTERFACE` from the default entrypoint script
+- Update documentation
