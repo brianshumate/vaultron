@@ -38,9 +38,6 @@ data "template_file" "vault_oss_server_config" {
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
   vars {
     address = "0.0.0.0:8200"
-    # Query Consul DNS to determine Consul client IP
-    # doesn't work / racy
-    # consul_address = "${format("consul_oss_client_%d.node.consul", count.index)}"
     consul_address = "${element(var.consul_client_ips, count.index)}"
     datacenter = "${var.datacenter_name}"
     vault_path = "${var.vault_path}"
@@ -99,9 +96,6 @@ data "template_file" "vault_custom_server_config" {
   template = "${file("${path.module}/templates/vault_config_custom.tpl")}"
   vars {
     address = "0.0.0.0:8200"
-    # Query Consul DNS to determine Consul client IP
-    # doesn't work / racy
-    # consul_address = "${format("consul_oss_client_%d.node.consul", count.index)}"
     consul_address = "${element(var.consul_client_ips, count.index)}"
     datacenter = "${var.datacenter_name}"
     vault_path = "${var.vault_path}"

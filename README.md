@@ -102,7 +102,7 @@ Here are some slightly more serious notes and questions about what Vaultron is a
 
 ### Basic Architecture Overview
 
-Note that Vaultron has to work around some current quirks of Docker for Mac to do its thing, and is only currently tested on Linux and macOS, but here is basically what you are getting:
+Note that Vaultron has to work around some current networking quirks of Docker for Mac to do its thing and is only currently tested on Linux and macOS, but here is basically what you are getting:
 
 ```
 +---------------+   +---------------+   +---------------+
@@ -130,15 +130,13 @@ Note that Vaultron has to work around some current quirks of Docker for Mac to d
 +---------------+   +---------------+   +---------------+
 ```
 
-Vaultron consists of three Vault server containers, three Consul client containers, and three Consul server containers. Vault servers connect directly to the Consul clients, and the Consul clients connect to the Consul server cluster.
+Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers. Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster.
 
-Note that each Vault instance is available to the local computer, but via published ports scheme only, so the addresses of the Vault servers are:
+Note that each Vault instance is available to the local computer, but via Docker's published ports scheme only, so the addresses of the Vault servers are:
 
 - localhost:8200
 - localhost:8201
 - localhost:8202
-
-> NOTE: When you source the `./form` script, it sets `VAULT_ADDR` to `http://localhost:8200` by default.
 
 ### Changing Vault and Consul Versions
 
@@ -153,7 +151,7 @@ Version: 0.6.5
 ...
 ```
 
-You can do the same to run a different version of the Consul container with the `TF_VAR_consul_version` environment variable as well:
+To run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
 
 ```
 export TF_VAR_consul_version=0.7.5
@@ -168,13 +166,46 @@ consul_oss_server_1  172.17.0.3:8301  alive   server  0.7.5  2         arus
 consul_oss_server_2  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
-It's always best practice to use the same versions for the CLI and containers, so you'll want to ensure that your macOS binary version for Vault and Consul match the ones you specify to run on the Docker containers.
+Be sure to always use the same versions of Consul and Vault for both  the CLI binaries and container image.
 
-### Access Control Lists and Transport Layer Security
+### Consul DNS
 
-Given the intended use cases for this project, the working solution is essentially a blank canvas and there are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc.
+The 3 Consul servers have DNS exposed to port 53 of their internal container addresses, and the Consul clients and Vault sever containers are configured to use the Consul servers for DNS as well.
 
-Those kinds of changes are left to configuration as developed by the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
+Additionally Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
+
+```
+dig -p 8600 @localhost consul.service.consul
+...
+;; ANSWER SECTION:
+consul.service.consul.  0 IN  A 172.17.0.3
+consul.service.consul.  0 IN  A 172.17.0.2
+consul.service.consul.  0 IN  A 172.17.0.4
+```
+
+or
+
+```
+dig -p 8600 @localhost active.vault.service.consul
+;; ANSWER SECTION:
+active.vault.service.consul. 0  IN  A 172.17.0.5
+```
+
+or
+
+```
+dig -p 8600 @localhost vault.service.consul SRV
+;; ANSWER SECTION:
+vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_0.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_2.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_1.node.arus.consul.
+```
+
+### Security Configuration?
+
+Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas.  There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc.
+
+Those changes are left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
@@ -182,25 +213,10 @@ Those kinds of changes are left to configuration as developed by the user for th
 
 ### Where's My Vault Data?
 
-Vault data is kept in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers. Here is the tree showing the directory structure for both a Consul client and server:
+Vault data is kept in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers. Here is the tree showing the directory structure for a Consul server:
 
 ```
 └── consul
-    ├── consul_oss_client_0
-    │   ├── config
-    │   │   └── extra_config.hcl
-    │   └── data
-    │       ├── checkpoint-signature
-    │       ├── checks
-    │       │   ├── f6c7ee2019ed6055eef2b3e4facb36eb
-    │       │   └── state
-    │       │       └── f6c7ee2019ed6055eef2b3e4facb36eb
-    │       ├── node-id
-    │       ├── serf
-    │       │   └── local.snapshot
-    │       └── services
-    │           └── 9d6114573a8a933df24da735fca223cf
-    ├...
     └── consul_oss_server_0
         ├── config
         │   └── extra_config.hcl
