@@ -158,3 +158,7 @@
 - Explicitly set Raft protocol 3 in >= 0.8.x templates
 - Improve form script
 - Update documentation
+
+## v1.5.4 (UNRELEASED)
+
+- Explicitly opt out of Consul ACLs with acl_enforce_version_8 set to false in Consul versions >= 0.8.0

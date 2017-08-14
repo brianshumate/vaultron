@@ -216,9 +216,11 @@ consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 
 ### Security Configuration?
 
-Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas.  There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc.
+Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate usability over security.
 
-Those changes are left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
+There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc. In fact for Consul versions >= 0.8.0, ACLs have been explicitly opt-out via `acl_enforce_version_8` set to `false`.
+
+Enabling ACLs and encryption is left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
