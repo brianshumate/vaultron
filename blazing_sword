@@ -150,22 +150,16 @@ _unseal_vault() {
         vault unseal "$vkey1" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 1"
         exit 1
-    else
-        _logmsg complete "Unsealed with one shard for Vault 1!"
     fi
         if ! VAULT_ADDR="http://localhost:820${i}" \
         vault unseal "$vkey2" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal vault 2"
         exit 1
-    else
-        _logmsg complete "Unsealed with one shard for Vault 2!"
     fi
         if ! VAULT_ADDR="http://localhost:820${i}" \
         vault unseal "$vkey3" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 3"
         exit 1
-    else
-        _logmsg complete "Unsealed with one shard for Vault 3!"
     fi
 
     done

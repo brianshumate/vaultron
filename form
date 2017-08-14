@@ -50,8 +50,7 @@ _check_vault_version() {
 }
 
 _check_custom_binary() {
-  # integer expression expected error...
-  if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+  if [ $TF_VAR_vault_custom_instance_count -gt 0 ]; then
     if [ ! -f ./custom/"$1" ]; then
       _logmsg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
       exit 1
@@ -86,7 +85,6 @@ _check_consul_version
 
 _logmsg greeting "Consul Docker image version: ${TF_VAR_consul_version}"
 
-# integer expression expected error...
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version} ${txtrst}(${txtblu}custom binary${txtrst})"
 else
