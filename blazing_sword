@@ -163,7 +163,7 @@ _unseal_vault() {
     fi
 
     done
-    _logmsg success "Vault unsealed!"
+    _logmsg complete "Vault unsealed!"
 }
 
 ###

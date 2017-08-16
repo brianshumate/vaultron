@@ -73,7 +73,7 @@ If you are already familiar with Vault and would like to save time by rapidly in
 
 **NOTE**: This will persist the unseal keys and initial root authentication token in a file in the `vault` directory named like `./vault/vault_1500766014.tmp`.
 
-If you are familiar with Terraform you also can skip the `form` and `unform` commands and just use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances, however:
+If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
 ```
 $ export CONSUL_HTTP_ADDR="localhost:8500"
@@ -249,7 +249,7 @@ Vault data is kept in Consul's key/value store, which in turn is written into th
 
 ### What About Logs?
 
-The Docker containers are named as shown in the Basic Architecture Overview.
+The Docker containers are named as shown in the [Basic Architecture Overview](#basic-architecture-overview).
 
 You can view operational logs for any container with `docker logs` like so:
 
