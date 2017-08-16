@@ -68,6 +68,8 @@ _check_custom_binary vault
 
 _logmsg greeting "Form Vaultron! ..."
 
+_tflogdir
+
 if ! _init; then
   _logmsg alert "Vaultron cannot form! terraform init output from $init_out:"
   cat "$init_out"

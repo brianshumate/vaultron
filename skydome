@@ -79,6 +79,12 @@ _tfmsg() {
     fi
 }
 
+_tflogdir() {
+    if ! [ -d ./log ]; then
+        mkdir ./log
+    fi
+}
+
 _init() {
     tfout="$(terraform init 2>&1)"
     ret=$?

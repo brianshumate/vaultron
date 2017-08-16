@@ -9,6 +9,9 @@ consul_oss_server_2
 vault_oss_server_0
 vault_oss_server_1
 vault_oss_server_2
+vault_custom_server_0
+vault_custom_server_1
+vault_custom_server_2
 .terraform
 terraform.tfstate*
 vault-enterprise*
