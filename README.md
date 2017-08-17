@@ -294,7 +294,7 @@ Once you execute the above, you should be good to go!
 
 If you have not yet unsealed Vault, it is expected to appear as failing in the Consul UI. Unsealing Vault should solve that.
 
-### Something Something HA Problem!
+### Something, Something — HA Problem!
 
 High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
 
