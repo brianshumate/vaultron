@@ -107,6 +107,26 @@ variable "consul_data_dir" {
   default = "/consul/data"
 }
 
+# Set TF_VAR_consul_oss to set this
+variable "consul_oss" {
+  default = "1"
+}
+
+# Set TF_VAR_consul_oss_instance_count to set this
+variable "consul_oss_instance_count" {
+  default = "3"
+}
+
+# Set TF_VAR_consul_oss to set this
+variable "consul_custom" {
+  default = "0"
+}
+
+# Set TF_VAR_consul_custom_instance_count to set this
+variable "consul_custom_instance_count" {
+  default = "0"
+}
+
 module "consul_cluster" {
   source = "red_lion"
   datacenter_name = "${var.datacenter_name}"
@@ -117,6 +137,10 @@ module "consul_cluster" {
   consul_recursor_2 = "${var.consul_recursor_2}"
   consul_acl_datacenter = "${var.consul_acl_datacenter}"
   consul_data_dir = "${var.consul_data_dir}"
+  consul_oss = "${var.consul_oss}"
+  consul_oss_instance_count = "${var.consul_oss_instance_count}"
+  consul_custom = "${var.consul_custom}"
+  consul_custom_instance_count = "${var.consul_custom_instance_count}"
 }
 
 module "vaultron" {
