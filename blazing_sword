@@ -1,10 +1,14 @@
 #!/bin/sh
 #
+# blazing_sword
+#
 # Automatically starts a Vault cluster for use in development or other
 # evaluation style use cases:
 #
-# - Initializes Vault and saves key material to temporary file
-# - Unseals Vault with the key material from the temporary file
+# - Initialize Vault
+# - Save key material to temporary file
+# - Unseal Vault with key material from temporary file
+# - Enable a range of auth and secret backends with default mounts
 #
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
@@ -147,17 +151,17 @@ _unseal_vault() {
     _get_unseal_keys
     for i in {0..2}; do
         if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey1"; then
+        vault unseal "$vkey1" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 1"
         exit 1
     fi
         if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey2"; then
+        vault unseal "$vkey2" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal vault 2"
         exit 1
     fi
         if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey3"; then
+        vault unseal "$vkey3" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 3"
         exit 1
     fi

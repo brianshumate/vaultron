@@ -10,6 +10,7 @@ export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 
 export txtblu="\033[0;34m" # Blue
+export txtcya="\033[0;36m" # Cyan
 export txtgrn="\033[0;32m" # Green
 export txtred="\033[0;31m" # Red
 export txtylw="\033[0;33m" # Yellow
@@ -27,7 +28,7 @@ _logmsg() {
             printf "✨  ${txtylw}${msgtxt}\n"
             ;;
         info)
-            printf "ℹ️  ${txtblu}${msgtxt}\n"
+            printf "ℹ️  ${txtcya}${msgtxt}\n"
             ;;
         success)
             printf "🤖  ${txtgrn}${msgtxt}\n"

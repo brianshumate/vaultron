@@ -3,8 +3,23 @@
 #############################################################################
 
 ###
+### Version variables
+###
+
+# Set TF_VAR_vault_version to set this
+variable "vault_version" {
+  default = "0.8.2"
+}
+
+# Set TF_VAR_consul_version to set this
+variable "consul_version" {
+  default = "0.9.3"
+}
+
+###
 ### Global variables
 ###
+
 terraform {
   backend "local" {
     path = "tfstate/terraform.tfstate"
@@ -24,10 +39,6 @@ variable "datacenter_name" {
 ###
 ### Vault related variables
 ###
-# Set TF_VAR_vault_version to set this
-variable "vault_version" {
-  default = "0.8.0"
-}
 
 # Set TF_VAR_use_vault_oss to set this
 variable "use_vault_oss" {
@@ -72,10 +83,6 @@ variable "vault_custom_instance_count" {
 ###
 ### Consul related variables
 ###
-# Set TF_VAR_consul_version to set this
-variable "consul_version" {
-  default = "0.9.2"
-}
 
 # Set TF_VAR_use_consul_oss to set this
 variable "use_consul_oss" {

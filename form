@@ -14,13 +14,17 @@ TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
 _form_message () {
 cat << 'EOF'
+
 You can now visit the Consul web UI at http://localhost:8500
 
-or you can interact with vault and consul CLI utilities after
+You can also interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
+
+# or use this command to do it for you:
+$ . ./ion_darts
 EOF
 }
 
@@ -50,7 +54,7 @@ _check_vault_version() {
 }
 
 _check_custom_binary() {
-  if [ $TF_VAR_vault_custom_instance_count -gt 0 ]; then
+  if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
     if [ ! -f ./custom/"$1" ]; then
       _logmsg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
       exit 1
@@ -85,13 +89,13 @@ export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 _check_vault_version
 _check_consul_version
 
-_logmsg greeting "Consul Docker image version: ${TF_VAR_consul_version}"
-
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version} ${txtrst}(${txtblu}custom binary${txtrst})"
 else
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
 fi
+
+_logmsg greeting "Consul Docker image version: ${TF_VAR_consul_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 

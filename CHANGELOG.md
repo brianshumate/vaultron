@@ -159,6 +159,8 @@
 - Improve form script
 - Update documentation
 
-## v1.5.4 (UNRELEASED)
+## v1.5.4
 
+- Update Consul to version 0.9.3
+- Update Vault to version 0.8.2
 - Explicitly opt out of Consul ACLs with acl_enforce_version_8 set to false in Consul versions >= 0.8.0
