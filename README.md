@@ -28,19 +28,42 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 ### Quick Start
 
-Make sure that you have first installed the binaries for Consul, Vault, Terraform, and have Docker installed and configured for your system.
+Since Vaultron uses the latest Consul and Vault versions by default, make sure that you have first installed the latest binaries for Consul, Vault, and Terraform locally for your OS, and that you have have Docker installed as well.
 
-After doing so, it's just 3 steps to forming your own Vaultron:
+After doing so, it takes just 3 steps to form your own Vaultron:
 
 1. `$ git clone https://github.com/brianshumate/vaultron.git`
 2. `$ cd vaultron`
 3. `$ ./form`
 
-Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
+When Vaultron is successfully formed, the output looks like this:
 
 ```
-$ export CONSUL_HTTP_ADDR="localhost:8500"
-$ export VAULT_ADDR="http://localhost:8200"
+✨  Form Vaultron! ...
+✨  Terraform has been successfully initialized!
+✨  Vault Docker image version: 0.8.2
+✨  Consul Docker image version: 0.9.3
+✨  Terraform plan: 11 to add, 0 to change, 0 to destroy.
+✨  Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
+🤖  Vaultron formed!
+
+You can now visit the Consul web UI at http://localhost:8500
+
+You can also interact with vault and consul CLI utilities after
+exporting the following environment variables in your shell:
+
+export CONSUL_HTTP_ADDR="localhost:8500"
+export VAULT_ADDR="http://localhost:8200"
+```
+
+Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
+
+You can instead source `ion_darts`, which will do this for you:
+
+```
+$ . ./ion_darts
+✨  Exporting Vaultron environment variables ...
+🤖  Exported Vaultron environment variables!
 ```
 
 ### What's Next?
@@ -91,11 +114,12 @@ Name:          Vaultron
 Type:          Secret Management Unit V (defaults to latest Vault software)
 Builder:       Terraform
 Blueprints:    vaultron.tf
+Modules:       black_lion, red_lion
 Datacenter:    arus
 Infra-cell:    Distributed storage cell (defaults to latest Consul software)
 Universe:      Docker
 Agility:       ★★★★
-Damage:        ★★★
+Damage:        ★★
 Mass:          ★★
 Speed:         ★★★★★
 -----------------------------------------------------------------------------
