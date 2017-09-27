@@ -90,7 +90,7 @@ _check_vault_version
 _check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version} ${txtrst}(${txtblu}custom binary${txtrst})"
+  _logmsg greeting "Vault Docker image version: unknown (${txtblu}custom binary${txtrst})"
 else
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
 fi
