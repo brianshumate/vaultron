@@ -80,6 +80,11 @@ variable "vault_custom_instance_count" {
   default = "0"
 }
 
+# Set TF_VAR_vault_custom_config_template to set this
+variable "vault_custom_config_template" {
+  default = "vault_config_custom.tpl"
+}
+
 ###
 ### Consul related variables
 ###
@@ -164,4 +169,5 @@ module "vaultron" {
   disable_clustering = "${var.disable_clustering}"
   consul_server_ips = ["${module.consul_cluster.consul_oss_server_ips}"]
   consul_client_ips = ["${module.consul_cluster.consul_oss_client_ips}"]
+  vault_custom_config_template = "${var.vault_custom_config_template}"
 }

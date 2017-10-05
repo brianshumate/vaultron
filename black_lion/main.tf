@@ -18,6 +18,7 @@ variable "consul_server_ips" {type="list"}
 variable "consul_client_ips" {type="list"}
 variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
+variable "vault_custom_config_template" {}
 
 ###
 ### This is the official Vault Docker image that Vaultron uses by default.
@@ -94,7 +95,7 @@ resource "docker_container" "vault_oss_server" {
 
 data "template_file" "vault_custom_server_config" {
   count = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/templates/vault_config_custom.tpl")}"
+  template = "${file("${path.module}/templates/${var.vault_custom_config_template}")}"
   vars {
     address = "0.0.0.0:8200"
     consul_address = "${element(var.consul_client_ips, count.index)}"
@@ -102,7 +103,9 @@ data "template_file" "vault_custom_server_config" {
     vault_path = "${var.vault_path}"
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable = 1,
+    tls_disable = 1
+    tls_cert = "/vault/custom/vaultron_root.crt"
+    tls_key = "/vault/custom/vaultron_root.key"
     service_tags = "vaultron"
     ui = true
   }
@@ -132,6 +135,10 @@ resource "docker_container" "vault_custom_server" {
   volumes {
     host_path = "${path.module}/../../../vault/vault_custom_server_${count.index}/config"
     container_path = "/vault/config"
+  }
+  volumes {
+    host_path = "${path.module}/../../../vault/vault_custom_server_${count.index}/data"
+    container_path = "/vault/data"
   }
   entrypoint = ["/vault/custom/vault", "server", "-config=/vault/config/main.hcl"],
   dns = ["${var.consul_server_ips}"],

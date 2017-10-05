@@ -12,7 +12,7 @@
 
 TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
-_form_message () {
+_form_message() {
 cat << 'EOF'
 
 You can now visit the Consul web UI at http://localhost:8500
@@ -28,9 +28,23 @@ $ . ./ion_darts
 EOF
 }
 
+# Check for Docker proc and socket and bail out if either is absent
+_check_docker() {
+  DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
+  if [ "$DOCK_PROC_COUNT" -lt 2 ]; then
+    _logmsg alert "Docker daemon not detected - cannot form Vaultron!"
+    exit 1
+  fi
+  if ! [ -S /var/run/docker.sock ]; then
+    _logmsg alert "Docker socket not detected - cannot form Vaultron!"
+    exit 1
+  fi
+}
+
 ###
 ### TerraFORM Vaultron!
 ###
+
 _check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
@@ -68,6 +82,8 @@ if [ -z "$(command -v terraform)" ]; then
   exit 1
 fi
 
+_check_docker
+
 _check_custom_binary vault
 
 _logmsg greeting "Form Vaultron! ..."
@@ -90,7 +106,7 @@ _check_vault_version
 _check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version} ${txtrst}(${txtblu}custom binary${txtrst})"
+  _logmsg greeting "Vault Docker image version: UNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
 else
   _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
 fi
