@@ -104,8 +104,8 @@ data "template_file" "vault_custom_server_config" {
     cluster_name = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     tls_disable = 1
-    tls_cert = "/vault/custom/vaultron_root.crt"
-    tls_key = "/vault/custom/vaultron_root.key"
+    tls_cert = "/vault/custom/vaultron.crt"
+    tls_key = "/vault/custom/vaultron.key"
     service_tags = "vaultron"
     ui = true
   }
