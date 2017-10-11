@@ -167,3 +167,9 @@
 ## v1.5.5
 
 - Vault version 0.8.3
+
+## v1.5.6 (UNRELEASED)
+
+- Add initial file backend support
+- Custom TLS and TLS with file backend templates
+- Add more examples
