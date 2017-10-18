@@ -21,7 +21,7 @@ Vaultron is a toy project that uses [Terraform](https://www.terraform.io/) to bu
 
 ## Why?
 
-It's a reasonably cool and useful Vault environment on your macOS or Linux computer in less than 1 minute.
+It's a reasonably cool and useful Vault + Conul environment on your macOS or Linux computer in less than 1 minute.
 
 ## How?
 
@@ -123,6 +123,7 @@ Agility:       ★★★★
 Damage:        ★★
 Mass:          ★★
 Speed:         ★★★★★
+HashiStack:    ★★★
 -----------------------------------------------------------------------------
 =============================================================================
 ```
@@ -195,7 +196,7 @@ consul_oss_server_1  172.17.0.3:8301  alive   server  0.7.5  2         arus
 consul_oss_server_2  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
-Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and container image. If the version does not have a Docker container, you'll receive an error.
+Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and container image. If the version you want to use does not have a Docker container, you'll encounter an error.
 
 ### Consul DNS
 
@@ -243,7 +244,7 @@ consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
-There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc. In fact for Consul versions >= 0.8.0, ACLs have been explicitly opt-out via `acl_enforce_version_8` set to `false`.
+There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc. In fact for Consul versions >= 0.8.0, ACLs have been explicitly opted out via `acl_enforce_version_8` set to `false`, so keep this in mind.
 
 Enabling ACLs and encryption is left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
 
@@ -253,7 +254,9 @@ Enabling ACLs and encryption is left to the user for their own specific use case
 
 ### Where's My Vault Data?
 
-Vault data is kept in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers. Here is a tree showing the directory structure for a Consul server:
+Vault data are stored in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers.
+
+Here is a tree showing the directory structure for a Consul server:
 
 ```
 └── consul
@@ -282,7 +285,7 @@ You can view operational logs for any container with `docker logs` like so:
 docker logs vault_oss_server_0
 ```
 
-The Vault audit logs for each _active server_ are available as:
+The Vault audit logs for any given _active server_ are available as:
 
 - `./vault/vault_oss_server_0/audit_log/audit.log`
 - `./vault/vault_oss_server_1/audit_log/audit.log`
@@ -290,7 +293,7 @@ The Vault audit logs for each _active server_ are available as:
 
 ### A note about custom Binaries
 
-Vaultron installs the official open source Vault binaries, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables:
+Vaultron installs the official open source Vault binaries through the official Docker container images, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables prior to forming Vaultron:
 
 ```
 export TF_VAR_vault_oss_instance_count=0 \
@@ -317,7 +320,7 @@ Once you execute the above in your current shell, you should be good to go!
 
 ### Vault is Orange/Failing in the Consul Web UI
 
-If you have not yet unsealed Vault, it is expected to appear as failing in the Consul UI.
+Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
 
 Unsealing Vault should solve that for you!
 
