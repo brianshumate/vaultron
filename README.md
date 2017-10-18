@@ -59,7 +59,7 @@ export VAULT_ADDR="http://localhost:8200"
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
 
-You can instead source `ion_darts`, which will do this for you:
+You can instead source the `ion_darts` script to do this for you:
 
 ```
 $ . ./ion_darts
@@ -71,31 +71,31 @@ $ . ./ion_darts
 
 If you are new to Vault, then using Vaultron is a nice way to get quickly acquainted! Please begin by checking out the official [Vault Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html).
 
-You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing and unsealing your Vault.
+You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing, unsealing, and authenticating with the root token.
 
 Speaking of which, here are some things you can do after Vaultron is formed:
 
 1. Initialize Vault with `vault init`
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during initialization
-4. Use your local `consul` and `vault` binaries in CLI mdoe to interact with Vault servers
+4. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
 5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
 **NOTE: `./unform` REMOVES ALMOST EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!**
 
-Note that the Terraform provider modules are not removed to save resources and time on re-downloading them.
+The Terraform provider modules _are not removed_ to save on resources and time involved in re-downloading them.
 
-If you want to tear down the containers, but preserve data, logs, and state, use `terraform destroy` instead:
+If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead:
 
 ```
 $ terraform destroy -state=./tfstate/terraform.tfstate
 ```
 
-If you are already familiar with Vault and would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute `./blazing_sword` to do all of this for you.
+If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you.
 
-**NOTE**: This will persist the unseal keys and initial root authentication token in a file in the `vault` directory named like `./vault/vault_1500766014.tmp`.
+**NOTE**: This script persists the unseal keys and initial root authentication token in a file in the `vault` directory named like `./vault/vault_1500766014.tmp`.
 
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
