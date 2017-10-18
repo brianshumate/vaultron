@@ -21,7 +21,7 @@ Vaultron is a toy project that uses [Terraform](https://www.terraform.io/) to bu
 
 ## Why?
 
-It's a reasonably cool and useful Vault + Conul environment on your macOS or Linux computer in less than 1 minute.
+It's a reasonably cool and useful Vault + Consul environment on your macOS or Linux computer in less than 1 minute.
 
 ## How?
 
