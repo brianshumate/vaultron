@@ -10,7 +10,7 @@ If you'd prefer to automate the MongoDB secret backend setup process, run this:
 ./eye_beams_mongodb
 ```
 
-## Instantiate a MongoDB Docker Container
+## Run MongoDB Docker Container
 
 Use the official MongoDB Docker container:
 
@@ -21,31 +21,42 @@ docker run -p 27017:27017 --name mongodb_vaultron -d mongo
 Determine the MongoDB Docker container's internal IP address:
 
 ```
-docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mongodb_vaultron
+docker inspect \
+  --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+  mongodb_vaultron
 172.17.0.12
+```
+
+## Configure Vault
+
+Mount Vault database backend:
+
+```
+$ vault mount database
+Successfully mounted 'database' at 'database'!
 ```
 
 Configure the MongoDB connection
 
 ```
-vault write database/config/mongodb \
+$ vault write database/config/mongodb \
     plugin_name=mongodb-database-plugin \
     allowed_roles="readonly" \
     connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
 ```
 
-Add a role:
+Add a read only user role:
 
 ```
-vault write database/roles/readonly \
+$ vault write database/roles/readonly \
     db_name=mongodb \
     creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
     default_ttl="1h" \
     max_ttl="24h"
 ```
 
-Get a credential:
+Retrieve a read only MongoDB database credential:
 
 ```
-vault read database/creds/readonly
+$ vault read database/creds/readonly
 ```

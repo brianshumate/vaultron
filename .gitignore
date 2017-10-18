@@ -19,7 +19,8 @@ vault*.tmp
 tf-apply*.log
 tf-plan*.log
 tf-destroy*.log
+*.snap
 *.swp
 *.log
 tmp
-newBack.snap
+vault-plugin-database-oracle*

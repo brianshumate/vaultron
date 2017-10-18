@@ -14,3 +14,5 @@ listener "tcp" {
   address = "${address}"
   tls_disable = "${tls_disable}"
 }
+
+plugin_directory  = "/vault/plugins"

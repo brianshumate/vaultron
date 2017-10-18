@@ -9,15 +9,15 @@ your Vault, and logged in with the initial root token.
 If you'd prefer to automate the MySQL secret backend setup process, run this:
 
 ```
-./eye_beams_mysql
+$ ./eye_beams_mysql
 ```
 
-## Instantiate a MySQL Docker Container
+## Run MySQL Docker Container
 
 Use the official MySQL Docker container:
 
 ```
-docker run --name mysql_vaultron \
+$ docker run --name mysql_vaultron \
     -e MYSQL_ROOT_PASSWORD=vaultron \
     -p 3306:3306 \
     -d mysql:latest
@@ -26,14 +26,18 @@ docker run --name mysql_vaultron \
 Determine the MySQL Docker container's internal IP address:
 
 ```
-docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql_vaultron
+$ docker inspect \
+    --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+    mysql_vaultron
 172.17.0.2
 ```
+
+## Configure Vault
 
 Mount the Vault database secret backend:
 
 ```
-vault mount database
+$ vault mount database
 Successfully mounted 'database' at 'database'!
 ```
 
@@ -49,10 +53,10 @@ The following warnings were returned from the Vault server:
 * Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
 ```
 
-Write an initial MySQL read-only user role:
+Write an initial MySQL read only user role:
 
 ```
-vault write database/roles/readonly \
+$ vault write database/roles/readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
@@ -60,10 +64,10 @@ vault write database/roles/readonly \
 Success! Data written to: database/roles/readonly
 ```
 
-Retrieve a read-only MySQL database credential:
+Retrieve a read only MySQL database credential:
 
 ```
-vault read database/creds/readonly
+$ vault read database/creds/readonly
 Key             Value
 ---             -----
 lease_id        database/creds/readonly/95fad695-3be2-fa7f-0f9d-d3cbc8ce75b1
@@ -77,7 +81,7 @@ Log in to MySQL container with read-only credential:
 
 
 ```
-mysql -u v-root-readonly-rVj9wig0itNm3YgI -p -h 127.0.0.1
+$ mysql -u v-root-readonly-rVj9wig0itNm3YgI -p -h 127.0.0.1
 
 Enter password: [TYPE in password value from above]
 

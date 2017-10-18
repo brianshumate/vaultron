@@ -69,6 +69,10 @@ resource "docker_container" "vault_oss_server" {
     host_path = "${path.module}/../../../vault/vault_oss_server_${count.index}/config"
     container_path = "/vault/config"
   }
+  volumes {
+    host_path = "${path.module}/../../../plugins"
+    container_path = "/vault/plugins"
+  }
   entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
   dns = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
@@ -139,6 +143,10 @@ resource "docker_container" "vault_custom_server" {
   volumes {
     host_path = "${path.module}/../../../vault/vault_custom_server_${count.index}/data"
     container_path = "/vault/data"
+  }
+  volumes {
+    host_path = "${path.module}/../../../plugins"
+    container_path = "/vault/plugins"
   }
   entrypoint = ["/vault/custom/vault", "server", "-config=/vault/config/main.hcl"],
   dns = ["${var.consul_server_ips}"],

@@ -66,6 +66,7 @@ _enable_audit_logging() {
 _enable_auth_backends() {
     _logmsg info "Enabling Vault authentication backends ..."
     _auth_root
+    # App ID is deprecated, but still left on for checking out older versions
     vault auth-enable app-id > /dev/null 2>&1
     _logmsg complete "Enabled App ID authentication backend!"
     vault auth-enable approle > /dev/null 2>&1
@@ -126,8 +127,6 @@ _mount_secret_backends() {
     vault mount pki > /dev/null 2>&1
     _logmsg complete "Mounted PKI secret backend!"
     vault mount postgresql > /dev/null 2>&1
-    _logmsg complete "Mounted PostgreSQL secret backend!"
-    vault mount transit > /dev/null 2>&1
     _logmsg complete "Mounted Transit secret backend!"
     vault mount -path ssh-host-signer ssh > /dev/null 2>&1
     _logmsg complete "Mounted SSH host signer backend!"

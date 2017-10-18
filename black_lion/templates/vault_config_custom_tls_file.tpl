@@ -17,3 +17,6 @@ listener "tcp" {
   tls_cert_file = "${tls_cert}"
   tls_key_file = "${tls_key}"
 }
+
+plugin_directory  = "/vault/plugins"
+

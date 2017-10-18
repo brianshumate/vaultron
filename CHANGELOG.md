@@ -168,8 +168,10 @@
 
 - Vault version 0.8.3
 
-## v1.5.6 (UNRELEASED)
+## v1.6.0 (UNRELEASED)
 
 - Add initial file backend support
+- Add initial Vault plugin support
 - Custom TLS and TLS with file backend templates
+- Update scripts
 - Add more examples
