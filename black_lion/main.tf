@@ -137,11 +137,18 @@ data "template_file" "vault_custom_server_config" {
 ### This resource is for installing custom Vault builds
 ###
 
+# XXX: testing local image
+#resource "docker_image" "local" {
+#    name = "local/vault-ubuntu"
+#}
+
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "${format("vault_custom_server_%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
+  # testing local image
+  # image = "${docker_image.local.latest}"
   upload = {
     content = "${element(data.template_file.vault_custom_server_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
