@@ -17,7 +17,7 @@
 
 ## What?
 
-Vaultron is a toy project that uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
+**Vaultron** uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
 ## Why?
 
@@ -119,11 +119,11 @@ Modules:       black_lion, red_lion
 Datacenter:    arus
 Infra-cell:    Distributed storage cell (defaults to latest Consul software)
 Universe:      Docker
+HashiStack:    ★★★
 Agility:       ★★★★
 Damage:        ★★
 Mass:          ★★
 Speed:         ★★★★★
-HashiStack:    ★★★
 -----------------------------------------------------------------------------
 =============================================================================
 ```
@@ -196,7 +196,9 @@ consul_oss_server_1  172.17.0.3:8301  alive   server  0.7.5  2         arus
 consul_oss_server_2  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
-Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and container image. If the version you want to use does not have a Docker container, you'll encounter an error.
+Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and the container image.
+
+Also note that if the version of Consul or Vault you want to use does not have an official Docker image, you'll encounter an error.
 
 ### Consul DNS
 
