@@ -4,12 +4,6 @@ The following mini-guide shows how to set up Vaultron with a MongoDB Docker cont
 
 The guide presumes that you have formed Vaultron, initialized and unsealed your Vault, and logged in with the initial root token.
 
-If you'd prefer to automate the MongoDB secret backend setup process, run this:
-
-```
-./eye_beams_mongodb
-```
-
 ## Run MongoDB Docker Container
 
 Use the official MongoDB Docker container:
