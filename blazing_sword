@@ -115,6 +115,16 @@ _initialize_vault() {
 }
 
 ###
+### Mount database backend
+###
+###
+_mount_database_backend() {
+  _logmsg info "Mounting database backend ..."
+  _get_initial_root_token "${vault_dat}"
+  vault mount database < /dev/null 2>&1
+  _logmsg complete "Mounted database backend!"
+}
+
 ### Mount a handy mix of secret backends
 ###
 _mount_secret_backends() {
@@ -207,4 +217,5 @@ _auth_root
 _enable_auth_backends
 _enable_audit_logging
 _mount_secret_backends
+_mount_database_backend
 _status
