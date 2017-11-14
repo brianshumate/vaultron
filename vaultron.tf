@@ -36,6 +36,11 @@ variable "datacenter_name" {
   default = "arus"
 }
 
+# Set TF_VAR_secondary_datacenter_name to set this
+variable "secondary_datacenter_name" {
+  default = "sura"
+}
+
 ###
 ### Vault related variables
 ###
@@ -171,3 +176,38 @@ module "vaultron" {
   consul_client_ips            = ["${module.consul_cluster.consul_oss_client_ips}"]
   vault_custom_config_template = "${var.vault_custom_config_template}"
 }
+
+# EXPERIMENT - CAN HAZ TWO DATACENTER?!
+#
+#module "consul_cluster_dc2" {
+#  source                       = "red_lion_dc2"
+#  datacenter_name              = "${var.secondary_datacenter_name}"
+#  consul_version               = "${var.consul_version}"
+#  use_consul_oss               = "${var.use_consul_oss}"
+#  consul_ent_id                = "${var.consul_ent_id}"
+#  consul_recursor_1            = "${var.consul_recursor_1}"
+#  consul_recursor_2            = "${var.consul_recursor_2}"
+#  consul_acl_datacenter        = "${var.consul_acl_datacenter}"
+#  consul_data_dir              = "${var.consul_data_dir}"
+#  consul_oss                   = "${var.consul_oss}"
+#  consul_oss_instance_count    = "${var.consul_oss_instance_count}"
+#  consul_custom                = "${var.consul_custom}"
+#  consul_custom_instance_count = "${var.consul_custom_instance_count}"
+#}
+#
+#module "vaultron_dc2" {
+#  source                       = "black_lion_dc2"
+#  vault_oss_instance_count     = "${var.vault_oss_instance_count}"
+#  vault_custom_instance_count  = "${var.vault_custom_instance_count}"
+#  datacenter_name              = "${var.secondary_datacenter_name}"
+#  vault_version                = "${var.vault_version}"
+#  use_vault_oss                = "${var.use_vault_oss}"
+#  vault_ent_id                 = "${var.vault_ent_id}"
+#  vault_path                   = "${var.vault_path}"
+#  vault_cluster_name           = "${var.vault_cluster_name}"
+#  vault_plus_one_port          = "${var.vault_plus_one_port}"
+#  disable_clustering           = "${var.disable_clustering}"
+#  consul_server_ips            = ["${#module.consul_cluster.consul_oss_server_ips}"]
+#  consul_client_ips            = ["${#module.consul_cluster.consul_oss_client_ips}"]
+#  vault_custom_config_template = "${var.vault_custom_config_template}"
+#}
