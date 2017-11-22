@@ -1,5 +1,5 @@
 ###
-### Vaultron: Vault Open Source Version 0.8.3 configuration file
+### Vaultron: Vault Open Source Version 0.9.0 configuration file
 ###
 cluster_name = "${cluster_name }"
 

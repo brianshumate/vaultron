@@ -176,3 +176,8 @@
 - Custom TLS and TLS with file backend templates
 - Update scripts
 - Add more examples
+
+## v1.6.1
+
+- Consul 1.0.1
+- Vault 0.9.0
