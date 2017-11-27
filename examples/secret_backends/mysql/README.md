@@ -44,7 +44,7 @@ Successfully mounted 'database' at 'database'!
 Write the MySQL secret backend configuration:
 
 ```
-vault write database/config/mysql \
+$ vault write database/config/mysql \
     plugin_name=mysql-database-plugin \
     connection_url="root:vaultron@tcp(172.17.0.2:3306)/" \
     allowed_roles="readonly"
