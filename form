@@ -41,9 +41,7 @@ _check_docker() {
   fi
 }
 
-###
-### TerraFORM Vaultron!
-###
+# TerraFORM Vaultron!
 
 _check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then

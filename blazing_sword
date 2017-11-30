@@ -22,9 +22,8 @@
 
 . ./skydome
 
-###
-### Check for the existence of a temporary key material file
-###
+
+# Check for the existence of a temporary key material file
 _check_vault_file() {
     for file in ./vault/vault_*.tmp; do
         if [ -e "$file" ]; then
@@ -34,35 +33,27 @@ _check_vault_file() {
     done
 }
 
-###
-### Emit a little usage note
-###
+# Emit a little usage note
 _usage() {
     _logmsg alert "Usage: vault_kitchen_sink [vault_dat.tmp]"
     exit 1
 }
 
-###
-### Authenticate with initial root token
-###
+# Authenticate with initial root token
 _auth_root() {
     _logmsg info "Authenticating with Vault root token ..."
     _get_initial_root_token "${vault_dat}"
     vault auth "${init_root_token}"  > /dev/null 2>&1
 }
 
-###
-### Enable audit log
-###
+# Enable audit log
 _enable_audit_logging() {
     _logmsg complete "Enabled file based audit log at ./vault/logs/audit.log!"
     _auth_root
     vault audit-enable file file_path=/vault/logs/audit.log  > /dev/null 2>&1
 }
 
-###
-### Enable authentication backends
-###
+# Enable authentication backends
 _enable_auth_backends() {
     _logmsg info "Enabling Vault authentication backends ..."
     _auth_root
@@ -83,9 +74,7 @@ _enable_auth_backends() {
     _logmsg complete "Enabled Username & Password authentication backend!"
 }
 
-###
-### Get a subset of unseal keys
-###
+# Get a subset of unseal keys
 _get_unseal_keys() {
     _logmsg info "Get unseal keys ..."
     vkey1=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
@@ -93,17 +82,13 @@ _get_unseal_keys() {
     vkey3=$(sed '4q;d' "${vault_dat}" | awk '{print $NF}')
 }
 
-###
-### Get the initial root token
-###
+# Get the initial root token
 _get_initial_root_token() {
     init_root_token=$(sed '6q;d' "${1}" | awk '{print $NF}')
 }
 
 
-###
-### Initialize Vault and save temporary unseal keys and root token
-###
+# Initialize Vault and save temporary unseal keys and root token
 _initialize_vault() {
     _logmsg info "Initializing Vault ..."
     vault_dat="./vault/vault_$(date +%s).tmp"
@@ -114,10 +99,7 @@ _initialize_vault() {
     _logmsg complete "Vault initialized!"
 }
 
-###
-### Mount database backend
-###
-###
+# Mount database backend
 _mount_database_backend() {
   _logmsg info "Mounting database backend ..."
   _get_initial_root_token "${vault_dat}"
@@ -125,8 +107,7 @@ _mount_database_backend() {
   _logmsg complete "Mounted database backend!"
 }
 
-### Mount a handy mix of secret backends
-###
+# Mount a handy mix of secret backends
 _mount_secret_backends() {
     _logmsg info "Mounting Vault secret backends ..."
     _get_initial_root_token "${vault_dat}"
@@ -144,17 +125,13 @@ _mount_secret_backends() {
     _logmsg complete "Mounted SSH client signer backend!"
 }
 
-###
-### Get Vault status
-###
+# Get Vault status
 _status() {
     _logmsg info "Vault status ..."
     printf "${txtblu}$(vault status)${txtrst}\n"
 }
 
-###
-### Unseal Vault
-###
+# Unseal Vault
 _unseal_vault() {
     _logmsg info "Unsealing Vault ..."
     _get_unseal_keys
@@ -164,12 +141,12 @@ _unseal_vault() {
         _logmsg alert "Failed to unseal Vault 1"
         exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:820${i}" \
+        if ! VAULT_ADDR="http://localhost:82${i}0" \
         vault unseal "$vkey2" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal vault 2"
         exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:820${i}" \
+        if ! VAULT_ADDR="http://localhost:82${i}0" \
         vault unseal "$vkey3" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 3"
         exit 1
@@ -179,9 +156,7 @@ _unseal_vault() {
     _logmsg complete "Vault unsealed!"
 }
 
-###
-### DO IT.
-###
+# DO IT.
 if [ $# -gt 1 ]
   then
     _usage
