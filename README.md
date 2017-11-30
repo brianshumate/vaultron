@@ -165,8 +165,14 @@ Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 
 Each Vault instance is available to the local computer, but through Docker's published ports scheme only, so the addresses of the Vault servers are:
 
 - localhost:8200
-- localhost:8201
-- localhost:8202
+- localhost:8210
+- localhost:8220
+
+The `cluster_address` ports are also published, like this:
+
+- localhost:8400
+- localhost:8410
+- localhost:8420
 
 ### Changing Vault and Consul Versions
 
