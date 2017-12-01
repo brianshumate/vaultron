@@ -162,17 +162,13 @@ Vaultron has to work around some current networking quirks of Docker for Mac to 
 
 Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers. Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
 
+### Published Ports
+
 Each Vault instance is available to the local computer, but through Docker's published ports scheme only, so the addresses of the Vault servers are:
 
 - localhost:8200
 - localhost:8210
 - localhost:8220
-
-The `cluster_address` ports are also published, like this:
-
-- localhost:8400
-- localhost:8410
-- localhost:8420
 
 ### Changing Vault and Consul Versions
 

@@ -137,17 +137,17 @@ _unseal_vault() {
     _get_unseal_keys
     for i in {0..2}; do
         if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey1" > /dev/null 2>&1; then
+        vault unseal "$vkey1"; then
         _logmsg alert "Failed to unseal Vault 1"
         exit 1
     fi
         if ! VAULT_ADDR="http://localhost:82${i}0" \
-        vault unseal "$vkey2" > /dev/null 2>&1; then
+        vault unseal "$vkey2"; then
         _logmsg alert "Failed to unseal vault 2"
         exit 1
     fi
         if ! VAULT_ADDR="http://localhost:82${i}0" \
-        vault unseal "$vkey3" > /dev/null 2>&1; then
+        vault unseal "$vkey3"; then
         _logmsg alert "Failed to unseal Vault 3"
         exit 1
     fi
