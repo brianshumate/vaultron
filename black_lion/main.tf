@@ -104,11 +104,6 @@ resource "docker_container" "vault_oss_server" {
     protocol = "tcp"
   }
 
-  ports {
-    internal = "8201"
-    external = "${format("84%d0", count.index)}"
-    protocol = "tcp"
-  }
 }
 
 #############################################################################
