@@ -99,16 +99,12 @@ resource "docker_container" "vault_oss_server" {
 
   ports {
     internal = "8200"
-    # d'oh can't do "820%d".. steps on the default cluster_address port
-    external = "${format("82%d0", count.index)}"
+    # This is mysterious/steps on the default cluster_address port
+    # needs more investigation and updating...
+    external = "${format("820%d", count.index)}"
     protocol = "tcp"
   }
 
-  ports {
-    internal = "8201"
-    external = "${format("84%d0", count.index)}"
-    protocol = "tcp"
-  }
 }
 
 #############################################################################
@@ -198,14 +194,9 @@ resource "docker_container" "vault_custom_server" {
 
   ports {
     internal = "8200"
-    # d'oh can't do "820%d".. steps on the default cluster_address port
-    external = "${format("82%d0", count.index)}"
-    protocol = "tcp"
-  }
-
-  ports {
-    internal = "8201"
-    external = "${format("84%d0", count.index)}"
+    # This is mysterious/steps on the default cluster_address port
+    # needs more investigation and updating...
+    external = "${format("820%d", count.index)}"
     protocol = "tcp"
   }
 

@@ -104,12 +104,12 @@ _check_vault_version
 _check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  _logmsg greeting "Vault Docker image version: UNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
+  _logmsg greeting "Vault Docker image version:\tUNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
 else
-  _logmsg greeting "Vault Docker image version: ${TF_VAR_vault_version}"
+  _logmsg greeting "Vault Docker image version:\t${TF_VAR_vault_version}"
 fi
 
-_logmsg greeting "Consul Docker image version: ${TF_VAR_consul_version}"
+_logmsg greeting "Consul Docker image version:\t${TF_VAR_consul_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 

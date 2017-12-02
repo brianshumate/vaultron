@@ -141,12 +141,12 @@ _unseal_vault() {
         _logmsg alert "Failed to unseal Vault 1"
         exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:82${i}0" \
+        if ! VAULT_ADDR="http://localhost:820${i}" \
         vault unseal "$vkey2" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal vault 2"
         exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:82${i}0" \
+        if ! VAULT_ADDR="http://localhost:820${i}" \
         vault unseal "$vkey3" > /dev/null 2>&1; then
         _logmsg alert "Failed to unseal Vault 3"
         exit 1
