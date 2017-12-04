@@ -14,7 +14,7 @@ SECRET="secret/bar"
 SECRET_VALUE="baz"
 SNAPSHOT="newBack.snap"
 
-#_logmsg() {
+#msg() {
 #    if [ "$1" == "alert" ]; then
 #        echo >&2  "[e] $2";
 #    else
@@ -68,85 +68,85 @@ _write() {
 }
 
 if _write; then
-  _logmsg info "Write 1 OK";
+  msg info "Write 1 OK";
 else
-  _logmsg alert "Write 1 Failed";
+  msg alert "Write 1 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 1 OK";
+  msg info "Read 1 OK";
 else
-  _logmsg alert "Read 1 Failed";
+  msg alert "Read 1 Failed";
 
 fi
 
 if _snapshot_save "$SNAPSHOT"; then
-  _logmsg info "Snapshot save 1 OK";
+  msg info "Snapshot save 1 OK";
 else
-  _logmsg alert "Snapshot save 1 Failed";
+  msg alert "Snapshot save 1 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 2 OK";
+  msg info "Read 2 OK";
 else
-  _logmsg alert "Read 2 Failed";
+  msg alert "Read 2 Failed";
 
 fi
 
 if _delete; then
-  _logmsg info "Delete 1 OK";
+  msg info "Delete 1 OK";
 else
-  _logmsg alert "Delete 1 Failed";
+  msg alert "Delete 1 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 3 (immediately after delete 1) OK";
+  msg info "Read 3 (immediately after delete 1) OK";
 else
-  _logmsg alert "Read 3 (immediately after delete 1) Failed";
+  msg alert "Read 3 (immediately after delete 1) Failed";
 
 fi
 
 if _snapshot_restore "${SNAPSHOT}"; then
-  _logmsg info "Snapshot restore 1 OK";
+  msg info "Snapshot restore 1 OK";
 else
-  _logmsg alert "Snapshot restore 1 Failed";
+  msg alert "Snapshot restore 1 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 4 OK";
+  msg info "Read 4 OK";
 else
-  _logmsg alert "Read 4 Failed";
+  msg alert "Read 4 Failed";
 
 fi
 
 if _delete; then
-  _logmsg info "Delete 2 OK";
+  msg info "Delete 2 OK";
 else
-  _logmsg alert "Delete 2 Failed";
+  msg alert "Delete 2 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 5 (immediately after delete 2) OK";
+  msg info "Read 5 (immediately after delete 2) OK";
 else
-  _logmsg alert "Read 5 (immediately after delete 2) Failed";
+  msg alert "Read 5 (immediately after delete 2) Failed";
 
 fi
 
 if _snapshot_restore "${SNAPSHOT}"; then
-  _logmsg info "Snapshot restore 2 OK";
+  msg info "Snapshot restore 2 OK";
 else
-  _logmsg alert "Snapshot restore 2 Failed";
+  msg alert "Snapshot restore 2 Failed";
 
 fi
 
 if _read; then
-  _logmsg info "Read 6 OK";
+  msg info "Read 6 OK";
 else
-  _logmsg alert "Read 6 Failed";
+  msg alert "Read 6 Failed";
 
 fi

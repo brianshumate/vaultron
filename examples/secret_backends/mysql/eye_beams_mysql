@@ -9,7 +9,7 @@
 
 . ../../../skydome
 
-_logmsg greeting "Engage Eye Beams for MySQL! ..."
+msg greeting "Engage Eye Beams for MySQL! ..."
 
 _docker_container() {
 docker run --name mysql_vaultron \
@@ -18,47 +18,47 @@ docker run --name mysql_vaultron \
     -d mysql:latest > /dev/null 2>&1
 }
 
-_logmsg info "Launch MySQL Docker container ..."
+msg info "Launch MySQL Docker container ..."
 if _docker_container; then
-    _logmsg complete "Launched MySQL Docker container!"
+    msg complete "Launched MySQL Docker container!"
 else
-    _logmsg alert "Problem Launching MySQL Docker container!"
+    msg alert "Problem Launching MySQL Docker container!"
     exit 1
 fi
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql_vaultron)"
 
-_logmsg info "Mount Vault database backend ..."
+msg info "Mount Vault database backend ..."
 if vault mount database > /dev/null 2>&1; then
-    _logmsg complete "Mounted Vault database backend!"
+    msg complete "Mounted Vault database backend!"
 else
-    _logmsg alert "Problem mounting MySQL database secret backend!"
+    msg alert "Problem mounting MySQL database secret backend!"
     exit 1
 fi
 
 # TODO: This is a sad hack and should instead be done deterministically
-_logmsg info "Pausing while MySQL at $MYSQL_CONTAINER_IP wakes up ..."
+msg info "Pausing while MySQL at $MYSQL_CONTAINER_IP wakes up ..."
 sleep 25
 
-_logmsg info "Configure MySQL secret backend ..."
+msg info "Configure MySQL secret backend ..."
 if vault write database/config/mysql \
     plugin_name=mysql-database-plugin \
     connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
     allowed_roles="readonly"  > /dev/null 2>&1; then
-    _logmsg complete "Configured MySQL secret backend!"
+    msg complete "Configured MySQL secret backend!"
 else
-    _logmsg alert "Problem configuring MySQL database secret backend"
+    msg alert "Problem configuring MySQL database secret backend"
     exit 1
 fi
 
-_logmsg info "Configure MySQL read-only role ..."
+msg info "Configure MySQL read-only role ..."
 if vault write database/roles/readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h"  > /dev/null 2>&1; then
-    _logmsg complete "Configured MySQL read-only role!"
+    msg complete "Configured MySQL read-only role!"
 else
-    _logmsg alert "Problem configuring MySQL read-only role"
+    msg alert "Problem configuring MySQL read-only role"
     exit 1
 fi

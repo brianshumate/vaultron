@@ -15,7 +15,7 @@
 # 11. Test Terraform configuration directory presence after unforming
 # 12. Test Terraform init, plan, apply log output presence after unforming
 #
-# The tests should complete in ~20 seconds on reasonably decent system specs
+# The tests should complete in ~20 seconds on decent system specs
 #
 
 export txtblu="\033[0;34m" # Blue
@@ -38,14 +38,10 @@ if ! ./form; then
     exit 1
 fi
 
-###
-### XXX: For some reason, this test keeps failing?!
-###
-
 for i in 0 1 2; do
     if ! [ -d "consul/consul_oss_server_$i" ]; then
         echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
-        #exit 1
+        exit 1
     fi
     if ! [ -d "consul/consul_oss_client_$i" ]; then
         echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
@@ -107,16 +103,8 @@ for i in 0 1 2; do
     fi
 done
 
-# XXX: we are currently (post 0.10.0+) leaving modules in place to avoid re-download so going to look at deprecating this test in the meantime
-#  if [ -d ".terraform" ]; then
-#      echo "${txtred}🚫  Terraform configuration directory still present after unforming:${txtrst}"
-#      echo "${txtred}.terraform${txtrst}"
-#      exit 1
-#  fi
-
 if [ -z "$(find log -type f -name "tf-*-destroy.log")" ]; then
     echo "${txtred}🚫  Should be at least one log file after destroy of the form:${txtrst}"
     echo "${txtred}log/tf-*-destroy.log${txtrst}"
     exit 1
 fi
-

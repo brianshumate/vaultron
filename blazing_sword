@@ -13,7 +13,6 @@
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
 # Pick one, fix one!
-#
 # shellcheck disable=SC2154
 # shellcheck disable=SC2059
 # shellcheck disable=SC2039
@@ -22,185 +21,173 @@
 
 . ./skydome
 
-
 # Check for the existence of a temporary key material file
-_check_vault_file() {
-    for file in ./vault/vault_*.tmp; do
-        if [ -e "$file" ]; then
-            _logmsg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
-            exit 0
-        fi
-    done
+check_vault_file() {
+  for file in ./vault/vault_*.tmp; do
+    if [ -e "$file" ]; then
+        msg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
+        exit 0
+    fi
+  done
 }
 
 # Emit a little usage note
-_usage() {
-    _logmsg alert "Usage: vault_kitchen_sink [vault_dat.tmp]"
-    exit 1
+usage() {
+  msg alert "Usage: vault_kitchen_sink [vault_dat.tmp]"
+  exit 1
 }
 
 # Authenticate with initial root token
-_auth_root() {
-    _logmsg info "Authenticating with Vault root token ..."
-    _get_initial_root_token "${vault_dat}"
-    vault auth "${init_root_token}"  > /dev/null 2>&1
+auth_root() {
+  msg info "Authenticating with Vault root token ..."
+  get_initial_root_token "${vault_dat}"
+  vault auth "${init_root_token}"  > /dev/null 2>&1
 }
 
 # Enable audit log
-_enable_audit_logging() {
-    _logmsg complete "Enabled file based audit log at ./vault/logs/audit.log!"
-    _auth_root
-    vault audit-enable file file_path=/vault/logs/audit.log  > /dev/null 2>&1
+enable_audit_logging() {
+  msg complete "Enabled file based audit log at ./vault/logs/audit.log!"
+  auth_root
+  vault audit-enable file file_path=/vault/logs/audit.log  > /dev/null 2>&1
 }
 
 # Enable authentication backends
-_enable_auth_backends() {
-    _logmsg info "Enabling Vault authentication backends ..."
-    _auth_root
-    # App ID is deprecated, but still left on for checking out older versions
-    vault auth-enable app-id > /dev/null 2>&1
-    _logmsg complete "Enabled App ID authentication backend!"
-    vault auth-enable approle > /dev/null 2>&1
-    _logmsg complete "Enabled AppRole authentication backend!"
-    # TODO: This needs to be conditionally added based on installed Vault
-    # version as aws auth does not exist in older Vault versions
-    #
-    # vault auth-enable aws > /dev/null 2>&1
-    # _logmsg complete "Enabled AWS authentication backend!"
-    #
-    vault auth-enable ldap > /dev/null 2>&1
-    _logmsg complete "Enabled LDAP authentication backend!"
-    vault auth-enable userpass > /dev/null 2>&1
-    _logmsg complete "Enabled Username & Password authentication backend!"
+enable_auth_backends() {
+  msg info "Enabling Vault authentication backends ..."
+  auth_root
+  # App ID is deprecated, but still left on for checking out older versions
+  vault auth-enable app-id > /dev/null 2>&1
+  msg complete "Enabled App ID authentication backend!"
+  vault auth-enable approle > /dev/null 2>&1
+  msg complete "Enabled AppRole authentication backend!"
+  # TODO: This needs to be conditionally added based on installed Vault
+  # version as aws auth does not exist in older Vault versions
+  #
+  # vault auth-enable aws > /dev/null 2>&1
+  # msg complete "Enabled AWS authentication backend!"
+  #
+  vault auth-enable ldap > /dev/null 2>&1
+  msg complete "Enabled LDAP authentication backend!"
+  vault auth-enable userpass > /dev/null 2>&1
+  msg complete "Enabled Username & Password authentication backend!"
 }
 
 # Get a subset of unseal keys
-_get_unseal_keys() {
-    _logmsg info "Get unseal keys ..."
-    vkey1=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
-    vkey2=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}')
-    vkey3=$(sed '4q;d' "${vault_dat}" | awk '{print $NF}')
+get_unseal_keys() {
+  msg info "Get unseal keys ..."
+  vkey1=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}')
+  vkey2=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}')
+  vkey3=$(sed '4q;d' "${vault_dat}" | awk '{print $NF}')
 }
 
 # Get the initial root token
-_get_initial_root_token() {
-    init_root_token=$(sed '6q;d' "${1}" | awk '{print $NF}')
+get_initial_root_token() {
+  init_root_token=$(sed '6q;d' "${1}" | awk '{print $NF}')
 }
 
 
 # Initialize Vault and save temporary unseal keys and root token
-_initialize_vault() {
-    _logmsg info "Initializing Vault ..."
-    vault_dat="./vault/vault_$(date +%s).tmp"
-    vault init > "${vault_dat}"
-    vault_init_now="$(date)"
-    printf "\nGenerated on %s\n" "${vault_init_now}" >> \
-           "${vault_dat}"
-    _logmsg complete "Vault initialized!"
+initialize_vault() {
+  msg info "Initializing Vault ..."
+  vault_dat="./vault/vault_$(date +%s).tmp"
+  vault init > "${vault_dat}"
+  vault_init_now="$(date)"
+  printf "\nGenerated on %s\n" "${vault_init_now}" >> \
+         "${vault_dat}"
+  msg complete "Vault initialized!"
 }
 
 # Mount database backend
-_mount_database_backend() {
-  _logmsg info "Mounting database backend ..."
-  _get_initial_root_token "${vault_dat}"
-  vault mount database < /dev/null 2>&1
-  _logmsg complete "Mounted database backend!"
+mount_database_backend() {
+  msg info "Mounting database backend ..."
+  get_initial_root_token "${vault_dat}"
+  vault mount database > /dev/null 2>&1
+  msg complete "Mounted database backend!"
 }
 
 # Mount a handy mix of secret backends
-_mount_secret_backends() {
-    _logmsg info "Mounting Vault secret backends ..."
-    _get_initial_root_token "${vault_dat}"
-    vault mount aws > /dev/null 2>&1
-    _logmsg complete "Mounted AWS secret backend!"
-    vault mount consul > /dev/null 2>&1
-    _logmsg complete "Mounted Consul secret backend!"
-    vault mount pki > /dev/null 2>&1
-    _logmsg complete "Mounted PKI secret backend!"
-    vault mount postgresql > /dev/null 2>&1
-    _logmsg complete "Mounted Transit secret backend!"
-    vault mount -path ssh-host-signer ssh > /dev/null 2>&1
-    _logmsg complete "Mounted SSH host signer backend!"
-    vault mount -path ssh-client-signer ssh > /dev/null 2>&1
-    _logmsg complete "Mounted SSH client signer backend!"
+mount_secret_backends() {
+  msg info "Mounting Vault secret backends ..."
+  get_initial_root_token "${vault_dat}"
+  vault mount aws > /dev/null 2>&1
+  msg complete "Mounted AWS secret backend!"
+  vault mount consul > /dev/null 2>&1
+  msg complete "Mounted Consul secret backend!"
+  vault mount pki > /dev/null 2>&1
+  msg complete "Mounted PKI secret backend!"
+  vault mount postgresql > /dev/null 2>&1
+  msg complete "Mounted Transit secret backend!"
+  vault mount -path ssh-host-signer ssh > /dev/null 2>&1
+  msg complete "Mounted SSH host signer backend!"
+  vault mount -path ssh-client-signer ssh > /dev/null 2>&1
+  msg complete "Mounted SSH client signer backend!"
 }
 
 # Get Vault status
-_status() {
-    _logmsg info "Vault status ..."
-    printf "${txtblu}$(vault status)${txtrst}\n"
+status() {
+  msg info "Vault status ..."
+  printf "${txtblu}$(vault status)${txtrst}\n"
 }
 
 # Unseal Vault
-_unseal_vault() {
-    _logmsg info "Unsealing Vault ..."
-    _get_unseal_keys
-    for i in {0..2}; do
-        if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey1"; then
-        _logmsg alert "Failed to unseal Vault 1"
-        exit 1
+unseal_vault() {
+  msg info "Unsealing Vault ..."
+  get_unseal_keys
+  for i in {0..2}; do
+    if ! VAULT_ADDR="http://localhost:820${i}" \
+      vault unseal "$vkey1" > /dev/null 2>&1; then
+      msg alert "Failed to unseal Vault 1"
+      exit 1
     fi
-<<<<<<< HEAD
-        if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey2" > /dev/null 2>&1; then
-        _logmsg alert "Failed to unseal vault 2"
-        exit 1
+    if ! VAULT_ADDR="http://localhost:820${i}" \
+      vault unseal "$vkey2" > /dev/null 2>&1; then
+      msg alert "Failed to unseal vault 2"
+    exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "$vkey3" > /dev/null 2>&1; then
-=======
-        if ! VAULT_ADDR="http://localhost:82${i}0" \
-        vault unseal "$vkey2"; then
-        _logmsg alert "Failed to unseal vault 2"
-        exit 1
+    if ! VAULT_ADDR="http://localhost:820${i}" \
+      vault unseal "$vkey3" > /dev/null 2>&1; then
+      msg alert "Failed to unseal Vault 3"
+      exit 1
     fi
-        if ! VAULT_ADDR="http://localhost:82${i}0" \
-        vault unseal "$vkey3"; then
->>>>>>> 301f202d9d1e90ff094845a38481e8b90ffc752b
-        _logmsg alert "Failed to unseal Vault 3"
-        exit 1
-    fi
-
-    done
-    _logmsg complete "Vault unsealed!"
+  done
+  msg complete "Vault unsealed!"
 }
 
 # DO IT.
 if [ $# -gt 1 ]
   then
-    _usage
+    usage
 fi
 
 
 if (set -u; : "${1}") 2> /dev/null; then
-    _logmsg info "Filename argument specified; Use file: ${1}"
-    vault_dat="${1}"
-    vkey1=$(sed '1q;d' "${vault_dat}" | awk '{print $NF}');
-    vkey2=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}');
-    vkey3=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}');
-    _logmsg info "Unsealing by default since filename used ..."
-    for i in {0..2}; do
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey1}" > /dev/null 2>&1 && \
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey2}" > /dev/null 2>&1 && \
-        VAULT_ADDR="http://localhost:820${i}" \
-        vault unseal "${vkey3}" > /dev/null 2>&1;
-    done
-    _auth_root
-    _status
-    exit 0
+  msg info "Filename argument specified; Use file: ${1}"
+  vault_dat="${1}"
+  vkey1=$(sed '1q;d' "${vault_dat}" | awk '{print $NF}');
+  vkey2=$(sed '2q;d' "${vault_dat}" | awk '{print $NF}');
+  vkey3=$(sed '3q;d' "${vault_dat}" | awk '{print $NF}');
+  msg info "Unsealing by default since filename used ..."
+  for i in {0..2}; do
+    VAULT_ADDR="http://localhost:820${i}" \
+    vault unseal "${vkey1}" > /dev/null 2>&1 && \
+    VAULT_ADDR="http://localhost:820${i}" \
+    vault unseal "${vkey2}" > /dev/null 2>&1 && \
+    VAULT_ADDR="http://localhost:820${i}" \
+    vault unseal "${vkey3}" > /dev/null 2>&1;
+  done
+  auth_root
+  status
+  exit 0
 else
-    _logmsg greeting "Form Blazing Sword! ..."
+  msg greeting "Form Blazing Sword! ..."
 fi
 
 unset VAULT_TOKEN
-_initialize_vault
-_unseal_vault
-_auth_root
-_enable_auth_backends
-_enable_audit_logging
-_mount_secret_backends
-_mount_database_backend
-_status
+initialize_vault
+unseal_vault
+auth_root
+enable_auth_backends
+enable_audit_logging
+mount_secret_backends
+mount_database_backend
+status

@@ -20,6 +20,6 @@ create_kv() {
 }
 
 for n in foo bar baz qux; do
-    _logmsg info "PUT keys in ${CONSUL_HTTP_ADDR}/v1/kv/${n}/"
+    msg info "PUT keys in ${CONSUL_HTTP_ADDR}/v1/kv/${n}/"
     create_kv "${n}";
 done

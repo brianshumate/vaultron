@@ -20,7 +20,7 @@ export txtrst="\033[0m"    # Text Reset
 ###
 ### Log stuff
 ###
-_logmsg() {
+msg() {
     msgtype="$1"
     msgtxt="$2"
     case "${msgtype}" in
@@ -75,7 +75,7 @@ _tfmsg() {
         }')"
 
     if [ -n "$tfmsg_out" ]; then
-        _logmsg "$(echo "$tfmsg_out" | head -1)" \
+        msg "$(echo "$tfmsg_out" | head -1)" \
                 "$(echo "$tfmsg_out" | tail -1)"
     fi
 }

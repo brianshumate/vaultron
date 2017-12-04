@@ -21,7 +21,7 @@ _new_pki() {
   rm -f ${serials} > /dev/null 2>&1
 
   if vault mounts | grep pki; then
-      _logmsg info "PKI backend mounted already";
+      msg info "PKI backend mounted already";
     else
       vault mount pki;
   fi
@@ -55,14 +55,14 @@ _revoke_cert() {
 ## generate
 
 _gen_500() {
-  _logmsg info "Attempting to generate 500 certs ..."
+  msg info "Attempting to generate 500 certs ..."
   for i in {1..10}; do
       _gen_certs &
   done
 }
 
 _gen_100() {
-  _logmsg info "Attempting to generate 100 certs ..."
+  msg info "Attempting to generate 100 certs ..."
   for i in {1..2}; do
       _gen_certs &
   done
@@ -97,4 +97,4 @@ _tidy_pki() {
 #_revoke_all
 #_tidy_pki
 
-_logmsg success "Done!"
+msg success "Done!"

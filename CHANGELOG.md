@@ -182,9 +182,8 @@
 - Consul 1.0.1
 - Vault 0.9.0
 
-## v1.6.2 (UNRELEASED)
+## v1.6.2
 
-- Changed default ports to avoid a cluster_address default port collision
-  - *Reverted above for further investigation*
 - Updated documentation
 - Added more examples
+- Renamed functions

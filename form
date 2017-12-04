@@ -32,11 +32,11 @@ EOF
 _check_docker() {
   DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
   if [ "$DOCK_PROC_COUNT" -lt 2 ]; then
-    _logmsg alert "Docker daemon not detected - cannot form Vaultron!"
+    msg alert "Docker daemon not detected - cannot form Vaultron!"
     exit 1
   fi
   if ! [ -S /var/run/docker.sock ]; then
-    _logmsg alert "Docker socket not detected - cannot form Vaultron!"
+    msg alert "Docker socket not detected - cannot form Vaultron!"
     exit 1
   fi
 }
@@ -68,28 +68,29 @@ _check_vault_version() {
 _check_custom_binary() {
   if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
     if [ ! -f ./custom/"$1" ]; then
-      _logmsg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
+      msg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
       exit 1
     fi
   fi
 }
 
 if [ -z "$(command -v terraform)" ]; then
-  _logmsg alert "Vaultron cannot form! Could not locate terraform command."
-  _logmsg info "Get Terraform from: https://www.terraform.io/downloads.html"
+  msg alert "Vaultron cannot form! Could not locate terraform command."
+  msg info "Get Terraform from: https://www.terraform.io/downloads.html"
   exit 1
 fi
 
+# Preflight checks
 _check_docker
-
 _check_custom_binary vault
 
-_logmsg greeting "Form Vaultron! ..."
+# DO IT.
+msg greeting "Form Vaultron! ..."
 
 _tflogdir
 
 if ! _init; then
-  _logmsg alert "Vaultron cannot form! terraform init output from $init_out:"
+  msg alert "Vaultron cannot form! terraform init output from $init_out:"
   cat "$init_out"
   exit 1
 fi
@@ -104,27 +105,27 @@ _check_vault_version
 _check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  _logmsg greeting "Vault Docker image version:\tUNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
+  msg greeting "Vault Docker image version:\tUNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
 else
-  _logmsg greeting "Vault Docker image version:\t${TF_VAR_vault_version}"
+  msg greeting "Vault Docker image version:\t${TF_VAR_vault_version}"
 fi
 
-_logmsg greeting "Consul Docker image version:\t${TF_VAR_consul_version}"
+msg greeting "Consul Docker image version:\t${TF_VAR_consul_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
 if ! _plan "${plan_file}"; then
-  _logmsg alert "Vaultron cannot form! terraform plan output from $plan_out:"
+  msg alert "Vaultron cannot form! terraform plan output from $plan_out:"
   cat "$plan_out"
   exit 1
 fi
 
 if ! _apply "${plan_file}"; then
-  _logmsg alert "Vaultron cannot form! terraform apply output from $apply_out:"
+  msg alert "Vaultron cannot form! terraform apply output from $apply_out:"
   cat "$apply_out"
   exit 1
 fi
 
 rm -f "${plan_file}"
-_logmsg success "Vaultron formed!"
+msg success "Vaultron formed!"
 _form_message

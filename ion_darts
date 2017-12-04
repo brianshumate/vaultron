@@ -2,11 +2,12 @@
 #
 # ion_darts
 #
-# Set the Consul and Vault environment variables to correct values for Vaultron
-#
+# Set the Consul and Vault environment variables
+# to correct values for Vaultron
+
 . ./skydome
 
-_logmsg greeting "Exporting Vaultron environment variables ..."
+msg greeting "Exporting Vaultron environment variables ..."
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
-_logmsg success "Exported Vaultron environment variables!"
+msg success "Exported Vaultron environment variables!"
