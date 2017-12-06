@@ -45,6 +45,9 @@ msg() {
         alert)
             printf "🚫  ${txtred}${msgtxt}\n" >&2
             ;;
+        secret)
+            printf "🔑  ${txtgrn}${msgtxt}\n"
+            ;;
         *)
             printf "⁉️  ${txtwht}${msgtxt}\n" >&2
             ;;

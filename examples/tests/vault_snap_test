@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-#
+
 # vault_snap_test
 #
 # An example use case test for Vault secret
 # addition/deletion/restoration
-#
+
 # shellcheck disable=SC1091
-#
 
 . ./skydome
 
@@ -14,15 +13,7 @@ SECRET="secret/bar"
 SECRET_VALUE="baz"
 SNAPSHOT="newBack.snap"
 
-#msg() {
-#    if [ "$1" == "alert" ]; then
-#        echo >&2  "[e] $2";
-#    else
-#        echo "[+] $2";
-#    fi
-#}
-
-_delete() {
+delete() {
   if vault delete "${SECRET}" > /dev/null 2>&1 ; then
       retval=0
   else
@@ -31,7 +22,7 @@ _delete() {
   fi
 }
 
-_read() {
+read() {
   if vault read "${SECRET}" > /dev/null 2>&1 ; then
       retval=0
   else
@@ -40,7 +31,7 @@ _read() {
   return "$retval"
 }
 
-_snapshot_restore() {
+snapshot_restore() {
   if consul snapshot restore "$1" > /dev/null 2>&1; then
     retval=0
   else
@@ -49,7 +40,7 @@ _snapshot_restore() {
   return "$retval"
 }
 
-_snapshot_save() {
+snapshot_save() {
   if consul snapshot save "$1" > /dev/null 2>&1; then
     retval=0
   else
@@ -58,7 +49,7 @@ _snapshot_save() {
   return "$retval"
 }
 
-_write() {
+write() {
   if vault write "${SECRET}" value="${SECRET_VALUE}" > /dev/null 2>&1; then
     retval=0
   else
@@ -67,84 +58,84 @@ _write() {
   return "$retval"
 }
 
-if _write; then
+if write; then
   msg info "Write 1 OK";
 else
   msg alert "Write 1 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 1 OK";
 else
   msg alert "Read 1 Failed";
 
 fi
 
-if _snapshot_save "$SNAPSHOT"; then
+if snapshot_save "$SNAPSHOT"; then
   msg info "Snapshot save 1 OK";
 else
   msg alert "Snapshot save 1 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 2 OK";
 else
   msg alert "Read 2 Failed";
 
 fi
 
-if _delete; then
+if delete; then
   msg info "Delete 1 OK";
 else
   msg alert "Delete 1 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 3 (immediately after delete 1) OK";
 else
   msg alert "Read 3 (immediately after delete 1) Failed";
 
 fi
 
-if _snapshot_restore "${SNAPSHOT}"; then
+if snapshot_restore "${SNAPSHOT}"; then
   msg info "Snapshot restore 1 OK";
 else
   msg alert "Snapshot restore 1 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 4 OK";
 else
   msg alert "Read 4 Failed";
 
 fi
 
-if _delete; then
+if delete; then
   msg info "Delete 2 OK";
 else
   msg alert "Delete 2 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 5 (immediately after delete 2) OK";
 else
   msg alert "Read 5 (immediately after delete 2) Failed";
 
 fi
 
-if _snapshot_restore "${SNAPSHOT}"; then
+if snapshot_restore "${SNAPSHOT}"; then
   msg info "Snapshot restore 2 OK";
 else
   msg alert "Snapshot restore 2 Failed";
 
 fi
 
-if _read; then
+if read; then
   msg info "Read 6 OK";
 else
   msg alert "Read 6 Failed";

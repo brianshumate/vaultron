@@ -23,4 +23,5 @@ tf-destroy*.log
 *.swp
 *.log
 tmp
+tmp/*
 vault-plugin-database-oracle*
