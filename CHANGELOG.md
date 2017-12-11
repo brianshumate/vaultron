@@ -187,3 +187,8 @@
 - Updated documentation
 - Added more examples
 - Renamed functions
+
+## v1.6.3 (UNRELEASED)
+
+- PostgreSQL backend guide
+- Updated scripts

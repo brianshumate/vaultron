@@ -15,7 +15,7 @@ docker run -p 27017:27017 --name mongodb_vaultron -d mongo
 Determine the MongoDB Docker container's internal IP address:
 
 ```
-docker inspect \
+$ docker inspect \
   --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
   mongodb_vaultron
 172.17.0.12

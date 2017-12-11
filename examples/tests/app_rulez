@@ -38,11 +38,11 @@ gen_role() {
   msg info "Generating apprulez-$APPRULEZ role ..."
   if ! vault write \
     auth/approle/role/apprulez-$APPRULEZ \
-    secret_id_ttl=90m \
-    token_num_uses=20 \
-    token_ttl=30m \
-    token_max_ttl=40m \
-    secret_id_num_uses=50 > /dev/null 2>&1; then
+    secret_id_ttl=720h \
+    token_num_uses=9999 \
+    token_ttl=360h \
+    token_max_ttl=420h \
+    secret_id_num_uses=9999 > /dev/null 2>&1; then
       msg alert "Failed to generate the apprulez-$APPRULEZ AppRole!"
       exit 1
   fi
@@ -75,10 +75,13 @@ get_secret_id() {
 gen_token() {
   msg secret "Generating $1 tokens: "
   for i in $(seq "$1"); do
-    vault write auth/approle/login \
+    if ! vault write auth/approle/login \
       role_id="$ROLE_ID" \
-      secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1
-    printf "${txtgrn}."
+      secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1; then
+      printf "${txtred}e${txtrst}"
+    else
+    printf "${txtgrn}.${txtrst}"
+  fi
   done
   printf "${txtrst}\n"
 }
@@ -88,7 +91,7 @@ if $PORT_CHECK; then
   get_role_id
   get_secret_id
   gen_token "$@"
-  msg complete "Generated $1 AppRole tokens!"
+  # msg complete "Generated $1 AppRole tokens!"
 else
   echo "Not sure if Vault is reachable at localhost! Giving up!"
   exit 1

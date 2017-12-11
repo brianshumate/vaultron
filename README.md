@@ -9,6 +9,8 @@
         `\/__/  \/__/\/_/ \/___/  \/____/ \/__/ \/_/ \/___/  \/_/\/_/
           ================================--------------------• • • •
 
+![](https://github.com/brianshumate/vaultron/blob/master/share/vaultron.png?raw=true)
+
 > From days of long ago, from uncharted regions of the universe, comes a
 > legend; the legend of Voltron, Defender of the Universe, a mighty robot,
 > loved by good, feared by evil.
