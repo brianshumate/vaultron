@@ -2,12 +2,6 @@
 
 ![](https://github.com/brianshumate/vaultron/blob/master/share/vaultron.png?raw=true)
 
-> From days of long ago, from uncharted regions of the universe, comes a
-> legend; the legend of Voltron, Defender of the Universe, a mighty robot,
-> loved by good, feared by evil.
->
-> — Voltron: Defender of the Universe
-
 ## What?
 
 **Vaultron** uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
