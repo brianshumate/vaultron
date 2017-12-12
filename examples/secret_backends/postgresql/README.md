@@ -44,6 +44,8 @@ $ vault write database/config/postgresql \
     plugin_name=postgresql-database-plugin \
     allowed_roles="readonly" \
     connection_url="postgresql://postgres:vaultron@172.17.0.2:5432?sslmode=disable"
+
+
 The following warnings were returned from the Vault server:
 * Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
 ```
@@ -66,20 +68,26 @@ Retrieve a read only PostgreSQL database credential:
 $ vault read database/creds/readonly
 Key             Value
 ---             -----
-lease_id        database/creds/readonly/b26b6243-f6b1-c88d-9184-de136b0db5d0
+lease_id        database/creds/readonly/ddc27039-ef66-a22b-c2f4-61fbfbbefd8a
 lease_duration  1h0m0s
 lease_renewable true
-password        A1a-8r42sz6x005pz9w2
-username        v-root-readonly-rup0t2ytrxtr52qq183q-1512771063
+password        A1a-1p2p9yxwzsp51047
+username        v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218
 ```
 
 Log in to PostgreSQL container with read-only credential:
 
 ```
-$ psql -h 127.0.0.1 -U postgres -W
-Password for user postgres: vaultron
+$ psql \
+  --host=127.0.0.1 \
+  --dbname=postgres \
+  --username=v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218 \
+  --password
+
+# Use password 'A1a-1p2p9yxwzsp51047' from above
+Password for user v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218:
 psql (10.1)
 Type "help" for help.
 
-postgres=#
+postgres=
 ```
