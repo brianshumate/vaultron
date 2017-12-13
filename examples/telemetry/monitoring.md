@@ -1,6 +1,6 @@
 ## Monitoring Vault Telemetry
 
-![](https://github.com/brianshumate/vaultron/blob/master/share/monitoring.png?raw=true)
+![](https://github.com/brianshumate/vaultron/blob/master/share/metrics.png?raw=true)
 
 These are random insights and solutions for monitoring Vaultron instances with other container based solutions.
 
