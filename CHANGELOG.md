@@ -190,5 +190,6 @@
 
 ## v1.6.3 (UNRELEASED)
 
+- Monitoring with Graphite and Grafana guide
 - PostgreSQL backend guide
-- Updated scripts
+- Updated example scripts

@@ -42,7 +42,7 @@ Write the PostgreSQL secret backend configuration:
 ```
 $ vault write database/config/postgresql \
     plugin_name=postgresql-database-plugin \
-    allowed_roles="readonly" \
+    allowed_roles="pgsql-readonly" \
     connection_url="postgresql://postgres:vaultron@172.17.0.2:5432?sslmode=disable"
 
 
@@ -53,19 +53,19 @@ The following warnings were returned from the Vault server:
 Write an initial PostgreSQL read only user role:
 
 ```
-$ vault write database/roles/readonly \
+$ vault write database/roles/pgsql-readonly \
     db_name=postgresql \
     creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/readonly
+Success! Data written to: database/roles/pgsql-readonly
 ```
 
 Retrieve a read only PostgreSQL database credential:
 
 ```
-$ vault read database/creds/readonly
+$ vault read database/creds/pgsql-readonly
 Key             Value
 ---             -----
 lease_id        database/creds/readonly/ddc27039-ef66-a22b-c2f4-61fbfbbefd8a

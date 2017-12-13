@@ -9,7 +9,7 @@ The guide presumes that you have formed Vaultron, initialized and unsealed your 
 Use the official MongoDB Docker container:
 
 ```
-docker run -p 27017:27017 --name mongodb_vaultron -d mongo
+$ docker run -p 27017:27017 --name mongodb_vaultron -d mongo
 ```
 
 Determine the MongoDB Docker container's internal IP address:
@@ -35,14 +35,14 @@ Configure the MongoDB connection
 ```
 $ vault write database/config/mongodb \
     plugin_name=mongodb-database-plugin \
-    allowed_roles="readonly" \
+    allowed_roles="mongodb-readonly" \
     connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
 ```
 
 Add a read only user role:
 
 ```
-$ vault write database/roles/readonly \
+$ vault write database/roles/mongodb-readonly \
     db_name=mongodb \
     creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
     default_ttl="1h" \
@@ -52,5 +52,5 @@ $ vault write database/roles/readonly \
 Retrieve a read only MongoDB database credential:
 
 ```
-$ vault read database/creds/readonly
+$ vault read database/creds/mongodb-readonly
 ```

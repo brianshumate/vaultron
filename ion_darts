@@ -4,6 +4,8 @@
 #
 # Set the Consul and Vault environment variables
 # to correct values for Vaultron
+#
+# shellcheck disable=SC1091
 
 . ./skydome
 

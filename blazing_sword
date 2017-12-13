@@ -17,7 +17,6 @@
 # shellcheck disable=SC2059
 # shellcheck disable=SC2039
 # shellcheck disable=SC1091
-#
 
 . ./skydome
 

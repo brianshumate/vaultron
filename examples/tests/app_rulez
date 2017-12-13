@@ -4,13 +4,13 @@
 #
 # Sequentially create N AppRole tokens in Vault
 #
-# Role name: apprulez
+# Role name: apprulez-$APPRULEZ
 #
+# shellcheck disable=SC1091
 # shellcheck disable=SC2086
 # shellcheck disable=SC2089
 # shellcheck disable=SC2090
-# shellcheck disable=SC1091
-#
+# shellcheck disable=SC2154
 
 . ./skydome
 
@@ -74,16 +74,19 @@ get_secret_id() {
 
 gen_token() {
   msg secret "Generating $1 tokens: "
-  for i in $(seq "$1"); do
+  for _ in $(seq "$1"); do
     if ! vault write auth/approle/login \
       role_id="$ROLE_ID" \
       secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1; then
-      printf "${txtred}e${txtrst}"
+      # printf "${txtred}e${txtrst}"
+      printf "%se%s" "$txtred" "$txtrst"
     else
-    printf "${txtgrn}.${txtrst}"
+    # printf "${txtgrn}.${txtrst}"
+    printf "%s.%s" "$txtgrn" "$txtrst"
   fi
   done
-  printf "${txtrst}\n"
+  # printf "${txtrst}\n"
+  printf "%s" "$txtrst\n"
 }
 
 if $PORT_CHECK; then

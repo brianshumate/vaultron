@@ -47,7 +47,7 @@ Write the MySQL secret backend configuration:
 $ vault write database/config/mysql \
     plugin_name=mysql-database-plugin \
     connection_url="root:vaultron@tcp(172.17.0.2:3306)/" \
-    allowed_roles="readonly"
+    allowed_roles="mysql-readonly"
 
 The following warnings were returned from the Vault server:
 * Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
@@ -56,25 +56,25 @@ The following warnings were returned from the Vault server:
 Write an initial MySQL read only user role:
 
 ```
-$ vault write database/roles/readonly \
+$ vault write database/roles/mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/readonly
+Success! Data written to: database/roles/mysql-readonly
 ```
 
 Retrieve a read only MySQL database credential:
 
 ```
-$ vault read database/creds/readonly
+$ vault read database/creds/mysql-readonly
 Key             Value
 ---             -----
-lease_id        database/creds/readonly/95fad695-3be2-fa7f-0f9d-d3cbc8ce75b1
+lease_id        database/creds/mysql-readonly/3f608611-dd1a-c96c-4200-c564a4567cb4
 lease_duration  1h0m0s
 lease_renewable true
-password        a7f40e23-2764-d3da-0676-0acff64d112b
-username        v-root-readonly-rVj9wig0itNm3YgI
+password        A1a-q02qpu2u2y8v3qsr
+username        v-root-mysql-read-p4wy4u1z9p5361
 ```
 
 Log in to MySQL container with read-only credential:

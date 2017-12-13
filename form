@@ -7,12 +7,13 @@
 # shellcheck disable=SC2039
 # shellcheck disable=SC2059
 # shellcheck disable=SC1091
+# shellcheck disable=SC1117
 
 . ./skydome
 
 TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
-_form_message() {
+form_message() {
 cat << 'EOF'
 
 You can now visit the Consul web UI at http://localhost:8500
@@ -29,7 +30,7 @@ EOF
 }
 
 # Check for Docker proc and socket and bail out if either is absent
-_check_docker() {
+check_docker() {
   DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
   if [ "$DOCK_PROC_COUNT" -lt 2 ]; then
     msg alert "Docker daemon not detected - cannot form Vaultron!"
@@ -43,7 +44,7 @@ _check_docker() {
 
 # TerraFORM Vaultron!
 
-_check_consul_version() {
+check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
@@ -54,7 +55,7 @@ _check_consul_version() {
   fi
 }
 
-_check_vault_version() {
+check_vault_version() {
   if [ ! -z "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="./black_lion/templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
@@ -65,7 +66,7 @@ _check_vault_version() {
   fi
 }
 
-_check_custom_binary() {
+check_custom_binary() {
   if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
     if [ ! -f ./custom/"$1" ]; then
       msg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
@@ -81,8 +82,8 @@ if [ -z "$(command -v terraform)" ]; then
 fi
 
 # Preflight checks
-_check_docker
-_check_custom_binary vault
+check_docker
+check_custom_binary vault
 
 # DO IT.
 msg greeting "Form Vaultron! ..."
@@ -101,8 +102,8 @@ CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
 export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
-_check_vault_version
-_check_consul_version
+check_vault_version
+check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
   msg greeting "Vault Docker image version:\tUNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
@@ -128,4 +129,4 @@ fi
 
 rm -f "${plan_file}"
 msg success "Vaultron formed!"
-_form_message
+form_message

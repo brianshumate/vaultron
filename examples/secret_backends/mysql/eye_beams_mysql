@@ -28,12 +28,14 @@ fi
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql_vaultron)"
 
-msg info "Mount Vault database backend ..."
-if vault mount database > /dev/null 2>&1; then
-    msg complete "Mounted Vault database backend!"
-else
-    msg alert "Problem mounting MySQL database secret backend!"
-    exit 1
+if ! vault mounts | grep 'database_' > /dev/null 2>&1; then
+  msg info "Mount Vault database backend ..."
+  if vault mount database > /dev/null 2>&1; then
+      msg complete "Mounted Vault database backend!"
+  else
+      msg alert "Problem mounting MySQL database secret backend!"
+      exit 1
+  fi
 fi
 
 # TODO: This is a sad hack and should instead be done deterministically
@@ -52,7 +54,7 @@ else
 fi
 
 msg info "Configure MySQL read-only role ..."
-if vault write database/roles/readonly \
+if vault write database/roles/mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
