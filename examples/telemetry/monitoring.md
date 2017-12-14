@@ -121,12 +121,12 @@ Import this as an initial dashboard:
       "panels": [
         {
           "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
+          "colorBackground": true,
+          "colorValue": true,
           "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
+            "#e0f9d7",
+            "#b7dbab",
+            "#508642"
           ],
           "datasource": null,
           "format": "none",
@@ -140,7 +140,7 @@ Import this as an initial dashboard:
           "id": 7,
           "interval": null,
           "links": [],
-          "mappingType": 1,
+          "mappingType": 2,
           "mappingTypes": [
             {
               "name": "value to text",
@@ -160,17 +160,17 @@ Import this as an initial dashboard:
           "prefixFontSize": "50%",
           "rangeMaps": [
             {
-              "from": "null",
+              "from": "10000",
               "text": "N/A",
-              "to": "null"
+              "to": "75000"
             }
           ],
           "span": 2,
           "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "fillColor": "#b7dbab",
             "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+            "lineColor": "#629e51",
+            "show": true
           },
           "tableColumn": "",
           "targets": [
@@ -179,7 +179,7 @@ Import this as an initial dashboard:
               "target": "stats.gauges.vault.*.expire.num_leases"
             }
           ],
-          "thresholds": "",
+          "thresholds": "20,30,90",
           "title": "Total Tokens",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -743,7 +743,7 @@ Import this as an initial dashboard:
         },
         {
           "aliasColors": {},
-          "bars": false,
+          "bars": true,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
@@ -758,7 +758,7 @@ Import this as an initial dashboard:
             "total": false,
             "values": false
           },
-          "lines": true,
+          "lines": false,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
@@ -1317,6 +1317,6 @@ Import this as an initial dashboard:
   },
   "timezone": "",
   "title": "Vault Ops",
-  "version": 8
+  "version": 9
 }
 ```
