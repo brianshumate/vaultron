@@ -16,7 +16,7 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 ### Quick Start
 
-Since Vaultron uses the latest Consul and Vault versions by default, make sure that you have first installed the latest binaries for Consul, Vault, and Terraform locally for your OS, and that you have have Docker installed as well.
+Vaultron uses the latest Consul and Vault versions by default, make sure that you have first installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally for your OS, and that you have have [Docker](https://docs.docker.com/engine/installation/) installed as well.
 
 After doing so, it takes just 3 steps to form your own Vaultron:
 
