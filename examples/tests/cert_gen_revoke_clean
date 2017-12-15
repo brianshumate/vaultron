@@ -8,8 +8,7 @@
 #   - Revokes certs
 #   - Tidies CRL via API
 #
-# shellcheck disable=SC2086
-# shellcheck disable=SC1091
+# shellcheck disable=SC2086,SC1091
 #
 
 . ./skydome

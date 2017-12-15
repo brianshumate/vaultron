@@ -91,7 +91,7 @@ Now it's on to defining a dashboard and panels!
 
 #### Example Vault Ops Dashboard JSON
 
-Import this as an initial dashboard:
+Import this as an initial dashboard (similar to one in the screenshot):
 
 ```
 {
@@ -108,98 +108,27 @@ Import this as an initial dashboard:
       }
     ]
   },
+  "description": "Experimental Vault Lab Metrics",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
   "hideControls": false,
   "id": 1,
   "links": [],
+  "refresh": "5s",
   "rows": [
     {
       "collapse": false,
-      "height": 250,
+      "height": 175,
       "panels": [
         {
           "cacheTimeout": null,
           "colorBackground": true,
-          "colorValue": true,
-          "colors": [
-            "#e0f9d7",
-            "#b7dbab",
-            "#508642"
-          ],
-          "datasource": null,
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 7,
-          "interval": null,
-          "links": [],
-          "mappingType": 2,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "10000",
-              "text": "N/A",
-              "to": "75000"
-            }
-          ],
-          "span": 2,
-          "sparkline": {
-            "fillColor": "#b7dbab",
-            "full": false,
-            "lineColor": "#629e51",
-            "show": true
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "refId": "A",
-              "target": "stats.gauges.vault.*.expire.num_leases"
-            }
-          ],
-          "thresholds": "20,30,90",
-          "title": "Total Tokens",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "avg"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
+            "#e0f9d7",
+            "#e0f9d7",
+            "#f29191"
           ],
           "datasource": "Vaultron-Graphite",
           "format": "none",
@@ -240,20 +169,20 @@ Import this as an initial dashboard:
           ],
           "span": 2,
           "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "fillColor": "#ea6460",
             "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+            "lineColor": "#bf1b00",
+            "show": true
           },
           "tableColumn": "",
           "targets": [
             {
               "refId": "A",
-              "target": "stats.timers.vault.expire.revoke.count"
+              "target": "stats.vault.audit.log_request_failure"
             }
           ],
-          "thresholds": "",
-          "title": "Revoke Count",
+          "thresholds": "0,1",
+          "title": "Audit Log Request Failure",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -263,16 +192,85 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": true,
+          "colorValue": true,
+          "colors": [
+            "#e0f9d7",
+            "#b7dbab",
+            "#508642"
+          ],
+          "datasource": "Vaultron-Graphite",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 7,
+          "interval": null,
+          "links": [],
+          "mappingType": 2,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "#b7dbab",
+            "full": false,
+            "lineColor": "#629e51",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "hide": false,
+              "refId": "A",
+              "target": "stats.gauges.vault.dc9ba5da1b86.expire.num_leases",
+              "textEditor": true
+            }
+          ],
+          "thresholds": "20,30,90",
+          "title": "Total Tokens",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "total"
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Vaultron-Graphite",
+          "datasource": null,
           "fill": 1,
-          "id": 4,
+          "id": 8,
           "legend": {
             "avg": false,
             "current": false,
@@ -292,99 +290,23 @@ Import this as an initial dashboard:
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "stats.vault.database.mysql.CreateUser"
+              "target": "stats.vault.database.CreateUser"
             },
             {
               "refId": "B",
-              "target": "stats.vault.database.mysql.RevokeUser"
+              "target": "stats.vault.database.RevokeUser"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "MySQL Secret Backend",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "Vaultron-Graphite",
-          "fill": 1,
-          "id": 6,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": false,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "span": 3,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "stats.vault.database.postgres.CreateUser"
-            },
-            {
-              "refId": "B",
-              "target": "stats.vault.database.postgres.RevokeUser"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "PostgreSQL Secret Backend",
+          "title": "Create and Revoke",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -492,27 +414,15 @@ Import this as an initial dashboard:
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 219,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
+          "datasource": "Vaultron-Graphite",
           "fill": 1,
-          "id": 8,
+          "id": 4,
           "legend": {
             "avg": false,
             "current": false,
@@ -532,23 +442,23 @@ Import this as an initial dashboard:
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 2,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "stats.vault.database.CreateUser"
+              "target": "stats.vault.database.mysql.CreateUser"
             },
             {
               "refId": "B",
-              "target": "stats.vault.database.RevokeUser"
+              "target": "stats.vault.database.mysql.RevokeUser"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Create and Revoke",
+          "title": "MySQL Secret Backend",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -586,9 +496,9 @@ Import this as an initial dashboard:
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
+          "datasource": "Vaultron-Graphite",
           "fill": 1,
-          "id": 1,
+          "id": 6,
           "legend": {
             "avg": false,
             "current": false,
@@ -608,21 +518,109 @@ Import this as an initial dashboard:
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
+          "span": 2,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "stats.vault.database.postgres.CreateUser"
+            },
+            {
+              "refId": "B",
+              "target": "stats.vault.database.postgres.RevokeUser"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "PostgreSQL Secret Backend",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 219,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fill": 1,
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": true,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
           "span": 3,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.187227789f52.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.c2267de5cc3c.runtime.alloc_bytes"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.609d32e648d4.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.dc9ba5da1b86.runtime.alloc_bytes"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.a07ddabbcf79.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.eaaa7ff91ad0.runtime.alloc_bytes"
             }
           ],
           "thresholds": [],
@@ -675,8 +673,8 @@ Import this as an initial dashboard:
             "max": false,
             "min": false,
             "show": false,
-            "total": false,
-            "values": false
+            "total": true,
+            "values": true
           },
           "lines": false,
           "linewidth": 1,
@@ -694,21 +692,101 @@ Import this as an initial dashboard:
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.187227789f52.runtime.num_goroutines"
+              "target": "stats.gauges.vault.c2267de5cc3c.runtime.num_goroutines"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.609d32e648d4.runtime.num_goroutines"
+              "target": "stats.gauges.vault.dc9ba5da1b86.runtime.num_goroutines"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.a07ddabbcf79.runtime.num_goroutines"
+              "target": "stats.gauges.vault.eaaa7ff91ad0.runtime.num_goroutines"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
           "title": "Go Routines",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "fill": 1,
+          "id": 16,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": true,
+            "values": true
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 3,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "stats.gauges.vault.c2267de5cc3c.runtime.heap_objects"
+            },
+            {
+              "refId": "B",
+              "target": "stats.gauges.vault.dc9ba5da1b86.runtime.heap_objects"
+            },
+            {
+              "refId": "C",
+              "target": "stats.gauges.vault.eaaa7ff91ad0.runtime.heap_objects"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Heap Objects",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -755,8 +833,8 @@ Import this as an initial dashboard:
             "max": false,
             "min": false,
             "show": false,
-            "total": false,
-            "values": false
+            "total": true,
+            "values": true
           },
           "lines": false,
           "linewidth": 1,
@@ -774,15 +852,15 @@ Import this as an initial dashboard:
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.187227789f52.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.c2267de5cc3c.runtime.total_gc_runs"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.609d32e648d4.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.dc9ba5da1b86.runtime.total_gc_runs"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.a07ddabbcf79.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.eaaa7ff91ad0.runtime.total_gc_runs"
             }
           ],
           "thresholds": [],
@@ -904,7 +982,7 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
         },
         {
           "cacheTimeout": null,
@@ -977,7 +1055,7 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
         },
         {
           "cacheTimeout": null,
@@ -1123,7 +1201,7 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
         },
         {
           "cacheTimeout": null,
@@ -1196,7 +1274,7 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
         },
         {
           "cacheTimeout": null,
@@ -1269,7 +1347,7 @@ Import this as an initial dashboard:
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "total"
         }
       ],
       "repeat": null,
@@ -1287,7 +1365,7 @@ Import this as an initial dashboard:
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -1315,8 +1393,8 @@ Import this as an initial dashboard:
       "30d"
     ]
   },
-  "timezone": "",
-  "title": "Vault Ops",
-  "version": 9
+  "timezone": "browser",
+  "title": "Vault Lab",
+  "version": 18
 }
 ```

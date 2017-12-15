@@ -6,11 +6,7 @@
 #
 # Role name: apprulez-$APPRULEZ
 #
-# shellcheck disable=SC1091
-# shellcheck disable=SC2086
-# shellcheck disable=SC2089
-# shellcheck disable=SC2090
-# shellcheck disable=SC2154
+# shellcheck disable=SC1091,SC2059,SC2086,SC2089,SC2090,SC2154
 
 . ./skydome
 
@@ -78,14 +74,11 @@ gen_token() {
     if ! vault write auth/approle/login \
       role_id="$ROLE_ID" \
       secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1; then
-      # printf "${txtred}e${txtrst}"
-      printf "%se%s" "$txtred" "$txtrst"
+      printf "${txtred}e${txtrst}"
     else
-    # printf "${txtgrn}.${txtrst}"
-    printf "%s.%s" "$txtgrn" "$txtrst"
+      printf "${txtgrn}.${txtrst}"
   fi
   done
-  # printf "${txtrst}\n"
   printf "%s" "$txtrst\n"
 }
 

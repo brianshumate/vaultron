@@ -17,4 +17,8 @@ listener "tcp" {
   tls_disable = "${tls_disable}"
 }
 
+telemetry {
+  statsd_address = "172.17.0.2:8125"
+}
+
 plugin_directory  = "/vault/plugins"

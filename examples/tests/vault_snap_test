@@ -22,7 +22,7 @@ delete() {
   fi
 }
 
-read() {
+read_secret() {
   if vault read "${SECRET}" > /dev/null 2>&1 ; then
       retval=0
   else
@@ -65,7 +65,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 1 OK";
 else
   msg alert "Read 1 Failed";
@@ -79,7 +79,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 2 OK";
 else
   msg alert "Read 2 Failed";
@@ -93,7 +93,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 3 (immediately after delete 1) OK";
 else
   msg alert "Read 3 (immediately after delete 1) Failed";
@@ -107,7 +107,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 4 OK";
 else
   msg alert "Read 4 Failed";
@@ -121,7 +121,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 5 (immediately after delete 2) OK";
 else
   msg alert "Read 5 (immediately after delete 2) Failed";
@@ -135,7 +135,7 @@ else
 
 fi
 
-if read; then
+if read_secret; then
   msg info "Read 6 OK";
 else
   msg alert "Read 6 Failed";
