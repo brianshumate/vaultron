@@ -96,8 +96,6 @@ $ export VAULT_ADDR="http://localhost:8200"
 Vaultron technical specifications quick reference card:
 
 ```
-=============================================================================
------------------------------------------------------------------------------
 Name:          Vaultron
 Type:          Secret Management Unit V (defaults to latest Vault software)
 Builder:       Terraform
@@ -111,8 +109,6 @@ Agility:       ★★★★
 Damage:        ★★
 Mass:          ★★
 Speed:         ★★★★★
------------------------------------------------------------------------------
-=============================================================================
 ```
 
 Here are some slightly more serious notes and questions about what Vaultron is and how it can work for you.

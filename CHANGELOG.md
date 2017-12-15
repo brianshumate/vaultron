@@ -190,6 +190,7 @@
 
 ## v1.6.3 (UNRELEASED)
 
+- Consul v1.0.2
 - Monitoring with Graphite and Grafana guide
 - PostgreSQL backend guide
 - Updated example scripts
