@@ -188,7 +188,7 @@
 - Added more examples
 - Renamed functions
 
-## v1.6.3 (UNRELEASED)
+## v1.6.3
 
 - Consul v1.0.2
 - Monitoring with Graphite and Grafana guide

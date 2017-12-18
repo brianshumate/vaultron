@@ -1,14 +1,18 @@
-## Monitoring Vault Telemetry
+## Vault Telemetry Visualization
 
 ![](https://github.com/brianshumate/vaultron/blob/master/share/metrics.png?raw=true)
 
-These are random insights and solutions for monitoring Vaultron instances with other container based solutions.
+These are random insights and solutions for aggregation and visualization of Vault [telemetry metrics](https://www.vaultproject.io/docs/internals/telemetry.html).
 
 ### statsd, Graphite and Grafana
 
-1. [Graphite and statsd container](https://github.com/graphite-project/docker-graphite-statsd)
+A fairly simple solution that can be immediately bolted to Vaultron consists of the the following Docker containers:
+
+1. [Graphite + statsd container](https://github.com/graphite-project/docker-graphite-statsd)
 2. [Grafana container](https://hub.docker.com/r/grafana/grafana/)
   - [Installing using Docker](http://docs.grafana.org/installation/docker/)
+
+Here's a quick up and running with this solution:
 
 #### Start Containers
 
@@ -16,38 +20,29 @@ First start a Graphite + statsd container:
 
 ```
 $ docker run \
-  -d \
-  --name graphite_vaultron \
-  --restart=always \
-  -p 80:80 \
-  -p 2003-2004:2003-2004 \
-  -p 2023-2024:2023-2024 \
-  -p 8125:8125/udp \
-  -p 8126:8126 \
-  graphiteapp/graphite-statsd
+-d \
+--name graphite_vaultron \
+--restart=always \
+-p 80:80 \
+-p 2003-2004:2003-2004 \
+-p 2023-2024:2023-2024 \
+-p 8125:8125/udp \
+-p 8126:8126 \
+graphiteapp/graphite-statsd
 ```
 
-Then, get the IP address of the Graphite + statsd container:
-
-```
-$ docker inspect \
-    --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    graphite_vaultron
-172.17.0.2
-```
-
-Now, start a Grafana container:
+Next, start a Grafana container:
 
 ```
 $ docker run \
-  -d -p 3000:3000 \
-  -v /Users/brian/src/brianshumate/vaultron/tmp/g-data:/var/lib/grafana \
-  -e "GF_SECURITY_ADMIN_PASSWORD=vaultron" \
-  -e "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
-   grafana/grafana
+-d -p 3000:3000 \
+-v /Users/brian/src/brianshumate/vaultron/tmp/g-data:/var/lib/grafana \
+-e "GF_SECURITY_ADMIN_PASSWORD=Vaultron#1" \
+-e "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
+grafana/grafana
 ```
 
-Note that the *admin* user password is set to "vaultron" in the example, and some handy plugins are installed as well.
+Note that the *admin* user password is set to `Vaultron#1` in the example, and some handy Grafana plugins are also installed.
 
 #### Initial Vaultron Configuration
 
@@ -59,7 +54,16 @@ telemetry {
 }
 ```
 
-Use the address for the Graphite container and port `8125`.
+Get the IP address of the Graphite + statsd container:
+
+```
+$ docker inspect \
+    --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+    graphite_vaultron
+172.17.0.2
+```
+
+and use that address + port *8125* for the value of `statsd_address`.
 
 Be sure to instruct Vaultron to use a custom configuration with:
 
@@ -70,7 +74,7 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 
 and supply a `vault` binary in the `custom` path prior to running `./form`.
 
-Once ready, go ahead and form Vaultron!
+Go ahead and form Vaultron!
 
 #### Initial Grafana Configuration
 
