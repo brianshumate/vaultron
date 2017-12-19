@@ -5,9 +5,14 @@
 # An example use case test for Vault secret
 # addition/deletion/restoration
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 
-. ./skydome
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
 
 SECRET="secret/bar"
 SECRET_VALUE="baz"

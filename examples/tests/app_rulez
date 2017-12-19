@@ -6,9 +6,14 @@
 #
 # Role name: apprulez-$APPRULEZ
 #
-# shellcheck disable=SC1091,SC2059,SC2086,SC2089,SC2090,SC2154
+# shellcheck disable=SC1090,SC1091,SC1117,SC2059,SC2086,SC2089,SC2090,SC2154
 
-. ./skydome
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
 
 program="$(basename "$0")"
 
@@ -79,7 +84,7 @@ gen_token() {
       printf "${txtgrn}.${txtrst}"
   fi
   done
-  printf "%s" "$txtrst\n"
+  printf "$txtrst\n"
 }
 
 if $PORT_CHECK; then
@@ -89,6 +94,6 @@ if $PORT_CHECK; then
   gen_token "$@"
   # msg complete "Generated $1 AppRole tokens!"
 else
-  echo "Not sure if Vault is reachable at localhost! Giving up!"
+  echo "Vault is not reachable at localhost! Giving up!"
   exit 1
 fi

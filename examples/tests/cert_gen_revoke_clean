@@ -8,10 +8,14 @@
 #   - Revokes certs
 #   - Tidies CRL via API
 #
-# shellcheck disable=SC2086,SC1091
-#
+# shellcheck disable=SC2086,SC1090,SC1091
 
-. ./skydome
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
 
 export i=0
 export serials="cert_serials.txt"

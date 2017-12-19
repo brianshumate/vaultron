@@ -3,27 +3,30 @@
 # This script is used to setup a MySQL Docker container
 # for Vaultron secret backend use
 #
-# shellcheck disable=SC1091
-# shellcheck disable=SC2059
-#
+# shellcheck disable=SC1090,SC1091,SC2059
 
-. ../../../skydome
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
 
 msg greeting "Engage Eye Beams for MySQL! ..."
 
-_docker_container() {
+launch_docker_container() {
 docker run --name mysql_vaultron \
-    -e MYSQL_ROOT_PASSWORD=vaultron \
-    -p 3306:3306 \
-    -d mysql:latest > /dev/null 2>&1
+  -e MYSQL_ROOT_PASSWORD=vaultron \
+  -p 3306:3306 \
+  -d mysql:latest > /dev/null 2>&1
 }
 
 msg info "Launch MySQL Docker container ..."
-if _docker_container; then
-    msg complete "Launched MySQL Docker container!"
+if ! launch_docker_container; then
+  msg alert "Problem Launching MySQL Docker container!"
+  exit 1
 else
-    msg alert "Problem Launching MySQL Docker container!"
-    exit 1
+  msg complete "Launched MySQL Docker container!"
 fi
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql_vaultron)"
@@ -31,23 +34,23 @@ MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks
 if ! vault mounts | grep 'database_' > /dev/null 2>&1; then
   msg info "Mount Vault database backend ..."
   if vault mount database > /dev/null 2>&1; then
-      msg complete "Mounted Vault database backend!"
+    msg complete "Mounted Vault database backend!"
   else
-      msg alert "Problem mounting MySQL database secret backend!"
-      exit 1
+    msg alert "Problem mounting MySQL database secret backend!"
+    exit 1
   fi
 fi
 
-# TODO: This is a sad hack and should instead be done deterministically
+# XXX: Sad sleepy hack — should instead be done deterministically
 msg info "Pausing while MySQL at $MYSQL_CONTAINER_IP wakes up ..."
-sleep 25
+sleep 20
 
 msg info "Configure MySQL secret backend ..."
 if vault write database/config/mysql \
-    plugin_name=mysql-database-plugin \
-    connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
-    allowed_roles="readonly"  > /dev/null 2>&1; then
-    msg complete "Configured MySQL secret backend!"
+  plugin_name=mysql-database-plugin \
+  connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
+  allowed_roles="mysql-readonly"  > /dev/null 2>&1; then
+  msg complete "Configured MySQL secret backend!"
 else
     msg alert "Problem configuring MySQL database secret backend"
     exit 1
@@ -64,3 +67,6 @@ else
     msg alert "Problem configuring MySQL read-only role"
     exit 1
 fi
+
+msg complete "MySQL secret backend enabled! Use the following command to get a MySQL credential:"
+msg complete "vault read database/creds/mysql-readonly"

@@ -4,10 +4,14 @@
 #
 # Create various oddball entries in the Consul K/V for testing, etc.
 #
-# shellcheck disable=SC1091
-#
+# shellcheck disable=SC1090,SC1091
 
-. ../../skydome
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
 
 create_kv() {
     for i in {1..100}; do
