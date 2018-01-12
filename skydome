@@ -3,7 +3,7 @@
 # This script contains common functions and is sourced by the
 # the other Vaultron scripts; there's nothing useful in here to run directly.
 #
-# shellcheck disable=SC2059
+# shellcheck disable=SC1117,SC2059
 #
 
 export CONSUL_HTTP_ADDR="localhost:8500"
@@ -17,45 +17,39 @@ export txtylw="\033[0;33m" # Yellow
 export txtwht="\033[0;37m" # White
 export txtrst="\033[0m"    # Text Reset
 
-###
-### Log stuff
-###
+### Emit messages
 msg() {
     msgtype="$1"
     msgtxt="$2"
     case "${msgtype}" in
         greeting)
-            printf "✨  ${txtylw}${msgtxt}\n"
+            printf "[=] ${msgtxt}\n"
             ;;
         info)
-            printf "ℹ️  ${txtcya}${msgtxt}\n"
+            printf "[i] ${msgtxt}\n"
             ;;
         success)
-            printf "🤖  ${txtgrn}${msgtxt}\n"
+            printf "[^] ${msgtxt}\n"
             ;;
         complete)
-            printf "✅  ${txtgrn}${msgtxt}\n"
+            printf "[+] ${msgtxt}\n"
             ;;
         boom)
-            printf "💥  ${txtwht}${msgtxt}\n" >&2
+            printf "[*] ${msgtxt}\n" >&2
             ;;
         notice)
-            printf "✴️  ${txtylw}${msgtxt}\n"
+            printf "[!] ${msgtxt}\n"
             ;;
         alert)
-            printf "🚫  ${txtred}${msgtxt}\n" >&2
-            ;;
-        secret)
-            printf "🔑  ${txtgrn}${msgtxt}\n"
+            printf "[e] ${msgtxt}\n" >&2
             ;;
         *)
-            printf "⁉️  ${txtwht}${msgtxt}\n" >&2
+            printf "[@] ${msgtxt}\n" >&2
             ;;
     esac
-    printf "${txtrst}"
 }
 
-_tfmsg() {
+tfmsg() {
     tfmsg_out="$(echo "$1" | awk '{
            # strip control characters for printing and matching
            gsub(/\033\[[0-9]+m/,"")
@@ -83,42 +77,42 @@ _tfmsg() {
     fi
 }
 
-_tflogdir() {
+tflogdir() {
     if ! [ -d ./log ]; then
         mkdir ./log
     fi
 }
 
-_init() {
+init() {
     tfout="$(terraform init 2>&1)"
     ret=$?
     init_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-init.log"
     echo "$tfout" > "$init_out"
-    _tfmsg "$tfout"
+    tfmsg "$tfout"
     return $ret
 }
 
-_apply() {
+apply() {
     tfout="$(terraform apply "$1" 2>&1)"
     ret=$?
     apply_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-apply.log"
     echo "$tfout" > "$apply_out"
-    _tfmsg "$tfout"
+    tfmsg "$tfout"
     return $ret
 }
 
-_plan() {
+plan() {
     tfout="$(terraform plan -out="$1" 2>&1)"
     ret=$?
     plan_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-plan.log"
     echo "$tfout" > "$plan_out"
-    _tfmsg "$tfout"
+    tfmsg "$tfout"
     return $ret
 }
 
-_destroy() {
+destroy() {
     tfout="$(terraform destroy -force -state=./tfstate/terraform.tfstate 2>&1)"
     echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-destroy.log
-    _tfmsg "$tfout"
+    tfmsg "$tfout"
     return $ret
 }

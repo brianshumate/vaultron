@@ -13,10 +13,7 @@
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
 # Pick one, fix one!
-# shellcheck disable=SC2154
-# shellcheck disable=SC2059
-# shellcheck disable=SC2039
-# shellcheck disable=SC1091
+# shellcheck disable=SC1117,SC2154,SC2059,SC2039,SC1091
 
 . ./skydome
 
@@ -57,8 +54,8 @@ enable_auth_backends() {
   # App ID is deprecated, but still left on for checking out older versions
   vault auth-enable app-id > /dev/null 2>&1
   msg complete "Enabled App ID authentication backend!"
-  vault auth-enable approle > /dev/null 2>&1
-  msg complete "Enabled AppRole authentication backend!"
+  #vault auth-enable approle > /dev/null 2>&1
+  #msg complete "Enabled AppRole authentication backend!"
   # TODO: This needs to be conditionally added based on installed Vault
   # version as aws auth does not exist in older Vault versions
   #
@@ -125,7 +122,7 @@ mount_secret_backends() {
 # Get Vault status
 status() {
   msg info "Vault status ..."
-  printf "${txtblu}$(vault status)${txtrst}\n"
+  printf "$(vault status)\n"
 }
 
 # Unseal Vault
@@ -157,7 +154,6 @@ if [ $# -gt 1 ]
   then
     usage
 fi
-
 
 if (set -u; : "${1}") 2> /dev/null; then
   msg info "Filename argument specified; Use file: ${1}"

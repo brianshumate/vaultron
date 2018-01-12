@@ -27,17 +27,16 @@ After doing so, it takes just 3 steps to form your own Vaultron:
 When Vaultron is successfully formed, the output looks like this:
 
 ```
-✨  Form Vaultron! ...
-✨  Terraform has been successfully initialized!
-✨  Vault Docker image version: 0.8.2
-✨  Consul Docker image version: 1.0.0
-✨  Terraform plan: 11 to add, 0 to change, 0 to destroy.
-✨  Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
-🤖  Vaultron formed!
+[=] Form Vaultron! ...
+[=] Terraform has been successfully initialized!
+[=] Vault Docker image version: 0.9.0
+[=] Consul Docker image version:    1.0.2
+[=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
+[=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
+[^] Vaultron formed
+```
 
-You can now visit the Consul web UI at http://localhost:8500
-
-You can also interact with vault and consul CLI utilities after
+You can now interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:
 
 export CONSUL_HTTP_ADDR="localhost:8500"
@@ -50,9 +49,11 @@ You can instead source the `ion_darts` script to do this for you:
 
 ```
 $ . ./ion_darts
-✨  Exporting Vaultron environment variables ...
-🤖  Exported Vaultron environment variables!
+[=] Exporting Vaultron environment variables ...
+[^] Exported Vaultron environment variables!
 ```
+
+> NOTE: You can also visit the Consul web UI at http://localhost:8500
 
 ### What's Next?
 

@@ -48,7 +48,7 @@ check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
-       echo "🚫  Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
+       msg alert "Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
        unset TF_VAR_consul_version;
        kill -INT $$
     fi
@@ -59,7 +59,7 @@ check_vault_version() {
   if [ ! -z "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="./black_lion/templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
-       echo "🚫  Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
+       msg alet "Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
        unset TF_VAR_vault_version;
        kill -INT $$
     fi
@@ -88,9 +88,9 @@ check_custom_binary vault
 # DO IT.
 msg greeting "Form Vaultron! ..."
 
-_tflogdir
+tflogdir
 
-if ! _init; then
+if ! init; then
   msg alert "Vaultron cannot form! terraform init output from $init_out:"
   cat "$init_out"
   exit 1
@@ -115,13 +115,13 @@ msg greeting "Consul Docker image version:\t${TF_VAR_consul_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
-if ! _plan "${plan_file}"; then
+if ! plan "${plan_file}"; then
   msg alert "Vaultron cannot form! terraform plan output from $plan_out:"
   cat "$plan_out"
   exit 1
 fi
 
-if ! _apply "${plan_file}"; then
+if ! apply "${plan_file}"; then
   msg alert "Vaultron cannot form! terraform apply output from $apply_out:"
   cat "$apply_out"
   exit 1

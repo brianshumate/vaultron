@@ -18,7 +18,7 @@ fi
 
 msg success "Unform Vaultron ..."
 
-if ! _destroy; then
+if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."
 fi
 
