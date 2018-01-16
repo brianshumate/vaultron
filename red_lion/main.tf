@@ -10,9 +10,9 @@ output "consul_oss_server_ips" {
   description = "Consul OSS Server IP addresses"
 
   value = [
-    "${docker_container.consul_oss_server_0.ip_address}",
-    "${docker_container.consul_oss_server_1.ip_address}",
-    "${docker_container.consul_oss_server_2.ip_address}",
+    "${docker_container.consul_oss_server_0.*.ip_address}",
+    "${docker_container.consul_oss_server_1.*.ip_address}",
+    "${docker_container.consul_oss_server_2.*.ip_address}",
   ]
 }
 

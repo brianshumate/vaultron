@@ -1,6 +1,5 @@
-###
-### Vaultron: Vault Open Source Version 0.6.2 configuration file
-###
+# Vaultron OSS v0.6.2
+
 cluster_name = "${cluster_name }"
 
 listener "tcp" {

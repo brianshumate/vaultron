@@ -1,6 +1,5 @@
-###
-### Vaultron: Vault Open Source Version 0.8.2 configuration file
-###
+# Vaultron OSS v0.8.2
+
 cluster_name = "${cluster_name }"
 
 storage "consul" {
@@ -15,4 +14,9 @@ listener "tcp" {
   tls_disable = "${tls_disable}"
 }
 
+# Default TTL values
+default_lease_ttl = "168h" # 7 days
+max_lease_ttl = "23976h".  # 999 days
+
+# Plugin path
 plugin_directory  = "/vault/plugins"

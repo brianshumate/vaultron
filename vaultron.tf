@@ -5,7 +5,7 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.9.0"
+  default = "0.9.1"
 }
 
 # Set TF_VAR_consul_version to set this
@@ -81,6 +81,11 @@ variable "vault_custom_instance_count" {
 # Set TF_VAR_vault_custom_config_template to set this
 variable "vault_custom_config_template" {
   default = "vault_config_custom.tpl"
+}
+
+# Set TF_VAR_vault_server_log_level to set this
+variable "vault_server_log_level" {
+  default = "debug"
 }
 
 # Consul related variables
@@ -166,4 +171,5 @@ module "vaultron" {
   consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
   consul_client_ips            = ["${module.consul_cluster.consul_oss_client_ips}"]
   vault_custom_config_template = "${var.vault_custom_config_template}"
+  vault_server_log_level       = "${var.vault_server_log_level}"
 }

@@ -1,6 +1,5 @@
-###
-### Vaultron: Vault Open Source Version 0.7.3 configuration file
-###
+# Vaultron OSS v0.7.3
+
 cluster_name = "${cluster_name }"
 
 storage "consul" {

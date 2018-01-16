@@ -263,6 +263,15 @@ Here is a tree showing the directory structure for a Consul server:
                 └── remote.snapshot
 ```
 
+### What Are The Default TTL Values?
+
+Vaultron tries to be reasonable in accommodating developer use cases, but also wants to keep cruft to a minimum. To that end, the default TTL value is lowered, and the maximum TTL value is raised to these values:
+
+- `default_lease_ttl`: **168h**
+- `max_lease_ttl`: **23976h**
+
+That's 7 days and 999 days respectively.
+
 ### What About Logs?
 
 The Docker containers are named as shown in the [Basic Architecture Overview](#basic-architecture-overview).

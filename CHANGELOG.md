@@ -194,3 +194,10 @@
 - Monitoring with Graphite and Grafana guide
 - PostgreSQL backend guide
 - Updated example scripts
+
+## v1.6.4
+
+- Vault v0.9.1
+- Added variable `vault_server_log_level` variable for Vault log level
+- Updated templates
+- Updated documentation

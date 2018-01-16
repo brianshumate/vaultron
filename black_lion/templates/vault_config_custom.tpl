@@ -1,9 +1,25 @@
-###
-### Vaultron: Vault custom configuration file
-###
+# Vaultron CUSTOM
 
 cluster_name = "${cluster_name }"
 ui = true
+
+# Listener
+
+listener "tcp" {
+  address = "${address}"
+  tls_disable = "${tls_disable}"
+}
+
+# Default TTL values
+
+default_lease_ttl = "14400h" # 600 days
+max_lease_ttl = "23976h"     # 365 days
+
+# Plugin path
+
+plugin_directory  = "/vault/plugins"
+
+# Storage
 
 storage "consul" {
   address = "${consul_address}:8500"
@@ -12,13 +28,8 @@ storage "consul" {
   service_tags = "${service_tags}"
 }
 
-listener "tcp" {
-  address = "${address}"
-  tls_disable = "${tls_disable}"
-}
+# Telemetry
 
 telemetry {
   statsd_address = "172.17.0.2:8125"
 }
-
-plugin_directory  = "/vault/plugins"

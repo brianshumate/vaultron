@@ -14,7 +14,7 @@ variable "vault_path" {}
 variable "vault_cluster_name" {}
 variable "vault_plus_one_port" {}
 variable "disable_clustering" {}
-
+variable "vault_server_log_level" {}
 variable "consul_server_ips" {
   type = "list"
 }
@@ -86,7 +86,7 @@ resource "docker_container" "vault_oss_server" {
     container_path = "/vault/plugins"
   }
 
-  entrypoint = ["vault", "server", "-config=/vault/config/main.hcl"]
+  entrypoint = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config/main.hcl"]
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
 
@@ -182,7 +182,7 @@ resource "docker_container" "vault_custom_server" {
     container_path = "/vault/plugins"
   }
 
-  entrypoint = ["/vault/custom/vault", "server", "-config=/vault/config/main.hcl"]
+  entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config/main.hcl"]
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
 

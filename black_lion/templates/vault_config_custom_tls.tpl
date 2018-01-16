@@ -19,4 +19,9 @@ listener "tcp" {
   tls_key_file = "${tls_key}"
 }
 
+# Default TTL values
+default_lease_ttl = "168h"
+max_lease_ttl = "23976h"
+
+# Plugin path
 plugin_directory  = "/vault/plugins"
