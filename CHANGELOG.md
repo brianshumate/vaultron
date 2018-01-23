@@ -201,3 +201,11 @@
 - Added variable `vault_server_log_level` variable for Vault log level
 - Updated templates
 - Updated documentation
+
+## v1.6.5 (UNRELEASED)
+
+- Vault v0.9.2
+- Update blazing sword
+- Adulted away from delightful emojis for the sake of a bit of UX portability
+- Add a Root+Intermediate CA guide for PKI backend
+- Update documentation

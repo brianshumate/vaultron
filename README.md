@@ -29,7 +29,7 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [=] Form Vaultron! ...
 [=] Terraform has been successfully initialized!
-[=] Vault Docker image version: 0.9.0
+[=] Vault Docker image version:     0.9.0
 [=] Consul Docker image version:    1.0.2
 [=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
 [=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
@@ -39,6 +39,7 @@ When Vaultron is successfully formed, the output looks like this:
 You can now interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:
 
+```
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
 ```

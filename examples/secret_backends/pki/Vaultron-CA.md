@@ -1,0 +1,169 @@
+# Vaultron CA
+
+## Root CA
+
+```
+vault mount -path=vaultron_root_pki pki
+
+vault mount-tune -max-lease-ttl=87600h vaultron_root_pki
+
+vault write vaultron_root_pki/root/generate/internal \
+common_name=vaultron.waves ttl=87600h
+
+vault write vaultron_root_pki/config/urls \
+issuing_certificates="http://localhost:8200/v1/pki/ca" \
+crl_distribution_points="http://localhost:8200/v1/pki/crl"
+
+vault write pki/roles/vaultron-dot-waves \
+    allowed_domains=vaultron.waves \
+    allow_subdomains=true max_ttl=14400h
+```
+
+Root CA certificate:
+
+```
+-----BEGIN CERTIFICATE-----
+MIIDPjCCAiagAwIBAgIUDP//ie8deO06gDbDFL37AWkR3cAwDQYJKoZIhvcNAQEL
+BQAwGTEXMBUGA1UEAxMOdmF1bHRyb24ud2F2ZXMwHhcNMTgwMTE2MTgxMDEwWhcN
+MjgwMTE0MTgxMDQwWjAZMRcwFQYDVQQDEw52YXVsdHJvbi53YXZlczCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMYsKbrh11Mp9lxbcJ5qQDFWGC1om7Tq
+IKvqdXtrro59nyvmWpBp5oyAk7H7hXD6Mmosmh5VRxJKz7ViixZNmRHynJJGGEYP
+4UzfRtIyeJRy48CIeW8wstIC+SSovvCOzZRAHyjgonPwMPh8BMPCmrpZwyveT5oL
+CkCC1ZGHLFiUWSvMiFnsyP/ZzZlwIRoRktTk6FVeTG/EZigT7PowOWheU8tUJZ7q
+CxnpQnSNXxsjvps6dZekrf4Y0EahO/9A0kz/HLCSImc4c0QZMbqd4FIosgYJ7au1
+fo/CyLjEhVNgdQdZnE9ElBiZdsIh3MZGx1fzBvY4kwUz9YXDnIiPmicCAwEAAaN+
+MHwwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFCwe
+TIepP2VZP+dwRGnUuXkzNRs0MB8GA1UdIwQYMBaAFCweTIepP2VZP+dwRGnUuXkz
+NRs0MBkGA1UdEQQSMBCCDnZhdWx0cm9uLndhdmVzMA0GCSqGSIb3DQEBCwUAA4IB
+AQAp13otVKSpDXfhv4Ws1AC1NE8oWsbEzm7g0gd0nr/Jg/H4kwm+Q3nNbInnV8/E
+wQDVTLaqmJ3RwlcT+aKPB+tThNlL62DLjGEcmlfE2FUJVoz46YbswnojCwmL68UU
+b0Y7J7bAcicKlRDOLjg9YkpjKO5w1x65h1gcEYg4RK6q+m/7l3wsA/2sj2mWbKKG
+H79hnuJcGxFc0qQZxsYfFS2nmII4gcqqcJ7MqZA7DNyS4kLcaj0Bo2Jkle+x3i6q
+0OweAIkPFYMK0Rdpr1Q8E9r1OZxAxe2UPDV4sbEPXPALFUwnbd5f5Yn+mySJgplf
+cPPoLQmky0tibPLgq1HQIGNJ
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIDPjCCAiagAwIBAgIUDP//ie8deO06gDbDFL37AWkR3cAwDQYJKoZIhvcNAQEL
+BQAwGTEXMBUGA1UEAxMOdmF1bHRyb24ud2F2ZXMwHhcNMTgwMTE2MTgxMDEwWhcN
+MjgwMTE0MTgxMDQwWjAZMRcwFQYDVQQDEw52YXVsdHJvbi53YXZlczCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMYsKbrh11Mp9lxbcJ5qQDFWGC1om7Tq
+IKvqdXtrro59nyvmWpBp5oyAk7H7hXD6Mmosmh5VRxJKz7ViixZNmRHynJJGGEYP
+4UzfRtIyeJRy48CIeW8wstIC+SSovvCOzZRAHyjgonPwMPh8BMPCmrpZwyveT5oL
+CkCC1ZGHLFiUWSvMiFnsyP/ZzZlwIRoRktTk6FVeTG/EZigT7PowOWheU8tUJZ7q
+CxnpQnSNXxsjvps6dZekrf4Y0EahO/9A0kz/HLCSImc4c0QZMbqd4FIosgYJ7au1
+fo/CyLjEhVNgdQdZnE9ElBiZdsIh3MZGx1fzBvY4kwUz9YXDnIiPmicCAwEAAaN+
+MHwwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFCwe
+TIepP2VZP+dwRGnUuXkzNRs0MB8GA1UdIwQYMBaAFCweTIepP2VZP+dwRGnUuXkz
+NRs0MBkGA1UdEQQSMBCCDnZhdWx0cm9uLndhdmVzMA0GCSqGSIb3DQEBCwUAA4IB
+AQAp13otVKSpDXfhv4Ws1AC1NE8oWsbEzm7g0gd0nr/Jg/H4kwm+Q3nNbInnV8/E
+wQDVTLaqmJ3RwlcT+aKPB+tThNlL62DLjGEcmlfE2FUJVoz46YbswnojCwmL68UU
+b0Y7J7bAcicKlRDOLjg9YkpjKO5w1x65h1gcEYg4RK6q+m/7l3wsA/2sj2mWbKKG
+H79hnuJcGxFc0qQZxsYfFS2nmII4gcqqcJ7MqZA7DNyS4kLcaj0Bo2Jkle+x3i6q
+0OweAIkPFYMK0Rdpr1Q8E9r1OZxAxe2UPDV4sbEPXPALFUwnbd5f5Yn+mySJgplf
+cPPoLQmky0tibPLgq1HQIGNJ
+-----END CERTIFICATE-----
+```
+
+## Intermediate CA
+
+```
+vault mount -path=vaultron_int_pki pki
+
+vault mount-tune -max-lease-ttl=14400h vaultron_int_pki
+
+vault write vaultron_int_pki/intermediate/generate/internal common_name="vaultron.waves Intermediate Authority" ttl=14400h
+```
+
+`vaultron.csr`:
+
+```
+-----BEGIN CERTIFICATE REQUEST-----
+MIICuDCCAaACAQAwMDEuMCwGA1UEAxMldmF1bHRyb24ud2F2ZXMgSW50ZXJtZWRp
+YXRlIEF1dGhvcml0eTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANR3
+KDfUfzlfAVP40uDoXVzgppunCrOVO/lmrmDwYIqczTWhN7uohCAOiW3uKLHqYPKr
+bmRYNiGNldomcHT2yIx+3BCK3/MrAk8TtALX7RRtXhBgRK0w6EdiejPwTyJHwvjm
+QZxRIdUhTRsKpR50pG9kL0cHnNaWb+G7RY3cx0+9Uwy4z0xDux8Nf18uwXix7dWO
+71HLP3mahmTL777etDRGVWBqCqT6ggip53rKbzS7vW1YGKE5q3dxh8YYCDIzW12l
+zJQFgvXDbQnyNzcED8pFWe7LRrfN9DCYaAMavQrEOGy+o+w7mBbZykkX7T9W0889
+tJ3THj5C2PclmKChg3UCAwEAAaBDMEEGCSqGSIb3DQEJDjE0MDIwMAYDVR0RBCkw
+J4IldmF1bHRyb24ud2F2ZXMgSW50ZXJtZWRpYXRlIEF1dGhvcml0eTANBgkqhkiG
+9w0BAQsFAAOCAQEAcL2gRbUETYcvra2tPMC3ZZUCj2svr1+uYDpiAiTV1g/XeVxY
+7gI0Wz+vwsRM42/7jE6Hjcbu/cTg6gLP/f07DwFtCMjkFyfMJ423SS3EyOQVrvzC
+KkP4ZQEmPqpu45NU0PsTu3fYhFPF1e9+SSIgiFw/LQOk7muisc5ni5HJvB5Mf7h0
+70S10iORPf7oOP61PxgYSWmsRlyj2lp7EpY7lXcRBEzp4xZmF4ZGVdFXK9skTLJZ
+NmZCghR9OhkWZosPDG01hLD+CIWYCdWuctvRx5huGnL7Wn+uY0F5QmG2klRplild
+X1q1kWWd7MwUKiCCnYi9c9Ha9koU6sycdUbG9g==
+-----END CERTIFICATE REQUEST-----
+```
+
+```
+vault write vaultron_root_pki/root/sign-intermediate \
+csr=@vaultron.csr \
+format=pem_bundle
+```
+
+Intermediate CA `signed_certificate.pem`:
+
+```
+-----BEGIN CERTIFICATE-----
+MIID4DCCAsigAwIBAgIUJNJezPuXplnFIZ+2MWgJJMhe3OowDQYJKoZIhvcNAQEL
+BQAwGTEXMBUGA1UEAxMOdmF1bHRyb24ud2F2ZXMwHhcNMTgwMTE2MTg0MDM1WhcN
+MTkwOTA4MTg0MTA1WjAwMS4wLAYDVQQDEyV2YXVsdHJvbi53YXZlcyBJbnRlcm1l
+ZGlhdGUgQXV0aG9yaXR5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+1HcoN9R/OV8BU/jS4OhdXOCmm6cKs5U7+WauYPBgipzNNaE3u6iEIA6Jbe4osepg
+8qtuZFg2IY2V2iZwdPbIjH7cEIrf8ysCTxO0AtftFG1eEGBErTDoR2J6M/BPIkfC
++OZBnFEh1SFNGwqlHnSkb2QvRwec1pZv4btFjdzHT71TDLjPTEO7Hw1/Xy7BeLHt
+1Y7vUcs/eZqGZMvvvt60NEZVYGoKpPqCCKnnespvNLu9bVgYoTmrd3GHxhgIMjNb
+XaXMlAWC9cNtCfI3NwQPykVZ7stGt830MJhoAxq9CsQ4bL6j7DuYFtnKSRftP1bT
+zz20ndMePkLY9yWYoKGDdQIDAQABo4IBBzCCAQMwDgYDVR0PAQH/BAQDAgEGMA8G
+A1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFFCVDcCMZ5Nbqsibl/T0TcEXvAp8MB8G
+A1UdIwQYMBaAFCweTIepP2VZP+dwRGnUuXkzNRs0MDsGCCsGAQUFBwEBBC8wLTAr
+BggrBgEFBQcwAoYfaHR0cDovL2xvY2FsaG9zdDo4MjAwL3YxL3BraS9jYTAwBgNV
+HREEKTAngiV2YXVsdHJvbi53YXZlcyBJbnRlcm1lZGlhdGUgQXV0aG9yaXR5MDEG
+A1UdHwQqMCgwJqAkoCKGIGh0dHA6Ly9sb2NhbGhvc3Q6ODIwMC92MS9wa2kvY3Js
+MA0GCSqGSIb3DQEBCwUAA4IBAQCPlfdRT+/mDbZEV1YO29vgHRK6KnjAhnzgR0x8
+7EEV4aWIsOYLDyCHqsxBfNo3Tzw43uvtRktBb/f8BNw9Acn8vDQwEj57YTYJnIBo
+T76UMYjv9KTakoHQk6tcuQUOIlH7wnIu7+9H3xsQD/Hlh1ymjL7ElfHAZTx6DRVT
+eo0dMIV4//zP8rolPeARMUhyJ0XQYp/2vhJbyRaLFDDd+PdBPqXI6xJFz09JLzgP
+vh6zW7SQczUhaxNvYZffc70p+56TAue9rVCguJAJ1qldX0ImYivW/NJc51OcrYi8
+rJXFwJEPEZrw1JDrL8stKTwHjSMv95+kz+jc9ir/f/yKZp8U
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIDPjCCAiagAwIBAgIUDP//ie8deO06gDbDFL37AWkR3cAwDQYJKoZIhvcNAQEL
+BQAwGTEXMBUGA1UEAxMOdmF1bHRyb24ud2F2ZXMwHhcNMTgwMTE2MTgxMDEwWhcN
+MjgwMTE0MTgxMDQwWjAZMRcwFQYDVQQDEw52YXVsdHJvbi53YXZlczCCASIwDQYJ
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAMYsKbrh11Mp9lxbcJ5qQDFWGC1om7Tq
+IKvqdXtrro59nyvmWpBp5oyAk7H7hXD6Mmosmh5VRxJKz7ViixZNmRHynJJGGEYP
+4UzfRtIyeJRy48CIeW8wstIC+SSovvCOzZRAHyjgonPwMPh8BMPCmrpZwyveT5oL
+CkCC1ZGHLFiUWSvMiFnsyP/ZzZlwIRoRktTk6FVeTG/EZigT7PowOWheU8tUJZ7q
+CxnpQnSNXxsjvps6dZekrf4Y0EahO/9A0kz/HLCSImc4c0QZMbqd4FIosgYJ7au1
+fo/CyLjEhVNgdQdZnE9ElBiZdsIh3MZGx1fzBvY4kwUz9YXDnIiPmicCAwEAAaN+
+MHwwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFCwe
+TIepP2VZP+dwRGnUuXkzNRs0MB8GA1UdIwQYMBaAFCweTIepP2VZP+dwRGnUuXkz
+NRs0MBkGA1UdEQQSMBCCDnZhdWx0cm9uLndhdmVzMA0GCSqGSIb3DQEBCwUAA4IB
+AQAp13otVKSpDXfhv4Ws1AC1NE8oWsbEzm7g0gd0nr/Jg/H4kwm+Q3nNbInnV8/E
+wQDVTLaqmJ3RwlcT+aKPB+tThNlL62DLjGEcmlfE2FUJVoz46YbswnojCwmL68UU
+b0Y7J7bAcicKlRDOLjg9YkpjKO5w1x65h1gcEYg4RK6q+m/7l3wsA/2sj2mWbKKG
+H79hnuJcGxFc0qQZxsYfFS2nmII4gcqqcJ7MqZA7DNyS4kLcaj0Bo2Jkle+x3i6q
+0OweAIkPFYMK0Rdpr1Q8E9r1OZxAxe2UPDV4sbEPXPALFUwnbd5f5Yn+mySJgplf
+cPPoLQmky0tibPLgq1HQIGNJ
+-----END CERTIFICATE-----
+```
+
+```
+vault write vaultron_int_pki/intermediate/set-signed \
+certificate=@signed_certificate.pem
+
+vault write vaultron_int_pki/config/urls \
+issuing_certificates="http://127.0.0.1:8200/v1/vaultron_int_pki/ca" \
+crl_distribution_points="http://127.0.0.1:8200/v1/vaultron_int_pki/crl"
+
+vault write vaultron_int_pki/roles/vaultron-dot-waves \
+    allowed_domains=vaultron.waves \
+    allow_subdomains=true max_ttl=14400
+```
+
+
+vault write vaultron_int_pki/issue/vaultron-dot-waves \
+    common_name=tacotown.vaultron.waves \
+    client_flag=false

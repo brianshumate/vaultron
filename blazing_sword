@@ -51,11 +51,8 @@ enable_audit_logging() {
 enable_auth_backends() {
   msg info "Enabling Vault authentication backends ..."
   auth_root
-  # App ID is deprecated, but still left on for checking out older versions
-  vault auth-enable app-id > /dev/null 2>&1
-  msg complete "Enabled App ID authentication backend!"
-  #vault auth-enable approle > /dev/null 2>&1
-  #msg complete "Enabled AppRole authentication backend!"
+  vault auth-enable approle > /dev/null 2>&1
+  msg complete "Enabled AppRole authentication backend!"
   # TODO: This needs to be conditionally added based on installed Vault
   # version as aws auth does not exist in older Vault versions
   #

@@ -35,6 +35,15 @@ check_vault() {
   fi
 }
 
+check_approle() {
+  if ! vault auth -methods | grep approle; then
+    msg alert "No AppRole auth backend detected! Be sure to enable AppRole!"
+    exit 1
+  else
+    msg info "AppRole authentication is enabled - creating role ..."
+  fi
+}
+
 gen_role() {
   msg info "Generating apprulez-$APPRULEZ role ..."
   if ! vault write \
@@ -88,6 +97,7 @@ gen_token() {
 }
 
 if $PORT_CHECK; then
+  check_approle
   gen_role
   get_role_id
   get_secret_id
