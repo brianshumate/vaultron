@@ -49,10 +49,10 @@ gen_role() {
   if ! vault write \
     auth/approle/role/apprulez-$APPRULEZ \
     secret_id_ttl=720h \
-    token_num_uses=9999 \
+    token_num_uses=999999 \
     token_ttl=360h \
     token_max_ttl=420h \
-    secret_id_num_uses=9999 > /dev/null 2>&1; then
+    secret_id_num_uses=999999 > /dev/null 2>&1; then
       msg alert "Failed to generate the apprulez-$APPRULEZ AppRole!"
       exit 1
   fi
