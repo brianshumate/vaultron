@@ -202,10 +202,12 @@
 - Updated templates
 - Updated documentation
 
-## v1.6.5 (UNRELEASED)
+## v1.6.5
 
-- Vault v0.9.2
+- Vault v0.9.3
 - Update blazing sword
 - Adulted away from delightful emojis for the sake of a bit of UX portability
 - Add a Root+Intermediate CA guide for PKI backend
+- Update examples
+- Update tests
 - Update documentation

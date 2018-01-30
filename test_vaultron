@@ -17,6 +17,7 @@
 #
 # The tests should complete in ~20 seconds on decent system specs
 #
+# shellcheck disable=SC1091,SC1117
 
 export txtblu="\033[0;34m" # Blue
 export txtgrn="\033[0;32m" # Green
@@ -72,6 +73,11 @@ for l in init plan apply; do
         exit 1
     fi
 done
+
+if ! . ./ion_darts; then
+    echo "${txtred}🚫  Error sourcing Ion Darts!${txtrst}"
+    exit 1
+fi
 
 if ! ./blazing_sword; then
     echo "${txtred}🚫  Error forming Blazing Sword!${txtrst}"

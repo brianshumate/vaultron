@@ -1,4 +1,4 @@
-# Vaultron OSS v0.6.4
+# Vault OSS v0.6.4
 
 cluster_name = "${cluster_name }"
 

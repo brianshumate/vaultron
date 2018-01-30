@@ -3,11 +3,7 @@
 # This script is used to form Vaultron with Terraform
 #
 # Some of these would work only for pure POSIX
-# shellcheck disable=SC2154
-# shellcheck disable=SC2039
-# shellcheck disable=SC2059
-# shellcheck disable=SC1091
-# shellcheck disable=SC1117
+# shellcheck disable=SC2154,SC2039,SC2059,SC1091,SC1117
 
 . ./skydome
 
