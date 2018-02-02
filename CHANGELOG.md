@@ -211,3 +211,8 @@
 - Update examples
 - Update tests
 - Update documentation
+
+## v1.6.6 (UNRELEASED)
+
+- CLI capabilities checking added to skydome
+- Example/test script improvements

@@ -17,7 +17,7 @@ export txtylw="\033[0;33m" # Yellow
 export txtwht="\033[0;37m" # White
 export txtrst="\033[0m"    # Text Reset
 
-### Emit messages
+# Begin common bits
 msg() {
     msgtype="$1"
     msgtxt="$2"
@@ -49,6 +49,19 @@ msg() {
     esac
 }
 
+# Check CLI capabilities for renaming from <= v0.9.1 and v0.9.1+
+check_cli_cap() {
+  vault_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
+  vault_min_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
+  if [ "$vault_version" = "0.9.1" ] || [ "$vault_min_version" -lt "9" ]; then
+    vault_cli_cap="0"
+  else
+    vault_cli_cap="1"
+  fi
+}
+# End common bits
+
+# Begin Terraform specific bits
 tfmsg() {
     tfmsg_out="$(echo "$1" | awk '{
            # strip control characters for printing and matching
@@ -116,3 +129,4 @@ destroy() {
     tfmsg "$tfout"
     return $ret
 }
+# End Terraform specific bits

@@ -144,5 +144,4 @@ if read_secret; then
   msg info "Read 6 OK";
 else
   msg alert "Read 6 Failed";
-
 fi

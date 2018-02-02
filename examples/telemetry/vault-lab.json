@@ -34,7 +34,7 @@
             "#e0f9d7",
             "#f29191"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -82,7 +82,8 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.vault.audit.log_request_failure"
+              "target": "stats.vault.audit.log_request_failure",
+              "textEditor": true
             }
           ],
           "thresholds": "0,1",
@@ -96,18 +97,18 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         },
         {
           "cacheTimeout": null,
-          "colorBackground": true,
+          "colorBackground": false,
           "colorValue": true,
           "colors": [
-            "#e0f9d7",
-            "#b7dbab",
-            "#508642"
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -116,10 +117,10 @@
             "thresholdLabels": false,
             "thresholdMarkers": true
           },
-          "id": 7,
+          "id": 17,
           "interval": null,
           "links": [],
-          "mappingType": 2,
+          "mappingType": 1,
           "mappingTypes": [
             {
               "name": "value to text",
@@ -137,23 +138,29 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [],
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
           "span": 2,
           "sparkline": {
-            "fillColor": "#b7dbab",
+            "fillColor": "#fceaca",
             "full": false,
-            "lineColor": "#629e51",
+            "lineColor": "#f4d598",
             "show": true
           },
           "tableColumn": "",
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.7f320e57f9fe.expire.num_leases"
+              "target": "stats.gauges.vault.d37c4417f70e.expire.num_leases"
             }
           ],
-          "thresholds": "20,30,90",
-          "title": "Total Tokens",
+          "thresholds": "25000,75000",
+          "title": "Total Leases",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -163,14 +170,14 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         },
         {
           "aliasColors": {},
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
+          "datasource": "Vaultron Graphite",
           "fill": 1,
           "id": 8,
           "legend": {
@@ -484,7 +491,7 @@
       "panels": [
         {
           "aliasColors": {},
-          "bars": true,
+          "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
@@ -499,7 +506,7 @@
             "total": true,
             "values": true
           },
-          "lines": false,
+          "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
@@ -515,15 +522,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.5e0f6a3d60da.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.d37c4417f70e.runtime.alloc_bytes"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.5fd51a7ab427.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.eecfa9badab6.runtime.alloc_bytes"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.7f320e57f9fe.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.f0d930d86771.runtime.alloc_bytes"
             }
           ],
           "thresholds": [],
@@ -564,7 +571,7 @@
         },
         {
           "aliasColors": {},
-          "bars": true,
+          "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
@@ -579,7 +586,7 @@
             "total": true,
             "values": true
           },
-          "lines": false,
+          "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
@@ -595,15 +602,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.5e0f6a3d60da.runtime.num_goroutines"
+              "target": "stats.gauges.vault.d37c4417f70e.runtime.num_goroutines"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.5fd51a7ab427.runtime.num_goroutines"
+              "target": "stats.gauges.vault.eecfa9badab6.runtime.num_goroutines"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.7f320e57f9fe.runtime.num_goroutines"
+              "target": "stats.gauges.vault.f0d930d86771.runtime.num_goroutines"
             }
           ],
           "thresholds": [],
@@ -644,7 +651,7 @@
         },
         {
           "aliasColors": {},
-          "bars": true,
+          "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
@@ -659,7 +666,7 @@
             "total": true,
             "values": true
           },
-          "lines": false,
+          "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
@@ -675,15 +682,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.5e0f6a3d60da.runtime.heap_objects"
+              "target": "stats.gauges.vault.d37c4417f70e.runtime.heap_objects"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.5fd51a7ab427.runtime.heap_objects"
+              "target": "stats.gauges.vault.eecfa9badab6.runtime.heap_objects"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.7f320e57f9fe.runtime.heap_objects"
+              "target": "stats.gauges.vault.f0d930d86771.runtime.heap_objects"
             }
           ],
           "thresholds": [],
@@ -724,7 +731,7 @@
         },
         {
           "aliasColors": {},
-          "bars": true,
+          "bars": false,
           "dashLength": 10,
           "dashes": false,
           "datasource": null,
@@ -739,7 +746,7 @@
             "total": true,
             "values": true
           },
-          "lines": false,
+          "lines": true,
           "linewidth": 1,
           "links": [],
           "nullPointMode": "null",
@@ -755,15 +762,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.5e0f6a3d60da.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.d37c4417f70e.runtime.total_gc_runs"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.5fd51a7ab427.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.eecfa9badab6.runtime.total_gc_runs"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.7f320e57f9fe.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.f0d930d86771.runtime.total_gc_runs"
             }
           ],
           "thresholds": [],
@@ -817,13 +824,86 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "Vaultron Graphite",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 14,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 2,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "refId": "A",
+              "target": "stats.timers.vault.core.leadership_lost.count"
+            }
+          ],
+          "thresholds": "1,3",
+          "title": "Leadership Lost",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
           "colorValue": false,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -885,7 +965,7 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         },
         {
           "cacheTimeout": null,
@@ -896,7 +976,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -958,7 +1038,7 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         },
         {
           "cacheTimeout": null,
@@ -969,7 +1049,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -1031,7 +1111,7 @@
               "value": "null"
             }
           ],
-          "valueName": "avg"
+          "valueName": "current"
         },
         {
           "cacheTimeout": null,
@@ -1042,7 +1122,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -1104,7 +1184,7 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         },
         {
           "cacheTimeout": null,
@@ -1115,80 +1195,7 @@
             "rgba(237, 129, 40, 0.89)",
             "#d44a3a"
           ],
-          "datasource": "Vaultron-Graphite",
-          "format": "none",
-          "gauge": {
-            "maxValue": 100,
-            "minValue": 0,
-            "show": false,
-            "thresholdLabels": false,
-            "thresholdMarkers": true
-          },
-          "id": 14,
-          "interval": null,
-          "links": [],
-          "mappingType": 1,
-          "mappingTypes": [
-            {
-              "name": "value to text",
-              "value": 1
-            },
-            {
-              "name": "range to text",
-              "value": 2
-            }
-          ],
-          "maxDataPoints": 100,
-          "nullPointMode": "connected",
-          "nullText": null,
-          "postfix": "",
-          "postfixFontSize": "50%",
-          "prefix": "",
-          "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "span": 2,
-          "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
-            "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
-          },
-          "tableColumn": "",
-          "targets": [
-            {
-              "refId": "A",
-              "target": "stats.timers.vault.route.read.database-.count"
-            }
-          ],
-          "thresholds": "",
-          "title": "Database Route Reads",
-          "type": "singlestat",
-          "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueName": "total"
-        },
-        {
-          "cacheTimeout": null,
-          "colorBackground": false,
-          "colorValue": false,
-          "colors": [
-            "#299c46",
-            "rgba(237, 129, 40, 0.89)",
-            "#d44a3a"
-          ],
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "format": "none",
           "gauge": {
             "maxValue": 100,
@@ -1250,7 +1257,7 @@
               "value": "null"
             }
           ],
-          "valueName": "total"
+          "valueName": "current"
         }
       ],
       "repeat": null,
@@ -1298,5 +1305,5 @@
   },
   "timezone": "browser",
   "title": "Vault Lab",
-  "version": 20
+  "version": 4
 }

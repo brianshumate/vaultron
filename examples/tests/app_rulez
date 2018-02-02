@@ -36,7 +36,13 @@ check_vault() {
 }
 
 check_approle() {
-  if ! vault auth -methods | grep approle; then
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_auth_cmd="vault auth list"
+  else
+    v_auth_cmd="vault auth -methods"
+  fi
+  if ! $v_auth_cmd | grep approle > /dev/null 2>&1; then
     msg alert "No AppRole auth backend detected! Be sure to enable AppRole!"
     exit 1
   else
@@ -47,7 +53,7 @@ check_approle() {
 gen_role() {
   msg info "Generating apprulez-$APPRULEZ role ..."
   if ! vault write \
-    auth/approle/role/apprulez-$APPRULEZ \
+    auth/vaultron_approle/role/apprulez-$APPRULEZ \
     secret_id_ttl=720h \
     token_num_uses=999999 \
     token_ttl=360h \
@@ -61,31 +67,31 @@ gen_role() {
 
 get_role_id() {
   msg info "Getting apprulez-$APPRULEZ role ID ..."
-  if ! vault read auth/approle/role/apprulez-$APPRULEZ/role-id | \
+  if ! vault read auth/vaultron_approle/role/apprulez-$APPRULEZ/role-id | \
     grep role_id | awk '{print $2}' > /dev/null 2>&1; then
       msg alert "Failed to get apprulez-$APPRULEZ role ID!"
       exit 1
   fi
-  ROLE_ID=$(vault read auth/approle/role/apprulez-$APPRULEZ/role-id | grep role_id | awk '{print $2}')
+  ROLE_ID=$(vault read auth/vaultron_approle/role/apprulez-$APPRULEZ/role-id | grep role_id | awk '{print $2}')
   msg complete "Got apprulez-$APPRULEZ role ID!"
 }
 
 get_secret_id() {
-  #vault write -f auth/approle/role/apprulez/secret-id
+  #vault write -f auth/vaultron_approle/role/apprulez/secret-id
   msg info "Getting apprulez-$APPRULEZ secret ID ..."
-  if ! vault write -f auth/approle/role/apprulez-$APPRULEZ/secret-id | \
+  if ! vault write -f auth/vaultron_approle/role/apprulez-$APPRULEZ/secret-id | \
     grep -w secret_id | awk '{print $2}' > /dev/null 2>&1; then
       msg alert "Failed to get apprulez-$APPRULEZ secret ID!"
       exit 1
   fi
-  SECRET_ID=$(vault write -f auth/approle/role/apprulez-$APPRULEZ/secret-id | grep -w secret_id | awk '{print $2}')
+  SECRET_ID=$(vault write -f auth/vaultron_approle/role/apprulez-$APPRULEZ/secret-id | grep -w secret_id | awk '{print $2}')
   msg complete "Got apprulez-$APPRULEZ secret ID!"
 }
 
 gen_token() {
-  msg secret "Generating $1 tokens: "
+  msg secret "Generating $1 AppRole tokens: "
   for _ in $(seq "$1"); do
-    if ! vault write auth/approle/login \
+    if ! vault write auth/vaultron_approle/login \
       role_id="$ROLE_ID" \
       secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1; then
       printf "${txtred}e${txtrst}"
@@ -101,8 +107,13 @@ if $PORT_CHECK; then
   gen_role
   get_role_id
   get_secret_id
-  gen_token "$@"
-  # msg complete "Generated $1 AppRole tokens!"
+  if ! gen_token "$@"; then
+    errors=$((errors + $?));
+    msg "Problem generating AppRole tokens!";
+    exit $errors
+  else
+    msg complete "Generated $1 AppRole tokens!"
+  fi
 else
   echo "Vault is not reachable at localhost! Giving up!"
   exit 1

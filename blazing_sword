@@ -17,17 +17,6 @@
 
 . ./skydome
 
-# check cli capabilities
-check_cli_cap() {
-  vault_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
-  vault_min_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
-  if [ "$vault_version" == "0.9.1" ] || [ "$vault_min_version" -lt "9" ]; then
-    vault_cli_cap="0"
-  else
-    vault_cli_cap="1"
-  fi
-}
-
 # Check for the existence of a temporary key material file
 check_vault_file() {
   for file in ./vault/vault_*.tmp; do
@@ -51,6 +40,24 @@ auth_root() {
   vault auth "${init_root_token}"  > /dev/null 2>&1
 }
 
+# Show enabled auth methods and secrets engines
+enabled() {
+  msg info "Enabled Auth Methods and Secrets Engines"
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_auth_list_cmd="vault auth list"
+  else
+    v_auth_list_cmd="vault auth -methods"
+  fi
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_secret_list_cmd="vault secrets list"
+  else
+    v_secret_list_cmd="vault mounts"
+  fi
+  $v_auth_list_cmd
+  $v_secret_list_cmd
+}
+
 # Enable audit log
 enable_audit_logging() {
   msg complete "Enabled file based audit log at ./vault/logs/audit.log!"
@@ -60,20 +67,30 @@ enable_audit_logging() {
 
 # Enable authentication backends
 enable_auth_backends() {
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_auth_cmd="vault auth enable"
+  else
+    v_auth_cmd="vault auth-enable"
+  fi
   msg info "Enabling Vault authentication backends ..."
   auth_root
-  vault auth-enable approle > /dev/null 2>&1
-  msg complete "Enabled AppRole authentication backend!"
+
+  $v_auth_cmd -path=vaultron_approle approle > /dev/null 2>&1
+  msg complete "Enabled AppRole authentication backend at vaultron_approle!"
+
   # TODO: This needs to be conditionally added based on installed Vault
   # version as aws auth does not exist in older Vault versions
   #
   # vault auth-enable aws > /dev/null 2>&1
   # msg complete "Enabled AWS authentication backend!"
   #
-  vault auth-enable ldap > /dev/null 2>&1
-  msg complete "Enabled LDAP authentication backend!"
-  vault auth-enable userpass > /dev/null 2>&1
-  msg complete "Enabled Username & Password authentication backend!"
+
+  $v_auth_cmd -path=vaultron_ldap ldap > /dev/null 2>&1
+  msg complete "Enabled LDAP authentication backend at vaultron_ldap!"
+
+  $v_auth_cmd -path=vaultron_userpass userpass > /dev/null 2>&1
+  msg complete "Enabled Username & Password authentication backend at vaultron_userpass!"
 }
 
 # Get a subset of unseal keys
@@ -108,30 +125,97 @@ initialize_vault() {
   fi
 }
 
-# Mount database backend
+# Enable database secrets engine
 mount_database_backend() {
-  msg info "Mounting database backend ..."
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_enable_cmd="vault secrets enable"
+  else
+    v_enable_cmd="vault mount"
+  fi
+  msg info "Enabling database secrets engine ..."
   get_initial_root_token "${vault_dat}"
-  vault mount database > /dev/null 2>&1
-  msg complete "Mounted database backend!"
+  if ! $v_enable_cmd -path=vaultron_database database> /dev/null 2>&1; then
+    msg alert "Problem enabling database secrets engine!"
+  else
+    msg complete "Enabled database secrets engine!"
+  fi
 }
 
-# Mount a handy mix of secret backends
+# Enable a handy mix of secrets engines
 mount_secret_backends() {
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_enable_cmd="vault secrets enable"
+  else
+    v_enable_cmd="vault mount"
+  fi
   msg info "Mounting Vault secret backends ..."
   get_initial_root_token "${vault_dat}"
-  vault mount aws > /dev/null 2>&1
-  msg complete "Mounted AWS secret backend!"
-  vault mount consul > /dev/null 2>&1
-  msg complete "Mounted Consul secret backend!"
-  vault mount pki > /dev/null 2>&1
-  msg complete "Mounted PKI secret backend!"
-  vault mount postgresql > /dev/null 2>&1
-  msg complete "Mounted Transit secret backend!"
-  vault mount -path ssh-host-signer ssh > /dev/null 2>&1
-  msg complete "Mounted SSH host signer backend!"
-  vault mount -path ssh-client-signer ssh > /dev/null 2>&1
-  msg complete "Mounted SSH client signer backend!"
+
+  if ! $v_enable_cmd -path=vaultron_kv kv > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling KV secrets engine at vaultron_kv!"
+    exit $errors
+  else
+  msg complete "Enabled KV secrets engine at vaultron_kv!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_aws aws > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling AWS secrets engine at vaultron_aws!"
+    exit $errors
+  else
+  msg complete "Enabled AWS secrets engine at vaultron_aws!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_consul consul > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling Consul secrets engine at vaultron_consul!"
+    exit $errors
+  else
+  msg complete "Enabled Consul secrets engine at vaultron_consul!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_root_pki pki > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling PKI secrets engine at vaultron_root_pki!"
+    exit $errors
+  else
+  msg complete "Enabled AWS secrets engine at vaultron_root_pki!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_int_pki pki > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling PKI secrets engine at vaultron_int_pki!"
+    exit $errors
+  else
+  msg complete "Enabled AWS secrets engine at vaultron_int_pki!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_transit transit > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling Transit secrets engine at vaultron_transit!"
+    exit $errors
+  else
+  msg complete "Enabled AWS secrets engine at vaultron_transit!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_ssh_host_signer ssh > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling SSH secrets engine at vaultron_ssh_host_signer!"
+    exit $errors
+  else
+  msg complete "Enabled SSH secrets engine at vaultron_ssh_host_signer!"
+  fi
+
+  if ! $v_enable_cmd -path=vaultron_ssh_client_signer ssh > /dev/null 2>&1; then
+    errors=$((errors + $?))
+    msg alert "Problem enabling SSH secrets engine at vaultron_ssh_client_signer!"
+    exit $errors
+  else
+  msg complete "Enabled SSH secrets engine at vaultron_ssh_client_signer!"
+  fi
 }
 
 # Get Vault status
@@ -204,3 +288,4 @@ enable_audit_logging
 mount_secret_backends
 mount_database_backend
 status
+enabled

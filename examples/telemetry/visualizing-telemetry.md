@@ -72,6 +72,18 @@ and supply a `vault` binary in the `custom` path prior to running `./form`.
 
 Once ready, go ahead and form Vaultron!
 
+```
+$ cd $VAULTRON_SRC_DIR
+$ ./form
+[=] Form Vaultron! ...
+[=] Terraform has been successfully initialized!
+[=] Vault Docker image version:    UNKNOWN (custom binary)
+[=] Consul Docker image version:   1.0.3
+[=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
+[=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
+[^] Vaultron formed!
+```
+
 #### Initial Grafana Configuration
 
 Now we're ready for the initial Grafana configuration! This mostly involves adding our Graphite data source, and you can begin like this:
@@ -94,3 +106,18 @@ Now it's on to defining a dashboard and panels!
 You are now ready to create dashboards to visualize Vault telemetry metrics!
 
 There's an example in this folder named `vault-lab.json` that you can import into Grafana as a starting point.
+
+1. Use the navigation menu from the top left Grafana icon
+2. Select **Dashboards**
+3. Select the **Home** drop down in the top left
+4. **Import Dashboard** button
+5. **Upload .json File** button
+6. Navigate to and select the `vault-lab.son` from within this projects `examples/telemetry` folder
+7. **Import** button
+
+Now you'll need to edit some dashboard items (the ones with red/white exclamations and which have *No data points* in their graph displays) to choose appropriate Vault server (usually the active instance) by its Graphite data source ID in order to display their metrics in the graphs.
+
+Or if it's not a server specific metric, typically editing the graph and selecting **Vaultron Graphite** as the data source re-enables the connection and the graph/counter will show live data again.
+
+If the above does not help, make sure the engine, auth method, etc. is actually active on the Vault instances.
+
