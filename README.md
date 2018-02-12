@@ -36,8 +36,7 @@ When Vaultron is successfully formed, the output looks like this:
 [^] Vaultron formed
 ```
 
-You can now interact with vault and consul CLI utilities after
-exporting the following environment variables in your shell:
+You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs.
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
