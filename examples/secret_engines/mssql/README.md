@@ -21,11 +21,11 @@ $ docker run \
     -e 'MSSQL_SA_PASSWORD=v4u1tr0n_in_the_h@use' \
     -e 'MSSQL_PID=Developer' \
     -p 1401:1433 \
-    --name sql1 \
+    --name vaultron_mssql \
     -d microsoft/mssql-server-linux:2017-latest
 ```
 
-Protip: The example `MSSQL_SA_PASSWORD` meets requirements and you should be certain that your chosen value does as well, or you'll be seeing this in `docker logs sql1`:
+Protip: The example `MSSQL_SA_PASSWORD` meets requirements and you should be certain that your chosen value does as well, or you'll be seeing this in `docker logs vaultron_mssql`:
 
 ```
 ERROR: Unable to set system administrator password: Password validation failed. The password does not meet SQL Server password policy requirements because it is not complex enough. The password must be at least 8 characters long and contain characters from three of the following four sets: Uppercase letters, Lowercase letters, Base 10 digits, and Symbols..
@@ -37,7 +37,7 @@ The SA password specified when running the container can be determine in the env
 
 ```
 $ docker exec \
-    -it sql1 /opt/mssql-tools/bin/sqlcmd \
+    -it vaultron_mssql /opt/mssql-tools/bin/sqlcmd \
     -S localhost -U SA -P '$CURRENT_SA_PASSWORD' \
     -Q 'ALTER LOGIN SA WITH PASSWORD="$NEW_SA_PASSWORD"'
 ```
@@ -49,7 +49,7 @@ Determine the SQL Server 2017 Docker container's internal IP address:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    sql1
+    vaultron_mssql
 172.17.0.2
 ```
 

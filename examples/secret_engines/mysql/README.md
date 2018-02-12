@@ -17,7 +17,7 @@ $ ./eye_beams_mysql
 Use the official MySQL Docker container:
 
 ```
-$ docker run --name mysql_vaultron \
+$ docker run --name vaultron_mysql \
     -e MYSQL_ROOT_PASSWORD=vaultron \
     -p 3306:3306 \
     -d mysql:latest
@@ -28,7 +28,7 @@ Determine the MySQL Docker container's internal IP address:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    mysql_vaultron
+    vaultron_mysql
 172.17.0.2
 ```
 

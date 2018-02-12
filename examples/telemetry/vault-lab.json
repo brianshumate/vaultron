@@ -23,6 +23,98 @@
   "rows": [
     {
       "collapse": false,
+      "height": 134,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": true,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Vaultron Graphite",
+          "fill": 1,
+          "id": 18,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.sys_bytes"
+            },
+            {
+              "refId": "B",
+              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.sys_bytes"
+            },
+            {
+              "refId": "C",
+              "target": "stats.gauges.vault.d5d74af637e9.runtime.sys_bytes"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "System Memory",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
       "height": 175,
       "panels": [
         {
@@ -156,7 +248,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.d37c4417f70e.expire.num_leases"
+              "target": "stats.gauges.vault.ca6a19c2c854.expire.num_leases"
             }
           ],
           "thresholds": "25000,75000",
@@ -494,7 +586,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": null,
+          "datasource": "Vaultron Graphite",
           "fill": 1,
           "id": 1,
           "legend": {
@@ -522,15 +614,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.d37c4417f70e.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.alloc_bytes"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.eecfa9badab6.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.alloc_bytes"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.f0d930d86771.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.d5d74af637e9.runtime.alloc_bytes"
             }
           ],
           "thresholds": [],
@@ -602,15 +694,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.d37c4417f70e.runtime.num_goroutines"
+              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.num_goroutines"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.eecfa9badab6.runtime.num_goroutines"
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.num_goroutines"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.f0d930d86771.runtime.num_goroutines"
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.num_goroutines"
             }
           ],
           "thresholds": [],
@@ -682,15 +774,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.d37c4417f70e.runtime.heap_objects"
+              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.heap_objects"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.eecfa9badab6.runtime.heap_objects"
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.heap_objects"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.f0d930d86771.runtime.heap_objects"
+              "target": "stats.gauges.vault.d5d74af637e9.runtime.heap_objects"
             }
           ],
           "thresholds": [],
@@ -762,15 +854,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.d37c4417f70e.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.total_gc_runs"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.eecfa9badab6.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.ca6a19c2c854.runtime.total_gc_runs"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.f0d930d86771.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.d5d74af637e9.runtime.total_gc_runs"
             }
           ],
           "thresholds": [],
@@ -878,11 +970,11 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.timers.vault.core.leadership_lost.count"
+              "target": "stats.timers.vault.core.handle_request.count"
             }
           ],
-          "thresholds": "1,3",
-          "title": "Leadership Lost",
+          "thresholds": "200,500",
+          "title": "Handle Request",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -1305,5 +1397,5 @@
   },
   "timezone": "browser",
   "title": "Vault Lab",
-  "version": 4
+  "version": 3
 }

@@ -14,7 +14,7 @@ Use the official PostgreSQL Docker container:
 ```
 $ docker run \
   -p5432:5432 \
-  --name vaultron-postgres \
+  --name vaultron_postgres \
   -e POSTGRES_PASSWORD=vaultron \
   -d postgres
 ```
@@ -24,7 +24,7 @@ Determine the PostgreSQL Docker container's internal IP address:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    vaultron-postgres
+    vaultron_postgres
 172.17.0.2
 ```
 

@@ -99,6 +99,8 @@ Now we're ready for the initial Grafana configuration! This mostly involves addi
     - Version: **1.1.x**
 4. Click **Add**
 
+You should observe a dialog with "Data source is working" provided that the Grafana container can communicate with the graphite container.
+
 Now it's on to defining a dashboard and panels!
 
 #### Example Vault Ops Dashboard JSON
@@ -108,12 +110,11 @@ You are now ready to create dashboards to visualize Vault telemetry metrics!
 There's an example in this folder named `vault-lab.json` that you can import into Grafana as a starting point.
 
 1. Use the navigation menu from the top left Grafana icon
-2. Select **Dashboards**
-3. Select the **Home** drop down in the top left
-4. **Import Dashboard** button
-5. **Upload .json File** button
-6. Navigate to and select the `vault-lab.son` from within this projects `examples/telemetry` folder
-7. **Import** button
+2. Navigate to **Dashboards**
+3. **Import Dashboard** button
+4. **Upload .json File** button
+5. Navigate to and select the `vault-lab.son` from within this projects `examples/telemetry` folder
+6. **Import** button
 
 Now you'll need to edit some dashboard items (the ones with red/white exclamations and which have *No data points* in their graph displays) to choose appropriate Vault server (usually the active instance) by its Graphite data source ID in order to display their metrics in the graphs.
 

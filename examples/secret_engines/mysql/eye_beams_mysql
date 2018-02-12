@@ -15,7 +15,7 @@ fi
 msg greeting "Engage Eye Beams for MySQL! ..."
 
 launch_docker_container() {
-docker run --name mysql_vaultron \
+docker run --name vaultron_mysql \
   -e MYSQL_ROOT_PASSWORD=vaultron \
   -p 3306:3306 \
   -d mysql:latest > /dev/null 2>&1
@@ -29,7 +29,7 @@ else
   msg complete "Launched MySQL Docker container!"
 fi
 
-MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql_vaultron)"
+MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron_mysql)"
 
 if ! vault mounts | grep 'database_' > /dev/null 2>&1; then
   msg info "Mount Vault database backend ..."
