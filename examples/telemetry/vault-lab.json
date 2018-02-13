@@ -58,15 +58,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.sys_bytes"
+              "target": "stats.gauges.vault.30ff2cc1accb.runtime.sys_bytes"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.sys_bytes"
+              "target": "stats.gauges.vault.5d644de338af.runtime.sys_bytes"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.d5d74af637e9.runtime.sys_bytes"
+              "target": "stats.gauges.vault.5e34e2f0c621.runtime.sys_bytes"
             }
           ],
           "thresholds": [],
@@ -248,7 +248,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.ca6a19c2c854.expire.num_leases"
+              "target": "stats.gauges.vault.5e34e2f0c621.expire.num_leases"
             }
           ],
           "thresholds": "25000,75000",
@@ -345,7 +345,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "fill": 1,
           "id": 5,
           "legend": {
@@ -377,7 +377,7 @@
             },
             {
               "refId": "B",
-              "target": "stats.vault.database.mongodb.RevokeUser"
+              "target": "stats.vault.database.mongodb.Initialize"
             }
           ],
           "thresholds": [],
@@ -614,15 +614,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.30ff2cc1accb.runtime.alloc_bytes"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.5d644de338af.runtime.alloc_bytes"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.d5d74af637e9.runtime.alloc_bytes"
+              "target": "stats.gauges.vault.5e34e2f0c621.runtime.alloc_bytes"
             }
           ],
           "thresholds": [],
@@ -694,15 +694,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.num_goroutines"
+              "target": "stats.gauges.vault.30ff2cc1accb.runtime.num_goroutines"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.num_goroutines"
+              "target": "stats.gauges.vault.5d644de338af.runtime.num_goroutines"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.num_goroutines"
+              "target": "stats.gauges.vault.5e34e2f0c621.runtime.num_goroutines"
             }
           ],
           "thresholds": [],
@@ -774,15 +774,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.heap_objects"
+              "target": "stats.gauges.vault.30ff2cc1accb.runtime.heap_objects"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.heap_objects"
+              "target": "stats.gauges.vault.5d644de338af.runtime.heap_objects"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.d5d74af637e9.runtime.heap_objects"
+              "target": "stats.gauges.vault.5e34e2f0c621.runtime.heap_objects"
             }
           ],
           "thresholds": [],
@@ -854,15 +854,15 @@
           "targets": [
             {
               "refId": "A",
-              "target": "stats.gauges.vault.8db0ad4a7d06.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.30ff2cc1accb.runtime.total_gc_runs"
             },
             {
               "refId": "B",
-              "target": "stats.gauges.vault.ca6a19c2c854.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.5d644de338af.runtime.total_gc_runs"
             },
             {
               "refId": "C",
-              "target": "stats.gauges.vault.d5d74af637e9.runtime.total_gc_runs"
+              "target": "stats.gauges.vault.5e34e2f0c621.runtime.total_gc_runs"
             }
           ],
           "thresholds": [],
@@ -923,7 +923,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -996,7 +996,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -1069,7 +1069,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -1142,7 +1142,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -1215,7 +1215,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,
@@ -1288,7 +1288,7 @@
             "#d44a3a"
           ],
           "datasource": "Vaultron Graphite",
-          "format": "none",
+          "format": "ms",
           "gauge": {
             "maxValue": 100,
             "minValue": 0,

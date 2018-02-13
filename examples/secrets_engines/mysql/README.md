@@ -34,17 +34,10 @@ $ docker inspect \
 
 ## Configure Vault
 
-Mount the Vault database secret backend:
-
-```
-$ vault mount database
-Successfully mounted 'database' at 'database'!
-```
-
 Write the MySQL secret backend configuration:
 
 ```
-$ vault write database/config/mysql \
+$ vault write vaultron_database/config/mysql \
     plugin_name=mysql-database-plugin \
     connection_url="root:vaultron@tcp(172.17.0.2:3306)/" \
     allowed_roles="mysql-readonly"
@@ -56,29 +49,28 @@ The following warnings were returned from the Vault server:
 Write an initial MySQL read only user role:
 
 ```
-$ vault write database/roles/mysql-readonly \
+$ vault write vaultron_database/roles/mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/mysql-readonly
+Success! Data written to: vaultron_database/roles/mysql-readonly
 ```
 
 Retrieve a read only MySQL database credential:
 
 ```
-$ vault read database/creds/mysql-readonly
-Key             Value
----             -----
-lease_id        database/creds/mysql-readonly/3f608611-dd1a-c96c-4200-c564a4567cb4
-lease_duration  1h0m0s
-lease_renewable true
-password        A1a-q02qpu2u2y8v3qsr
-username        v-root-mysql-read-p4wy4u1z9p5361
+$ vault read vaultron_database/creds/mysql-readonly
+Key                Value
+---                -----
+lease_id           vaultron_database/creds/mysql-readonly/0669a169-ea0a-67c3-5c5d-00c4e1beb9d2
+lease_duration     1h
+lease_renewable    true
+password           A1a-2r5u92yx8w8w4sr8
+username           v-root-mysql-read-y70xuqw302x3x3
 ```
 
 Log in to MySQL container with read-only credential:
-
 
 ```
 $ mysql -u v-root-readonly-rVj9wig0itNm3YgI -p -h 127.0.0.1

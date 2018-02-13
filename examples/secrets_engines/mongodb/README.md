@@ -23,17 +23,10 @@ $ docker inspect \
 
 ## Configure Vault
 
-Mount Vault database backend:
-
-```
-$ vault mount database
-Successfully mounted 'database' at 'database'!
-```
-
 Configure the MongoDB connection
 
 ```
-$ vault write database/config/mongodb \
+$ vault write vaultron_database/config/mongodb \
     plugin_name=mongodb-database-plugin \
     allowed_roles="mongodb-readonly" \
     connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
@@ -42,7 +35,7 @@ $ vault write database/config/mongodb \
 Add a read only user role:
 
 ```
-$ vault write database/roles/mongodb-readonly \
+$ vault write vaultron_database/roles/mongodb-readonly \
     db_name=mongodb \
     creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
     default_ttl="1h" \
@@ -52,5 +45,5 @@ $ vault write database/roles/mongodb-readonly \
 Retrieve a read only MongoDB database credential:
 
 ```
-$ vault read database/creds/mongodb-readonly
+$ vault read vaultron_database/creds/mongodb-readonly
 ```

@@ -65,10 +65,10 @@ Successfully mounted 'database' at 'database'!
 Create an initial MSSQL backend configuration:
 
 ```
-$ vault write database/config/mssql \
+$ vault write vaultron_database/config/mssql \
     plugin_name=mssql-database-plugin \
     connection_url='sqlserver://sa:$NEW_SA_PASSWORD@172.17.0.2:1433' \
-    allowed_roles="readonly"
+    allowed_roles="mssql_readonly"
 The following warnings were returned from the Vault server:
 * Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
 ```
@@ -76,21 +76,21 @@ The following warnings were returned from the Vault server:
 Add the read only role:
 
 ```
-$ vault write database/roles/readonly \
+$ vault write vaultron_database/roles/mssql_readonly \
     db_name=mssql \
     creation_statements="CREATE LOGIN [{{name}}] WITH PASSWORD = '{{password}}';\
         CREATE USER [{{name}}] FOR LOGIN [{{name}}];\
         GRANT SELECT ON SCHEMA::dbo TO [{{name}}];" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/readonly
+Success! Data written to: database/roles/mssql_readonly
 ```
 
 Retrieve a read only MSSQL database credential:
 
 
 ```
-$ vault read database/creds/readonly
+$ vault read vaultron_database/creds/mssql_readonly
 Key             Value
 ---             -----
 lease_id        database/creds/readonly/46b34bb1-3e1c-6605-0bc2-f86ee6bbf548
