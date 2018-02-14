@@ -1,6 +1,6 @@
 # Using the MongoDB Database Secret Backend with Vaultron
 
-The following mini-guide shows how to set up Vaultron with a MongoDB Docker container to use the Vault MongoDB secret backend.
+The following mini-guide shows how to set up Vaultron with a MongoDB Docker container to use the Vault [MongoDB secrets engine](https://www.vaultproject.io/docs/secrets/databases/mongodb.html).
 
 The guide presumes that you have formed Vaultron, initialized and unsealed your Vault, and logged in with the initial root token.
 
@@ -23,7 +23,13 @@ $ docker inspect \
 
 ## Configure Vault
 
-Configure the MongoDB connection
+Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+
+```
+$ vault secrets enable -path=vaultron_database database
+```
+
+Next, configure the MongoDB connection:
 
 ```
 $ vault write vaultron_database/config/mongodb \

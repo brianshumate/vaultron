@@ -55,14 +55,13 @@ $ docker inspect \
 
 ## Configure Vault
 
-Mount the Vault database secret backend:
+Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
 
 ```
-$ vault mount database
-Successfully mounted 'database' at 'database'!
+$ vault secrets enable -path=vaultron_database database
 ```
 
-Create an initial MSSQL backend configuration:
+Next, configure the MS-SQL connection:
 
 ```
 $ vault write vaultron_database/config/mssql \

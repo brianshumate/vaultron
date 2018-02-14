@@ -34,7 +34,13 @@ $ docker inspect \
 
 ## Configure Vault
 
-Write the MySQL secret backend configuration:
+Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+
+```
+$ vault secrets enable -path=vaultron_database database
+```
+
+Next, write the MySQL secret backend configuration:
 
 ```
 $ vault write vaultron_database/config/mysql \

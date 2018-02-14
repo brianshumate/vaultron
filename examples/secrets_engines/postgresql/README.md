@@ -30,19 +30,18 @@ $ docker inspect \
 
 ## Configure Vault
 
-Mount the Vault database secret backend:
+Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
 
 ```
-$ vault mount database
-Successfully mounted 'database' at 'database'!
+$ vault secrets enable -path=vaultron_database database
 ```
 
-Write the PostgreSQL secret backend configuration:
+Next, configure the PostgreSQL connection:
 
 ```
 $ vault write database/config/postgresql \
     plugin_name=postgresql-database-plugin \
-    allowed_roles="pgsql-readonly" \
+    allowed_roles="postgresql-readonly" \
     connection_url="postgresql://postgres:vaultron@172.17.0.2:5432?sslmode=disable"
 
 
@@ -53,19 +52,19 @@ The following warnings were returned from the Vault server:
 Write an initial PostgreSQL read only user role:
 
 ```
-$ vault write database/roles/pgsql-readonly \
+$ vault write database/roles/postgresql-readonly \
     db_name=postgresql \
     creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/pgsql-readonly
+Success! Data written to: database/roles/postgresql-readonly
 ```
 
 Retrieve a read only PostgreSQL database credential:
 
 ```
-$ vault read database/creds/pgsql-readonly
+$ vault read database/creds/postgresql-readonly
 Key             Value
 ---             -----
 lease_id        database/creds/readonly/ddc27039-ef66-a22b-c2f4-61fbfbbefd8a

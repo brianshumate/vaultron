@@ -212,7 +212,10 @@
 - Update tests
 - Update documentation
 
-## v1.6.6 (UNRELEASED)
+## v1.7.0 (UNRELEASED)
 
+- E2E TLS enabled by default
 - CLI capabilities checking added to skydome
-- Example/test script improvements
+- Examples/tests/scripts improvements
+- Examples/tests/scripts updates
+- Update documentation
