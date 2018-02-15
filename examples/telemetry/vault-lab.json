@@ -293,7 +293,7 @@
           "spaceLength": 10,
           "span": 2,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -369,7 +369,7 @@
           "spaceLength": 10,
           "span": 2,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -377,13 +377,17 @@
             },
             {
               "refId": "B",
+              "target": "stats.vault.database.mongodb.RevokeUser"
+            },
+            {
+              "refId": "C",
               "target": "stats.vault.database.mongodb.Initialize"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "MongoDB Secret Backend",
+          "title": "MongoDB Secrets Engine",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -421,7 +425,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "decimals": 0,
           "fill": 1,
           "id": 4,
@@ -446,7 +450,7 @@
           "spaceLength": 10,
           "span": 2,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -454,13 +458,13 @@
             },
             {
               "refId": "B",
-              "target": "stats.vault.database.mysql.RevokeUser"
+              "target": "stats.vault.database.mysql.Initialize"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "MySQL Secret Backend",
+          "title": "MySQL Secrets Engine",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -498,7 +502,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Vaultron-Graphite",
+          "datasource": "Vaultron Graphite",
           "fill": 1,
           "id": 6,
           "legend": {
@@ -522,7 +526,7 @@
           "spaceLength": 10,
           "span": 2,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -530,13 +534,13 @@
             },
             {
               "refId": "B",
-              "target": "stats.vault.database.postgres.RevokeUser"
+              "target": "stats.vault.database.postgres.Initialize"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "PostgreSQL Secret Backend",
+          "title": "PostgreSQL Secrets Engine",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -610,7 +614,7 @@
           "spaceLength": 10,
           "span": 3,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -690,7 +694,7 @@
           "spaceLength": 10,
           "span": 3,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -770,7 +774,7 @@
           "spaceLength": 10,
           "span": 3,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -850,7 +854,7 @@
           "spaceLength": 10,
           "span": 3,
           "stack": true,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "refId": "A",
@@ -973,7 +977,7 @@
               "target": "stats.timers.vault.core.handle_request.count"
             }
           ],
-          "thresholds": "200,500",
+          "thresholds": "100,600",
           "title": "Handle Request",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -989,7 +993,7 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
@@ -1046,7 +1050,7 @@
               "target": "stats.timers.vault.consul.get.count"
             }
           ],
-          "thresholds": "",
+          "thresholds": "100,600",
           "title": "Consul GET",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -1062,7 +1066,7 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
@@ -1119,7 +1123,7 @@
               "target": "stats.timers.vault.consul.put.count"
             }
           ],
-          "thresholds": "",
+          "thresholds": "100,600",
           "title": "Consul PUT",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -1135,7 +1139,7 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
@@ -1192,7 +1196,7 @@
               "target": "stats.timers.vault.barrier.get.count"
             }
           ],
-          "thresholds": "",
+          "thresholds": "100,600",
           "title": "Barrier GET",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -1208,7 +1212,7 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
@@ -1265,7 +1269,7 @@
               "target": "stats.timers.vault.barrier.put.count"
             }
           ],
-          "thresholds": "",
+          "thresholds": "100,600",
           "title": "Barrier PUT",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -1281,7 +1285,7 @@
         {
           "cacheTimeout": null,
           "colorBackground": false,
-          "colorValue": false,
+          "colorValue": true,
           "colors": [
             "#299c46",
             "rgba(237, 129, 40, 0.89)",
@@ -1338,7 +1342,7 @@
               "target": "stats.timers.vault.audit.log_request.count"
             }
           ],
-          "thresholds": "",
+          "thresholds": "100,600",
           "title": "Audit Log Requests",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -1367,7 +1371,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1397,5 +1401,5 @@
   },
   "timezone": "browser",
   "title": "Vault Lab",
-  "version": 3
+  "version": 9
 }
