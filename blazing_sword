@@ -182,7 +182,7 @@ mount_secret_backends() {
     msg alert "Problem enabling PKI secrets engine at vaultron_root_pki!"
     exit $errors
   else
-  msg complete "Enabled AWS secrets engine at vaultron_root_pki!"
+  msg complete "Enabled PKI secrets engine at vaultron_root_pki!"
   fi
 
   if ! $v_enable_cmd -path=vaultron_int_pki pki > /dev/null 2>&1; then
@@ -190,7 +190,7 @@ mount_secret_backends() {
     msg alert "Problem enabling PKI secrets engine at vaultron_int_pki!"
     exit $errors
   else
-  msg complete "Enabled AWS secrets engine at vaultron_int_pki!"
+  msg complete "Enabled PKI secrets engine at vaultron_int_pki!"
   fi
 
   if ! $v_enable_cmd -path=vaultron_transit transit > /dev/null 2>&1; then
@@ -198,7 +198,7 @@ mount_secret_backends() {
     msg alert "Problem enabling Transit secrets engine at vaultron_transit!"
     exit $errors
   else
-  msg complete "Enabled AWS secrets engine at vaultron_transit!"
+  msg complete "Enabled Transit secrets engine at vaultron_transit!"
   fi
 
   if ! $v_enable_cmd -path=vaultron_ssh_host_signer ssh > /dev/null 2>&1; then
