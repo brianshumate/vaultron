@@ -72,6 +72,7 @@ data "template_file" "consul_oss_server_common_config" {
   template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
 
   vars {
+    log_level        = "${var.consul_log_level}"
     acl_datacenter   = "arus"
     bootstrap_expect = 3
     datacenter       = "${var.datacenter_name}"

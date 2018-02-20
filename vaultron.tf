@@ -10,7 +10,7 @@ variable "vault_version" {
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.0.3"
+  default = "1.0.6"
 }
 
 # Global variables
@@ -90,6 +90,11 @@ variable "vault_server_log_level" {
 
 # Consul related variables
 
+# Set TF_VAR_consul_log_level to set this
+variable "consul_log_level" {
+  default = "trace"
+}
+
 # Set TF_VAR_use_consul_oss to set this
 variable "use_consul_oss" {
   default = "1"
@@ -142,6 +147,7 @@ variable "consul_custom_instance_count" {
 
 module "consul_cluster" {
   source                       = "red_lion"
+  consul_log_level             = "${var.consul_log_level}"
   datacenter_name              = "${var.datacenter_name}"
   consul_version               = "${var.consul_version}"
   use_consul_oss               = "${var.use_consul_oss}"

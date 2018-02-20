@@ -36,12 +36,14 @@ $ docker inspect \
 172.17.0.2
 ```
 
-Now, start the Grafana container:
+Now, set the environment variable `PATH_TO_VAULTRON_REPO` and make its value equal to the path where you cloned the Vaultron repo.
+
+Then, start the Grafana container:
 
 ```
 $ docker run \
   -d -p 3000:3000 \
-  -v /Users/brian/src/brianshumate/vaultron/tmp/g-data:/var/lib/grafana \
+  -v $PATH_TO_VAULTRON_REPO/tmp/g-data:/var/lib/grafana \
   -e "GF_SECURITY_ADMIN_PASSWORD=vaultron" \
   -e "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
    grafana/grafana
