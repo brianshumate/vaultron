@@ -17,13 +17,11 @@ listener "tcp" {
 default_lease_ttl = "168h" # 7 days
 max_lease_ttl = "23976h"   # 999 days
 
-# API Address
-api_addr = "http://${address}"
-
 # Plugin path
 plugin_directory  = "/vault/plugins"
 
 # Telemetry
 telemetry {
-  statsd_address = "172.17.0.2:8125"
+  dogstatsd_addr  = "172.17.0.2:8125"
+  dogstatsd_tags  = [ "datacenter:arus"]
 }

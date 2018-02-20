@@ -96,7 +96,7 @@ Now we're ready for the initial Grafana configuration! This mostly involves addi
   - Name: `Vaultron Graphite`
   - HTTP Settings:
     - URL: `http://172.17.0.2:80` (IP address from `docker inspect` above)
-    - Access: **direct**
+    - Access: **proxy**
   - Graphite details
     - Version: **1.1.x**
 4. Click **Add**

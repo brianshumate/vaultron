@@ -40,6 +40,7 @@ output "consul_oss_client_ips" {
 ### Consul related variables
 ###
 
+variable "consul_log_level" {}
 variable "datacenter_name" {}
 variable "consul_version" {}
 variable "use_consul_oss" {}
