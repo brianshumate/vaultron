@@ -26,4 +26,4 @@ max_lease_ttl = "23976h"
 plugin_directory  = "/vault/plugins"
 
 # API Address
-"api_addr" = "https://${address}"
+api_addr = "https://${address}"

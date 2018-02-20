@@ -35,4 +35,4 @@ telemetry {
 }
 
 # API Address
-api_addr = "https://${address}"
+api_addr = "http://${address}"
