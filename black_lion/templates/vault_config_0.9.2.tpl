@@ -18,5 +18,8 @@ listener "tcp" {
 default_lease_ttl = "168h" # 7 days
 max_lease_ttl = "23976h"   # 999 days
 
+# API Address
+"api_addr" = "https://${address}"
+
 # Plugin path
 plugin_directory  = "/vault/plugins"

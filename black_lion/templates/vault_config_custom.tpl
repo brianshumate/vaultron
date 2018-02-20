@@ -33,3 +33,6 @@ storage "consul" {
 telemetry {
   statsd_address = "172.17.0.2:8125"
 }
+
+# API Address
+"api_addr" = "https://${address}"
