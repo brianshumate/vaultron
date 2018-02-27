@@ -1,9 +1,6 @@
-###
-### Vaultron: Vault Enterprise custom configuration file (with HSM support)
-###
+# Vault OSS v0.9.5
 
 cluster_name = "${cluster_name }"
-ui = true
 
 storage "consul" {
   address = "${consul_address}:8500"
@@ -14,14 +11,12 @@ storage "consul" {
 
 listener "tcp" {
   address = "${address}"
-  tls_disable = "false"
-  tls_cert_file = "${tls_cert}"
-  tls_key_file = "${tls_key}"
+  tls_disable = "${tls_disable}"
 }
 
 # Default TTL values
-default_lease_ttl = "168h"
-max_lease_ttl = "23976h"
+default_lease_ttl = "168h" # 7 days
+max_lease_ttl = "23976h"   # 999 days
 
 # Plugin path
 plugin_directory  = "/vault/plugins"

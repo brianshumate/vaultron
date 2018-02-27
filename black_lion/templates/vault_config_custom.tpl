@@ -25,3 +25,6 @@ telemetry {
   dogstatsd_addr  = "172.17.0.2:8125"
   dogstatsd_tags  = [ "datacenter:arus"]
 }
+
+# API Address
+# api_addr = "http://${address}"
