@@ -21,10 +21,18 @@ max_lease_ttl = "23976h"   # 999 days
 plugin_directory  = "/vault/plugins"
 
 # Telemetry
-telemetry {
-  dogstatsd_addr  = "172.17.0.2:8125"
-  dogstatsd_tags  = [ "datacenter:arus"]
-}
+
+# statsd
+# telemetry {
+#   statsd_address = "172.17.0.2:8125"
+# }
+
+
+# dogstatsd
+# telemetry {
+#   dogstatsd_addr  = "172.17.0.2:8125"
+#   dogstatsd_tags  = [ "datacenter:arus"]
+# }
 
 # API Address
 # api_addr = "http://${address}"
