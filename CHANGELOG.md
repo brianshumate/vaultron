@@ -212,10 +212,11 @@
 - Update tests
 - Update documentation
 
-## v1.7.0 (UNRELEASED)
+## v1.7.0
 
-- E2E TLS enabled by default
-- CLI capabilities checking added to skydome
+- Vault v0.9.5
+- Consul v1.0.6
+- Initial CLI capabilities checking added to skydome
 - Examples/tests/scripts improvements
 - Examples/tests/scripts updates
 - Update documentation
