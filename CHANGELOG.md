@@ -220,3 +220,10 @@
 - Examples/tests/scripts improvements
 - Examples/tests/scripts updates
 - Update documentation
+
+## v1.8.0 (UNRELEASED)
+
+- Vault v0.9.6
+- ACLs by default
+- TLS by default
+- Yellow Lion!

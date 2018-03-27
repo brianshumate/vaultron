@@ -226,23 +226,29 @@ status() {
 
 # Unseal Vault
 unseal_vault() {
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_unseal_cmd="vault operator unseal"
+  else
+    v_unseal_cmd="vault unseal"
+  fi
   msg info "Unsealing Vault ..."
   get_unseal_keys
   for i in {0..2}; do
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      vault unseal "$k1" > /dev/null 2>&1; then
+      $v_unseal_cmd "$k1" > /dev/null 2>&1; then
       msg alert "Failed to unseal Vault 1"
       errors=$((errors + $?))
       exit $errors
     fi
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      vault unseal "$k2" > /dev/null 2>&1; then
+      $v_unseal_cmd "$k2" > /dev/null 2>&1; then
       msg alert "Failed to unseal vault 2"
       errors=$((errors + $?))
       exit $errors
     fi
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      vault unseal "$k3" > /dev/null 2>&1; then
+      $v_unseal_cmd "$k3" > /dev/null 2>&1; then
       msg alert "Failed to unseal Vault 3"
       errors=$((errors + $?))
       exit $errors

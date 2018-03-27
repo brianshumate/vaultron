@@ -170,9 +170,10 @@ Version: 0.6.5
 Similarly, to run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
 
 ```
-$ export TF_VAR_consul_version=0.7.5
+$ export TF_VAR_consul_version=0.7.5 \
+CONSUL_HTTP_TOKEN=vaultron-forms-and-eats-all-the-tacos-in-town
 $ ./form
-$ consul members
+$ consul members -token=
 Node                 Address          Status  Type    Build  Protocol  DC
 consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
 consul_oss_client_1  172.17.0.7:8301  alive   client  0.7.5  2         arus
@@ -232,9 +233,19 @@ consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
-There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc. In fact for Consul versions >= 0.8.0, ACLs have been explicitly opted out via `acl_enforce_version_8` set to `false`, so keep this in mind.
+### Consul ACLs by Default
 
-Enabling ACLs and encryption is left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
+**Consul ACLs with a default deny policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
+
+This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. While it's more similar to a production installation as well, it should not be emulated as a model of production installation because it makes use of only a shared **acl_master_token** and you should instead use `acl_agent_token` for Consul client agents, and tokens specific to use cases such as Vault for more granular security with emphasis on least privilege.
+
+The value used for the shared ACL Master Token is:
+
+- `vaultron-forms-and-eats-all-the-tacos-in-town`
+
+> NOTE: Full end to end mutual TLS is coming to a new version of Vaultron near you!
+
+Here are some resources to help you in configuring these sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
@@ -306,11 +317,12 @@ vault status
 Error checking seal status: Get https://127.0.0.1:8200/v1/sys/seal-status: http: server gave HTTP response to HTTPS client
 ```
 
-If your Vaultron successfully formed, then this is likely due to not exporting the environment variables shown at the conclusion of `./form`:
+If your Vaultron successfully formed, then this is likely due to not exporting the environment variables shown at the conclusion of `./form`; try exporting these:
 
 ```
 export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="http://localhost:8200"
+export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 ```
 
 Once you execute the above in your current shell, you should be good to go!

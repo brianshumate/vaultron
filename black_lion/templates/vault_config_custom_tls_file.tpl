@@ -7,6 +7,7 @@ ui = true
 
 storage "file" {
   path = "/vault/data/vaultron"
+  token = "vaultron-forms-and-eats-all-the-tacos-in-town"
   disable_clustering = "${disable_clustering}"
   service_tags = "${service_tags}"
 }
