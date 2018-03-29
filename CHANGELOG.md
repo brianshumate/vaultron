@@ -226,4 +226,5 @@
 - Vault v0.9.6
 - ACLs by default
 - TLS by default
+- Drop custom Consul version bits
 - Yellow Lion!

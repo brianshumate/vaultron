@@ -1,10 +1,8 @@
 #############################################################################
-## Vault Open Source
+# Vault Open Source
 #############################################################################
 
-###
-### Vault related variables
-###
+# Vault related variables
 
 variable "datacenter_name" {}
 variable "vault_version" {}
@@ -27,19 +25,15 @@ variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
 
-###
-### This is the official Vault Docker image that Vaultron uses by default.
-### See also: https://hub.docker.com/_/vault/
-###
+# This is the official Vault Docker image that Vaultron uses by default.
+# See also: https://hub.docker.com/_/vault/
 
 resource "docker_image" "vault" {
   name         = "vault:${var.vault_version}"
   keep_locally = true
 }
 
-###
-### Vault Open Source servers configuration
-###
+# Vault Open Source servers configuration
 
 data "template_file" "vault_oss_server_config" {
   count    = "${var.vault_oss_instance_count}"
@@ -57,9 +51,17 @@ data "template_file" "vault_oss_server_config" {
   }
 }
 
-###
-### Vault Open Source servers
-###
+# Vault Server TLS certificates and keys
+
+#data "template_file" "vault_server_tls_cert" {
+#  template = "${file("${path.module}/tls/vault-server.crt")}"
+#}
+#
+#data "template_file" "vault_server_tls_key" {
+#  template = "${file("${path.module}/tls/vault-server.key")}"
+#}
+
+# Vault Open Source servers
 
 resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
@@ -70,6 +72,16 @@ resource "docker_container" "vault_oss_server" {
     content = "${element(data.template_file.vault_oss_server_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
   }
+
+# upload = {
+#   content = "${element(data.template_file.vault_server_tls_cert.*.rendered, count.index)}"
+#   file    = "/vault/config/vault-server.crt"
+# }
+
+# upload = {
+#   content = "${element(data.template_file.vault_server_tls_key.*.rendered, count.index)}"
+#   file    = "/vault/config/vault-server.key"
+# }
 
   volumes {
     host_path      = "${path.module}/../../../vault/vault_oss_server_${count.index}/audit_log"
@@ -108,13 +120,11 @@ resource "docker_container" "vault_oss_server" {
 }
 
 #############################################################################
-## Vault Custom build
+# Vault Custom build
 #############################################################################
 
-###
-### Vault custom servers configuration
-### This data type is for using custom Vault builds
-###
+# Vault custom servers configuration
+# This data type is for using custom Vault builds
 
 data "template_file" "vault_custom_server_config" {
   count    = "${var.vault_custom_instance_count}"
@@ -135,10 +145,8 @@ data "template_file" "vault_custom_server_config" {
   }
 }
 
-###
-### Vault custom servers
-### This resource is for installing custom Vault builds
-###
+# Vault custom servers
+# This resource is for installing custom Vault builds
 
 # XXX: testing local image
 #resource "docker_image" "local" {
@@ -156,6 +164,16 @@ resource "docker_container" "vault_custom_server" {
     content = "${element(data.template_file.vault_custom_server_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
   }
+
+#  upload = {
+#    content = "${element(data.template_file.vault_server_tls_cert.*.rendered, #count.index)}"
+#    file    = "/vault/config/vault-server.crt"
+#  }
+#
+#  upload = {
+#    content = "${element(data.template_file.vault_server_tls_key.*.rendered, #count.index)}"
+#    file    = "/vault/config/vault-server.key"
+#  }
 
   volumes {
     host_path      = "${path.module}/../../../custom/"

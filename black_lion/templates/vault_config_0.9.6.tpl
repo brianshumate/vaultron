@@ -1,4 +1,4 @@
-# Vault OSS v0.9.5
+# Vault OSS v0.9.6
 
 cluster_name = "${cluster_name }"
 
@@ -12,12 +12,15 @@ storage "consul" {
 
 listener "tcp" {
   address = "${address}"
-  tls_disable = "${tls_disable}"
+  tls_disable = "true"
+  #tls_disable_client_certs = "false"
+  #tls_cert_file = "/vault/config/vault-server.crt"
+  #tls_key_file = "/vault/config/vault-server.key"
 }
 
 # Default TTL values
-default_lease_ttl = "168h" # 7 days
-max_lease_ttl = "50000h"   # 2083 days
+default_lease_ttl = "50000h"   # 2083 days
+max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
 plugin_directory  = "/vault/plugins"

@@ -109,13 +109,13 @@ get_initial_root_token() {
 # Initialize Vault and save temporary unseal keys and root token
 initialize_vault() {
   check_cli_cap
-  msg info "Initializing Vault ..."
-  vault_dat="./vault/vault_DEV_ONLY-$(date +%s).tmp"
   if [ "$vault_cli_cap" -eq "1" ]; then
     v_init_cmd="vault operator init"
   else
     v_init_cmd="vault init"
   fi
+  msg info "Initializing Vault ..."
+  vault_dat="./vault/vault_DEV_ONLY-$(date +%s).tmp"
   if ! $v_init_cmd | perl -pe 's/\x1b\[[0-9;]*m//g' > "${vault_dat}"; then
     errors=$((errors + $?))
     msg alert "Failed to initialize Vault!"
@@ -236,19 +236,19 @@ unseal_vault() {
   get_unseal_keys
   for i in {0..2}; do
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      $v_unseal_cmd "$k1" > /dev/null 2>&1; then
+      $v_unseal_cmd $k1 > /dev/null 2>&1; then
       msg alert "Failed to unseal Vault 1"
       errors=$((errors + $?))
       exit $errors
     fi
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      $v_unseal_cmd "$k2" > /dev/null 2>&1; then
+      $v_unseal_cmd $k2 > /dev/null 2>&1; then
       msg alert "Failed to unseal vault 2"
       errors=$((errors + $?))
       exit $errors
     fi
     if ! VAULT_ADDR="http://localhost:820${i}" \
-      $v_unseal_cmd "$k3" > /dev/null 2>&1; then
+      $v_unseal_cmd $k3 > /dev/null 2>&1; then
       msg alert "Failed to unseal Vault 3"
       errors=$((errors + $?))
       exit $errors
