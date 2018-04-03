@@ -46,20 +46,28 @@ data "template_file" "vault_oss_server_config" {
     vault_path         = "${var.vault_path}"
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable        = 1
+    tls_disable        = false
     service_tags       = "vaultron"
   }
 }
 
+# TLS CA Bundle
+
+data "template_file" "ca_bundle" {
+  template = "${file("${path.module}/tls/ca-bundle.pem")}"
+}
+
 # Vault Server TLS certificates and keys
 
-#data "template_file" "vault_server_tls_cert" {
-#  template = "${file("${path.module}/tls/vault-server.crt")}"
-#}
-#
-#data "template_file" "vault_server_tls_key" {
-#  template = "${file("${path.module}/tls/vault-server.key")}"
-#}
+data "template_file" "vault_server_tls_cert" {
+  count    = "${var.vault_oss_instance_count}"
+  template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
+}
+
+data "template_file" "vault_server_tls_key" {
+  count    = "${var.vault_oss_instance_count}"
+  template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
+}
 
 # Vault Open Source servers
 
@@ -73,15 +81,20 @@ resource "docker_container" "vault_oss_server" {
     file    = "/vault/config/main.hcl"
   }
 
-# upload = {
-#   content = "${element(data.template_file.vault_server_tls_cert.*.rendered, count.index)}"
-#   file    = "/vault/config/vault-server.crt"
-# }
+upload = {
+  content = "${data.template_file.ca_bundle.rendered}"
+  file    = "/vault/config/ca-bundle.pem"
+}
 
-# upload = {
-#   content = "${element(data.template_file.vault_server_tls_key.*.rendered, count.index)}"
-#   file    = "/vault/config/vault-server.key"
-# }
+ upload = {
+   content = "${element(data.template_file.vault_server_tls_cert.*.rendered, count.index)}"
+   file    = "/vault/config/vault-server.crt"
+ }
+
+ upload = {
+   content = "${element(data.template_file.vault_server_tls_key.*.rendered, count.index)}"
+   file    = "/vault/config/vault-server.key"
+ }
 
   volumes {
     host_path      = "${path.module}/../../../vault/vault_oss_server_${count.index}/audit_log"
@@ -107,7 +120,8 @@ resource "docker_container" "vault_oss_server" {
   }
 
   must_run = true
-  env      = ["VAULT_CLUSTER_INTERFACE=eth0"]
+  env      = ["VAULT_CLUSTER_INTERFACE=eth0",
+              "VAULT_REDIRECT_INTERFACE=eth0"]
 
   ports {
     internal = "8200"
@@ -148,32 +162,25 @@ data "template_file" "vault_custom_server_config" {
 # Vault custom servers
 # This resource is for installing custom Vault builds
 
-# XXX: testing local image
-#resource "docker_image" "local" {
-#    name = "local/vault-ubuntu"
-#}
-
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "${format("vault_custom_server_%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
-  # testing local image
-  # image = "${docker_image.local.latest}"
   upload = {
     content = "${element(data.template_file.vault_custom_server_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
   }
 
-#  upload = {
-#    content = "${element(data.template_file.vault_server_tls_cert.*.rendered, #count.index)}"
-#    file    = "/vault/config/vault-server.crt"
-#  }
-#
-#  upload = {
-#    content = "${element(data.template_file.vault_server_tls_key.*.rendered, #count.index)}"
-#    file    = "/vault/config/vault-server.key"
-#  }
+ upload = {
+   content = "${element(data.template_file.vault_server_tls_cert.*.rendered, count.index)}"
+   file    = "/vault/config/vault-server.crt"
+ }
+
+ upload = {
+   content = "${element(data.template_file.vault_server_tls_key.*.rendered, count.index)}"
+   file    = "/vault/config/vault-server.key"
+ }
 
   volumes {
     host_path      = "${path.module}/../../../custom/"
@@ -212,8 +219,8 @@ resource "docker_container" "vault_custom_server" {
 
   ports {
     internal = "8200"
-    # This is mysterious/steps on the default cluster_address port
-    # needs more investigation and updating...
+    # This is mysterious conflicts w/ default cluster_address port
+    # needs more investigation and updating when Docker Mac networking better
     external = "${format("820%d", count.index)}"
     protocol = "tcp"
   }

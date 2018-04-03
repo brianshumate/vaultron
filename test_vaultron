@@ -27,7 +27,7 @@ export txtwht="\033[0;37m" # White
 export txtrst="\033[0m"    # Text Reset
 
 export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+export VAULT_ADDR="https://localhost:8200"
 
 if ! ./unform; then
     echo "🚫  Error unforming any previous Vaultron."

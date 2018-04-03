@@ -39,8 +39,10 @@ When Vaultron is successfully formed, the output looks like this:
 You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs.
 
 ```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+$ export CONSUL_HTTP_SSL=true
+$ export VAULT_ADDR="https://127.0.0.1:8200"
+$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 ```
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
@@ -53,7 +55,7 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-> NOTE: You can also visit the Consul web UI at http://localhost:8500
+> NOTE: You can also visit the Consul web UI at https://localhost:8500
 
 ### What's Next?
 
@@ -67,7 +69,7 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during initialization
 4. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
-5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
+5. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
@@ -88,8 +90,10 @@ If you are already familiar with Vault, but would like to save time by rapidly i
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
 ```
-$ export CONSUL_HTTP_ADDR="localhost:8500"
-$ export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+$ export CONSUL_HTTP_SSL=true
+$ export VAULT_ADDR="https://127.0.0.1:8200"
+$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 ```
 
 ## What's in the Box?
@@ -251,6 +255,10 @@ Here are some resources to help you in configuring these sorts of things:
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
 
+### Mutual TLS by Default
+
+Vaultron uses self-signed certificates for full mutual TLS communication between Vault servers and Consul agents. The certificates and keys were generated from Vault PKI Secrets Backends as described in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
+
 ### Where's My Vault Data?
 
 Vault data are stored in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers.
@@ -310,23 +318,6 @@ export TF_VAR_vault_oss_instance_count=0 \
 
 ## Basic Troubleshooting Questions
 
-### I Typed `vault status` and got an Error!
-
-```
-vault status
-Error checking seal status: Get https://127.0.0.1:8200/v1/sys/seal-status: http: server gave HTTP response to HTTPS client
-```
-
-If your Vaultron successfully formed, then this is likely due to not exporting the environment variables shown at the conclusion of `./form`; try exporting these:
-
-```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
-export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
-```
-
-Once you execute the above in your current shell, you should be good to go!
-
 ### Vault is Orange/Failing in the Consul Web UI
 
 Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
@@ -342,13 +333,13 @@ Here is simple method to watch HA mode in action using two terminal sessions:
 ```
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=http://localhost:8201 \|   | docker stop vault_oss_server_0     |
+| VAULT_ADDR=https://localhost:8201\|   | docker stop vault_oss_server_0     |
 | watch -n 1 vault status           |   |                                    |
 |                                   |   |                                    |
 | ...                               |   |                                    |
 | High-Availability Enabled: true   |   |                                    |
 |         Mode: standby             |   |                                    |
-|         Leader: http://172.17...  |   |                                    |
+|         Leader: https://172.17... |   |                                    |
 | ...                               |   |                                    |
 |                                   |   |                                    |
 |                                   |   |                                    |
