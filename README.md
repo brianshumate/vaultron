@@ -39,8 +39,10 @@ When Vaultron is successfully formed, the output looks like this:
 You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs.
 
 ```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+$ export CONSUL_HTTP_SSL=true
+$ export VAULT_ADDR="https://127.0.0.1:8200"
+$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 ```
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
@@ -53,7 +55,7 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-> NOTE: You can also visit the Consul web UI at http://localhost:8500
+> NOTE: You can also visit the Consul web UI at https://localhost:8500
 
 ### What's Next?
 
@@ -67,7 +69,7 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during initialization
 4. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
-5. Use the Consul web UI at [http://localhost:8500](http://localhost:8500)
+5. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
 6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 7. When done having fun, disassemble Vaultron and clean up with `./unform`
 
@@ -88,8 +90,10 @@ If you are already familiar with Vault, but would like to save time by rapidly i
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
 ```
-$ export CONSUL_HTTP_ADDR="localhost:8500"
-$ export VAULT_ADDR="http://localhost:8200"
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+$ export CONSUL_HTTP_SSL=true
+$ export VAULT_ADDR="https://127.0.0.1:8200"
+$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 ```
 
 ## What's in the Box?
@@ -171,7 +175,13 @@ Similarly, to run a different version of the Consul container, set the `TF_VAR_c
 
 ```
 $ export TF_VAR_consul_version=0.7.5
+
 $ ./form
+
+$ . ./ion_darts
+[=] Exporting Vaultron environment variables ...
+[^] Exported Vaultron environment variables!
+
 $ consul members
 Node                 Address          Status  Type    Build  Protocol  DC
 consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
@@ -232,13 +242,27 @@ consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
-There are no in-depth changes to configuration from the perspective of security by enabling Consul ACLs, end-to-end TLS, etc. In fact for Consul versions >= 0.8.0, ACLs have been explicitly opted out via `acl_enforce_version_8` set to `false`, so keep this in mind.
+### Consul ACLs by Default
 
-Enabling ACLs and encryption is left to the user for their own specific use cases. That said, here are some resources to help you in configuring those sorts of things:
+**Consul ACLs with a default deny policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
+
+This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. While it's more similar to a production installation as well, it should not be emulated as a model of production installation because it makes use of only a shared **acl_master_token** and you should instead use `acl_agent_token` for Consul client agents, and tokens specific to use cases such as Vault for more granular security with emphasis on least privilege.
+
+The value used for the shared ACL Master Token is:
+
+- `vaultron-forms-and-eats-all-the-tacos-in-town`
+
+> NOTE: Full end to end mutual TLS is coming to a new version of Vaultron near you!
+
+Here are some resources to help you in configuring these sorts of things:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
+
+### Mutual TLS by Default
+
+Vaultron uses self-signed certificates for full mutual TLS communication between Vault servers and Consul agents. The certificates and keys were generated from Vault PKI Secrets Backends as described in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
 
 ### Where's My Vault Data?
 
@@ -267,8 +291,8 @@ Here is a tree showing the directory structure for a Consul server:
 
 Vaultron tries to be reasonable in accommodating developer use cases, but also wants to keep cruft to a minimum. To that end, the default TTL value is lowered, and the maximum TTL value is raised to these values:
 
-- `default_lease_ttl`: **168h**
-- `max_lease_ttl`: **23976h**
+- `default_lease_ttl`: **50000h** (2083 days)
+- `max_lease_ttl`: **50000h** (2083 days)
 
 That's 7 days and 999 days respectively.
 
@@ -299,22 +323,6 @@ export TF_VAR_vault_oss_instance_count=0 \
 
 ## Basic Troubleshooting Questions
 
-### I Typed `vault status` and got an Error!
-
-```
-vault status
-Error checking seal status: Get https://127.0.0.1:8200/v1/sys/seal-status: http: server gave HTTP response to HTTPS client
-```
-
-If your Vaultron successfully formed, then this is likely due to not exporting the environment variables shown at the conclusion of `./form`:
-
-```
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
-```
-
-Once you execute the above in your current shell, you should be good to go!
-
 ### Vault is Orange/Failing in the Consul Web UI
 
 Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
@@ -330,13 +338,13 @@ Here is simple method to watch HA mode in action using two terminal sessions:
 ```
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=http://localhost:8201 \|   | docker stop vault_oss_server_0     |
+| VAULT_ADDR=https://localhost:8201\|   | docker stop vault_oss_server_0     |
 | watch -n 1 vault status           |   |                                    |
 |                                   |   |                                    |
 | ...                               |   |                                    |
 | High-Availability Enabled: true   |   |                                    |
 |         Mode: standby             |   |                                    |
-|         Leader: http://172.17...  |   |                                    |
+|         Leader: https://172.17... |   |                                    |
 | ...                               |   |                                    |
 |                                   |   |                                    |
 |                                   |   |                                    |

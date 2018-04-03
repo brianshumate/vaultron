@@ -1,9 +1,10 @@
-# Vault OSS v0.8.2
+# Vault OSS v0.9.6
 
 cluster_name = "${cluster_name }"
 
 storage "consul" {
   address = "${consul_address}:8500"
+  token   = "vaultron-forms-and-eats-all-the-tacos-in-town"
   path = "vault/"
   disable_clustering = "${disable_clustering}"
   service_tags = "${service_tags}"
@@ -18,8 +19,8 @@ listener "tcp" {
 }
 
 # Default TTL values
-default_lease_ttl = "168h" # 7 days
-max_lease_ttl = "50000h"   # 2083 days
+default_lease_ttl = "50000h"   # 2083 days
+max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
 plugin_directory  = "/vault/plugins"

@@ -12,11 +12,14 @@ storage "consul" {
 listener "tcp" {
   address = "${address}"
   tls_disable = "${tls_disable}"
+  tls_cert_file = "/vault/config/vault-server.crt"
+  tls_key_file = "/vault/config/vault-server.key"
+  tls_disable_client_certs = true
 }
 
 # Default TTL values
 default_lease_ttl = "168h" # 7 days
-max_lease_ttl = "23976h"   # 999 days
+max_lease_ttl = "50000h"   # 2083 days
 
 # Plugin path
 plugin_directory  = "/vault/plugins"
