@@ -174,10 +174,15 @@ Version: 0.6.5
 Similarly, to run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
 
 ```
-$ export TF_VAR_consul_version=0.7.5 \
-CONSUL_HTTP_TOKEN=vaultron-forms-and-eats-all-the-tacos-in-town
+$ export TF_VAR_consul_version=0.7.5
+
 $ ./form
-$ consul members -token=
+
+$ . ./ion_darts
+[=] Exporting Vaultron environment variables ...
+[^] Exported Vaultron environment variables!
+
+$ consul members
 Node                 Address          Status  Type    Build  Protocol  DC
 consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
 consul_oss_client_1  172.17.0.7:8301  alive   client  0.7.5  2         arus
