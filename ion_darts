@@ -11,6 +11,7 @@
 
 msg greeting "Exporting Vaultron environment variables ..."
 export CONSUL_HTTP_ADDR="127.0.0.1:8500"
-export VAULT_ADDR="http://127.0.0.1:8200"
+export CONSUL_HTTP_SSL=true
+export VAULT_ADDR="https://127.0.0.1:8200"
 export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 msg success "Exported Vaultron environment variables!"

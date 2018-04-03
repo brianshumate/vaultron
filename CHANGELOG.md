@@ -221,10 +221,10 @@
 - Examples/tests/scripts updates
 - Update documentation
 
-## v1.8.0 (UNRELEASED)
+## v1.8.0
 
 - Vault v0.9.6
 - ACLs by default
 - TLS by default
 - Drop custom Consul version bits
-- Yellow Lion!
+- Script improvements

@@ -62,38 +62,39 @@ data "template_file" "consul_oss_server_common_config" {
   }
 }
 
-# Consul Server TLS CA Bundle
+# TLS CA Bundle
 
-#data "template_file" "consul_ca_bundle" {
-#  template = "${file("${path.module}/tls/ca-bundle.crt")}"
-#}
+data "template_file" "ca_bundle" {
+  template = "${file("${path.module}/tls/ca-bundle.pem")}"
+}
 
 # Consul Server TLS certificates and keys
 
-#data "template_file" "consul_server_0_tls_cert" {
-#  template = "${file("${path.module}/tls/consul-server-0.crt")}"
-#}
-#
-#data "template_file" "consul_server_1_tls_cert" {
-#  template = "${file("${path.module}/tls/consul-server-1.crt")}"
-#}
-#
-#data "template_file" "consul_server_2_tls_cert" {
-#  template = "${file("${path.module}/tls/consul-server-2.crt")}"
-#}
-#
-#data "template_file" "consul_server_0_tls_key" {
-#  template = "${file("${path.module}/tls/consul-server-0.key")}"
-#}
-#
-#data "template_file" "consul_server_1_tls_key" {
-#  template = "${file("${path.module}/tls/consul-server-1.key")}"
-#}
-#
-#data "template_file" "consul_server_2_tls_key" {
-#  template = "${file("${path.module}/tls/consul-server-2.key")}"
-#}
-#
+data "template_file" "consul_server_0_tls_cert" {
+  template = "${file("${path.module}/tls/consul-server-0.crt")}"
+}
+
+data "template_file" "consul_server_1_tls_cert" {
+  template = "${file("${path.module}/tls/consul-server-1.crt")}"
+}
+
+data "template_file" "consul_server_2_tls_cert" {
+  template = "${file("${path.module}/tls/consul-server-2.crt")}"
+}
+
+data "template_file" "consul_server_0_tls_key" {
+  template = "${file("${path.module}/tls/consul-server-0.key")}"
+}
+
+data "template_file" "consul_server_1_tls_key" {
+  template = "${file("${path.module}/tls/consul-server-1.key")}"
+}
+
+data "template_file" "consul_server_2_tls_key" {
+  template = "${file("${path.module}/tls/consul-server-2.key")}"
+}
+
+
 # Consul Open Source Server 1
 
 resource "docker_container" "consul_oss_server_0" {
@@ -113,20 +114,20 @@ resource "docker_container" "consul_oss_server_0" {
     file    = "/consul/config/common_config.json"
   }
 
-#  upload = {
-#    content = "${data.template_file.consul_ca_bundle.rendered}"
-#    file    = "/consul/config/ca-bundle.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_0_tls_cert.rendered}"
-#    file    = "/consul/config/consul-server.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_0_tls_key.rendered}"
-#    file    = "/consul/config/consul-server.key"
-#  }
+  upload = {
+    content = "${data.template_file.ca_bundle.rendered}"
+    file    = "/consul/config/ca-bundle.pem"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_0_tls_cert.rendered}"
+    file    = "/consul/config/consul-server.crt"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_0_tls_key.rendered}"
+    file    = "/consul/config/consul-server.key"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../consul/consul_oss_server_0/config"
@@ -188,6 +189,12 @@ resource "docker_container" "consul_oss_server_0" {
   }
 
   ports {
+    internal = "8555"
+    external = "8555"
+    protocol = "tcp"
+  }
+
+  ports {
     internal = "53"
     external = "8600"
     protocol = "tcp"
@@ -217,20 +224,20 @@ resource "docker_container" "consul_oss_server_1" {
     file    = "/consul/config/common_config.json"
   }
 
-#  upload = {
-#    content = "${data.template_file.consul_ca_bundle.rendered}"
-#    file    = "/consul/config/ca-bundle.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_1_tls_cert.rendered}"
-#    file    = "/consul/config/consul-server.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_1_tls_key.rendered}"
-#    file    = "/consul/config/consul-server.key"
-#  }
+  upload = {
+    content = "${data.template_file.ca_bundle.rendered}"
+    file    = "/consul/config/ca-bundle.pem"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_1_tls_cert.rendered}"
+    file    = "/consul/config/consul-server.crt"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_1_tls_key.rendered}"
+    file    = "/consul/config/consul-server.key"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../consul/consul_oss_server_1/config"
@@ -271,20 +278,20 @@ resource "docker_container" "consul_oss_server_2" {
     file    = "/consul/config/common_config.json"
   }
 
-#  upload = {
-#    content = "${data.template_file.consul_ca_bundle.rendered}"
-#    file    = "/consul/config/ca-bundle.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_2_tls_cert.rendered}"
-#    file    = "/consul/config/consul-server.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_server_2_tls_key.rendered}"
-#    file    = "/consul/config/consul-server.key"
-#  }
+  upload = {
+    content = "${data.template_file.ca_bundle.rendered}"
+    file    = "/consul/config/ca-bundle.pem"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_2_tls_cert.rendered}"
+    file    = "/consul/config/consul-server.crt"
+  }
+
+  upload = {
+    content = "${data.template_file.consul_server_2_tls_key.rendered}"
+    file    = "/consul/config/consul-server.key"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../consul/consul_oss_server_2/config"
@@ -319,17 +326,19 @@ data "template_file" "consul_oss_client_common_config" {
   }
 }
 
-# Consul Open Source Clients
-
 # Consul Client TLS certificates and keys
 
-#data "template_file" "consul_client_tls_cert" {
-#  template = "${file("${path.module}/tls/consul-client-0.crt")}"
-#}
-#
-#data "template_file" "consul_client_tls_key" {
-#  template = "${file("${path.module}/tls/consul-client-0.key")}"
-#}
+data "template_file" "consul_client_tls_cert" {
+  count    = "${var.consul_oss}"
+  template = "${file("${path.module}/tls/${format("consul-client-%d.crt", count.index)}")}"
+}
+
+data "template_file" "consul_client_tls_key" {
+  count    = "${var.consul_oss}"
+  template = "${file("${path.module}/tls/${format("consul-client-%d.key", count.index)}")}"
+}
+
+# Consul Open Source Clients
 
 resource "docker_container" "consul_oss_client" {
   count = "${var.consul_oss_instance_count}"
@@ -341,20 +350,20 @@ resource "docker_container" "consul_oss_client" {
     file    = "/consul/config/common_config.json"
   }
 
-#  upload = {
-#    content = "${data.template_file.consul_ca_bundle.rendered}"
-#    file    = "/consul/config/ca-bundle.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_client_tls_cert.rendered}"
-#    file    = "/consul/config/consul-client.crt"
-#  }
-#
-#  upload = {
-#    content = "${data.template_file.consul_client_tls_key.rendered}"
-#    file    = "/consul/config/consul-client.key"
-#  }
+  upload = {
+    content = "${data.template_file.ca_bundle.rendered}"
+    file    = "/consul/config/ca-bundle.pem"
+  }
+
+  upload = {
+    content = "${element(data.template_file.consul_client_tls_cert.*.rendered, count.index)}"
+    file    = "/consul/config/consul-client.crt"
+  }
+
+  upload = {
+    content = "${element(data.template_file.consul_client_tls_key.*.rendered, count.index)}"
+    file    = "/consul/config/consul-client.key"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../consul/consul_oss_client_${count.index}/config"

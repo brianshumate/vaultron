@@ -17,8 +17,10 @@ You can now visit the Consul web UI at http://localhost:8500
 You can also interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:
 
-export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+export CONSUL_HTTP_SSL=true
+export VAULT_ADDR="https://127.0.0.1:8200"
+export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"`
 
 # or use this command to do it for you:
 $ . ./ion_darts

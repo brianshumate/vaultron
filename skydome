@@ -7,7 +7,7 @@
 #
 
 export CONSUL_HTTP_ADDR="localhost:8500"
-export VAULT_ADDR="http://localhost:8200"
+export VAULT_ADDR="https://localhost:8200"
 
 export txtblu="\033[0;34m" # Blue
 export txtcya="\033[0;36m" # Cyan
