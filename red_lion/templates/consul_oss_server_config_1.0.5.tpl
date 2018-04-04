@@ -3,10 +3,21 @@
   "datacenter": "${datacenter}",
   "data_dir": "${data_dir}",
   "raft_protocol": 3,
-  "acl_enforce_version_8": false,
+  "acl_datacenter": "arus",
+  "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
+  "acl_agent_master_token": "vaultron-needs-coordinate-updates",
+  "acl_default_policy": "deny",
+  "acl_down_policy": "extend-cache",
   "recursors": [
     "${recursor1}",
     "${recursor2}"
   ],
+  "cert_file": "/consul/config/consul-server.crt",
+  "key_file": "/consul/config/consul-server.key",
+  "ca_file": "/consul/config/ca-bundle.pem",
+  "ports": {
+    "http": -1,
+    "https": 8500
+  },
   "ui": true
 }

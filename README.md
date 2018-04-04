@@ -242,27 +242,31 @@ consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
-### Consul ACLs by Default
+#### Consul ACLs by Default
 
 **Consul ACLs with a default deny policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
 
-This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. While it's more similar to a production installation as well, it should not be emulated as a model of production installation because it makes use of only a shared **acl_master_token** and you should instead use `acl_agent_token` for Consul client agents, and tokens specific to use cases such as Vault for more granular security with emphasis on least privilege.
+This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. While it's more similar to a production installation as well, it should not be emulated as a model of production installation because it makes use of a shared **acl_master_token** and the **acl_agent_master_token** for ease of configuration.
+
+In a production Consul installation, you should instead use `acl_agent_token` for Consul client agents, and tokens specific to use cases such as Vault for more granular security with emphasis on least privilege.
 
 The value used for the shared ACL Master Token is:
 
 - `vaultron-forms-and-eats-all-the-tacos-in-town`
 
-> NOTE: Full end to end mutual TLS is coming to a new version of Vaultron near you!
+The value used for the shared ACL Agent Master Token is:
 
-Here are some resources to help you in configuring these sorts of things:
+- `vaultron-needs-coordinate-updates`
+
+#### Mutual TLS by Default
+
+Vaultron uses self-signed certificates for full mutual TLS communication between Vault servers and Consul agents. The certificates and keys were generated from Vault PKI Secrets Backends as described in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
+
+Here are some additional resources related to configuring ACLs and TLS:
 
 - [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
-
-### Mutual TLS by Default
-
-Vaultron uses self-signed certificates for full mutual TLS communication between Vault servers and Consul agents. The certificates and keys were generated from Vault PKI Secrets Backends as described in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
 
 ### Where's My Vault Data?
 
@@ -323,13 +327,17 @@ export TF_VAR_vault_oss_instance_count=0 \
 
 ## Basic Troubleshooting Questions
 
+### I can access the Consul UI but it states that there are no services to show
+
+Access the settings (gear icon) in the navigation and ensure that the ACL master token value "vaultron-forms-and-eats-all-the-tacos-in-town" is present in the text field, then click **Close**.
+
 ### Vault is Orange/Failing in the Consul Web UI
 
 Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
 
 Unsealing Vault should solve that for you!
 
-### Something, Something — HA Problem!
+### Something, something — HA Problem!
 
 High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
 

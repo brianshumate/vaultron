@@ -231,5 +231,9 @@
 
 ## v1.8.1
 
-- Vaul 0.10.0-beta1
+- Vault 0.10.0-beta1
 - Complete TLS work
+
+## v1.8.2 (UNRELEASED)
+
+- Agent token generation for coordinate errors

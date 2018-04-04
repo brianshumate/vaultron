@@ -20,11 +20,11 @@ listener "tcp" {
 }
 
 # Default TTL values
-default_lease_ttl = "168h"
-max_lease_ttl = "23976h"
+default_lease_ttl = "50000h"   # 2083 days
+max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
-plugin_directory  = "/vault/plugins"
+plugin_directory = "/vault/plugins"
 
 # API Address
 api_addr = "https://${address}"

@@ -25,4 +25,4 @@ default_lease_ttl = "168h" # 7 days
 max_lease_ttl = "50000h"   # 2083 days
 
 # Plugin path
-plugin_directory  = "/vault/plugins"
+plugin_directory = "/vault/plugins"

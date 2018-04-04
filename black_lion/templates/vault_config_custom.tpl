@@ -3,14 +3,6 @@
 
 cluster_name = "${cluster_name }"
 
-# Default TTL values
-default_lease_ttl = "168h" # 7 days
-max_lease_ttl = "23976h"   # 999 days
-
-# Plugin path
-plugin_directory  = "/vault/plugins"
-
-
 listener "tcp" {
   address = "${address}"
   tls_disable = "${tls_disable}"
@@ -23,6 +15,12 @@ storage "consul" {
   disable_clustering = "${disable_clustering}"
 }
 
+# Default TTL values
+default_lease_ttl = "50000h"   # 2083 days
+max_lease_ttl = "50000h"       # 2083 days
+
+# Plugin path
+plugin_directory = "/vault/plugins"
 
 # Telemetry
 
