@@ -157,11 +157,11 @@ variable "statsd_version" {
   default = "latest"
 }
 
-module "telemetry" {
-  source                       = "yellow_lion"
-  grafana_version              = "${var.grafana_version}"
-  statsd_version               = "${var.statsd_version}"
-}
+#module "telemetry" {
+#  source                       = "yellow_lion"
+#  grafana_version              = "${var.grafana_version}"
+#  statsd_version               = "${var.statsd_version}"
+#}
 
 module "consul_cluster" {
   source                       = "red_lion"

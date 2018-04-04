@@ -228,3 +228,8 @@
 - TLS by default
 - Drop custom Consul version bits
 - Script improvements
+
+## v1.8.1
+
+- Vaul 0.10.0-beta1
+- Complete TLS work

@@ -4,6 +4,8 @@ cluster_name = "${cluster_name }"
 
 storage "consul" {
   address = "${consul_address}:8500"
+  scheme = "https"
+  tls_ca_file  = "/vault/config/ca-bundle.pem"
   token   = "vaultron-forms-and-eats-all-the-tacos-in-town"
   path = "vault/"
   disable_clustering = "${disable_clustering}"

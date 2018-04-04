@@ -12,5 +12,6 @@ listener "tcp" {
 
 backend "consul" {
   address = "${consul_address}:8500"
+  scheme = "https"
   path = "vault/"
 }
