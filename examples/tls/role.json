@@ -1,0 +1,14 @@
+{
+  "allow_localhost": true,
+  "allow_subdomains": true,
+  "allowed_domains": [
+    "node.arus.consul"
+  ],
+  "allow_bare_domains": true,
+  "allow_glob_domains": true,
+  "allow_ip_sans": true,
+  "generate_lease": true,
+  "organization": "Vaultron Lab",
+  "max_ttl": "42000h",
+  "ttl": "42000h"
+}
