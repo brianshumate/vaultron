@@ -145,6 +145,24 @@ variable "consul_custom_instance_count" {
   default = "0"
 }
 
+# statsd, graphite, and Grafana variables
+
+# Set TF_VAR_statsd_version to set this
+variable "grafana_version" {
+  default = "latest"
+}
+
+# Set TF_VAR_statsd_version to set this
+variable "statsd_version" {
+  default = "latest"
+}
+
+module "telemetry" {
+  source                       = "yellow_lion"
+  grafana_version              = "${var.grafana_version}"
+  statsd_version               = "${var.statsd_version}"
+}
+
 module "consul_cluster" {
   source                       = "red_lion"
   consul_log_level             = "${var.consul_log_level}"

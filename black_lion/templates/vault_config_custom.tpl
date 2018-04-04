@@ -27,9 +27,9 @@ storage "consul" {
 # Telemetry
 
 # statsd
-# telemetry {
-#   statsd_address = "172.17.0.2:8125"
-# }
+telemetry {
+  statsd_address = "${statsd_address}:8125"
+}
 
 
 # dogstatsd

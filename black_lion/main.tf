@@ -151,6 +151,7 @@ data "template_file" "vault_custom_server_config" {
     vault_path         = "${var.vault_path}"
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
+    statsd_address     = "${module.yellow_lion.docker_container.statsd.ip_address}"
     tls_disable        = 1
     tls_cert           = "/vault/custom/vaultron.crt"
     tls_key            = "/vault/custom/vaultron.key"
