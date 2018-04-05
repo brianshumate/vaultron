@@ -25,3 +25,4 @@ tf-destroy*.log
 tmp
 tmp/*
 vault-plugin-database-oracle*
+grafana

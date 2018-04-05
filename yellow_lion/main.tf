@@ -11,12 +11,12 @@ variable "statsd_version" {}
 
 # statsd/graphite image and container
 
-resource "docker_image" "stastd" {
+resource "docker_image" "statsd" {
   name         = "graphiteapp/graphite-statsd:${var.statsd_version}"
   keep_locally = true
 }
 
-resource "docker_container" "statsd" {
+resource "docker_container" "statsd_graphite" {
   name  = "vaultron_statsd"
   image = "${docker_image.statsd.latest}"
   must_run = true
@@ -79,10 +79,11 @@ resource "docker_container" "grafana" {
   image = "${docker_image.grafana.latest}"
   env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]
   env   = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
-  upload = {
-    content = "${element(data.template_file.vault_oss_server_config.*.rendered, count.index)}"
-    file    = "/vault/config/main.hcl"
-  }
+
+  #upload = {
+  #  content = "${element(data.template_file.vault_oss_server_config.*.rendered, count.index)}"
+  #  file    = "/vault/config/main.hcl"
+  #}
 
   volumes {
     host_path      = "${path.module}/../../../grafana/data"

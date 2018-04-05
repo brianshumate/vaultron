@@ -25,6 +25,8 @@ variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
 
+variable "statsd_ip" {}
+
 # This is the official Vault Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/vault/
 
@@ -48,6 +50,7 @@ data "template_file" "vault_oss_server_config" {
     disable_clustering = "${var.disable_clustering}"
     tls_disable        = false
     service_tags       = "vaultron"
+    statsd_ip          = "${var.statsd_ip}"
   }
 }
 
@@ -151,7 +154,7 @@ data "template_file" "vault_custom_server_config" {
     vault_path         = "${var.vault_path}"
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    #statsd_address     = "${module.yellow_lion.docker_container.statsd.ip_address}"
+    statsd_ip          = "${var.statsd_ip}"
     tls_disable        = 1
     tls_cert           = "/vault/custom/vaultron.crt"
     tls_key            = "/vault/custom/vaultron.key"

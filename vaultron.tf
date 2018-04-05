@@ -157,11 +157,11 @@ variable "statsd_version" {
   default = "latest"
 }
 
-#module "telemetry" {
-#  source                       = "yellow_lion"
-#  grafana_version              = "${var.grafana_version}"
-#  statsd_version               = "${var.statsd_version}"
-#}
+module "telemetry" {
+  source                       = "yellow_lion"
+  grafana_version              = "${var.grafana_version}"
+  statsd_version               = "${var.statsd_version}"
+}
 
 module "consul_cluster" {
   source                       = "red_lion"
@@ -196,4 +196,5 @@ module "vaultron" {
   consul_client_ips            = ["${module.consul_cluster.consul_oss_client_ips}"]
   vault_custom_config_template = "${var.vault_custom_config_template}"
   vault_server_log_level       = "${var.vault_server_log_level}"
+  statsd_ip                    = "${module.telemetry.statsd_graphite_ip}"
 }

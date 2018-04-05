@@ -26,3 +26,8 @@ max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
 plugin_directory = "/vault/plugins"
+
+# statsd
+telemetry {
+  statsd_address = "${statsd_address}:8125"
+}
