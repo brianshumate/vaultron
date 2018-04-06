@@ -2,7 +2,7 @@
   "raft_protocol": 3,
   "acl_datacenter": "arus",
   "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
-  "acl_default_policy": "deny",
+  "acl_default_policy": "allow",
   "cert_file": "/consul/config/consul-client.crt",
   "key_file": "/consul/config/consul-client.key",
   "ca_file": "/consul/config/ca-bundle.pem",
