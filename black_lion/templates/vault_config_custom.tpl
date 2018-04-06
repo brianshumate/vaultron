@@ -5,7 +5,9 @@ cluster_name = "${cluster_name }"
 
 listener "tcp" {
   address = "${address}"
-  tls_disable = "${tls_disable}"
+  tls_disable = "false"
+  tls_cert_file = "${tls_cert}"
+  tls_key_file = "${tls_key}"
 }
 
 storage "consul" {

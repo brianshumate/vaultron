@@ -5,18 +5,18 @@
 cluster_name = "${cluster_name }"
 ui = true
 
-storage "file" {
-  path = "/vault/data/vaultron"
-  token = "vaultron-forms-and-eats-all-the-tacos-in-town"
-  disable_clustering = "${disable_clustering}"
-  service_tags = "${service_tags}"
-}
-
 listener "tcp" {
   address = "${address}"
   tls_disable = "false"
   tls_cert_file = "${tls_cert}"
   tls_key_file = "${tls_key}"
+}
+
+storage "file" {
+  path = "/vault/data/vaultron"
+  token = "vaultron-forms-and-eats-all-the-tacos-in-town"
+  disable_clustering = "${disable_clustering}"
+  service_tags = "${service_tags}"
 }
 
 # Default TTL values
