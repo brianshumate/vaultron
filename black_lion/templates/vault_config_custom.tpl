@@ -24,11 +24,10 @@ plugin_directory = "/vault/plugins"
 
 # Telemetry
 
-# statsd
+# statsd/graphite/grafana (Yellow Lion)
 telemetry {
-  statsd_address = "${statsd_address}:8125"
+  statsd_address = "${statsd_ip}:8125"
 }
-
 
 # dogstatsd
 # telemetry {
