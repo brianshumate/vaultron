@@ -12,9 +12,12 @@ listener "tcp" {
 
 storage "consul" {
   address = "${consul_address}:8500"
-  token = "vaultron-forms-and-eats-all-the-tacos-in-town"
+  scheme = "https"
+  tls_ca_file  = "/vault/config/ca-bundle.pem"
+  token   = "vaultron-forms-and-eats-all-the-tacos-in-town"
   path = "vault/"
   disable_clustering = "${disable_clustering}"
+  service_tags = "${service_tags}"
 }
 
 # Default TTL values
