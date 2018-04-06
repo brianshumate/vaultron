@@ -57,10 +57,12 @@ e21c778cf94a        5f4915f05e27        "consul agent -confi…"   About a minut
 Then, export the necessary environment variables:
 
 ```
+$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
 $ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
 $ export CONSUL_HTTP_SSL=true
-$ export VAULT_ADDR="https://127.0.0.1:8200"
 $ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
+$ export VAULT_ADDR="https://127.0.0.1:8200"
+$ export VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
 ```
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
@@ -73,7 +75,7 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-> NOTE: You can also visit the Consul web UI at https://localhost:8500
+See the TLS by Default section for more details on handling Vaultron's Intermediate Certificate Authority certificate.
 
 ### What's Next?
 
@@ -276,9 +278,17 @@ The value used for the shared ACL Agent Master Token is:
 
 - `vaultron-needs-coordinate-updates`
 
-#### Mutual TLS by Default
+#### TLS by Default
 
 Vaultron uses self-signed certificates for full mutual TLS communication between Vault servers and Consul agents. The certificates and keys were generated from Vault PKI Secrets Backends as described in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
+
+With this in mind, you need to ensure that the certificate authority is recognized by Vault and Consul; you can do this in a number of ways:
+
+1. Import the `black_lion/tls/ca-pundle.pem` into your OS trust store
+2. For Vault: use the `VAULT_CACERT` environment variable
+3. For Vault: Pass `-ca-cert=` option with path to the `ca-pundle.pem` for all `vault` commands
+4. For Consul: use the `CONSUL_CACERT` environment variable
+5. For Consul: pass the `-ca-file=` option with path to the `ca-pundle.pem` for all `consul` commands
 
 Here are some additional resources related to configuring ACLs and TLS:
 

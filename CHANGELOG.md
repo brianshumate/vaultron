@@ -234,6 +234,7 @@
 - Vault 0.10.0-beta1
 - Complete TLS work
 
-## v1.8.2 (UNRELEASED)
+## v1.8.2
 
-- Agent token generation for coordinate errors
+- Relax ACL default policy to allow while finalizing configuration
+- Document TLS details
