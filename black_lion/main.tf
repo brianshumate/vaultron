@@ -236,7 +236,7 @@ resource "docker_container" "vault_custom_server" {
 
   ports {
     internal = "8200"
-    # This is mysterious conflicts w/ default cluster_address port
+    # This is mysterious + conflicts w/ default cluster_address port
     # needs more investigation and updating when Docker Mac networking better
     external = "${format("820%d", count.index)}"
     protocol = "tcp"

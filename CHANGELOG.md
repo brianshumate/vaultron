@@ -242,4 +242,4 @@
 ## v1.8.3 (UNRELEASED)
 
 - Clean up configuration cruft
-- Health check and service defintions for graphite
+- Health check and service definitions for graphite

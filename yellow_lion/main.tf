@@ -6,10 +6,6 @@
 
 # Variables
 
-# variable "consul_server_ips" {
-#   type = "list"
-# }
-
 variable "grafana_version" {}
 variable "statsd_version" {}
 
@@ -68,8 +64,6 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
-  #dns        = ["${var.consul_server_ips}"]
-  #dns_search = ["consul"]
 }
 
 # Grafana image and container
@@ -86,11 +80,6 @@ resource "docker_container" "grafana" {
   env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]
   env   = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
 
-  #upload = {
-  #  content = "${element(data.template_file.vault_oss_server_config.*.rendered, count.index)}"
-  #  file    = "/vault/config/main.hcl"
-  #}
-
   volumes {
     host_path      = "${path.module}/../../../grafana/data"
     container_path = "/var/lib/grafana"
@@ -104,6 +93,11 @@ resource "docker_container" "grafana" {
     protocol = "tcp"
   }
 
-  #dns        = ["${var.consul_server_ips}"]
-  #dns_search = ["consul"]
+  # Execute something like this in the container to setup the datasource
+  # curl \
+  # 'http://admin:vaultron@192.168.99.100:3000/api/datasources' \
+  # -X POST \
+  # -H 'Content-Type: application/json;charset=UTF-8' \
+  # --data-binary '{"name":"localGraphite","type":"graphite","url":"http://192.168.99.100","access":"proxy","isDefault":true,"database":"asd"}'
+
 }
