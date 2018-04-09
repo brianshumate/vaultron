@@ -154,7 +154,6 @@ variable "statsd_version" {
 
 module "telemetry" {
   source                       = "yellow_lion"
-  consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
   grafana_version              = "${var.grafana_version}"
   statsd_version               = "${var.statsd_version}"
 }

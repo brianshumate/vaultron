@@ -68,8 +68,8 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
-  dns        = ["${var.consul_server_ips}"]
-  dns_search = ["consul"]
+  #dns        = ["${var.consul_server_ips}"]
+  #dns_search = ["consul"]
 }
 
 # Grafana image and container
@@ -104,6 +104,6 @@ resource "docker_container" "grafana" {
     protocol = "tcp"
   }
 
-  dns        = ["${var.consul_server_ips}"]
-  dns_search = ["consul"]
+  #dns        = ["${var.consul_server_ips}"]
+  #dns_search = ["consul"]
 }
