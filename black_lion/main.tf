@@ -10,21 +10,17 @@ variable "use_vault_oss" {}
 variable "vault_ent_id" {}
 variable "vault_path" {}
 variable "vault_cluster_name" {}
-variable "vault_plus_one_port" {}
 variable "disable_clustering" {}
 variable "vault_server_log_level" {}
 variable "consul_server_ips" {
   type = "list"
 }
-
 variable "consul_client_ips" {
   type = "list"
 }
-
 variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
-
 variable "statsd_ip" {}
 
 # This is the official Vault Docker image that Vaultron uses by default.
@@ -86,18 +82,18 @@ resource "docker_container" "vault_oss_server" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/vault/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
- upload = {
-   content = "${element(data.template_file.vault_oss_server_tls_cert.*.rendered, count.index)}"
-   file    = "/vault/config/vault-server.crt"
- }
+  upload = {
+    content = "${element(data.template_file.vault_oss_server_tls_cert.*.rendered, count.index)}"
+    file    = "/etc/ssl/certs/vault-server.crt"
+  }
 
- upload = {
-   content = "${element(data.template_file.vault_oss_server_tls_key.*.rendered, count.index)}"
-   file    = "/vault/config/vault-server.key"
- }
+  upload = {
+    content = "${element(data.template_file.vault_oss_server_tls_key.*.rendered, count.index)}"
+    file    = "/etc/ssl/vault-server.key"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../vault/vault_oss_server_${count.index}/audit_log"
@@ -190,17 +186,17 @@ resource "docker_container" "vault_custom_server" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/vault/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
    upload = {
      content = "${element(data.template_file.vault_custom_server_tls_cert.*.rendered, count.index)}"
-     file    = "/vault/config/vault-server.crt"
+     file    = "/etc/ssl/certs/vault-server.crt"
    }
 
    upload = {
      content = "${element(data.template_file.vault_custom_server_tls_key.*.rendered, count.index)}"
-     file    = "/vault/config/vault-server.key"
+     file    = "/etc/ssl/vault-server.key"
    }
 
   volumes {

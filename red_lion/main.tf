@@ -35,6 +35,8 @@ variable "consul_custom_instance_count" {}
 variable "consul_oss" {}
 variable "consul_oss_instance_count" {}
 
+variable "statsd_ip" {}
+
 # This is the official Consul Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/consul/
 
@@ -59,6 +61,24 @@ data "template_file" "consul_oss_server_common_config" {
     recursor1        = "${var.consul_recursor_1}"
     recursor2        = "${var.consul_recursor_2}"
     ui               = "true"
+  }
+}
+
+# Graphite service definition
+
+data "template_file" "graphite_service_definitiion" {
+  template = "${file("${path.module}/templates/graphite-service.json.tpl")}"
+
+  vars {
+    statsd_ip        = "${var.statsd_ip}"
+  }
+}
+
+data "template_file" "graphite_health_check_definition" {
+  template = "${file("${path.module}/templates/graphite-health.json.tpl")}"
+
+  vars {
+    statsd_ip        = "${var.statsd_ip}"
   }
 }
 
@@ -110,23 +130,33 @@ resource "docker_container" "consul_oss_server_0" {
   # }
 
   upload = {
+    content = "${data.template_file.graphite_service_definitiion.rendered}"
+    file    = "/consul/config/graphite-health.json"
+  }
+
+  upload = {
+    content = "${data.template_file.graphite_health_check_definition.rendered}"
+    file    = "/consul/config/graphite-service.json"
+  }
+
+  upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file    = "/consul/config/common_config.json"
   }
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/consul/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
   upload = {
     content = "${data.template_file.consul_server_0_tls_cert.rendered}"
-    file    = "/consul/config/consul-server.crt"
+    file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
     content = "${data.template_file.consul_server_0_tls_key.rendered}"
-    file    = "/consul/config/consul-server.key"
+    file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
@@ -226,17 +256,17 @@ resource "docker_container" "consul_oss_server_1" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/consul/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
   upload = {
     content = "${data.template_file.consul_server_1_tls_cert.rendered}"
-    file    = "/consul/config/consul-server.crt"
+    file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
     content = "${data.template_file.consul_server_1_tls_key.rendered}"
-    file    = "/consul/config/consul-server.key"
+    file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
@@ -254,7 +284,7 @@ resource "docker_container" "consul_oss_server_1" {
     "-server",
     "-config-dir=/consul/config",
     "-node=consul_oss_server_1",
-    "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
+    "-join=${docker_container.consul_oss_server_0.ip_address}",
     "-dns-port=53",
   ]
 
@@ -280,17 +310,17 @@ resource "docker_container" "consul_oss_server_2" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/consul/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
   upload = {
     content = "${data.template_file.consul_server_2_tls_cert.rendered}"
-    file    = "/consul/config/consul-server.crt"
+    file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
     content = "${data.template_file.consul_server_2_tls_key.rendered}"
-    file    = "/consul/config/consul-server.key"
+    file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
@@ -308,7 +338,7 @@ resource "docker_container" "consul_oss_server_2" {
     "-server",
     "-config-dir=/consul/config",
     "-node=consul_oss_server_2",
-    "-retry-join=${docker_container.consul_oss_server_0.ip_address}",
+    "-join=${docker_container.consul_oss_server_0.ip_address}",
     "-dns-port=53",
   ]
 
@@ -352,17 +382,17 @@ resource "docker_container" "consul_oss_client" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/consul/config/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca-bundle.pem"
   }
 
   upload = {
     content = "${element(data.template_file.consul_client_tls_cert.*.rendered, count.index)}"
-    file    = "/consul/config/consul-client.crt"
+    file    = "/etc/ssl/certs/consul-client.crt"
   }
 
   upload = {
     content = "${element(data.template_file.consul_client_tls_key.*.rendered, count.index)}"
-    file    = "/consul/config/consul-client.key"
+    file    = "/etc/ssl/consul-client.key"
   }
 
   volumes {
@@ -382,9 +412,9 @@ resource "docker_container" "consul_oss_client" {
                      "-data-dir=/consul/data",
                      "-node=consul_oss_client_${count.index}",
                      "-datacenter=${var.datacenter_name}",
-                     "-retry-join=${docker_container.consul_oss_server_2.ip_address}",
-                     "-retry-join=${docker_container.consul_oss_server_1.ip_address}",
-                     "-retry-join=${docker_container.consul_oss_server_0.ip_address}"
+                     "-join=${docker_container.consul_oss_server_2.ip_address}",
+                     "-join=${docker_container.consul_oss_server_1.ip_address}",
+                     "-join=${docker_container.consul_oss_server_0.ip_address}"
                      )}"]
 
   dns        = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"]

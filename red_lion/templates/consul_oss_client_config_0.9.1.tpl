@@ -3,9 +3,9 @@
   "acl_datacenter": "arus",
   "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
   "acl_default_policy": "allow",
-  "cert_file": "/consul/config/consul-client.crt",
-  "key_file": "/consul/config/consul-client.key",
-  "ca_file": "/consul/config/ca-bundle.pem",
+  "cert_file": "/etc/ssl/certs/consul-client.crt",
+  "key_file": "/etc/ssl/consul-client.key",
+  "ca_file": "/etc/ssl/certs/ca-bundle.pem",
   "ports": {
     "http": -1,
     "https": 8500

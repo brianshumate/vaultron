@@ -58,11 +58,6 @@ variable "vault_cluster_name" {
   default = "vaultron"
 }
 
-# Set TF_VAR_vault_plus_one_port to set this
-variable "vault_plus_one_port" {
-  default = "8301"
-}
-
 # Set TF_VAR_disable_clustering to set this
 variable "disable_clustering" {
   default = "false"
@@ -159,6 +154,7 @@ variable "statsd_version" {
 
 module "telemetry" {
   source                       = "yellow_lion"
+  consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
   grafana_version              = "${var.grafana_version}"
   statsd_version               = "${var.statsd_version}"
 }
@@ -178,6 +174,7 @@ module "consul_cluster" {
   consul_oss_instance_count    = "${var.consul_oss_instance_count}"
   consul_custom                = "${var.consul_custom}"
   consul_custom_instance_count = "${var.consul_custom_instance_count}"
+  statsd_ip                    = "${module.telemetry.statsd_graphite_ip}"
 }
 
 module "vaultron" {
@@ -190,7 +187,6 @@ module "vaultron" {
   vault_ent_id                 = "${var.vault_ent_id}"
   vault_path                   = "${var.vault_path}"
   vault_cluster_name           = "${var.vault_cluster_name}"
-  vault_plus_one_port          = "${var.vault_plus_one_port}"
   disable_clustering           = "${var.disable_clustering}"
   consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
   consul_client_ips            = ["${module.consul_cluster.consul_oss_client_ips}"]

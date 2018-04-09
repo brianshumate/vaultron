@@ -62,6 +62,11 @@ errors=$((errors + $?))
 rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
+# Remove Telemetry data
+
+rm -rf ./grafana
+errors=$((errors + $?))
+
 # Remove Terraform state, plans, backend configuration, and logs
 
 rm -f ./tfstate/terraform.tfstate*
