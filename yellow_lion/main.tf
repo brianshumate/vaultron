@@ -6,9 +6,9 @@
 
 # Variables
 
-variable "consul_server_ips" {
-  type = "list"
-}
+# variable "consul_server_ips" {
+#   type = "list"
+# }
 
 variable "grafana_version" {}
 variable "statsd_version" {}
