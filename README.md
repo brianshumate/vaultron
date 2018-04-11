@@ -390,13 +390,13 @@ Terminal 1                              Terminal 2
 Instead of seeing the glorious interlocks activated, dyna-therms connected, infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
 
 ```
-🚫  Vaultron cannot form! Check terraform apply output.
+[e] Vaultron cannot form! Check terraform apply output.
 ```
 
 or this:
 
 ```
-🚫  Vaultron cannot form! Check terraform plan output.
+[e] Vaultron cannot form! Check terraform plan output.
 ```
 
 This means that Vaultron had problems durring the `terraform plan` or `terraform apply` steps. You can run those commands manually and inspect their output to troubleshoot the issue.
@@ -408,13 +408,13 @@ Other red and equally frightening errors could occur, and these are usually acco
 If you try exporting `TF_VAR_consul_version` or `TF_VAR_vault_version` to a specific version, but get this error when you attempt to form Vaultron:
 
 ```
-🚫  Sorry, Vaultron does not support Consul version: 0.6.4
+[e] Sorry, Vaultron does not support Consul version: 0.6.4
 ```
 
 or:
 
 ```
-🚫  Sorry, Vaultron does not support Vault version: 0.6.0
+[e] Sorry, Vaultron does not support Vault version: 0.6.0
 ```
 
 You are specifying either a non-existent version (maybe a typo?) or you are specifying a version for which no Docker images exists. This second case is not a problem with Vaultron, there are some versions of Consul and Vault which were released as binaries, but not available as Docker images.

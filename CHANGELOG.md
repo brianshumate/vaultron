@@ -245,3 +245,8 @@
 - Yellow Lion appears
 - Clean up configuration cruft
 - Health check and service definition examples for Yellow Lion container
+- Update documentation
+
+## v1.8.4 (UNRELEASED)
+
+- Update documentation
