@@ -264,19 +264,13 @@ Given the intended use cases for this project, the working solution that results
 
 #### Consul ACLs by Default
 
-**Consul ACLs with a default deny policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
+**Consul ACLs with a default allow policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
 
-This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. While it's more similar to a production installation as well, it should not be emulated as a model of production installation because it makes use of a shared **acl_master_token** and the **acl_agent_master_token** for ease of configuration.
-
-In a production Consul installation, you should instead use `acl_agent_token` for Consul client agents, and tokens specific to use cases such as Vault for more granular security with emphasis on least privilege.
+This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. It is not the same as a production installation because it makes use of a shared **acl_master_token** for ease of configuration.
 
 The value used for the shared ACL Master Token is:
 
 - `vaultron-forms-and-eats-all-the-tacos-in-town`
-
-The value used for the shared ACL Agent Master Token is:
-
-- `vaultron-needs-coordinate-updates`
 
 #### TLS by Default
 
