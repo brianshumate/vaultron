@@ -242,5 +242,6 @@
 ## v1.8.3
 
 - Vault version 0.10.0
+- Yellow Lion appears
 - Clean up configuration cruft
-- Health check and service definition examples for Yellow Dog container
+- Health check and service definition examples for Yellow Lion container
