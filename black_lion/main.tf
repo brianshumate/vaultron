@@ -1,5 +1,8 @@
 #############################################################################
-# Vault Open Source
+# Black Lion
+# Vault servers
+#   - Standard OSS distribution
+#   - Custom binary (allows for custom builds, Enterprise, etc.)
 #############################################################################
 
 # Vault related variables

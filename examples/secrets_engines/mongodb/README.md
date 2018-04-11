@@ -23,33 +23,33 @@ $ docker inspect \
 
 ## Configure Vault
 
-Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+Vaultron enables the database secrets engine at `vaultron-database` if using `blazing sword`; if you set up manually, you'll need to enable it:
 
 ```
-$ vault secrets enable -path=vaultron_database database
+$ vault secrets enable -path=vaultron-database database
 ```
 
 Next, configure the MongoDB connection:
 
 ```
-$ vault write vaultron_database/config/mongodb \
-    plugin_name=mongodb-database-plugin \
-    allowed_roles="mongodb-readonly" \
-    connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
+$ vault write vaultron-database/config/mongodb \
+  plugin_name=mongodb-database-plugin \
+  allowed_roles="mongodb-readonly" \
+  connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
 ```
 
 Add a read only user role:
 
 ```
-$ vault write vaultron_database/roles/mongodb-readonly \
-    db_name=mongodb \
-    creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
-    default_ttl="1h" \
-    max_ttl="24h"
+$ vault write vaultron-database/roles/mongodb-readonly \
+  db_name=mongodb \
+  creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
+  default_ttl="1h" \
+  max_ttl="24h"
 ```
 
 Retrieve a read only MongoDB database credential:
 
 ```
-$ vault read vaultron_database/creds/mongodb-readonly
+$ vault read vaultron-database/creds/mongodb-readonly
 ```

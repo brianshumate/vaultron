@@ -239,7 +239,8 @@
 - Relax ACL default policy to allow while finalizing configuration
 - Document TLS details
 
-## v1.8.3 (UNRELEASED)
+## v1.8.3
 
+- Vault version 0.10.0
 - Clean up configuration cruft
-- Health check and service definitions for graphite
+- Health check and service definition examples for Yellow Dog container

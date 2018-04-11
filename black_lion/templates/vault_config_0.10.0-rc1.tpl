@@ -1,6 +1,7 @@
 # Vault OSS v0.10.0-rc1
 
 cluster_name = "${cluster_name }"
+ui = true
 
 listener "tcp" {
   address = "${address}"

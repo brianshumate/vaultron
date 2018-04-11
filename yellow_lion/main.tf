@@ -1,5 +1,5 @@
 #############################################################################
-# Yellow Lion:
+# Yellow Lion
 # Vault telemetry stack
 # statsd, graphite, Grafana
 #############################################################################
@@ -66,6 +66,10 @@ resource "docker_container" "statsd_graphite" {
 
 }
 
+output "statsd_ip" {
+  value = "${docker_container.statsd_graphite.ip_address}"
+}
+
 # Grafana image and container
 
 resource "docker_image" "grafana" {
@@ -92,12 +96,4 @@ resource "docker_container" "grafana" {
     external = "3000"
     protocol = "tcp"
   }
-
-  # Execute something like this in the container to setup the datasource
-  # curl \
-  # 'http://admin:vaultron@192.168.99.100:3000/api/datasources' \
-  # -X POST \
-  # -H 'Content-Type: application/json;charset=UTF-8' \
-  # --data-binary '{"name":"localGraphite","type":"graphite","url":"http://192.168.99.100","access":"proxy","isDefault":true,"database":"asd"}'
-
 }
