@@ -249,4 +249,5 @@
 
 ## v1.8.4 (UNRELEASED)
 
+- Consul v1.0.7
 - Update documentation
