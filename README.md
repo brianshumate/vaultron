@@ -62,7 +62,7 @@ $ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
 $ export CONSUL_HTTP_SSL=true
 $ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 $ export VAULT_ADDR="https://127.0.0.1:8200"
-$ export VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+$ export VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
 ```
 
 Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
