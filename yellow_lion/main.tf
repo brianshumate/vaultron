@@ -8,15 +8,18 @@
 
 variable "grafana_version" {}
 variable "statsd_version" {}
+variable "vaultron_telemetry_count" {}
 
 # statsd/graphite image and container
 
 resource "docker_image" "statsd" {
+  count        = "${var.vaultron_telemetry_count}"
   name         = "graphiteapp/graphite-statsd:${var.statsd_version}"
   keep_locally = true
 }
 
 resource "docker_container" "statsd_graphite" {
+  count        = "${var.vaultron_telemetry_count}"
   name  = "vaultron_statsd"
   image = "${docker_image.statsd.latest}"
   must_run = true
@@ -67,18 +70,20 @@ resource "docker_container" "statsd_graphite" {
 }
 
 output "statsd_ip" {
-  value = "${docker_container.statsd_graphite.ip_address}"
+  value = "${docker_container.statsd_graphite.*.ip_address}"
 }
 
 # Grafana image and container
 
 resource "docker_image" "grafana" {
+  count        = "${var.vaultron_telemetry_count}"
   name         = "grafana/grafana:${var.grafana_version}"
   keep_locally = true
 }
 
 # Grafana container resource
 resource "docker_container" "grafana" {
+  count        = "${var.vaultron_telemetry_count}"
   name  = "vaultron_grafana"
   image = "${docker_image.grafana.latest}"
   env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]

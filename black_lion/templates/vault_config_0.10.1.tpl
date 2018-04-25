@@ -1,4 +1,4 @@
-# Vault OSS v0.10.0
+# Vault OSS v0.10.1
 
 cluster_name = "${cluster_name }"
 ui = true
@@ -26,4 +26,3 @@ max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
 plugin_directory = "/vault/plugins"
-
