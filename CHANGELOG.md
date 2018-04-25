@@ -251,4 +251,5 @@
 
 - Consul v1.0.7
 - Correct typo in form script (thanks @greyspectrum)
+- Correct typo in ion darts script (thanks @lauradiane)
 - Update documentation
