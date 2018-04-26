@@ -44,11 +44,11 @@ for i in 0 1 2; do
         echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
         exit 1
     fi
-    if ! [ -d "consul/consul_oss_client_$i" ]; then
+    if ! [ -d "consul/consulc$i" ]; then
         echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
         exit 1
     fi
-    if ! [ -d "vault/vault_oss_server_$i" ]; then
+    if ! [ -d "vault/vault_$i" ]; then
         echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
         exit 1
     fi
@@ -99,11 +99,11 @@ for i in 0 1 2; do
         echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
         exit 1
     fi
-    if [ -d "consul/consul_oss_client_$i" ]; then
+    if [ -d "consul/consulc$i" ]; then
         echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
         exit 1
     fi
-    if [ -d "vault/vault_oss_server_$i" ]; then
+    if [ -d "vault/vault_$i" ]; then
         echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
         exit 1
     fi

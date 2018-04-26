@@ -24,40 +24,40 @@ fi
 
 # Remove Consul client data
 
-rm -rf ./consul/consul_oss_client_0
+rm -rf ./consul/consulc0
 errors=$((errors + $?))
-rm -rf ./consul/consul_oss_client_1
+rm -rf ./consul/consulc1
 errors=$((errors + $?))
-rm -rf ./consul/consul_oss_client_2
+rm -rf ./consul/consulc2
 errors=$((errors + $?))
 
 # Remove Consul server data
 
-rm -rf ./consul/consul_oss_server_0
+rm -rf ./consul/consuls0
 errors=$((errors + $?))
-rm -rf ./consul/consul_oss_server_1
+rm -rf ./consul/consuls1
 errors=$((errors + $?))
-rm -rf ./consul/consul_oss_server_2
+rm -rf ./consul/consuls2
 errors=$((errors + $?))
 
 # Remove Vault server data
 
-rm -rf ./vault/vault_oss_server_0
+rm -rf ./vault/vault-server-0
 errors=$((errors + $?))
-rm -rf ./vault/vault_oss_server_1
+rm -rf ./vault/vault1
 errors=$((errors + $?))
-rm -rf ./vault/vault_oss_server_2
+rm -rf ./vault/vault2
 errors=$((errors + $?))
 rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
 # Remove Vault custom server data
 
-rm -rf ./vault/vault_custom_server_0
+rm -rf ./vault/vault0
 errors=$((errors + $?))
-rm -rf ./vault/vault_custom_server_1
+rm -rf ./vault/vault1
 errors=$((errors + $?))
-rm -rf ./vault/vault_custom_server_2
+rm -rf ./vault/vault2
 errors=$((errors + $?))
 rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))

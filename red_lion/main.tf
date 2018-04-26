@@ -9,13 +9,13 @@ output "consul_oss_server_ips" {
   description = "Consul OSS Server IP addresses"
 
   value = [
-    "${docker_container.consul_oss_server_0.*.ip_address}",
-    "${docker_container.consul_oss_server_1.*.ip_address}",
-    "${docker_container.consul_oss_server_2.*.ip_address}",
+    "${docker_container.consuls0.*.ip_address}",
+    "${docker_container.consuls1.*.ip_address}",
+    "${docker_container.consuls2.*.ip_address}",
   ]
 }
 
-output "consul_oss_client_ips" {
+output "consulcips" {
   description = "Consul OSS Client IP addresses"
   value       = ["${docker_container.consul_oss_client.*.ip_address}"]
 }
@@ -71,36 +71,36 @@ data "template_file" "ca_bundle" {
 
 # Consul Server TLS certificates and keys
 
-data "template_file" "consul_server_0_tls_cert" {
+data "template_file" "consuls0_tls_cert" {
   template = "${file("${path.module}/tls/consul-server-0.crt")}"
 }
 
-data "template_file" "consul_server_1_tls_cert" {
+data "template_file" "consuls1_tls_cert" {
   template = "${file("${path.module}/tls/consul-server-1.crt")}"
 }
 
-data "template_file" "consul_server_2_tls_cert" {
+data "template_file" "consuls2_tls_cert" {
   template = "${file("${path.module}/tls/consul-server-2.crt")}"
 }
 
-data "template_file" "consul_server_0_tls_key" {
+data "template_file" "consuls0_tls_key" {
   template = "${file("${path.module}/tls/consul-server-0.key")}"
 }
 
-data "template_file" "consul_server_1_tls_key" {
+data "template_file" "consuls1_tls_key" {
   template = "${file("${path.module}/tls/consul-server-1.key")}"
 }
 
-data "template_file" "consul_server_2_tls_key" {
+data "template_file" "consuls2_tls_key" {
   template = "${file("${path.module}/tls/consul-server-2.key")}"
 }
 
 
 # Consul Open Source Server 1
 
-resource "docker_container" "consul_oss_server_0" {
+resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
-  name  = "consul_oss_server_0"
+  name  = "consuls0"
   env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
@@ -115,22 +115,22 @@ resource "docker_container" "consul_oss_server_0" {
   }
 
   upload = {
-    content = "${data.template_file.consul_server_0_tls_cert.rendered}"
+    content = "${data.template_file.consuls0_tls_cert.rendered}"
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
-    content = "${data.template_file.consul_server_0_tls_key.rendered}"
+    content = "${data.template_file.consuls0_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_0/config"
+    host_path      = "${path.module}/../../../consul/consuls0/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_0/data"
+    host_path      = "${path.module}/../../../consul/consuls0/data"
     container_path = "/consul/data"
   }
 
@@ -138,7 +138,7 @@ resource "docker_container" "consul_oss_server_0" {
     "agent",
     "-server",
     "-config-dir=/consul/config",
-    "-node=consul_oss_server_0",
+    "-node=consuls0",
     "-client=0.0.0.0",
     "-dns-port=53",
   ]
@@ -204,9 +204,9 @@ resource "docker_container" "consul_oss_server_0" {
 
 # Consul Open Source Server 2
 
-resource "docker_container" "consul_oss_server_1" {
+resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
-  name  = "consul_oss_server_1"
+  name  = "consuls1"
   image = "${docker_image.consul.latest}"
 
   # TODO: make GELF logging a conditional thing
@@ -225,22 +225,22 @@ resource "docker_container" "consul_oss_server_1" {
   }
 
   upload = {
-    content = "${data.template_file.consul_server_1_tls_cert.rendered}"
+    content = "${data.template_file.consuls1_tls_cert.rendered}"
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
-    content = "${data.template_file.consul_server_1_tls_key.rendered}"
+    content = "${data.template_file.consuls1_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_1/config"
+    host_path      = "${path.module}/../../../consul/consuls1/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_1/data"
+    host_path      = "${path.module}/../../../consul/consuls1/data"
     container_path = "/consul/data"
   }
 
@@ -248,8 +248,8 @@ resource "docker_container" "consul_oss_server_1" {
     "agent",
     "-server",
     "-config-dir=/consul/config",
-    "-node=consul_oss_server_1",
-    "-join=${docker_container.consul_oss_server_0.ip_address}",
+    "-node=consuls1",
+    "-join=${docker_container.consuls0.ip_address}",
     "-dns-port=53",
   ]
 
@@ -258,9 +258,9 @@ resource "docker_container" "consul_oss_server_1" {
 
 # Consul Open Source Server 3
 
-resource "docker_container" "consul_oss_server_2" {
+resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
-  name  = "consul_oss_server_2"
+  name  = "consuls2"
   image = "${docker_image.consul.latest}"
 
   # TODO: make GELF logging a conditional thing
@@ -279,22 +279,22 @@ resource "docker_container" "consul_oss_server_2" {
   }
 
   upload = {
-    content = "${data.template_file.consul_server_2_tls_cert.rendered}"
+    content = "${data.template_file.consuls2_tls_cert.rendered}"
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
   upload = {
-    content = "${data.template_file.consul_server_2_tls_key.rendered}"
+    content = "${data.template_file.consuls2_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_2/config"
+    host_path      = "${path.module}/../../../consul/consuls2/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_server_2/data"
+    host_path      = "${path.module}/../../../consul/consuls2/data"
     container_path = "/consul/data"
   }
 
@@ -302,8 +302,8 @@ resource "docker_container" "consul_oss_server_2" {
     "agent",
     "-server",
     "-config-dir=/consul/config",
-    "-node=consul_oss_server_2",
-    "-join=${docker_container.consul_oss_server_0.ip_address}",
+    "-node=consuls2",
+    "-join=${docker_container.consuls0.ip_address}",
     "-dns-port=53",
   ]
 
@@ -312,7 +312,7 @@ resource "docker_container" "consul_oss_server_2" {
 
 # Consul Open Source client common configuration
 
-data "template_file" "consul_oss_client_common_config" {
+data "template_file" "consulc_common_config" {
   count    = "${var.consul_oss}"
   template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
 
@@ -337,11 +337,11 @@ data "template_file" "consul_client_tls_key" {
 
 resource "docker_container" "consul_oss_client" {
   count = "${var.consul_oss_instance_count}"
-  name  = "${format("consul_oss_client_%d", count.index)}"
+  name  = "${format("consulc%d", count.index)}"
   image = "${docker_image.consul.latest}"
 
   upload = {
-    content = "${data.template_file.consul_oss_client_common_config.rendered}"
+    content = "${data.template_file.consulc_common_config.rendered}"
     file    = "/consul/config/common_config.json"
   }
 
@@ -361,12 +361,12 @@ resource "docker_container" "consul_oss_client" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_client_${count.index}/config"
+    host_path      = "${path.module}/../../../consul/consulc${count.index}/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consul_oss_client_${count.index}/data"
+    host_path      = "${path.module}/../../../consul/consulc${count.index}/data"
     container_path = "/consul/data"
   }
 
@@ -375,14 +375,14 @@ resource "docker_container" "consul_oss_client" {
                      "-config-dir=/consul/config",
                      "-client=0.0.0.0",
                      "-data-dir=/consul/data",
-                     "-node=consul_oss_client_${count.index}",
+                     "-node=consulc${count.index}",
                      "-datacenter=${var.datacenter_name}",
-                     "-join=${docker_container.consul_oss_server_2.ip_address}",
-                     "-join=${docker_container.consul_oss_server_1.ip_address}",
-                     "-join=${docker_container.consul_oss_server_0.ip_address}"
+                     "-join=${docker_container.consuls2.ip_address}",
+                     "-join=${docker_container.consuls1.ip_address}",
+                     "-join=${docker_container.consuls0.ip_address}"
                      )}"]
 
-  dns        = ["${docker_container.consul_oss_server_0.ip_address}", "${docker_container.consul_oss_server_1.ip_address}", "${docker_container.consul_oss_server_2.ip_address}"]
+  dns        = ["${docker_container.consuls0.ip_address}", "${docker_container.consuls1.ip_address}", "${docker_container.consuls2.ip_address}"]
   dns_search = ["consul"]
   must_run   = true
 }

@@ -40,7 +40,7 @@ resource "docker_image" "vault" {
 
 # Vault Open Source servers configuration
 
-data "template_file" "vault_oss_server_config" {
+data "template_file" "vault_config" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
 
@@ -64,12 +64,12 @@ data "template_file" "ca_bundle" {
 
 # Vault OSS Server TLS certificates and keys
 
-data "template_file" "vault_oss_server_tls_cert" {
+data "template_file" "vault_tls_cert" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
 }
 
-data "template_file" "vault_oss_server_tls_key" {
+data "template_file" "vault_tls_key" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
 }
@@ -87,11 +87,11 @@ data "template_file" "telemetry_config" {
 
 resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
-  name  = "${format("vault_oss_server_%d", count.index)}"
+  name  = "${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
   upload = {
-    content = "${element(data.template_file.vault_oss_server_config.*.rendered, count.index)}"
+    content = "${element(data.template_file.vault_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
   }
 
@@ -106,22 +106,22 @@ resource "docker_container" "vault_oss_server" {
   }
 
   upload = {
-    content = "${element(data.template_file.vault_oss_server_tls_cert.*.rendered, count.index)}"
+    content = "${element(data.template_file.vault_tls_cert.*.rendered, count.index)}"
     file    = "/etc/ssl/certs/vault-server.crt"
   }
 
   upload = {
-    content = "${element(data.template_file.vault_oss_server_tls_key.*.rendered, count.index)}"
+    content = "${element(data.template_file.vault_tls_key.*.rendered, count.index)}"
     file    = "/etc/ssl/vault-server.key"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_oss_server_${count.index}/audit_log"
+    host_path      = "${path.module}/../../../vault/vault_${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_oss_server_${count.index}/config"
+    host_path      = "${path.module}/../../../vault/vault_${count.index}/config"
     container_path = "/vault/config"
   }
 
@@ -158,12 +158,12 @@ resource "docker_container" "vault_oss_server" {
 
 # Vault Server TLS certificates and keys
 
-data "template_file" "vault_custom_server_tls_cert" {
+data "template_file" "vault_custom_tls_cert" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
 }
 
-data "template_file" "vault_custom_server_tls_key" {
+data "template_file" "vault_custom_tls_key" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
 }
@@ -171,7 +171,7 @@ data "template_file" "vault_custom_server_tls_key" {
 # Vault custom servers configuration
 # This data type is for using custom Vault builds
 
-data "template_file" "vault_custom_server_config" {
+data "template_file" "vault_custom_config" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/templates/${var.vault_custom_config_template}")}"
 
@@ -196,11 +196,11 @@ data "template_file" "vault_custom_server_config" {
 
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
-  name  = "${format("vault_custom_server_%d", count.index)}"
+  name  = "${format("vault_custom_%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
   upload = {
-    content = "${element(data.template_file.vault_custom_server_config.*.rendered, count.index)}"
+    content = "${element(data.template_file.vault_custom_config.*.rendered, count.index)}"
     file    = "/vault/config/main.hcl"
   }
 
@@ -215,12 +215,12 @@ resource "docker_container" "vault_custom_server" {
   }
 
    upload = {
-     content = "${element(data.template_file.vault_custom_server_tls_cert.*.rendered, count.index)}"
+     content = "${element(data.template_file.vault_custom_tls_cert.*.rendered, count.index)}"
      file    = "/etc/ssl/certs/vault-server.crt"
    }
 
    upload = {
-     content = "${element(data.template_file.vault_custom_server_tls_key.*.rendered, count.index)}"
+     content = "${element(data.template_file.vault_custom_tls_key.*.rendered, count.index)}"
      file    = "/etc/ssl/vault-server.key"
    }
 
@@ -230,17 +230,17 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_server_${count.index}/audit_log"
+    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_server_${count.index}/config"
+    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/config"
     container_path = "/vault/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_server_${count.index}/data"
+    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/data"
     container_path = "/vault/data"
   }
 

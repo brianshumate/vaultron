@@ -43,15 +43,15 @@ Take a moment to verify that all of the Docker containers are indeed live:
 ```
 $ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                                                                                                                                                                                NAMES
-a61b0f5f2ddd        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8201->8200/tcp                                                                                                                                                               vault_oss_server_1
-f0f4ed7142e6        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8202->8200/tcp                                                                                                                                                               vault_oss_server_2
-509d04db2357        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8200->8200/tcp                                                                                                                                                               vault_oss_server_0
-3a7a5d37166f        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consul_oss_client_2
-c12dd6d4b63e        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consul_oss_client_0
-e21c778cf94a        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consul_oss_client_1
-88b83353e3be        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consul_oss_server_1
-68ee71fe0cc6        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consul_oss_server_2
-63cc6b9eb5c3        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   consul_oss_server_0
+a61b0f5f2ddd        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8201->8200/tcp                                                                                                                                                               vault1
+f0f4ed7142e6        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8202->8200/tcp                                                                                                                                                               vault2
+509d04db2357        ca10038bed41        "vault server -log-l…"   58 seconds ago       Up 57 seconds       0.0.0.0:8200->8200/tcp                                                                                                                                                               vault0
+3a7a5d37166f        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc2
+c12dd6d4b63e        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc0
+e21c778cf94a        5f4915f05e27        "consul agent -confi…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc1
+88b83353e3be        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls1
+68ee71fe0cc6        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls2
+63cc6b9eb5c3        5f4915f05e27        "consul agent -serve…"   About a minute ago   Up About a minute   0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   consuls0
 ```
 
 Then, export the necessary environment variables:
@@ -125,10 +125,11 @@ Name:          Vaultron
 Type:          Secret Management Unit V (defaults to latest Vault software)
 Builder:       Terraform
 Blueprints:    vaultron.tf
-Modules:       black_lion, red_lion
+Modules:       black_lion, red_lion, yellow_lion
 Datacenter:    arus
 Infra-cell:    Distributed storage cell (defaults to latest Consul software)
 Universe:      Docker
+Telemetry:     statsd, Graphite, Grafana (optional)
 HashiStack:    ★★★
 Agility:       ★★★★
 Damage:        ★★
@@ -143,29 +144,41 @@ Here are some slightly more serious notes and questions about what Vaultron is a
 Vaultron has to work around some current networking quirks of Docker for Mac to do its thing and is only currently tested to function on Linux and macOS, but here is basically what you are getting by default:
 
 ```
-+---------------+   +---------------+   +---------------+
-|               |   |               |   |               |  vault_oss_server_0
-|    Vault 0    |   |    Vault 1    |   |    Vault 2    |  vault_oss_server_1
-|               |   |               |   |               |  vault_oss_server_2
-+-------+-------+   +-------+-------+   +-------+-------+
-        |                   |                   |
-        |                   |                   |
-        |                   |                   |
-+-------v-------+   +-------v-------+   +-------v-------+
-|               |   |               |   |               |  consul_oss_client_0
-| Consul Client |   | Consul Client |   | Consul Client |  consul_oss_client_1
-|               |   |               |   |               |  consul_oss_client_2
-|               |   |               |   |               |
-+-------+-------+   +-------+-------+   +-------+-------+
-        |                   |                   |
-        |                   |                   |
-        |                   |                   |
-+-------v-------+   +-------v-------+   +-------v-------+
-|               |   |               |   |               |  consul_oss_server_0
-| Consul Server |<->| Consul Server |<->| Consul Server |  consul_oss_server_1
-|               |   |               |   |               |  consul_oss_server_2
-|               |   |               |   |               |
-+---------------+   +---------------+   +---------------+
++-----------+-----------------------------------+------------------------+
+| __     __ |   Yellow Lion (optional)          |                        |
+| \ \   / / |   +----------------------------+  |                        |
+|  \ \ / /  |   |     Grafana Dashboard      |  |                        |
+|   \ V /   |   +----------------------------+  |                        |
+|    \_/    |   |     statsd / Graphite      |  |                        |
+|           |   +-^------------^------------^+  |                        |
+|           +-----------------------------------+                        |
+|                 |            |            |                            |
++------------------------------------------------------------------------+
+|                 |            |            |                 Black Lion |
+|  +--------------+-   --------+--------   -+---------------             |
+|  |               |   |               |   |               |             |
+|  |     vault0    |   |     vault1    |   |     vault2    |             |
+|  |               |   |               |   |               |             |
+|  +-------+-^-----+   +-------+-^-----+   +-------+-^-----+             |
+|          | |                 | |                 | |                   |
++------------------------------------------------------------------------+
+|          | |                 | |                 | |        Red Lion   |
+|  +-------v-+-----+   +-------v-+-----+   +-------v-+-----+             |
+|  |               |   |               |   |               |             |
+|  | Consul Client |   | Consul Client |   | Consul Client |             |
+|  |   (consulc0)  |   |   (consulc1)  |   |   (consulc2)  |             |
+|  |               |   |               |   |               |             |
+|  +-------+-^-----+   +-------+-^-----+   +-------+-^-----+             |
+|          | |                 | |                 | |                   |
+|          | |                 | |                 | |                   |
+|          | |                 | |                 | |                   |
+|  +-------v-+-----+   +-------v-+-----+   +-------v-+-----+             |
+|  |               |   |               |   |               |             |
+|  | Consul Server +---> Consul Server +---> Consul Server |             |
+|  |   (consuls0)  <---+   (consuls1)  <---+   (consuls2)  |             |
+|  |               |   |               |   |               |             |
+|  +---------------+   +---------------+   +---------------+             |
++------------------------------------------------------------------------+
 ```
 
 Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers. Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
@@ -204,12 +217,12 @@ $ . ./ion_darts
 
 $ consul members
 Node                 Address          Status  Type    Build  Protocol  DC
-consul_oss_client_0  172.17.0.6:8301  alive   client  0.7.5  2         arus
-consul_oss_client_1  172.17.0.7:8301  alive   client  0.7.5  2         arus
-consul_oss_client_2  172.17.0.5:8301  alive   client  0.7.5  2         arus
-consul_oss_server_0  172.17.0.2:8301  alive   server  0.7.5  2         arus
-consul_oss_server_1  172.17.0.3:8301  alive   server  0.7.5  2         arus
-consul_oss_server_2  172.17.0.4:8301  alive   server  0.7.5  2         arus
+consulc0  172.17.0.6:8301  alive   client  0.7.5  2         arus
+consulc1  172.17.0.7:8301  alive   client  0.7.5  2         arus
+consulc2  172.17.0.5:8301  alive   client  0.7.5  2         arus
+consuls0  172.17.0.2:8301  alive   server  0.7.5  2         arus
+consuls1  172.17.0.3:8301  alive   server  0.7.5  2         arus
+consuls2  172.17.0.4:8301  alive   server  0.7.5  2         arus
 ```
 
 Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and the container image.
@@ -244,18 +257,18 @@ or
 ```
 $ dig -p 8600 @localhost vault.service.consul SRV
 ;; ANSWER SECTION:
-vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_0.node.arus.consul.
-vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_2.node.arus.consul.
-vault.service.consul. 0 IN  SRV 1 1 8200 consul_oss_client_1.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 consulc0.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 consulc2.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 consulc1.node.arus.consul.
 ```
 
 or
 
 ```
-$ dig -p 8600 @localhost consul_oss_server_0.node.consul
+$ dig -p 8600 @localhost consuls0.node.consul
 ...
 ;; ANSWER SECTION:
-consul_oss_server_0.node.consul. 0 IN A 172.17.0.2
+consuls0.node.consul. 0 IN A 172.17.0.2
 ```
 
 ### Security Configuration?
@@ -298,7 +311,7 @@ Here is a tree showing the directory structure for a Consul server:
 
 ```
 └── consul
-    └── consul_oss_server_0
+    └── consuls0
         ├── config
         │   └── extra_config.hcl
         └── data
@@ -329,14 +342,14 @@ The Docker containers are named as shown in the [Basic Architecture Overview](#b
 You can view operational logs for any container with `docker logs` like so:
 
 ```
-docker logs vault_oss_server_0
+docker logs vault0
 ```
 
 The Vault audit logs for any given _active server_ are available as:
 
-- `./vault/vault_oss_server_0/audit_log/audit.log`
-- `./vault/vault_oss_server_1/audit_log/audit.log`
-- `./vault/vault_oss_server_2/audit_log/audit.log`
+- `./vault/vault0/audit_log/audit.log`
+- `./vault/vault1/audit_log/audit.log`
+- `./vault/vault2/audit_log/audit.log`
 
 ### A note about custom Binaries
 
@@ -368,7 +381,7 @@ Here is simple method to watch HA mode in action using two terminal sessions:
 ```
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=https://localhost:8201\|   | docker stop vault_oss_server_0     |
+| VAULT_ADDR=https://localhost:8201\|   | docker stop vault0     |
 | watch -n 1 vault status           |   |                                    |
 |                                   |   |                                    |
 | ...                               |   |                                    |
