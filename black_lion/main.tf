@@ -77,8 +77,7 @@ data "template_file" "vault_oss_server_tls_key" {
 # Vault telemetry configuration
 
 data "template_file" "telemetry_config" {
-  count = "${var.vaultron_telemetry_count}"
-  template = "${file("${path.module}/templates/${format("vault_telemetry-%d.tpl", count.index)}")}"
+  template = "${file("${path.module}/templates/vault_telemetry.tpl")}"
   vars {
     statsd_ip = "${var.statsd_ip}"
   }
@@ -98,7 +97,7 @@ resource "docker_container" "vault_oss_server" {
 
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "/vault/config/telemetry.hcl"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp" }"
   }
 
   upload = {
