@@ -9,6 +9,13 @@
 
 TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
+if [ ! -d "$VAULTRON_TMP" ]; then
+  if ! mkdir -p "$VAULTRON_TMP" 2>/dev/null; then
+    msg alert "Cannot create temporary directory: $VAULTRON_TMP"
+    exit 1
+  fi
+fi
+
 if [ -z "$TF_VAR_vaultron_telemetry_count" ]; then
   TF_VAR_vaultron_telemetry_count=0
 fi
