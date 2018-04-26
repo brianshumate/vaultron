@@ -28,7 +28,9 @@ fi
 form_message() {
 cat << 'EOF'
 
-You can now visit the Consul web UI at http://localhost:8500
+You can now visit the Vault web UI at http://localhost:8200
+
+or visit the Consul web UI at http://localhost:8500
 
 You can also interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:

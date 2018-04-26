@@ -40,16 +40,16 @@ if ! ./form; then
 fi
 
 for i in 0 1 2; do
-    if ! [ -d "consul/consul_oss_server_$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
+    if ! [ -d "consul/consuls_$i" ]; then
+        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
         exit 1
     fi
     if ! [ -d "consul/consulc$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
+        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
         exit 1
     fi
     if ! [ -d "vault/vault_$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consul_oss_server_$i after forming!${txtrst}";
+        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
         exit 1
     fi
 done
@@ -95,16 +95,16 @@ if [ -f "tfstate/terraform.tfstate" ]; then
 fi
 
 for i in 0 1 2; do
-    if [ -d "consul/consul_oss_server_$i" ]; then
-        echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
+    if [ -d "consul/consuls_$i" ]; then
+        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
         exit 1
     fi
     if [ -d "consul/consulc$i" ]; then
-        echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
+        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
         exit 1
     fi
     if [ -d "vault/vault_$i" ]; then
-        echo "${txtred}🚫  Directory consul/consul_oss_server_$i still present after unforming!${txtrst}"
+        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
         exit 1
     fi
 done
