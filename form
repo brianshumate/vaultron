@@ -9,6 +9,11 @@
 
 TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
+if [ "$TF_VAR_vaultron_telemetry_count" -gt 1 ]; then
+  msg alert "Cannot form Vaultron with TF_VAR_vaultron_telemetry_count greater than one!"
+  exit 1
+fi
+
 form_message() {
 cat << 'EOF'
 

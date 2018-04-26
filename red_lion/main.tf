@@ -36,8 +36,6 @@ variable "consul_custom_instance_count" {}
 variable "consul_oss" {}
 variable "consul_oss_instance_count" {}
 
-variable "statsd_ip" {}
-
 # This is the official Consul Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/consul/
 
@@ -62,24 +60,6 @@ data "template_file" "consul_oss_server_common_config" {
     recursor1        = "${var.consul_recursor_1}"
     recursor2        = "${var.consul_recursor_2}"
     ui               = "true"
-  }
-}
-
-# Graphite service definition
-
-data "template_file" "graphite_service_definitiion" {
-  template = "${file("${path.module}/templates/graphite-service.json.tpl")}"
-
-  vars {
-    statsd_ip        = "${var.statsd_ip}"
-  }
-}
-
-data "template_file" "graphite_health_check_definition" {
-  template = "${file("${path.module}/templates/graphite-health.json.tpl")}"
-
-  vars {
-    statsd_ip        = "${var.statsd_ip}"
   }
 }
 
@@ -123,22 +103,6 @@ resource "docker_container" "consul_oss_server_0" {
   name  = "consul_oss_server_0"
   env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
-
-  # TODO: make GELF logging a conditional thing
-  # log_driver = "gelf"
-  # log_opts = {
-  #   gelf-address = "udp://${var.log_server_ip}:5114"
-  # }
-
-  upload = {
-    content = "${data.template_file.graphite_service_definitiion.rendered}"
-    file    = "/consul/config/graphite-health.json"
-  }
-
-  upload = {
-    content = "${data.template_file.graphite_health_check_definition.rendered}"
-    file    = "/consul/config/graphite-service.json"
-  }
 
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"

@@ -252,6 +252,7 @@
 - Vault v0.10.1
 - Consul v1.0.7
 - Yellow Lion is now opt-in with TF_VAR_vaultron_telemetry_count=1
+- Remove example Graphite service and health definitions
 - Correct typo in form script (thanks @greyspectrum)
 - Correct typo in ion darts script (thanks @lauradiane)
 - Update documentation

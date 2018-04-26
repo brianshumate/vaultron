@@ -24,7 +24,10 @@ variable "consul_client_ips" {
 variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
-variable "statsd_ip" {}
+variable "statsd_ip" {
+  default = "127.0.0.1"
+}
+
 variable "vaultron_telemetry_count" {}
 
 # This is the official Vault Docker image that Vaultron uses by default.
@@ -50,18 +53,6 @@ data "template_file" "vault_oss_server_config" {
     disable_clustering = "${var.disable_clustering}"
     tls_disable        = false
     service_tags       = "vaultron"
-    statsd_ip          = "${var.statsd_ip}"
-  }
-}
-
-# Vault telemetry configuration
-
-data "template_file" "vault_telemetry_config" {
-  count    = "${var.vaultron_telemetry_count}"
-  template = "${file("${path.module}/templates/telemetry.tpl")}"
-
-  vars {
-    statsd_ip          = "${var.statsd_ip}"
   }
 }
 
@@ -83,6 +74,16 @@ data "template_file" "vault_oss_server_tls_key" {
   template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
 }
 
+# Vault telemetry configuration
+
+data "template_file" "telemetry_config" {
+  count = "${var.vaultron_telemetry_count ? 1 : 0}"
+  template = "${file("${path.module}/templates/${format("vault_telemetry-%d.tpl", count.index)}")}"
+  vars {
+    statsd_ip = "${var.statsd_ip}"
+  }
+}
+
 # Vault Open Source servers
 
 resource "docker_container" "vault_oss_server" {
@@ -96,7 +97,7 @@ resource "docker_container" "vault_oss_server" {
   }
 
   upload = {
-    content = "${element(data.template_file.vault_telemetry_config.*.rendered, count.index)}"
+    content = "${data.template_file.telemetry_config.rendered}"
     file    = "/vault/config/telemetry.hcl"
   }
 
@@ -205,7 +206,7 @@ resource "docker_container" "vault_custom_server" {
   }
 
   upload = {
-    content = "${element(data.template_file.vault_telemetry_config.*.rendered, count.index)}"
+    content = "${data.template_file.telemetry_config.rendered}"
     file    = "/vault/config/telemetry.hcl"
   }
 
