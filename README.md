@@ -181,7 +181,11 @@ Vaultron has to work around some current networking quirks of Docker for Mac to 
 +------------------------------------------------------------------------+
 ```
 
-Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers. Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
+Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers.
+
+An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details.
+
+Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
 
 ### Published Ports
 
@@ -277,7 +281,7 @@ Given the intended use cases for this project, the working solution that results
 
 #### Consul ACLs by Default
 
-**Consul ACLs with a default allow policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**.
+> **Consul ACLs with a **default allow policy** are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**
 
 This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. It is not the same as a production installation because it makes use of a shared **acl_master_token** for ease of configuration.
 
@@ -351,6 +355,20 @@ The Vault audit logs for any given _active server_ are available as:
 - `./vault/vault1/audit_log/audit.log`
 - `./vault/vault2/audit_log/audit.log`
 
+### Telemetry Notes
+
+Vaultron includes a comprehensive telemetry gathering and graphing stack provided by the Yellow Lion module. This module is optional and easily enabled. It provides statsd, Graphite, and Grafana from the addition of two official container images.
+
+You can enable Yellow Lion by setting the value of the *TF_VAR_vaultron_telemetry_count* environment variable to **1**, with something like:
+
+```
+$ export TF_VAR_vaultron_telemetry_count=1
+```
+
+prior to the execution of `./form`.
+
+See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/blob/master/examples/telemetry/README.md) documentation for more details on setup.
+
 ### A note about custom Binaries
 
 Vaultron installs the official open source Vault binaries through the official Docker container images, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables prior to forming Vaultron:
@@ -371,32 +389,6 @@ Access the settings (gear icon) in the navigation and ensure that the ACL master
 Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
 
 Unsealing Vault should solve that for you!
-
-### Something, something — HA Problem!
-
-High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
-
-Here is simple method to watch HA mode in action using two terminal sessions:
-
-```
-Terminal 1                              Terminal 2
-+-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=https://localhost:8201\|   | docker stop vault0     |
-| watch -n 1 vault status           |   |                                    |
-|                                   |   |                                    |
-| ...                               |   |                                    |
-| High-Availability Enabled: true   |   |                                    |
-|         Mode: standby             |   |                                    |
-|         Leader: https://172.17... |   |                                    |
-| ...                               |   |                                    |
-|                                   |   |                                    |
-|                                   |   |                                    |
-+-----------------------------------+   +------------------------------------+
-```
-
-1. In Terminal 1, set `VAULT_ADDR` to one of the two Vault standby containers and use `watch` to keep an eye on the output of `vault status` while noting the values of `Mode:` and `Leader:`
-2. In Terminal 2, stop the *active* Vault instance with `docker stop`
-3. You should notice that the value of `Leader:` changes instantly and if the second standby Vault is elected the new active, the value of `Mode:` will also reflect that instantly as well
 
 ### Vaultron Does Not Form — Halp!
 

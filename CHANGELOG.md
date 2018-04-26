@@ -1,4 +1,4 @@
-## v1.8.4 (UNRELEASED)
+## v1.8.4
 
 - Vault v0.10.1
 - Consul v1.0.7

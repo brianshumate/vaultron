@@ -116,12 +116,12 @@ resource "docker_container" "vault_oss_server" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_${count.index}/audit_log"
+    host_path      = "${path.module}/../../../vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_${count.index}/config"
+    host_path      = "${path.module}/../../../vault/vault${count.index}/config"
     container_path = "/vault/config"
   }
 
@@ -230,17 +230,17 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/audit_log"
+    host_path      = "${path.module}/../../../vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/config"
+    host_path      = "${path.module}/../../../vault/vault${count.index}/config"
     container_path = "/vault/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../vault/vault_custom_${count.index}/data"
+    host_path      = "${path.module}/../../../vault/vault${count.index}/data"
     container_path = "/vault/data"
   }
 
