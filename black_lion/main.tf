@@ -77,7 +77,7 @@ data "template_file" "vault_oss_server_tls_key" {
 # Vault telemetry configuration
 
 data "template_file" "telemetry_config" {
-  count = "${var.vaultron_telemetry_count ? 1 : 0}"
+  count = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/${format("vault_telemetry-%d.tpl", count.index)}")}"
   vars {
     statsd_ip = "${var.statsd_ip}"
