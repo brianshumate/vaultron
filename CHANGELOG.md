@@ -8,6 +8,7 @@
 - Remove beta and RC templates
 - Correct typo in form script (thanks @greyspectrum)
 - Correct typo in ion darts script (thanks @lauradiane)
+- Change CHANGELOG sort ordering
 - Update documentation
 
 ## v1.8.3

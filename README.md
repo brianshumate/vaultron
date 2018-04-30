@@ -33,7 +33,7 @@ $ git clone https://github.com/brianshumate/vaultron.git \
 && cd vaultron \
 && ./form \
 && . ./ion_darts \
-&& . ./blazing_sword \
+&& ./blazing_sword \
 && sudo security add-trusted-cert -d -r trustAsRoot \
 -k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem \
 && open https://localhost:8200
