@@ -8,11 +8,36 @@
 
 ## Why?
 
-It's a reasonably cool and useful Vault + Consul environment on your macOS or Linux computer in less than 1 minute.
+It's a reasonably useful Vault + Consul environment deployed on your macOS or Linux computer in a about 1 minute.
+
+Some of the more popular uses of Vaultron are:
+
+- Getting acquainted with Vault
+- Evaluating specific Vault features
+- Issue reproduction and troubleshooting
+- Testing
+- **NOT PRODUCTION**
 
 ## How?
 
 Terraform assembles individual pieces to form Vaultron from the official [Vault Docker image](https://hub.docker.com/_/vault/) and [Consul Docker image](https://hub.docker.com/_/consul/).
+
+### Quickest Start for macOS
+
+Provided you have previously installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example verbatim to fully bootstrap Vaultron and open the the Vault UI.
+
+You will likely be prompted for your password to add the Vaultron CA certificate to the System keychain. This will prevent TLS errors about an untrusted CA when using the Consul and Vault web UIs:
+
+```
+$ git clone https://github.com/brianshumate/vaultron.git \
+&& cd vaultron \
+&& ./form \
+&& . ./ion_darts \
+&& . ./blazing_sword \
+&& sudo security add-trusted-cert -d -r trustAsRoot \
+-k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem \
+&& open https://localhost:8200
+```
 
 ### Quick Start
 
@@ -36,7 +61,7 @@ When Vaultron is successfully formed, the output looks like this:
 [^] Vaultron formed
 ```
 
-You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs.
+You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs and web user interfaces.
 
 Take a moment to verify that all of the Docker containers are indeed live:
 
@@ -74,6 +99,10 @@ $ . ./ion_darts
 [=] Exporting Vaultron environment variables ...
 [^] Exported Vaultron environment variables!
 ```
+
+Before accessing the Vault or Consul web UIs you should add the Vaultron CA cert to your OS trust store.
+
+It is located at `etc/tls/ca-bundle.pem` from the root of this project.
 
 See the TLS by Default section for more details on handling Vaultron's Intermediate Certificate Authority certificate.
 
