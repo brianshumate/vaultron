@@ -286,6 +286,10 @@ else
 fi
 
 unset VAULT_TOKEN
+
+# <wait5>
+sleep 5
+
 initialize_vault
 unseal_vault
 auth_root
