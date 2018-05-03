@@ -42,17 +42,6 @@ errors=$((errors + $?))
 
 # Remove Vault server data
 
-rm -rf ./vault/vault-server-0
-errors=$((errors + $?))
-rm -rf ./vault/vault1
-errors=$((errors + $?))
-rm -rf ./vault/vault2
-errors=$((errors + $?))
-rm -f ./vault/vault_DEV_ONLY*.tmp
-errors=$((errors + $?))
-
-# Remove Vault custom server data
-
 rm -rf ./vault/vault0
 errors=$((errors + $?))
 rm -rf ./vault/vault1
