@@ -126,7 +126,7 @@ resource "docker_container" "vault_oss_server" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../plugins"
+    host_path      = "${path.module}/../../../vault/plugins"
     container_path = "/vault/plugins"
   }
 
@@ -245,7 +245,7 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../plugins"
+    host_path      = "${path.module}/../../../vault/plugins"
     container_path = "/vault/plugins"
   }
 

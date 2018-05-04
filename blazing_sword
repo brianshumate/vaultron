@@ -287,8 +287,8 @@ fi
 
 unset VAULT_TOKEN
 
-# <wait5>
-sleep 5
+# <wait5> - 1
+sleep 4
 
 initialize_vault
 unseal_vault

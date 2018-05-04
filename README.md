@@ -24,7 +24,7 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 ### Quickest Start for macOS
 
-Provided you have previously installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example verbatim to fully bootstrap Vaultron and open the the Vault UI.
+Provided you have previously installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example verbatim to fully bootstrap Vaultron and open the the Vault UI in your browser.
 
 You will likely be prompted for your password to add the Vaultron CA certificate to the System keychain. This will prevent TLS errors about an untrusted CA when using the Consul and Vault web UIs:
 
@@ -39,7 +39,7 @@ $ git clone https://github.com/brianshumate/vaultron.git \
 && open https://localhost:8200
 ```
 
-### Quick Start
+### Quick Start for Linux or macOS
 
 Vaultron uses the latest Consul and Vault versions by default, make sure that you have first installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally for your OS, and that you have have [Docker](https://docs.docker.com/engine/installation/) installed as well.
 
@@ -134,7 +134,7 @@ $ terraform destroy -state=./tfstate/terraform.tfstate
 
 If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you.
 
-**NOTE**: This script persists the unseal keys and initial root authentication token in a file in the `vault` directory named like `./vault/vault_1500766014.tmp`.
+> **NOTE**: This script persists the unseal keys and initial root authentication token to a file in the `vault` directory named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you're welcome at any time to put Vaultron down and pick up another toy project instead.
 
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 

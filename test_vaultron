@@ -15,8 +15,6 @@
 # 11. Test Terraform configuration directory presence after unforming
 # 12. Test Terraform init, plan, apply log output presence after unforming
 #
-# The tests should complete in ~20 seconds on decent system specs
-#
 # shellcheck disable=SC1091,SC1117
 
 export txtblu="\033[0;34m" # Blue
@@ -30,87 +28,87 @@ export CONSUL_HTTP_ADDR="localhost:8500"
 export VAULT_ADDR="https://localhost:8200"
 
 if ! ./unform; then
-    echo "🚫  Error unforming any previous Vaultron."
+    echo "[e] Error unforming any previous Vaultron."
     exit 1
 fi
 
 if ! ./form; then
-    echo "${txtred}🚫  Error forming Vaultron!${txtrst}"
+    echo "${txtred}[e] Error forming Vaultron!${txtrst}"
     exit 1
 fi
 
 for i in 0 1 2; do
-    if ! [ -d "consul/consuls_$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
+    if ! [ -d "consul/consuls$i" ]; then
+        echo "${txtred}[e] Missing directory consul/consuls$i after forming!${txtrst}";
         exit 1
     fi
     if ! [ -d "consul/consulc$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
+        echo "${txtred}[e] Missing directory consul/consulc$i after forming!${txtrst}";
         exit 1
     fi
-    if ! [ -d "vault/vault_$i" ]; then
-        echo "${txtred}🚫  Missing directory consul/consuls_$i after forming!${txtrst}";
+    if ! [ -d "vault/vault$i" ]; then
+        echo "${txtred}[e] Missing directory consul/vault$i after forming!${txtrst}";
         exit 1
     fi
 done
 
 if [ ! -f "tfstate/terraform.tfstate" ]; then
-    echo "${txtred}🚫  No Terraform state generated after forming:${txtrst}"
+    echo "${txtred}[e] No Terraform state generated after forming:${txtrst}"
     echo "${txtred}tfstate/terraform.tfstate${txtrst}"
     exit 1
 fi
 
 if [ ! -d ".terraform" ]; then
-    echo "${txtred}🚫  No Terraform configuration directory after forming:${txtrst}"
+    echo "${txtred}[e] No Terraform configuration directory after forming:${txtrst}"
     echo "${txtred}.terraform${txtrst}"
     exit 1
 fi
 
 for l in init plan apply; do
     if [ -z "$(find log -type f -name "tf-*-$l.log")" ]; then
-        echo "${txtred}🚫  Should be at least one log file of the form:${txtrst}"
+        echo "${txtred}[e] Should be at least one log file of the form:${txtrst}"
         echo "${txtred}log/tf-*-$l.log${txtrst}"
         exit 1
     fi
 done
 
 if ! . ./ion_darts; then
-    echo "${txtred}🚫  Error sourcing Ion Darts!${txtrst}"
+    echo "${txtred}[e] Error sourcing Ion Darts!${txtrst}"
     exit 1
 fi
 
 if ! ./blazing_sword; then
-    echo "${txtred}🚫  Error forming Blazing Sword!${txtrst}"
+    echo "${txtred}[e] Error forming Blazing Sword!${txtrst}"
     exit 1
 fi
 
 if ! ./unform; then
-    echo "${txtred}🚫  Error unforming any previous Vaultron!${txtrst}"
+    echo "${txtred}[e] Error unforming any previous Vaultron!${txtrst}"
     exit 1
 fi
 
 if [ -f "tfstate/terraform.tfstate" ]; then
-    echo "${txtred}🚫  Terraform state file still present after unforming!${txtrst}"
+    echo "${txtred}[e] Terraform state file still present after unforming!${txtrst}"
     exit 1
 fi
 
 for i in 0 1 2; do
-    if [ -d "consul/consuls_$i" ]; then
-        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
+    if [ -d "consul/consuls$i" ]; then
+        echo "${txtred}[e] Directory consul/consuls$i still present after unforming!${txtrst}"
         exit 1
     fi
     if [ -d "consul/consulc$i" ]; then
-        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
+        echo "${txtred}[e] Directory consul/consulc$i still present after unforming!${txtrst}"
         exit 1
     fi
-    if [ -d "vault/vault_$i" ]; then
-        echo "${txtred}🚫  Directory consul/consuls_$i still present after unforming!${txtrst}"
+    if [ -d "vault/vault$i" ]; then
+        echo "${txtred}[e] Directory consul/vault$i still present after unforming!${txtrst}"
         exit 1
     fi
 done
 
 if [ -z "$(find log -type f -name "tf-*-destroy.log")" ]; then
-    echo "${txtred}🚫  Should be at least one log file after destroy of the form:${txtrst}"
+    echo "${txtred}[e] Should be at least one log file after destroy of the form:${txtrst}"
     echo "${txtred}log/tf-*-destroy.log${txtrst}"
     exit 1
 fi
