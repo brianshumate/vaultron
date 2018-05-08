@@ -183,7 +183,7 @@ data "template_file" "vault_custom_config" {
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     statsd_ip          = "${var.statsd_ip}"
-    tls_disable        = 1
+    tls_disable        = 0
     tls_cert           = "/vault/config/vault-server.crt"
     tls_key            = "/vault/config/vault-server.key"
     service_tags       = "vaultron"

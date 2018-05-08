@@ -2,6 +2,7 @@
 #----------------------------------------------------------------------------
 
 cluster_name = "${cluster_name }"
+ui = true
 
 listener "tcp" {
   address = "${address}"
@@ -15,7 +16,7 @@ storage "consul" {
   address = "${consul_address}:8500"
   scheme = "https"
   tls_ca_file  = "/etc/ssl/certs/ca-bundle.pem"
-  token = "vaultron-forms-and-eats-all-the-tacos-in-town"
+  token   = "vaultron-forms-and-eats-all-the-tacos-in-town"
   path = "vault/"
   disable_clustering = "${disable_clustering}"
   service_tags = "${service_tags}"
@@ -35,12 +36,3 @@ plugin_directory = "/vault/plugins"
 #   dogstatsd_addr  = "172.17.0.2:8125"
 #   dogstatsd_tags  = [ "datacenter:arus"]
 # }
-
-# HA configuration
-#----------------------------------------------------------------------------
-
-# API Address
-# api_addr = "http://${address}"
-
-# Cluster Address
-#
