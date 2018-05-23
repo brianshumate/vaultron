@@ -36,10 +36,10 @@ Vaultron enables the database secrets engine at `vaultron_database` if using `bl
 $ vault secrets enable -path=vaultron_database database
 ```
 
-Next, configure the PostgreSQL connection:
+Next, configure a simple PostgreSQL connection without SSL:
 
 ```
-$ vault write database/config/postgresql \
+$ vault write vaultron-database/config/postgresql \
     plugin_name=postgresql-database-plugin \
     allowed_roles="postgresql-readonly" \
     connection_url="postgresql://postgres:vaultron@172.17.0.2:5432?sslmode=disable"
@@ -52,7 +52,7 @@ The following warnings were returned from the Vault server:
 Write an initial PostgreSQL read only user role:
 
 ```
-$ vault write database/roles/postgresql-readonly \
+$ vault write vaultron-database/roles/postgresql-readonly \
     db_name=postgresql \
     creation_statements="CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
@@ -64,7 +64,7 @@ Success! Data written to: database/roles/postgresql-readonly
 Retrieve a read only PostgreSQL database credential:
 
 ```
-$ vault read database/creds/postgresql-readonly
+$ vault read vaultron-database/creds/postgresql-readonly
 Key             Value
 ---             -----
 lease_id        database/creds/readonly/ddc27039-ef66-a22b-c2f4-61fbfbbefd8a
