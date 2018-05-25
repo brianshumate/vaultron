@@ -196,7 +196,7 @@ data "template_file" "vault_custom_config" {
 
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
-  name  = "${format("vault_custom_%d", count.index)}"
+  name  = "${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
   upload = {
