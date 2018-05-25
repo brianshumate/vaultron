@@ -1,5 +1,6 @@
 ## v1.8.5 (UNRELEASED)
 
+- Move to one unseal key in blazing_sword for simplicity
 - Update published ports for standby instances
 - Upate blazing_sword for published ports updates
 - Move plugins folder to vault

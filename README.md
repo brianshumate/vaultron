@@ -56,11 +56,11 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [=] Form Vaultron! ...
 [=] Terraform has been successfully initialized!
-[=] Vault Docker image version:     0.9.0
-[=] Consul Docker image version:    1.0.2
+[=] Vault Docker image version:      0.10.1
+[=] Consul Docker image version:     1.0.7
 [=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
 [=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
-[^] Vaultron formed
+[^] Vaultron formed!
 ```
 
 You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs and web user interfaces.
@@ -434,8 +434,8 @@ Terminal 1                              Terminal 2
 |                                   |   |                                    |
 | ...                               |   |                                    |
 | HA Enabled             true       |   |                                    |
-| HA Cluster             https:...  |   |                                    |
-| HA Mode                standby.   |   |                                    |
+| HA Cluster             https://...|   |                                    |
+| HA Mode                standby    |   |                                    |
 | ...                               |   |                                    |
 |                                   |   |                                    |
 |                                   |   |                                    |

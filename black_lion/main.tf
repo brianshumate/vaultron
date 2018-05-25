@@ -142,11 +142,9 @@ resource "docker_container" "vault_oss_server" {
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
 
-  ports {
+    ports {
     internal = "8200"
-    # This is mysterious/steps on the default cluster_address port
-    # needs more investigation and updating...
-    external = "${format("820%d", count.index)}"
+    external = "${format("82%d0", count.index)}"
     protocol = "tcp"
   }
 
@@ -261,8 +259,6 @@ resource "docker_container" "vault_custom_server" {
 
   ports {
     internal = "8200"
-    # This is mysterious + conflicts w/ default cluster_address port
-    # needs more investigation and updating when Docker Mac networking better
     external = "${format("82%d0", count.index)}"
     protocol = "tcp"
   }

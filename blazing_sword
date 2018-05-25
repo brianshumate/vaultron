@@ -97,8 +97,6 @@ enable_auth_backends() {
 get_unseal_keys() {
   msg info "Get unseal keys ..."
   k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
-  k1=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
-  k2=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
 }
 
 # Get the initial root token
@@ -110,9 +108,9 @@ get_initial_root_token() {
 initialize_vault() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_init_cmd="vault operator init"
+    v_init_cmd="vault operator init -key-shares=1  -key-threshold=1"
   else
-    v_init_cmd="vault init"
+    v_init_cmd="vault init -key-shares=1  -key-threshold=1"
   fi
   msg info "Initializing Vault ..."
   vault_dat="./vault/vault_DEV_ONLY-$(date +%s).tmp"
@@ -235,71 +233,23 @@ unseal_vault() {
   msg info "Unsealing Vault ..."
   get_unseal_keys
 
-# vault1
-
   if ! VAULT_ADDR="https://localhost:8200" \
     $v_unseal_cmd $k0 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-  if ! VAULT_ADDR="https://localhost:8200" \
-    $v_unseal_cmd $k1 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-  if ! VAULT_ADDR="https://localhost:8200" \
-    $v_unseal_cmd $k2 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-# vault 2
-
-  if ! VAULT_ADDR="https://localhost:8210" \
-    $v_unseal_cmd $k0 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
+    msg alert "Failed to unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8210" \
-    $v_unseal_cmd $k1 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
+    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
-
-  if ! VAULT_ADDR="https://localhost:8210" \
-    $v_unseal_cmd $k2 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-# vault 3
 
   if ! VAULT_ADDR="https://localhost:8220" \
     $v_unseal_cmd $k0 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-  if ! VAULT_ADDR="https://localhost:8220" \
-    $v_unseal_cmd $k1 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
-    errors=$((errors + $?))
-    exit $errors
-  fi
-
-  if ! VAULT_ADDR="https://localhost:8220" \
-    $v_unseal_cmd $k2 > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault instance!"
+    msg alert "Failed to unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
   fi
@@ -317,8 +267,6 @@ if (set -u; : "${1}") 2> /dev/null; then
   msg info "Filename argument specified; Use file: ${1}"
   vault_dat="${1}"
   k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
-  k1=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
-  k2=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
   msg info "Unsealing by default since filename used ..."
   for i in {0..2}; do
     VAULT_ADDR="https://localhost:82${i}0" \
