@@ -263,7 +263,7 @@ resource "docker_container" "vault_custom_server" {
     internal = "8200"
     # This is mysterious + conflicts w/ default cluster_address port
     # needs more investigation and updating when Docker Mac networking better
-    external = "${format("820%d", count.index)}"
+    external = "${format("82%d0", count.index)}"
     protocol = "tcp"
   }
 

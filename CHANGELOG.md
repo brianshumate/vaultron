@@ -1,5 +1,7 @@
 ## v1.8.5 (UNRELEASED)
 
+- Update published ports for standby instances
+- Upate blazing_sword for published ports updates
 - Move plugins folder to vault
 - Fix test_vaultron
 - Update Documentation

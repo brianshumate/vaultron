@@ -96,9 +96,9 @@ enable_auth_backends() {
 # Get a subset of unseal keys
 get_unseal_keys() {
   msg info "Get unseal keys ..."
-  k1=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
-  k2=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
-  k3=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
+  k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
+  k1=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
+  k2=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
 }
 
 # Get the initial root token
@@ -234,26 +234,76 @@ unseal_vault() {
   fi
   msg info "Unsealing Vault ..."
   get_unseal_keys
-  for i in {0..2}; do
-    if ! VAULT_ADDR="https://localhost:820${i}" \
-      $v_unseal_cmd $k1 > /dev/null 2>&1; then
-      msg alert "Failed to unseal Vault 1"
-      errors=$((errors + $?))
-      exit $errors
-    fi
-    if ! VAULT_ADDR="https://localhost:820${i}" \
-      $v_unseal_cmd $k2 > /dev/null 2>&1; then
-      msg alert "Failed to unseal vault 2"
-      errors=$((errors + $?))
-      exit $errors
-    fi
-    if ! VAULT_ADDR="https://localhost:820${i}" \
-      $v_unseal_cmd $k3 > /dev/null 2>&1; then
-      msg alert "Failed to unseal Vault 3"
-      errors=$((errors + $?))
-      exit $errors
-    fi
-  done
+
+# vault1
+
+  if ! VAULT_ADDR="https://localhost:8200" \
+    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8200" \
+    $v_unseal_cmd $k1 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8200" \
+    $v_unseal_cmd $k2 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+# vault 2
+
+  if ! VAULT_ADDR="https://localhost:8210" \
+    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8210" \
+    $v_unseal_cmd $k1 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8210" \
+    $v_unseal_cmd $k2 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+# vault 3
+
+  if ! VAULT_ADDR="https://localhost:8220" \
+    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8220" \
+    $v_unseal_cmd $k1 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8220" \
+    $v_unseal_cmd $k2 > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault instance!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
   msg complete "Vault unsealed!"
 }
 
@@ -266,17 +316,17 @@ fi
 if (set -u; : "${1}") 2> /dev/null; then
   msg info "Filename argument specified; Use file: ${1}"
   vault_dat="${1}"
-  k1=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
-  k2=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
-  k3=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
+  k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
+  k1=$(grep 'Unseal Key 2' "${vault_dat}" | awk '{print $NF}')
+  k2=$(grep 'Unseal Key 3' "${vault_dat}" | awk '{print $NF}')
   msg info "Unsealing by default since filename used ..."
   for i in {0..2}; do
-    VAULT_ADDR="https://localhost:820${i}" \
+    VAULT_ADDR="https://localhost:82${i}0" \
+    vault unseal "${k0}" > /dev/null 2>&1 && \
+    VAULT_ADDR="https://localhost:82${i}0" \
     vault unseal "${k1}" > /dev/null 2>&1 && \
-    VAULT_ADDR="https://localhost:820${i}" \
-    vault unseal "${k2}" > /dev/null 2>&1 && \
-    VAULT_ADDR="https://localhost:820${i}" \
-    vault unseal "${k3}" > /dev/null 2>&1;
+    VAULT_ADDR="https://localhost:82${i}0" \
+    vault unseal "${k2}" > /dev/null 2>&1;
   done
   auth_root
   status

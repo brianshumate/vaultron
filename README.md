@@ -289,6 +289,7 @@ or
 
 ```
 $ dig -p 8600 @localhost vault.service.consul SRV
+...
 ;; ANSWER SECTION:
 vault.service.consul. 0 IN  SRV 1 1 8200 consulc0.node.arus.consul.
 vault.service.consul. 0 IN  SRV 1 1 8200 consulc2.node.arus.consul.
@@ -418,6 +419,32 @@ Access the settings (gear icon) in the navigation and ensure that the ACL master
 Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
 
 Unsealing Vault should solve that for you!
+
+### Something, Something — HA Problem!
+
+High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
+
+Here is simple method to watch HA mode in action using two terminal sessions:
+
+```
+Terminal 1                              Terminal 2
++-----------------------------------+   +------------------------------------+
+| VAULT_ADDR=https://localhost:8210\|   | docker stop vault0                 |
+| watch -n 1 vault status           |   |                                    |
+|                                   |   |                                    |
+| ...                               |   |                                    |
+| HA Enabled             true       |   |                                    |
+| HA Cluster             https:...  |   |                                    |
+| HA Mode                standby.   |   |                                    |
+| ...                               |   |                                    |
+|                                   |   |                                    |
+|                                   |   |                                    |
++-----------------------------------+   +------------------------------------+
+```
+
+1. In Terminal 1, set `VAULT_ADDR` to one of the two Vault standby containers and use `watch` to keep an eye on the output of `vault status` while noting the values of `Mode:` and `Leader:`
+2. In Terminal 2, stop the *active* Vault instance with `docker stop`
+3. You should notice that the value of `Leader:` changes instantly and if the second standby Vault is elected the new active, the value of `Mode:` will also reflect that instantly as well
 
 ### Vaultron Does Not Form — Halp!
 
