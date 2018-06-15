@@ -1,7 +1,7 @@
-# Using the PostgreSQL Database Secret Backend with Vaultron
+# Using the PostgreSQL Database Secrets Engine with Vaultron
 
 The following mini-guide shows how to set up Vaultron with a PostgreSQL Docker
-container to use the Vault PostgreSQL secret backend.
+container to use the Vault PostgreSQL secrets engine.
 
 The guide presumes that you have formed Vaultron, initialized and unsealed
 your Vault, and logged in with the initial root token.

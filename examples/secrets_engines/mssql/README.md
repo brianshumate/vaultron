@@ -1,6 +1,6 @@
-# Using the MSSQL Database Secret Backend with Vaultron
+# Using the MSSQL Database Secrets Engine with Vaultron
 
-The following mini-guide shows how to set up Vaultron with a SQL Server 2017 Docker container to use the Vault MSSQL secret backend.
+The following mini-guide shows how to set up Vaultron with a SQL Server 2017 Docker container to use the Vault MSSQL secrets engine.
 
 The guide presumes that you have formed Vaultron, initialized and unsealed your Vault, and logged in with the initial root token.
 

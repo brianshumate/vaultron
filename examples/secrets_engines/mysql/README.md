@@ -1,12 +1,12 @@
-# Using the MySQL Database Secret Backend with Vaultron
+# Using the MySQL Database Secrets Engine with Vaultron
 
 The following mini-guide shows how to set up Vaultron with a MySQL Docker
-container to use the Vault MySQL secret backend.
+container to use the Vault MySQL secrets engine.
 
 The guide presumes that you have formed Vaultron, initialized and unsealed
 your Vault, and logged in with the initial root token.
 
-If you'd prefer to automate the MySQL secret backend setup process, run this:
+If you'd prefer to automate setup process, run this:
 
 ```
 $ ./eye_beams_mysql
@@ -40,7 +40,7 @@ Vaultron enables the database secrets engine at `vaultron_database` if using `bl
 $ vault secrets enable -path=vaultron_database database
 ```
 
-Next, write the MySQL secret backend configuration:
+Next, write the MySQL secrets engine configuration:
 
 ```
 $ vault write vaultron_database/config/mysql \

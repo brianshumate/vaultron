@@ -5,12 +5,12 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.10.1"
+  default = "0.10.2"
 }
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.0.7"
+  default = "1.1.0"
 }
 
 # Global variables
@@ -87,7 +87,7 @@ variable "vault_server_log_level" {
 
 # Set TF_VAR_consul_log_level to set this
 variable "consul_log_level" {
-  default = "trace"
+  default = "debug"
 }
 
 # Set TF_VAR_use_consul_oss to set this

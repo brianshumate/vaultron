@@ -8,7 +8,7 @@
 # - Initialize Vault
 # - Save key material to temporary file
 # - Unseal Vault with key material from temporary file
-# - Enable a range of auth and secret backends with default mounts
+# - Enable a range of auth methods and secrets engines with default mounts
 #
 # ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
 #
@@ -40,9 +40,9 @@ auth_root() {
   vault auth "${init_root_token}"  > /dev/null 2>&1
 }
 
-# Show enabled auth methods and secrets engines
+# List enabled auth methods and secrets engines
 enabled() {
-  msg info "Enabled Auth Methods and Secrets Engines"
+  msg info "Enabled Auth Methods:"
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
     v_auth_list_cmd="vault auth list"
@@ -55,10 +55,13 @@ enabled() {
     v_secret_list_cmd="vault mounts"
   fi
   $v_auth_list_cmd
+  echo
+  msg info "Enabled Secrets Engines:"
   $v_secret_list_cmd
+  echo
 }
 
-# Enable audit log
+# Enable a file based audit log
 enable_audit_logging() {
   msg complete "Enabled file based audit log at ./vault/logs/audit.log!"
   auth_root
@@ -85,6 +88,9 @@ enable_auth_backends() {
   # vault auth-enable aws > /dev/null 2>&1
   # msg complete "Enabled AWS authentication backend!"
   #
+
+  $v_auth_cmd -path vaultron-cert cert > /dev/null 2>&1
+  msg complete "Enabled TLS certificate authentication backend at vaultron-cert!"
 
   $v_auth_cmd -path=vaultron-ldap ldap > /dev/null 2>&1
   msg complete "Enabled LDAP authentication backend at vaultron-ldap!"
@@ -218,8 +224,10 @@ mount_secret_backends() {
 
 # Get Vault status
 status() {
-  msg info "Vault status ..."
-  printf "$(vault status)\n"
+  msg info "Vault status:"
+  echo
+  printf "$(vault status)"
+  echo "\n"
 }
 
 # Unseal Vault
@@ -234,21 +242,21 @@ unseal_vault() {
   get_unseal_keys
 
   if ! VAULT_ADDR="https://localhost:8200" \
-    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8210" \
-    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8220" \
-    $v_unseal_cmd $k0 > /dev/null 2>&1; then
+    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
@@ -283,9 +291,11 @@ else
   msg greeting "Form Blazing Sword! ..."
 fi
 
+# Ain't nobody got time for your old stale token!
 unset VAULT_TOKEN
 
 # <wait 2>
+# (helps some raciness when Docker is buggy or on slower systems)
 sleep 2
 
 initialize_vault

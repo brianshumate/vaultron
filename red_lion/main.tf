@@ -101,7 +101,7 @@ data "template_file" "consuls2_tls_key" {
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
   name  = "consuls0"
-  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
   upload = {
@@ -207,6 +207,7 @@ resource "docker_container" "consuls0" {
 resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
   name  = "consuls1"
+  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
   # TODO: make GELF logging a conditional thing
@@ -261,6 +262,7 @@ resource "docker_container" "consuls1" {
 resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
   name  = "consuls2"
+  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
   # TODO: make GELF logging a conditional thing
