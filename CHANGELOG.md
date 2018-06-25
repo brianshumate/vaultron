@@ -1,5 +1,6 @@
-## v1.8.5 (UNRELEASED)
+## v1.8.5
 
+- Vault version 0.10.3
 - Move to one unseal key in blazing_sword for simplicity
 - Update published ports for standby instances
 - Upate blazing_sword for published ports updates
