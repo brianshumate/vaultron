@@ -8,7 +8,7 @@
 
 ## Why?
 
-_It's a reasonably useful Vault + Consul environment deployed on your macOS or Linux computer in a about 1 minute_.
+It's a reasonably useful Vault & Consul environment deployed on your macOS or Linux computer _in a about 1 minute_.
 
 Some of the more popular uses of Vaultron are:
 
