@@ -295,7 +295,6 @@ fi
 unset VAULT_TOKEN
 
 # <wait 2>
-# (helps some raciness when Docker is buggy or on slower systems)
 sleep 2
 
 initialize_vault
