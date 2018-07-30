@@ -54,7 +54,7 @@ gen_role() {
   msg info "Generating apprulez-$APPRULEZ role ..."
   if ! vault write \
     auth/vaultron-approle/role/apprulez-$APPRULEZ \
-    policies=wildcard \
+    policies=sudo,vaultron-dev \
     secret_id_ttl=720h \
     token_num_uses=999999 \
     token_ttl=360h \
@@ -113,7 +113,7 @@ if $PORT_CHECK; then
     msg "Problem generating AppRole tokens!";
     exit $errors
   else
-    msg complete "Generated $1 AppRole tokens!"
+    msg complete "Generated $1 AppRole tokens; logged in ./tmp/apprulez-$APPRULEZ-tokens.log"
   fi
 else
   echo "Vault is not reachable at localhost! Giving up!"

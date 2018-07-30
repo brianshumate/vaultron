@@ -1,4 +1,4 @@
-# Vault OSS v0.10.2
+# Vault OSS v0.10.3
 
 cluster_name = "${cluster_name }"
 ui = true

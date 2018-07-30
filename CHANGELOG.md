@@ -1,5 +1,6 @@
 ## v1.8.6
 
+- Vault version 0.10.4
 - Consul v1.2.0
 
 ## v1.8.5
