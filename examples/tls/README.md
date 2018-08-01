@@ -357,7 +357,7 @@ $ vault write vaultron-int-pki/roles/vaultron-int \
 Success! Data written to: vaultron-int-pki/roles/vaultron-int
 ```
 
-If this fails, you might need to us the API with a JSON payload instead:
+If this fails, you might need to use the API with a JSON payload instead:
 
 ```
 $ cat << EOF > /tmp/vaultron-int.json
@@ -430,7 +430,7 @@ use_csr_sans                          true
 
 ## Issue Certificates
 
-As Vaultron uses docker with a predictable address space and we will issue a certificate per container, but this is not really necessary since the IP SANs will be for ranged address space of Vaultron (172.17.0.1-172.17.0.20) anyway and the certificates could be shared/interchangeable since they're not for a specific IP or FQDN. We also allow loopback IP.
+Vaultron uses docker with a predictable address space and we will issue a certificate per container, but this is not really necessary since the IP SANs will be for ranged address space of Vaultron (172.17.0.1-172.17.0.20) anyway and the certificates could be shared/interchangeable since they're not for a specific IP or FQDN. We also allow loopback IP.
 
 While this is kind of gross, this is just a sandbox for playing anyway...
 
@@ -1700,4 +1700,3 @@ WvuQu6QhlWIEDJsUF+UrvmaVzpFKiLeTdQ==
 ```
 
 Use this as the value for `-ca-cert=` or `VAULT_CACERT` or import it into your OS trust store to have all of Vaultron's certificates trusted by default.
-

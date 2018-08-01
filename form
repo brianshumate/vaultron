@@ -75,7 +75,7 @@ check_vault_version() {
   if [ ! -z "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="./black_lion/templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
-       msg alet "Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
+       msg alert "Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
        unset TF_VAR_vault_version;
        kill -INT $$
     fi
