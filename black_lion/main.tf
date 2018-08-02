@@ -97,7 +97,7 @@ resource "docker_container" "vault_oss_server" {
 
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp" }"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
   }
 
   upload = {
