@@ -1,7 +1,16 @@
+## v1.8.8
+
+- Update config path (thanks to feedback from @roooms)
+- Add Vault Agent example stubs
+- Update documentation
+- Update CONTRIBUTORS
+
 ## v1.8.7
+
 - Vault version 0.10.4
 
 ## v1.8.6
+
 - Consul v1.2.0
 
 ## v1.8.5

@@ -56,8 +56,8 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [=] Form Vaultron! ...
 [=] Terraform has been successfully initialized!
-[=] Vault Docker image version:      0.10.1
-[=] Consul Docker image version:     1.0.7
+[=] Vault Docker image version:      0.10.4
+[=] Consul Docker image version:     1.2.0
 [=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
 [=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
 [^] Vaultron formed!
