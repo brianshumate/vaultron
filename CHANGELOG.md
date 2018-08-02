@@ -1,9 +1,12 @@
-## v1.8.8
+## v1.8.9
 
-- Update config path (thanks to feedback from @roooms)
 - Add Vault Agent example stubs
 - Update documentation
 - Update CONTRIBUTORS
+
+## v1.8.8
+
+- Update config path (thanks to feedback from @roooms)
 
 ## v1.8.7
 
