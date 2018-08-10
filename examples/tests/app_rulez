@@ -43,10 +43,10 @@ check_approle() {
     v_auth_cmd="vault auth -methods"
   fi
   if ! $v_auth_cmd | grep approle > /dev/null 2>&1; then
-    msg alert "No AppRole auth backend detected! Be sure to enable AppRole!"
+    msg alert "No AppRole Auth Method detected! Be sure to enable AppRole!"
     exit 1
   else
-    msg info "AppRole authentication is enabled - creating role ..."
+    msg info "AppRole Auth Method is enabled - creating role ..."
   fi
 }
 
@@ -91,10 +91,11 @@ get_secret_id() {
 
 gen_token() {
   msg secret "Generating $1 AppRole tokens: "
+  printf '[@] '
   for _ in $(seq "$1"); do
     if ! vault write auth/vaultron-approle/login \
       role_id="$ROLE_ID" \
-      secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ-tokens.log 2>&1; then
+      secret_id="$SECRET_ID" >> ./tmp/apprulez-$APPRULEZ.log 2>&1; then
       printf "${txtred}e${txtrst}"
     else
       printf "${txtgrn}.${txtrst}"
@@ -113,7 +114,7 @@ if $PORT_CHECK; then
     msg "Problem generating AppRole tokens!";
     exit $errors
   else
-    msg complete "Generated $1 AppRole tokens; logged in ./tmp/apprulez-$APPRULEZ-tokens.log"
+    msg complete "Generated $1 AppRole tokens; logged in ./tmp/apprulez-$APPRULEZ.log"
   fi
 else
   echo "Vault is not reachable at localhost! Giving up!"

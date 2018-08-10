@@ -106,13 +106,13 @@ Before accessing the Vault or Consul web UIs you should add the Vaultron CA cert
 
 It is located at `etc/tls/ca-bundle.pem` from the root of this project.
 
-See the TLS by Default section for more details on handling Vaultron's Intermediate Certificate Authority certificate.
+See the **TLS by Default** section for more details on handling Vaultron's Certificate Authority certificate.
 
 ### What's Next?
 
-If you are new to Vault, then using Vaultron is a nice way to get quickly acquainted! Please begin by checking out the official [Vault Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html).
+If you are new to Vault, then using Vaultron is a nice way to quickly get acquainted! Please begin by checking out the official [Vault Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html).
 
-You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onwards after initializing, unsealing, and authenticating with the root token.
+You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onward after initializing, unsealing, and authenticating with the root token.
 
 Speaking of which, here are some things you can do after Vaultron is formed:
 
@@ -120,9 +120,10 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 2. Unseal Vault with `vault unseal` using 3 of the 5 unseal keys presented when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during initialization
 4. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
-5. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
-6. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-7. When done having fun, disassemble Vaultron and clean up with `./unform`
+5. Use the Vault web UI at [https://localhost:8200](https://localhost:8200)
+6. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
+7. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
+8. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
 
 **NOTE: `./unform` REMOVES ALMOST EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!**
 
@@ -147,11 +148,11 @@ $ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 
 ## What's in the Box?
 
-Vaultron technical specifications quick reference card:
+Whimsical Vaultron technical specification quick reference card:
 
 ```
 Name:          Vaultron
-Type:          Secret Management Unit V (defaults to latest Vault software)
+Type:          Secret Management Unit (defaults to latest Vault software)
 Builder:       Terraform
 Blueprints:    vaultron.tf
 Modules:       black_lion, red_lion, yellow_lion

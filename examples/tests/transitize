@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+#
+# transitize
+#
+# Sequentially create N transit encryption operations
+#
+# shellcheck disable=SC1090,SC1091,SC1117,SC2059,SC2086,SC2089,SC2090,SC2154
+
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+program="$(basename "$0")"
+
+if [ $# -eq 0 ]
+  then
+    msg alert "Usage: ${program} <number_of_encryption_operations>"
+    exit 1
+fi
+
+TRANSITIZE=$(openssl rand -hex 4)
+
+check_vault() {
+  if command nc; then
+    PORT_CHECK="nc -z locahost 8200";
+  elif command timeout; then
+    PORT_CHECK="timeout 1 bash -c '</dev/tcp/localhost/8200'"
+  elif command gtimeout; then
+    PORT_CHECK="gtimeout 1 bash -c '</dev/tcp/localhost/8200'"
+  fi
+}
+
+check_transit() {
+  check_cli_cap
+  if [ "$vault_cli_cap" -eq "1" ]; then
+    v_auth_cmd="vault secrets list"
+  else
+    v_auth_cmd="vault mounts"
+  fi
+  if ! $v_auth_cmd | grep transit > /dev/null 2>&1; then
+    msg alert "No Transit Secrets Engine detected! Be sure to mount Transit at vaultron-transit!"
+    exit 1
+  else
+    msg info "Transit Secrets Engine detected - creating key ..."
+  fi
+}
+
+generate_key() {
+  msg info "Generating a transit encryption key as vaultron-key ..."
+  if ! vault write -f \
+    vaultron-transit/keys/vaultron-key > /dev/null 2>&1; then
+      msg alert "Failed to generate the encryption key!"
+      exit 1
+  fi
+  msg complete "Generated encryption key!"
+}
+
+encrypt_plaintext() {
+  msg secret "Performing $1 Plaintext encyption operations ..."
+  printf '[@] '
+  for _ in $(seq "$1"); do
+    PLAINTEXT="$(uuidgen)"
+    echo "PLAINTEXT: $PLAINTEXT" >> ./tmp/transitize-"$TRANSITIZE".log 2>&1
+    if ! vault write  vaultron-transit/encrypt/my-key \
+      plaintext="$(base64 <<< $PLAINTEXT)" >> ./tmp/transitize-"$TRANSITIZE".log 2>&1; then
+      printf "${txtred}e${txtrst}"
+    else
+      echo >> ./tmp/transitize-"$TRANSITIZE".log 2>&1
+      printf "${txtgrn}.${txtrst}"
+  fi
+  done
+  printf "$txtrst\n"
+}
+
+if $PORT_CHECK; then
+  check_transit
+  generate_key
+
+  if ! encrypt_plaintext "$@"; then
+    errors=$((errors + $?));
+    msg "Problem encrypting plaintext!";
+    exit $errors
+  else
+    msg complete "Performed $1 plaintext encryption operations; logged in ./tmp/transitize-$TRANSITIZE.log"
+  fi
+else
+  echo "Vault is not reachable at localhost! Giving up!"
+  exit 1
+fi

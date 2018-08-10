@@ -88,6 +88,10 @@ data "template_file" "telemetry_config" {
 resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
   name  = "${format("vault%d", count.index)}"
+  hostname  = "${format("vault%d", count.index)}"
+  domainname = "consul"
+  dns_search = ["consul"]
+  dns        = ["${var.consul_server_ips}"]
   image = "${docker_image.vault.latest}"
 
   upload = {
@@ -195,6 +199,10 @@ data "template_file" "vault_custom_config" {
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "${format("vault%d", count.index)}"
+  hostname  = "${format("vault%d", count.index)}"
+  domainname = "consul"
+  dns        = ["${var.consul_server_ips}"]
+  dns_search = ["consul"]
   image = "${docker_image.vault.latest}"
 
   upload = {

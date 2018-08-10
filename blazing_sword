@@ -294,8 +294,8 @@ fi
 # Ain't nobody got time for your old stale token!
 unset VAULT_TOKEN
 
-# <wait 2>
-sleep 2
+# <wait 3>
+sleep 3
 
 initialize_vault
 unseal_vault

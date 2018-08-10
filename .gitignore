@@ -26,3 +26,5 @@ tmp
 tmp/*
 vault-plugin-database-oracle*
 grafana
+payload.json
+

@@ -101,6 +101,9 @@ data "template_file" "consuls2_tls_key" {
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
   name  = "consuls0"
+  hostname  = "consuls0"
+  domainname = "consul"
+  dns_search  = ["consul"]
   env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
@@ -207,6 +210,9 @@ resource "docker_container" "consuls0" {
 resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
   name  = "consuls1"
+  hostname  = "consuls1"
+  domainname = "consul"
+  dns_search  = ["consul"]
   env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
@@ -262,6 +268,9 @@ resource "docker_container" "consuls1" {
 resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
   name  = "consuls2"
+  hostname  = "consuls2"
+  domainname = "consul"
+  dns_search  = ["consul"]
   env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
   image = "${docker_image.consul.latest}"
 
@@ -340,6 +349,10 @@ data "template_file" "consul_client_tls_key" {
 resource "docker_container" "consul_oss_client" {
   count = "${var.consul_oss_instance_count}"
   name  = "${format("consulc%d", count.index)}"
+  hostname  = "${format("consulc%d", count.index)}"
+  domainname = "consul"
+  dns        = ["${docker_container.consuls0.ip_address}", "${docker_container.consuls1.ip_address}", "${docker_container.consuls2.ip_address}"]
+  dns_search = ["consul"]
   image = "${docker_image.consul.latest}"
 
   upload = {
@@ -383,8 +396,5 @@ resource "docker_container" "consul_oss_client" {
                      "-join=${docker_container.consuls1.ip_address}",
                      "-join=${docker_container.consuls0.ip_address}"
                      )}"]
-
-  dns        = ["${docker_container.consuls0.ip_address}", "${docker_container.consuls1.ip_address}", "${docker_container.consuls2.ip_address}"]
-  dns_search = ["consul"]
   must_run   = true
 }

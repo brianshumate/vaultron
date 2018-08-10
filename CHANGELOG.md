@@ -1,3 +1,12 @@
+## v1.9.0 (UNRELEASED)
+
+- Consul v1.2.2
+- Additional DNS container configuration to leverage Consul DNS API
+- Add tranistize Transit Secrets Engine test script
+- Update apprules script
+- Increase wait to 3 seconds in blazing_sword
+- Update documentation
+
 ## v1.8.9
 
 - Add Vault Agent example stubs
