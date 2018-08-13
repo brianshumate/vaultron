@@ -221,6 +221,7 @@ resource "docker_container" "consuls1" {
   # log_opts = {
   #   gelf-address = "udp://${var.log_server_ip}:5114"
   # }
+
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file    = "/consul/config/common_config.json"
@@ -279,6 +280,7 @@ resource "docker_container" "consuls2" {
   # log_opts = {
   #   gelf-address = "udp://${var.log_server_ip}:5114"
   # }
+
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
     file    = "/consul/config/common_config.json"

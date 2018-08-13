@@ -2,9 +2,11 @@
 
 - Consul v1.2.2
 - Additional DNS container configuration to leverage Consul DNS API
-- Add tranistize Transit Secrets Engine test script
-- Update apprules script
+- Add tranistize test script
+- Update apprulez test script
 - Increase wait to 3 seconds in blazing_sword
+- Add an acl_agent_master_token to Consul client & server agent configuration
+- Switch back to deny for acl_default_policy value in all 1.x Consul versions
 - Update documentation
 
 ## v1.8.9
