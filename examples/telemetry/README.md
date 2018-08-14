@@ -1,5 +1,11 @@
 ## Visualizing Vault Telemetry
 
+NOTE: Vaultron does all of this automatically with the Yellow Lion telemetry module. To enable it, export the following environment variable prior to executing `./form`:
+
+```
+export TF_VAR_vaultron_telemetry_count=1
+```
+
 ![](https://github.com/brianshumate/vaultron/blob/master/share/metrics.png?raw=true)
 
 These are random insights and solutions for visualizing Vaultron telementry metrics with other container based solutions.
@@ -17,7 +23,7 @@ First, start the Graphite + statsd container:
 ```
 $ docker run \
   -d \
-  --name graphite_vaultron \
+  --name vstatsd \
   --restart=always \
   -p 80:80 \
   -p 2003-2004:2003-2004 \
@@ -32,7 +38,7 @@ Then, get the IP address of the Graphite + statsd container:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    graphite_vaultron
+    vstatsd
 172.17.0.2
 ```
 
@@ -42,7 +48,9 @@ Then, start the Grafana container:
 
 ```
 $ docker run \
-  -d -p 3000:3000 \
+  -d \
+  --name vgrafana \
+  -p 3000:3000 \
   -v $PATH_TO_VAULTRON_REPO/tmp/g-data:/var/lib/grafana \
   -e "GF_SECURITY_ADMIN_PASSWORD=vaultron" \
   -e "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource" \
@@ -96,7 +104,7 @@ Now we're ready for the initial Grafana configuration! This mostly involves addi
   - Name: `Vaultron Graphite`
   - HTTP Settings:
     - URL: `http://172.17.0.2:80` (IP address from `docker inspect` above)
-    - Access: **proxy**
+    - Access: **Server**
   - Graphite details
     - Version: **1.1.x**
 4. Click **Add**

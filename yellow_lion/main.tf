@@ -6,7 +6,9 @@
 
 # Variables
 
+
 variable "grafana_version" {}
+variable "statsd_ip" {}
 variable "statsd_version" {}
 variable "vaultron_telemetry_count" {}
 
@@ -67,10 +69,6 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
-}
-
-output "statsd_ip" {
-  value = "${docker_container.statsd_graphite.*.ip_address}"
 }
 
 # Grafana image and container

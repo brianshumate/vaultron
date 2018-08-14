@@ -157,9 +157,15 @@ variable "statsd_version" {
   default = "latest"
 }
 
+# Set TF_VAR_statsd_ip to set this
+variable "statsd_ip" {
+  default = "127.0.0.1"
+}
+
 module "telemetry" {
   source                       = "yellow_lion"
   grafana_version              = "${var.grafana_version}"
+  statsd_ip                    = "${var.statsd_ip}"
   statsd_version               = "${var.statsd_version}"
   vaultron_telemetry_count     = "${var.vaultron_telemetry_count}"
 }
@@ -197,4 +203,5 @@ module "vaultron" {
   vault_server_log_level       = "${var.vault_server_log_level}"
   vault_version                = "${var.vault_version}"
   vaultron_telemetry_count     = "${var.vaultron_telemetry_count}"
+  statsd_ip                    = "${module.telemetry.statsd_ip}"
 }

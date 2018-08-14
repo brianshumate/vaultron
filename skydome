@@ -108,7 +108,7 @@ init() {
 }
 
 apply() {
-    tfout="$(terraform apply "$1" 2>&1)"
+    tfout="$(terraform apply -auto-approve "$1" 2>&1)"
     ret=$?
     apply_out="./log/tf-$(date -u "+%Y-%m-%dT%H:%M:%SZ")-apply.log"
     echo "$tfout" > "$apply_out"

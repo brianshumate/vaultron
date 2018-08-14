@@ -24,9 +24,7 @@ variable "consul_client_ips" {
 variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
-variable "statsd_ip" {
-  default = "127.0.0.1"
-}
+variable "statsd_ip" {}
 
 variable "vaultron_telemetry_count" {}
 
