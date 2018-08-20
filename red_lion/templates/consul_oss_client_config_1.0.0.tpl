@@ -3,7 +3,7 @@
   "acl_datacenter": "arus",
   "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
   "acl_agent_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
-  "acl_default_policy": "allow",
+  "acl_default_policy": "deny",
   "cert_file": "/etc/ssl/certs/consul-client.crt",
   "key_file": "/etc/ssl/consul-client.key",
   "ca_file": "/etc/ssl/certs/ca-bundle.pem",

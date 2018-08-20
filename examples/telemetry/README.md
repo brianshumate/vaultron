@@ -1,11 +1,5 @@
 ## Visualizing Vault Telemetry
 
-NOTE: Vaultron does all of this automatically with the Yellow Lion telemetry module. To enable it, export the following environment variable prior to executing `./form`:
-
-```
-export TF_VAR_vaultron_telemetry_count=1
-```
-
 ![](https://github.com/brianshumate/vaultron/blob/master/share/metrics.png?raw=true)
 
 These are random insights and solutions for visualizing Vaultron telementry metrics with other container based solutions.
@@ -15,6 +9,14 @@ The simplest off-the-shelf solution is to use statsd, Graphite and Grafana.
 - [Graphite + statsd container](https://github.com/graphite-project/docker-graphite-statsd)
 - [Grafana container](https://hub.docker.com/r/grafana/grafana/)
   - [Installing using Docker](http://docs.grafana.org/installation/docker/)
+
+NOTE: Vaultron now does all of this automatically with the Yellow Lion telemetry module. To enable it, export the following environment variable prior to executing `./form`:
+
+```
+export TF_VAR_vaultron_telemetry_count=1
+```
+
+You can then skip to **Initial Grafana Configuration** after Vaultron forms.
 
 ### Start Containers
 
@@ -101,7 +103,7 @@ Now we're ready for the initial Grafana configuration! This mostly involves addi
 1. Vist http://localhost:3000
 2. login as user `admin` with password `vaultron` (or custom password value)
 3. Click **Add data source** and modify only the following:
-  - Name: `Vaultron Graphite`
+  - Name: `Vaultron`
   - HTTP Settings:
     - URL: `http://172.17.0.2:80` (IP address from `docker inspect` above)
     - Access: **Server**

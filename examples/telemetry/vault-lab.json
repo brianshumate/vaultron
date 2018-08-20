@@ -23,7 +23,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "System memory consumed by the vault server process",
       "fill": 1,
       "gridPos": {
@@ -116,7 +116,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Any request or response failures in audit logging",
       "format": "none",
       "gauge": {
@@ -197,7 +197,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#299c46"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Total number of leases",
       "format": "none",
       "gauge": {
@@ -278,7 +278,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Core request handling time in ms",
       "format": "ms",
       "gauge": {
@@ -362,7 +362,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Consul GET median time in ms",
       "format": "ms",
       "gauge": {
@@ -446,7 +446,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Consul PUT median time in ms",
       "format": "ms",
       "gauge": {
@@ -530,7 +530,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Barrier GET median time in ms",
       "format": "ms",
       "gauge": {
@@ -614,7 +614,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Barrier PUT median time in ms",
       "format": "ms",
       "gauge": {
@@ -698,7 +698,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Vaultron Graphite",
+      "datasource": "Vaultron",
       "description": "Audit log request median time in ms",
       "format": "ms",
       "gauge": {

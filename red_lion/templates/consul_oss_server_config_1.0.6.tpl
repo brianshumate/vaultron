@@ -6,7 +6,7 @@
   "acl_datacenter": "arus",
   "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
   "acl_agent_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
-  "acl_default_policy": "allow",
+  "acl_default_policy": "deny",
   "acl_down_policy": "extend-cache",
   "recursors": [
     "${recursor1}",
