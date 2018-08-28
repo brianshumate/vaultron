@@ -1,5 +1,6 @@
-## v1.9.0 (UNRELEASED)
+## v1.9.0
 
+- Vault v0.11.0
 - Consul v1.2.2
 - Additional DNS container configuration to leverage Consul DNS API
 - Add tranistize test script
