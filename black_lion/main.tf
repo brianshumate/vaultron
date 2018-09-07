@@ -5,8 +5,7 @@
 #   - Custom binary (allows for custom builds, Enterprise, etc.)
 #############################################################################
 
-# Vault related variables
-
+# Vault variables
 variable "datacenter_name" {}
 variable "vault_version" {}
 variable "use_vault_oss" {}
@@ -30,14 +29,12 @@ variable "vaultron_telemetry_count" {}
 
 # This is the official Vault Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/vault/
-
 resource "docker_image" "vault" {
   name         = "vault:${var.vault_version}"
   keep_locally = true
 }
 
 # Vault Open Source servers configuration
-
 data "template_file" "vault_config" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
@@ -55,13 +52,11 @@ data "template_file" "vault_config" {
 }
 
 # TLS CA Bundle
-
 data "template_file" "ca_bundle" {
   template = "${file("${path.module}/tls/ca-bundle.pem")}"
 }
 
 # Vault OSS Server TLS certificates and keys
-
 data "template_file" "vault_tls_cert" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
@@ -73,7 +68,6 @@ data "template_file" "vault_tls_key" {
 }
 
 # Vault telemetry configuration
-
 data "template_file" "telemetry_config" {
   template = "${file("${path.module}/templates/vault_telemetry.tpl")}"
   vars {
@@ -82,7 +76,6 @@ data "template_file" "telemetry_config" {
 }
 
 # Vault Open Source servers
-
 resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
   name  = "${format("vault%d", count.index)}"
@@ -97,14 +90,9 @@ resource "docker_container" "vault_oss_server" {
     file    = "/vault/config/main.hcl"
   }
 
-  #upload = {
-  #  content = "${data.template_file.telemetry_config.rendered}"
-  #  file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
-  #}
-
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "/vault/config/telemetry.hcl"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
   }
 
   upload = {
@@ -137,7 +125,7 @@ resource "docker_container" "vault_oss_server" {
     container_path = "/vault/plugins"
   }
 
-  entrypoint = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config/main.hcl"]
+  entrypoint = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
 
@@ -162,7 +150,6 @@ resource "docker_container" "vault_oss_server" {
 #############################################################################
 
 # Vault Server TLS certificates and keys
-
 data "template_file" "vault_custom_tls_cert" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
@@ -175,7 +162,6 @@ data "template_file" "vault_custom_tls_key" {
 
 # Vault custom servers configuration
 # This data type is for using custom Vault builds
-
 data "template_file" "vault_custom_config" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/templates/${var.vault_custom_config_template}")}"
@@ -198,7 +184,6 @@ data "template_file" "vault_custom_config" {
 
 # Vault custom servers
 # This resource is for installing custom Vault builds
-
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "${format("vault%d", count.index)}"
@@ -215,7 +200,7 @@ resource "docker_container" "vault_custom_server" {
 
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "/vault/config/telemetry.hcl"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
   }
 
   upload = {
@@ -258,7 +243,7 @@ resource "docker_container" "vault_custom_server" {
     container_path = "/vault/plugins"
   }
 
-  entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config/main.hcl"]
+  entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
 

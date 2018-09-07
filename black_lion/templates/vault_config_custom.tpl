@@ -22,6 +22,15 @@ storage "consul" {
   service_tags = "${service_tags}"
 }
 
+# GCP KMS
+#seal "gcpckms" {
+#  credentials = "/vault/custom/hc-support-eng-vault-1df21cecf7ed.json"
+#  project     = "hc-support-eng-vault"
+#  region      = "us"
+#  key_ring    = "shumate-us"
+#  crypto_key  = "shumate-seal-us-test"
+#}
+
 # Default TTL values
 default_lease_ttl = "50000h"   # 2083 days
 max_lease_ttl = "50000h"       # 2083 days
@@ -31,7 +40,10 @@ plugin_directory = "/vault/plugins"
 
 # Telemetry
 
-# dogstatsd
+# telemetry {
+#    statsd_address = "${statsd_ip}:8125"
+#}
+
 # telemetry {
 #   dogstatsd_addr  = "172.17.0.2:8125"
 #   dogstatsd_tags  = [ "datacenter:arus"]

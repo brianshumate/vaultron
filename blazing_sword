@@ -230,6 +230,15 @@ status() {
   echo "\n"
 }
 
+# Note about statsd server for Telemetry
+telemetry() {
+  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vstatsd) > /dev/null 2>&1; then
+    msg info "Telemetry: statsd address: $VSTATSD_ADDR"
+  else
+    msg alert "Failed to determine statsd address!"
+  fi
+}
+
 # Unseal Vault
 unseal_vault() {
   check_cli_cap
@@ -306,3 +315,6 @@ mount_secret_backends
 mount_database_backend
 status
 enabled
+if [ "$TF_VAR_vaultron_telemetry_count" == "1" ]; then
+  telemetry
+fi

@@ -1,4 +1,9 @@
-## v1.9.0 (UNRELEASED)
+## v1.9.1 (UNRELEASED)
+
+- Vault v0.11.1
+- Update configuration for telemetry
+
+## v1.9.0
 
 - Vault v0.11.0
 - Consul v1.2.2
