@@ -5,7 +5,7 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.11.0"
+  default = "0.11.1"
 }
 
 # Set TF_VAR_consul_version to set this
@@ -185,7 +185,6 @@ module "consul_cluster" {
   consul_version               = "${var.consul_version}"
   datacenter_name              = "${var.datacenter_name}"
   use_consul_oss               = "${var.use_consul_oss}"
-  vault_ips                    = "${module.vaultron.vault_ips}"
 }
 
 module "vaultron" {
