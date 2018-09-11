@@ -35,9 +35,6 @@ variable "consul_custom" {}
 variable "consul_custom_instance_count" {}
 variable "consul_oss" {}
 variable "consul_oss_instance_count" {}
-variable "vault_ips" {
-  type = "list"
-}
 
 # This is the official Consul Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/consul/
