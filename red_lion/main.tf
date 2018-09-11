@@ -15,12 +15,12 @@ output "consul_oss_server_ips" {
   ]
 }
 
-output "consulcips" {
+output "consul_client_ips" {
   description = "Consul OSS Client IP addresses"
   value       = ["${docker_container.consul_oss_client.*.ip_address}"]
 }
 
-# Consul related variables
+# Consul variables ##########################################################
 
 variable "consul_log_level" {}
 variable "datacenter_name" {}
@@ -35,6 +35,9 @@ variable "consul_custom" {}
 variable "consul_custom_instance_count" {}
 variable "consul_oss" {}
 variable "consul_oss_instance_count" {}
+variable "vault_ips" {
+  type = "list"
+}
 
 # This is the official Consul Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/consul/
@@ -44,7 +47,7 @@ resource "docker_image" "consul" {
   keep_locally = true
 }
 
-# Consul Open Source server common configuration
+# Consul Open Source server common configuration ############################
 
 data "template_file" "consul_oss_server_common_config" {
   count    = "${var.consul_oss}"
@@ -96,7 +99,7 @@ data "template_file" "consuls2_tls_key" {
 }
 
 
-# Consul Open Source Server 1
+# Consul Open Source Server 1 ###############################################
 
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
@@ -402,6 +405,7 @@ resource "docker_container" "consul_oss_client" {
     container_path = "/consul/data"
   }
 
+#"-advertise=${var.vault_ips[count.index]}",
   entrypoint = ["${list("consul",
                      "agent",
                      "-config-dir=/consul/config",

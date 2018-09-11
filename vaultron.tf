@@ -1,7 +1,7 @@
 # Vaultron: A Terraformed, Consul-backed, Vault cluster
 #           on Docker for Linux or macOS
 
-# Version variables
+# Version variables #########################################################
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
@@ -13,7 +13,7 @@ variable "consul_version" {
   default = "1.2.2"
 }
 
-# Global variables
+# Global variables ##########################################################
 
 terraform {
   backend "local" {
@@ -36,7 +36,7 @@ variable "secondary_datacenter_name" {
   default = "sura"
 }
 
-# Vault related variables
+# Vault variables ###########################################################
 
 # Set TF_VAR_use_vault_oss to set this
 variable "use_vault_oss" {
@@ -83,7 +83,7 @@ variable "vault_server_log_level" {
   default = "debug"
 }
 
-# Consul related variables
+# Consul variables ##########################################################
 
 # Set TF_VAR_consul_log_level to set this
 variable "consul_log_level" {
@@ -140,7 +140,7 @@ variable "consul_custom_instance_count" {
   default = "0"
 }
 
-# Telemetry related variables
+# Telemetry variables #######################################################
 
 # Set TF_VAR_vaultron_telemetry_count to set this (either 0 or 1)
 variable "vaultron_telemetry_count" {
@@ -185,13 +185,14 @@ module "consul_cluster" {
   consul_version               = "${var.consul_version}"
   datacenter_name              = "${var.datacenter_name}"
   use_consul_oss               = "${var.use_consul_oss}"
+  vault_ips                    = "${module.vaultron.vault_ips}"
 }
 
 module "vaultron" {
   source                       = "black_lion"
   datacenter_name              = "${var.datacenter_name}"
   consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
-  consul_client_ips            = ["${module.consul_cluster.consulcips}"]
+  consul_client_ips            = ["${module.consul_cluster.consul_client_ips}"]
   disable_clustering           = "${var.disable_clustering}"
   use_vault_oss                = "${var.use_vault_oss}"
   vault_cluster_name           = "${var.vault_cluster_name}"
