@@ -209,6 +209,9 @@ resource "docker_container" "consuls0" {
   #provisioner "local-exec" {
   #  command = "curl -s --request PUT --header 'X-Consul-Token: vaultron-forms-and-eats-all-the-tacos-in-town' --data '{\"Token\": \"c0ffee55-7a15-420e-9a27-402f14f6bdc7\"}' http://127.0.0.1:8500/v1/agent/token/acl_agent_token > /dev/null"
   #}
+
+  labels = { image = "vaultron" }
+
 }
 
 # Consul Open Source Server 2
@@ -268,6 +271,9 @@ resource "docker_container" "consuls1" {
   ]
 
   must_run = true
+
+  labels = { image = "vaultron" }
+
 }
 
 # Consul Open Source Server 3
@@ -327,6 +333,9 @@ resource "docker_container" "consuls2" {
   ]
 
   must_run = true
+
+  labels = { image = "vaultron" }
+
 }
 
 # Consul Open Source client common configuration
@@ -405,4 +414,7 @@ resource "docker_container" "consul_oss_client" {
                      "-join=${docker_container.consuls0.ip_address}"
                      )}"]
   must_run   = true
+
+  labels = { image = "vaultron" }
+
 }

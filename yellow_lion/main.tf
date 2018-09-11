@@ -69,6 +69,8 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
+  labels = { image = "vaultron" }
+
 }
 
 # Grafana image and container
@@ -99,4 +101,7 @@ resource "docker_container" "grafana" {
     external = "3000"
     protocol = "tcp"
   }
+
+  labels = { image = "vaultron" }
+
 }

@@ -97,15 +97,15 @@ resource "docker_container" "vault_oss_server" {
     file    = "/vault/config/main.hcl"
   }
 
-  #upload = {
-  #  content = "${data.template_file.telemetry_config.rendered}"
-  #  file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
-  #}
-
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "/vault/config/telemetry.hcl"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
   }
+
+  #upload = {
+  #  content = "${data.template_file.telemetry_config.rendered}"
+  #  file    = "/vault/config/telemetry.hcl"
+  #}
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
@@ -154,6 +154,8 @@ resource "docker_container" "vault_oss_server" {
     external = "${format("82%d0", count.index)}"
     protocol = "tcp"
   }
+
+  labels = { image = "vaultron" }
 
 }
 
@@ -215,7 +217,7 @@ resource "docker_container" "vault_custom_server" {
 
   upload = {
     content = "${data.template_file.telemetry_config.rendered}"
-    file    = "/vault/config/telemetry.hcl"
+    file    = "${ var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl" }"
   }
 
   upload = {
@@ -273,5 +275,7 @@ resource "docker_container" "vault_custom_server" {
     external = "${format("82%d0", count.index)}"
     protocol = "tcp"
   }
+
+  labels = { image = "vaultron" }
 
 }
