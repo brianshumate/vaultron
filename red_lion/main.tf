@@ -100,12 +100,32 @@ data "template_file" "consuls2_tls_key" {
 
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
+  image = "${docker_image.consul.latest}"
+  entrypoint = ["consul",
+    "agent",
+    "-server",
+    "-config-dir=/consul/config",
+    "-node=consuls0",
+    "-client=0.0.0.0",
+    "-dns-port=53",
+  ]
+  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  labels = { robot = "vaultron" }
+  must_run = true
   name  = "consuls0"
   hostname  = "consuls0"
   domainname = "consul"
   dns_search  = ["consul"]
-  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  image = "${docker_image.consul.latest}"
+
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls0/config"
+    container_path = "/consul/config"
+  }
+
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls0/data"
+    container_path = "/consul/data"
+  }
 
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
@@ -127,29 +147,8 @@ resource "docker_container" "consuls0" {
     file    = "/etc/ssl/consul-server.key"
   }
 
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls0/config"
-    container_path = "/consul/config"
-  }
-
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls0/data"
-    container_path = "/consul/data"
-  }
-
-  entrypoint = ["consul",
-    "agent",
-    "-server",
-    "-config-dir=/consul/config",
-    "-node=consuls0",
-    "-client=0.0.0.0",
-    "-dns-port=53",
-  ]
-
-  must_run = true
-
-  # Define some published ports here for the purpose of connecting into
-  # the cluster from the host system:
+  # Define some published ports here for the purpose of ingress/egress
+  # with the cluster from the Docker host:
   ports {
     internal = "8300"
     external = "8300"
@@ -204,32 +203,38 @@ resource "docker_container" "consuls0" {
     protocol = "udp"
   }
 
-  # EXPERIMENTAL:
-  # Add ACL agent token
-  #provisioner "local-exec" {
-  #  command = "curl -s --request PUT --header 'X-Consul-Token: vaultron-forms-and-eats-all-the-tacos-in-town' --data '{\"Token\": \"c0ffee55-7a15-420e-9a27-402f14f6bdc7\"}' http://127.0.0.1:8500/v1/agent/token/acl_agent_token > /dev/null"
-  #}
-
-  labels = { image = "vaultron" }
-
 }
 
 # Consul Open Source Server 2
 
 resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
+  image = "${docker_image.consul.latest}"
+  entrypoint = ["consul",
+    "agent",
+    "-server",
+    "-config-dir=/consul/config",
+    "-node=consuls1",
+    "-client=0.0.0.0",
+    "-dns-port=53",
+  ]
+  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  labels = { robot = "vaultron" }
+  must_run = true
   name  = "consuls1"
   hostname  = "consuls1"
   domainname = "consul"
   dns_search  = ["consul"]
-  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  image = "${docker_image.consul.latest}"
 
-  # TODO: make GELF logging a conditional thing
-  # log_driver = "gelf"
-  # log_opts = {
-  #   gelf-address = "udp://${var.log_server_ip}:5114"
-  # }
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls1/config"
+    container_path = "/consul/config"
+  }
+
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls1/data"
+    container_path = "/consul/data"
+  }
 
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
@@ -251,47 +256,38 @@ resource "docker_container" "consuls1" {
     file    = "/etc/ssl/consul-server.key"
   }
 
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls1/config"
-    container_path = "/consul/config"
-  }
-
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls1/data"
-    container_path = "/consul/data"
-  }
-
-  entrypoint = ["consul",
-    "agent",
-    "-server",
-    "-config-dir=/consul/config",
-    "-node=consuls1",
-    "-join=${docker_container.consuls0.ip_address}",
-    "-dns-port=53",
-  ]
-
-  must_run = true
-
-  labels = { image = "vaultron" }
-
 }
 
 # Consul Open Source Server 3
 
 resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
+  image = "${docker_image.consul.latest}"
+  entrypoint = ["consul",
+    "agent",
+    "-server",
+    "-config-dir=/consul/config",
+    "-node=consuls2",
+    "-client=0.0.0.0",
+    "-dns-port=53",
+  ]
+  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  labels = { robot = "vaultron" }
+  must_run = true
   name  = "consuls2"
   hostname  = "consuls2"
   domainname = "consul"
   dns_search  = ["consul"]
-  env   = ["CONSUL_UI_BETA=true", "CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  image = "${docker_image.consul.latest}"
 
-  # TODO: make GELF logging a conditional thing
-  # log_driver = "gelf"
-  # log_opts = {
-  #   gelf-address = "udp://${var.log_server_ip}:5114"
-  # }
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls2/config"
+    container_path = "/consul/config"
+  }
+
+  volumes {
+    host_path      = "${path.module}/../../../consul/consuls2/data"
+    container_path = "/consul/data"
+  }
 
   upload = {
     content = "${data.template_file.consul_oss_server_common_config.rendered}"
@@ -312,29 +308,6 @@ resource "docker_container" "consuls2" {
     content = "${data.template_file.consuls2_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
-
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls2/config"
-    container_path = "/consul/config"
-  }
-
-  volumes {
-    host_path      = "${path.module}/../../../consul/consuls2/data"
-    container_path = "/consul/data"
-  }
-
-  entrypoint = ["consul",
-    "agent",
-    "-server",
-    "-config-dir=/consul/config",
-    "-node=consuls2",
-    "-join=${docker_container.consuls0.ip_address}",
-    "-dns-port=53",
-  ]
-
-  must_run = true
-
-  labels = { image = "vaultron" }
 
 }
 
@@ -416,6 +389,6 @@ resource "docker_container" "consul_oss_client" {
                      )}"]
   must_run   = true
 
-  labels = { image = "vaultron" }
+  labels = { robot = "vaultron" }
 
 }

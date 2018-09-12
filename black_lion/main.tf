@@ -82,13 +82,12 @@ resource "docker_container" "vault_oss_server" {
   image = "${docker_image.vault.latest}"
   entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
-              "VAULT_REDIRECT_INTERFACE=eth0",
-              "VAULT_CLUSTER_ADDR=https://0.0.0.0:8201"]
+              "VAULT_REDIRECT_INTERFACE=eth0"]
   hostname  = "${format("vault%d", count.index)}"
   domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
-  labels = { image = "vaultron" }
+  labels = { robot = "vaultron" }
   must_run = true
 
   capabilities {
@@ -188,13 +187,12 @@ resource "docker_container" "vault_custom_server" {
   image = "${docker_image.vault.latest}"
   entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
-              "VAULT_REDIRECT_INTERFACE=eth0",
-              "VAULT_CLUSTER_ADDR=https://0.0.0.0:8201"]
+              "VAULT_REDIRECT_INTERFACE=eth0"]
   hostname  = "${format("vault%d", count.index)}"
-  domainname = "consul"
+  domainname = "taco"
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
-  labels = { image = "vaultron" }
+  labels = { robot = "vaultron" }
   must_run = true
 
   capabilities {
