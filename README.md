@@ -250,13 +250,13 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 
 $ consul members
-Node                 Address          Status  Type    Build  Protocol  DC
-consulc0  172.17.0.6:8301  alive   client  0.7.5  2         arus
-consulc1  172.17.0.7:8301  alive   client  0.7.5  2         arus
-consulc2  172.17.0.5:8301  alive   client  0.7.5  2         arus
-consuls0  172.17.0.2:8301  alive   server  0.7.5  2         arus
-consuls1  172.17.0.3:8301  alive   server  0.7.5  2         arus
-consuls2  172.17.0.4:8301  alive   server  0.7.5  2         arus
+Node      Address          Status  Type    Build  Protocol  DC    Segment
+consuls0  172.17.0.6:8301  alive   server  1.2.2  2         arus  <all>
+consuls1  172.17.0.4:8301  alive   server  1.2.2  2         arus  <all>
+consuls2  172.17.0.5:8301  alive   server  1.2.2  2         arus  <all>
+consulc0  172.17.0.8:8301  alive   client  1.2.2  2         arus  <default>
+consulc1  172.17.0.7:8301  alive   client  1.2.2  2         arus  <default>
+consulc2  172.17.0.9:8301  alive   client  1.2.2  2         arus  <default>
 ```
 
 Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and the container image.
@@ -273,17 +273,28 @@ Additionally Consul DNS API is also published from the first Consul server at `l
 $ dig -p 8600 @localhost consul.service.consul
 ...
 ;; ANSWER SECTION:
-consul.service.consul.  0 IN  A 172.17.0.3
-consul.service.consul.  0 IN  A 172.17.0.2
-consul.service.consul.  0 IN  A 172.17.0.4
+consul.service.consul.  0   IN  A   172.17.0.5
+consul.service.consul.  0   IN  A   172.17.0.6
+consul.service.consul.  0   IN  A   172.17.0.4
+
+;; ADDITIONAL SECTION:
+consul.service.consul.  0   IN  TXT "consul-network-segment="
+consul.service.consul.  0   IN  TXT "consul-network-segment="
+consul.service.consul.  0   IN  TXT "consul-network-segment="
+...
 ```
 
 or
 
 ```
 $ dig -p 8600 @localhost active.vault.service.consul
+...
 ;; ANSWER SECTION:
-active.vault.service.consul. 0  IN  A 172.17.0.5
+active.vault.service.consul. 0  IN  A   172.17.0.8
+
+;; ADDITIONAL SECTION:
+active.vault.service.consul. 0  IN  TXT "consul-network-segment="
+...
 ```
 
 or
@@ -292,9 +303,18 @@ or
 $ dig -p 8600 @localhost vault.service.consul SRV
 ...
 ;; ANSWER SECTION:
-vault.service.consul. 0 IN  SRV 1 1 8200 consulc0.node.arus.consul.
-vault.service.consul. 0 IN  SRV 1 1 8200 consulc2.node.arus.consul.
-vault.service.consul. 0 IN  SRV 1 1 8200 consulc1.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 consulc0.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 consulc2.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 consulc1.node.arus.consul.
+
+;; ADDITIONAL SECTION:
+consulc0.node.arus.consul. 0    IN  A   172.17.0.8
+consulc0.node.arus.consul. 0    IN  TXT "consul-network-segment="
+consulc2.node.arus.consul. 0    IN  A   172.17.0.9
+consulc2.node.arus.consul. 0    IN  TXT "consul-network-segment="
+consulc1.node.arus.consul. 0    IN  A   172.17.0.7
+consulc1.node.arus.consul. 0    IN  TXT "consul-network-segment="
+...
 ```
 
 or

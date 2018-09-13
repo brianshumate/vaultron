@@ -189,7 +189,7 @@ resource "docker_container" "vault_custom_server" {
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
   hostname  = "${format("vault%d", count.index)}"
-  domainname = "taco"
+  domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
   labels = { robot = "vaultron" }
