@@ -1,7 +1,8 @@
-## v1.9.1 (UNRELEASED)
+## v1.9.1
 
 - Vault v0.11.1
 - Update configuration for telemetry
+- Update documentation
 
 ## v1.9.0
 

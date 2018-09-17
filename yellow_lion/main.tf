@@ -81,27 +81,65 @@ resource "docker_image" "grafana" {
   keep_locally = true
 }
 
+# Grafana configuration
+data "template_file" "grafana_config" {
+  count        = "${var.vaultron_telemetry_count}"
+  template = "${file("${path.module}/templates/datasource.yml.tpl")}"
+
+  vars {
+    statsd_ip = "${element(concat(docker_container.statsd_graphite.*.ip_address, list("")), 0)}"
+  }
+}
+
+# Grafana dashboard bootstrap configuration
+data "template_file" "grafana_dashboard_bootstrap_config" {
+  count        = "${var.vaultron_telemetry_count}"
+  template = "${file("${path.module}/templates/dashboard_bootstrap.yml.tpl")}"
+}
+
+# Grafana dashboard configuration
+# data "template_file" "grafana_dashboard_config" {
+#   count        = "${var.vaultron_telemetry_count}"
+#   template = "${file("${path.module}/templates/dashboard.json.tpl")}"
+# }
+
 # Grafana container resource
 resource "docker_container" "grafana" {
   count        = "${var.vaultron_telemetry_count}"
   name  = "vgrafana"
   image = "${docker_image.grafana.latest}"
+  env   = ["GF_INSTANCE_NAME=Vaultron"]
   env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]
+  env   = ["GF_ALLOW_SIGN_UP=false"]
+  env   = ["GF_DISABLE_GRAVATAR=true"]
+  env   = ["GF_ALLOW_ORG_CREATE=false"]
   env   = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
+  must_run = true
+  labels = { robot = "vaultron" }
 
   volumes {
     host_path      = "${path.module}/../../../grafana/data"
     container_path = "/var/lib/grafana"
   }
 
-  must_run = true
+  upload {
+    content = "${element(data.template_file.grafana_config.*.rendered, count.index)}"
+    file    = "/etc/grafana/provisioning/datasources/vaultron_datasource.yml"
+  }
+
+  upload {
+    content = "${element(data.template_file.grafana_dashboard_bootstrap_config.*.rendered, count.index)}"
+    file    = "/etc/grafana/provisioning/dashboards/vaultron_dashboard.yml"
+  }
+
+  # upload {
+  #   content = "${element(data.template_file.grafana_dashboard_config.*.rendered, count.index)}"
+  #   file    = "/var/lib/grafana/dashboards/vaultron_dashboard.json"
+  # }
 
   ports {
     internal = "3000"
     external = "3000"
     protocol = "tcp"
   }
-
-  labels = { robot = "vaultron" }
-
 }
