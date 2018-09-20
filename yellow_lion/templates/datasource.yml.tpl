@@ -7,7 +7,7 @@ deleteDatasources:
 datasources:
 - name: Vaultron
   type: graphite
-  access: server
+  access: proxy
   orgId: 1
   url: http://${statsd_ip}
   password:

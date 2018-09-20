@@ -59,7 +59,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 5,
       "gridPos": {
         "h": 5,
@@ -154,7 +154,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 5,
       "gridPos": {
         "h": 5,
@@ -249,7 +249,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 4,
       "gridPos": {
         "h": 5,
@@ -344,7 +344,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 5,
       "gridPos": {
         "h": 5,
@@ -443,7 +443,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -521,7 +521,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -599,7 +599,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -677,7 +677,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -755,7 +755,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -833,7 +833,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -907,7 +907,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 1,
       "gridPos": {
         "h": 4,
@@ -988,7 +988,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 1,
       "gridPos": {
         "h": 4,
@@ -1069,7 +1069,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 1,
       "gridPos": {
         "h": 4,
@@ -1150,7 +1150,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "fill": 1,
       "gridPos": {
         "h": 4,
@@ -1231,7 +1231,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_VAULTRON}",
+      "datasource": "Vaultron",
       "decimals": 0,
       "fill": 5,
       "gridPos": {
