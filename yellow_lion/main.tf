@@ -114,7 +114,6 @@ resource "docker_container" "grafana" {
   env   = ["GF_DISABLE_GRAVATAR=true"]
   env   = ["GF_ALLOW_ORG_CREATE=false"]
   env   = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
-  env   = ["GF_DEFAULT_THEME=light"]
   must_run = true
   labels = { robot = "vaultron" }
 

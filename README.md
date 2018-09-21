@@ -408,9 +408,11 @@ The Vault audit logs for any given _active server_ are available as:
 
 ### Telemetry Notes
 
-Vaultron includes a comprehensive telemetry gathering and graphing stack provided by the Yellow Lion module. This module is optional and easily enabled. It provides statsd, Graphite, and Grafana from the addition of two official container images.
+Vaultron includes a comprehensive telemetry gathering and graphing stack provided by the Yellow Lion module. This module is optional and enabled by an environment variable value.
 
-You can enable Yellow Lion by setting the value of the *TF_VAR_vaultron_telemetry_count* environment variable to **1**, with something like:
+It provides statsd, Graphite, and Grafana from the addition of two official Grafana container images.
+
+You can enable Yellow Lion by setting the value of the *TF_VAR_vaultron_telemetry_count* environment variable to **1**:
 
 ```
 $ export TF_VAR_vaultron_telemetry_count=1
@@ -418,7 +420,14 @@ $ export TF_VAR_vaultron_telemetry_count=1
 
 prior to the execution of `./form`.
 
-See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/blob/master/examples/telemetry/README.md) documentation for more details on setup.
+Once Vaultron is formed, you can then access Grafana at: http://127.0.0.1:3000/
+
+- username: `admin`
+- password: `vaultron`
+
+Once signed in, you can access the example **Vault** dashboard; you'll need to initialize, unseal, and do some work with Vault before metrics begin to appear. Adjusting the time filtering in the Grafana UI to a more recent span can also help.
+
+See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/blob/master/examples/telemetry/README.md) documentation for more details on this setup.
 
 ### A note about custom Binaries
 
