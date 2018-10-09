@@ -1,5 +1,6 @@
-## v2.0.0 (UNRELEASED)
+## v2.0.0
 
+- Vault v0.11.2
 - Yellow Lion is now more plug and play; see README for more details
 
 ## v1.9.1

@@ -68,7 +68,7 @@ rm -f ./.terraform/terraform.tfstate*
 errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then
-  msg boom "Vaultron unformed (with $errors errors)!"
+  msg alert "Vaultron unformed (with $errors errors)!"
 else
   msg boom "Vaultron unformed!"
 fi

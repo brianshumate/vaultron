@@ -3,21 +3,24 @@
 # This script contains common functions and is sourced by the
 # the other Vaultron scripts; there's nothing useful in here to run directly.
 #
-# shellcheck disable=SC1117,SC2059
-#
+# shellcheck disable=SC2059
+#                       ^
+# NB: we must roll with this sole shellcheck exception because the ANSI
+#     escape sequences as expanded by string formatting are ineffective
+#     leading the printing of literal characters instead, for example:
+#         \033[0;36m[=]%sForm Vaultron! ...%s\n\033[0mn
+#     so we take the ding in the name of ANSI color greatness
+#     (void where prohibited)
 
-# FIXME: remove these
-# export CONSUL_HTTP_ADDR="localhost:8500"
-# export VAULT_ADDR="https://localhost:8200"
 export VAULTRON_TMP="$PWD/tmp"
 
-export txtblu="\033[0;34m" # Blue
-export txtcya="\033[0;36m" # Cyan
-export txtgrn="\033[0;32m" # Green
-export txtred="\033[0;31m" # Red
-export txtylw="\033[0;33m" # Yellow
-export txtwht="\033[0;37m" # White
-export txtrst="\033[0m"    # Text Reset
+export TXTBLU="\\033[0;34m" # Blue
+export TXTCYA="\\033[0;36m" # Cyan
+export TXTGRN="\\033[0;32m" # Green
+export TXTRED="\\033[0;31m" # Red
+export TXTYLW="\\033[0;33m" # Yellow
+export TXTWHT="\\033[0;37m" # White
+export TXTRST="\\033[0m"    # Text Reset
 
 # Begin common bits
 msg() {
@@ -25,28 +28,28 @@ msg() {
     msgtxt="$2"
     case "${msgtype}" in
         greeting)
-            printf "[=] ${msgtxt}\n"
+            printf "${TXTCYA}[vaultron] [=] ${msgtxt}${TXTRST}\\n"
             ;;
         info)
-            printf "[i] ${msgtxt}\n"
+            printf "${TXTWHT}[vaultron] [i] ${msgtxt}${TXTRST}\\n"
             ;;
         success)
-            printf "[^] ${msgtxt}\n"
+            printf "${TXTGRN}[vaultron] [^] ${msgtxt}${TXTRST}\\n"
             ;;
         complete)
-            printf "[+] ${msgtxt}\n"
+            printf "${TXTGRN}[vaultron] [+] ${msgtxt}${TXTRST}\\n"
             ;;
         boom)
-            printf "[*] ${msgtxt}\n" >&2
+            printf "${TXTBLU}[vaultron] [*] ${msgtxt}${TXTRST}\\n" >&2
             ;;
         notice)
-            printf "[!] ${msgtxt}\n"
+            printf "${TXTYLW}[vaultron] [!] ${msgtxt}${TXTRST}\\n"
             ;;
         alert)
-            printf "[e] ${msgtxt}\n" >&2
+            printf "${TXTRED}[vaultron] [e] ${msgtxt}${TXTRST}\\n" >&2
             ;;
         *)
-            printf "[@] ${msgtxt}\n" >&2
+            printf "${TXTCYA}[vaultron] [@] ${msgtxt}${TXTRST}\\n" >&2
             ;;
     esac
 }
@@ -56,9 +59,9 @@ check_cli_cap() {
   vault_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
   vault_min_version="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
   if [ "$vault_version" = "0.9.1" ] || [ "$vault_min_version" -lt "9" ]; then
-    vault_cli_cap="0"
+    export vault_cli_cap="0"
   else
-    vault_cli_cap="1"
+    export vault_cli_cap="1"
   fi
 }
 # End common bits
@@ -70,12 +73,12 @@ tfmsg() {
            gsub(/\033\[[0-9]+m/,"")
         }
         /^(Apply complete|Destroy complete|Plan:)/ {
-            print "greeting"
+            print "info"
             print "Terraform", tolower($0)
             exit
         }
         /^Terraform.*initialized!/ {
-            print "greeting"
+            print "info"
             print
             exit
         }

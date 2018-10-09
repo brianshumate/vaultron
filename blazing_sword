@@ -130,7 +130,7 @@ initialize_vault() {
 }
 
 # Enable database secrets engine
-mount_database_backend() {
+enable_database_secrets_engine() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
     v_enable_cmd="vault secrets enable"
@@ -147,7 +147,7 @@ mount_database_backend() {
 }
 
 # Enable a handy mix of secrets engines
-mount_secret_backends() {
+enable_secrets_engines() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
     v_enable_cmd="vault secrets enable"
@@ -225,13 +225,12 @@ mount_secret_backends() {
 # Get Vault status
 status() {
   msg info "Vault status:"
-  echo
-  printf "$(vault status)"
-  echo "\n"
+  printf "\n$(vault status)"
+  printf "\n"
 }
 
 # Note about statsd server for Telemetry
-telemetry() {
+telemetry_info() {
   if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vstatsd) > /dev/null 2>&1; then
     msg info "Telemetry: statsd address: $VSTATSD_ADDR"
   else
@@ -300,8 +299,15 @@ else
   msg greeting "Form Blazing Sword! ..."
 fi
 
-# Ain't nobody got time for your old stale token!
-unset VAULT_TOKEN
+# Ain't nobody got time for your stale token in here causing problems!
+if [ -z "$VAULT_TOKEN" ]; then
+  msg notice "Existing VAULT_TOKEN set in this environment will be unset! ..."
+  if ! unset VAULT_TOKEN; then
+    msg alert "Problem with unset of existing VAULT_TOKEN environment variable!"
+  else
+    msg success "Existing VAULT_TOKEN environment variable unset!"
+  fi
+fi
 
 # <wait 2> :lol:
 # sleep 2
@@ -311,10 +317,10 @@ unseal_vault
 auth_root
 enable_auth_backends
 enable_audit_logging
-mount_secret_backends
-mount_database_backend
+enable_secrets_engines
+enable_database_secrets_engine
 status
 enabled
 if [ "$TF_VAR_vaultron_telemetry_count" == "1" ]; then
-  telemetry
+  telemetry_info
 fi
