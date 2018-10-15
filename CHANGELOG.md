@@ -1,3 +1,8 @@
+## v2.0.1 (UNRELEASED)
+
+- Vault v0.11.3
+- Use `vaultN` for Consul client node names
+
 ## v2.0.0
 
 - Vault v0.11.2
