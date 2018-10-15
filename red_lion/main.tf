@@ -381,7 +381,7 @@ resource "docker_container" "consul_oss_client" {
                      "-config-dir=/consul/config",
                      "-client=0.0.0.0",
                      "-data-dir=/consul/data",
-                     "-node=consulc${count.index}",
+                     "-node=vault${count.index}",
                      "-datacenter=${var.datacenter_name}",
                      "-join=${docker_container.consuls2.ip_address}",
                      "-join=${docker_container.consuls1.ip_address}",
