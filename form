@@ -3,7 +3,7 @@
 # This script is used to form Vaultron with Terraform
 #
 # Some of these would work only for pure POSIX
-# shellcheck disable=SC2154,SC2039,SC2059,SC1091,SC1117
+# shellcheck disable=SC2154,SC1091
 
 . ./skydome
 
@@ -41,7 +41,8 @@ export VAULT_ADDR="https://127.0.0.1:8200"
 export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 
 # or use this command to do it for you:
-$ . ./ion_darts
+
+. ./ion_darts
 EOF
 }
 
@@ -122,12 +123,12 @@ check_vault_version
 check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  msg info "Vault Docker image version:\t\t UNKNOWN ${txtrst}(${txtblu}custom binary${txtrst})"
+  msg info "Vault Docker image version: UNKNOWN (custom binary)"
 else
-  msg info "Vault Docker image version:\t ${TF_VAR_vault_version}"
+  msg info "Vault version: ${TF_VAR_vault_version}"
 fi
 
-msg info "Consul Docker image version:\t ${TF_VAR_consul_version}"
+msg info "Consul version: ${TF_VAR_consul_version}"
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
@@ -145,4 +146,5 @@ fi
 
 rm -f "${plan_file}"
 msg success "Vaultron formed!"
+tput setaf 7
 form_message

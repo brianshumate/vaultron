@@ -10,10 +10,10 @@
 # - Unseal Vault with key material from temporary file
 # - Enable a range of auth methods and secrets engines with default mounts
 #
-# ‼️ PLEASE DO NOT USE THIS IN PRODUCTION ‼️
+# ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
 #
 # Pick one, fix one!
-# shellcheck disable=SC1117,SC2154,SC2059,SC2039,SC1091
+# shellcheck disable=SC2154,SC2039,SC1091
 
 . ./skydome
 
@@ -36,29 +36,33 @@ usage() {
 # Authenticate with initial root token
 auth_root() {
   msg info "Authenticating with Vault root token ..."
-  get_initial_root_token "${vault_dat}"
-  vault auth "${init_root_token}"  > /dev/null 2>&1
+  get_initial_root_token "${VAULT_DAT}"
+  vault auth "${INITIAL_ROOT_TOKEN}"  > /dev/null 2>&1
 }
 
 # List enabled auth methods and secrets engines
 enabled() {
+  echo
   msg info "Enabled Auth Methods:"
+  echo
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_auth_list_cmd="vault auth list"
+    AUTH_LIST_CMD="vault auth list"
   else
-    v_auth_list_cmd="vault auth -methods"
+    AUTH_LIST_CMD="vault auth -methods"
   fi
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_secret_list_cmd="vault secrets list"
+    SECRETS_LIST_CMD="vault secrets list"
   else
-    v_secret_list_cmd="vault mounts"
+    SECRETS_LIST_CMD="vault mounts"
   fi
-  $v_auth_list_cmd
+  $AUTH_LIST_CMD
   echo
   msg info "Enabled Secrets Engines:"
-  $v_secret_list_cmd
   echo
+  $SECRETS_LIST_CMD
+  echo
+  $TXTRST
 }
 
 # Enable a file based audit log
@@ -72,14 +76,14 @@ enable_audit_logging() {
 enable_auth_backends() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_auth_cmd="vault auth enable"
+    AUTH_ENABLE_CMD="vault auth enable"
   else
-    v_auth_cmd="vault auth-enable"
+    AUTH_ENABLE_CMD="vault auth-enable"
   fi
   msg info "Enabling Vault authentication backends ..."
   auth_root
 
-  $v_auth_cmd -path=vaultron-approle approle > /dev/null 2>&1
+  $AUTH_ENABLE_CMD -path=vaultron-approle approle > /dev/null 2>&1
   msg complete "Enabled AppRole authentication backend at vaultron-approle!"
 
   # TODO: This needs to be conditionally added based on installed Vault
@@ -89,38 +93,39 @@ enable_auth_backends() {
   # msg complete "Enabled AWS authentication backend!"
   #
 
-  $v_auth_cmd -path vaultron-cert cert > /dev/null 2>&1
+  $AUTH_ENABLE_CMD -path vaultron-cert cert > /dev/null 2>&1
   msg complete "Enabled TLS certificate authentication backend at vaultron-cert!"
 
-  $v_auth_cmd -path=vaultron-ldap ldap > /dev/null 2>&1
+  $AUTH_ENABLE_CMD -path=vaultron-ldap ldap > /dev/null 2>&1
   msg complete "Enabled LDAP authentication backend at vaultron-ldap!"
 
-  $v_auth_cmd -path=vaultron-userpass userpass > /dev/null 2>&1
+  $AUTH_ENABLE_CMD -path=vaultron-userpass userpass > /dev/null 2>&1
   msg complete "Enabled Username & Password authentication backend at vaultron-userpass!"
 }
 
 # Get a subset of unseal keys
 get_unseal_keys() {
   msg info "Get unseal keys ..."
-  k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
+  k0=$(grep 'Unseal Key 1' "${VAULT_DAT}" | awk '{print $NF}')
 }
 
 # Get the initial root token
 get_initial_root_token() {
-  init_root_token=$(grep 'Initial Root Token' "${1}" | awk '{print $NF}')
+  INITIAL_ROOT_TOKEN=$(grep 'Initial Root Token' "${1}" | awk '{print $NF}')
 }
 
 # Initialize Vault and save temporary unseal keys and root token
 initialize_vault() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_init_cmd="vault operator init -key-shares=1  -key-threshold=1"
+    INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
   else
-    v_init_cmd="vault init -key-shares=1  -key-threshold=1"
+    INIT_CMD="vault init -key-shares=1  -key-threshold=1"
   fi
   msg info "Initializing Vault ..."
-  vault_dat="./vault/vault_DEV_ONLY-$(date +%s).tmp"
-  if ! $v_init_cmd | perl -pe 's/\x1b\[[0-9;]*m//g' > "${vault_dat}"; then
+  VAULT_DAT="./vault/vault_DEV_ONLY-$(date +%s).tmp"
+  # Wherein Perl is not yet dead and a subtle amount of line noise lives on!
+  if ! $INIT_CMD | perl -pe 's/\x1b\[[0-9;]*m//g' > "${VAULT_DAT}"; then
     errors=$((errors + $?))
     msg alert "Failed to initialize Vault!"
     exit $errors
@@ -133,13 +138,13 @@ initialize_vault() {
 enable_database_secrets_engine() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_enable_cmd="vault secrets enable"
+    SECRETS_ENABLE_CMD="vault secrets enable"
   else
-    v_enable_cmd="vault mount"
+    SECRETS_ENABLE_CMD="vault mount"
   fi
   msg info "Enabling database secrets engine ..."
-  get_initial_root_token "${vault_dat}"
-  if ! $v_enable_cmd -path=vaultron-database database> /dev/null 2>&1; then
+  get_initial_root_token "${VAULT_DAT}"
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-database database> /dev/null 2>&1; then
     msg alert "Problem enabling database secrets engine!"
   else
     msg complete "Enabled database secrets engine!"
@@ -150,14 +155,14 @@ enable_database_secrets_engine() {
 enable_secrets_engines() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_enable_cmd="vault secrets enable"
+    SECRETS_ENABLE_CMD="vault secrets enable"
   else
-    v_enable_cmd="vault mount"
+    SECRETS_ENABLE_CMD="vault mount"
   fi
   msg info "Mounting Vault secret backends ..."
-  get_initial_root_token "${vault_dat}"
+  get_initial_root_token "${VAULT_DAT}"
 
-  if ! $v_enable_cmd -path=vaultron-kv kv > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-kv kv > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling KV secrets engine at vaultron-kv!"
     exit $errors
@@ -165,7 +170,7 @@ enable_secrets_engines() {
   msg complete "Enabled KV secrets engine at vaultron-kv!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-aws aws > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-aws aws > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling AWS secrets engine at vaultron-aws!"
     exit $errors
@@ -173,7 +178,7 @@ enable_secrets_engines() {
   msg complete "Enabled AWS secrets engine at vaultron-aws!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-consul consul > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-consul consul > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling Consul secrets engine at vaultron-consul!"
     exit $errors
@@ -181,7 +186,7 @@ enable_secrets_engines() {
   msg complete "Enabled Consul secrets engine at vaultron-consul!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-root-pki pki > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-root-pki pki > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling PKI secrets engine at vaultron-root-pki!"
     exit $errors
@@ -189,7 +194,7 @@ enable_secrets_engines() {
   msg complete "Enabled PKI secrets engine at vaultron-root-pki!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-int-pki pki > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-int-pki pki > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling PKI secrets engine at vaultron-int-pki!"
     exit $errors
@@ -197,7 +202,7 @@ enable_secrets_engines() {
   msg complete "Enabled PKI secrets engine at vaultron-int-pki!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-transit transit > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-transit transit > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling Transit secrets engine at vaultron-transit!"
     exit $errors
@@ -205,7 +210,7 @@ enable_secrets_engines() {
   msg complete "Enabled Transit secrets engine at vaultron-transit!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-ssh-host-signer ssh > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-ssh-host-signer ssh > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling SSH secrets engine at vaultron-ssh-host-signer!"
     exit $errors
@@ -213,7 +218,7 @@ enable_secrets_engines() {
   msg complete "Enabled SSH secrets engine at vaultron-ssh-host-signer!"
   fi
 
-  if ! $v_enable_cmd -path=vaultron-ssh-client-signer ssh > /dev/null 2>&1; then
+  if ! $SECRETS_ENABLE_CMD -path=vaultron-ssh-client-signer ssh > /dev/null 2>&1; then
     errors=$((errors + $?))
     msg alert "Problem enabling SSH secrets engine at vaultron-ssh-client-signer!"
     exit $errors
@@ -225,8 +230,8 @@ enable_secrets_engines() {
 # Get Vault status
 status() {
   msg info "Vault status:"
-  printf "\n$(vault status)"
-  printf "\n"
+  printf "\\n%s" "$(vault status)"
+  printf "\\n"
 }
 
 # Note about statsd server for Telemetry
@@ -242,29 +247,29 @@ telemetry_info() {
 unseal_vault() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_unseal_cmd="vault operator unseal"
+    UNSEAL_CMD="vault operator unseal"
   else
-    v_unseal_cmd="vault unseal"
+    UNSEAL_CMD="vault unseal"
   fi
   msg info "Unsealing Vault ..."
   get_unseal_keys
 
   if ! VAULT_ADDR="https://localhost:8200" \
-    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8210" \
-    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8220" \
-    $v_unseal_cmd "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Failed to unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
@@ -281,8 +286,8 @@ fi
 
 if (set -u; : "${1}") 2> /dev/null; then
   msg info "Filename argument specified; Use file: ${1}"
-  vault_dat="${1}"
-  k0=$(grep 'Unseal Key 1' "${vault_dat}" | awk '{print $NF}')
+  VAULT_DAT="${1}"
+  k0=$(grep 'Unseal Key 1' "${VAULT_DAT}" | awk '{print $NF}')
   msg info "Unsealing by default since filename used ..."
   for i in {0..2}; do
     VAULT_ADDR="https://localhost:82${i}0" \

@@ -14,42 +14,44 @@
 
 export VAULTRON_TMP="$PWD/tmp"
 
-export TXTBLU="\\033[0;34m" # Blue
-export TXTCYA="\\033[0;36m" # Cyan
-export TXTGRN="\\033[0;32m" # Green
-export TXTRED="\\033[0;31m" # Red
-export TXTYLW="\\033[0;33m" # Yellow
-export TXTWHT="\\033[0;37m" # White
-export TXTRST="\\033[0m"    # Text Reset
+# Colors
+TXTBLU="$(tput setaf 4)"
+TXTCYA="$(tput setaf 6)"
+TXTGRN="$(tput setaf 2)"
+TXTMGT="$(tput setaf 5)"
+TXTRED="$(tput setaf 1)"
+TXTRST="$(tput setaf 0)"
+TXTYLW="$(tput setaf 3)"
+TXTWHT="$(tput setaf 7)"
 
-# Begin common bits
 msg() {
-    msgtype="$1"
-    msgtxt="$2"
-    case "${msgtype}" in
+    MSGSRC="[vaultron]"
+    MSGTYPE="$1"
+    MSGTXT="$2"
+    case "${MSGTYPE}" in
         greeting)
-            printf "${TXTCYA}[vaultron] [=] ${msgtxt}${TXTRST}\\n"
+            printf "%s%s [=] %s %s\\n" "$TXTBLU" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         info)
-            printf "${TXTWHT}[vaultron] [i] ${msgtxt}${TXTRST}\\n"
+            printf "%s%s [i] %s %s\\n" "$TXTWHT" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         success)
-            printf "${TXTGRN}[vaultron] [^] ${msgtxt}${TXTRST}\\n"
+            printf "%s%s [+] %s %s\\n" "$TXTGRN" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         complete)
-            printf "${TXTGRN}[vaultron] [+] ${msgtxt}${TXTRST}\\n"
+            printf "%s%s [^] %s %s\\n" "$TXTGRN" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         boom)
-            printf "${TXTBLU}[vaultron] [*] ${msgtxt}${TXTRST}\\n" >&2
+            printf "%s%s [*] %s %s\\n" "$TXTMGT" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         notice)
-            printf "${TXTYLW}[vaultron] [!] ${msgtxt}${TXTRST}\\n"
+            printf "%s%s [-] %s %s\\n" "$TXTYLW" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         alert)
-            printf "${TXTRED}[vaultron] [e] ${msgtxt}${TXTRST}\\n" >&2
+            printf "%s%s [!] %s %s\\n" "$TXTRED" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         *)
-            printf "${TXTCYA}[vaultron] [@] ${msgtxt}${TXTRST}\\n" >&2
+            printf "%s%s [@] %s %s\\n" "$TXTCYA" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
     esac
 }

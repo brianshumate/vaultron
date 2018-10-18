@@ -16,7 +16,7 @@ if [ -z "$(command -v terraform)" ]; then
   exit 1
 fi
 
-msg success "Unform Vaultron ..."
+msg greeting "Unform Vaultron ..."
 
 if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."
