@@ -3,7 +3,7 @@
 # This script unforms Vaultron
 #
 # CAUTION: This removes all Vault data and Terraform state!
-# Use `terraform destroy` instead if you wish to preserve data and state.
+# Use `terraform destroy` instead if you wish to selectively preserve data.
 #
 # shellcheck disable=SC1091
 #

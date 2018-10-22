@@ -59,6 +59,15 @@ check_docker() {
   fi
 }
 
+# Check for existing vaultron-* namespaced containers
+check_existing_containers() {
+  if [ "$(docker ps -a | grep -c vaultron)" -ge 1 ]; then
+    msg alert "Existing Docker images with vaultron prefix detected!"
+    msg alert "Please examine with 'docker ps -a' and cleanup before forming Vaultron!"
+    exit 1
+  fi
+}
+
 # TerraFORM Vaultron!
 
 check_consul_version() {

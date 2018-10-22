@@ -116,7 +116,7 @@ resource "docker_container" "consuls0" {
   env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   labels = { robot = "vaultron" }
   must_run = true
-  name  = "consuls0"
+  name  = "vaultron-consuls0"
   hostname  = "consuls0"
   domainname = "consul"
   dns_search  = ["consul"]
@@ -227,7 +227,7 @@ resource "docker_container" "consuls1" {
   env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   labels = { robot = "vaultron" }
   must_run = true
-  name  = "consuls1"
+  name  = "vaultron-consuls1"
   hostname  = "consuls1"
   domainname = "consul"
   dns_search  = ["consul"]
@@ -282,7 +282,7 @@ resource "docker_container" "consuls2" {
   env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
   labels = { robot = "vaultron" }
   must_run = true
-  name  = "consuls2"
+  name  = "vaultron-consuls2"
   hostname  = "consuls2"
   domainname = "consul"
   dns_search  = ["consul"]
@@ -350,7 +350,7 @@ data "template_file" "consul_client_tls_key" {
 
 resource "docker_container" "consul_oss_client" {
   count = "${var.consul_oss_instance_count}"
-  name  = "${format("consulc%d", count.index)}"
+  name  = "vaultron-${format("consulc%d", count.index)}"
   hostname  = "${format("consulc%d", count.index)}"
   domainname = "consul"
   dns        = ["${docker_container.consuls0.ip_address}",

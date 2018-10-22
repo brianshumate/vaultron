@@ -26,7 +26,7 @@ resource "docker_image" "statsd" {
 
 resource "docker_container" "statsd_graphite" {
   count = "${var.vaultron_telemetry_count}"
-  name  = "vstatsd"
+  name  = "vaultron-vstatsd"
   image = "${docker_image.statsd.latest}"
   must_run = true
   restart = "always"
@@ -121,7 +121,7 @@ data "template_file" "grafana_dashboard_config" {
 
 resource "docker_container" "grafana" {
   count        = "${var.vaultron_telemetry_count}"
-  name  = "vgrafana"
+  name  = "vaultron-vgrafana"
   image = "${docker_image.grafana.latest}"
   env   = ["GF_INSTANCE_NAME=Vaultron"]
   env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]

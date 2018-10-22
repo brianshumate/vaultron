@@ -1,7 +1,7 @@
 # Vault OSS v0.11.2
 
-# This is only for testing reloadable log level
-log_level ="$log_level"
+# Enable reloadable log level
+log_level ="${log_level}"
 
 cluster_name = "${cluster_name }"
 ui = true
