@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# This script unforms Vaultron!
+# This script unforms Vaultron
 #
 # CAUTION: This removes all Vault data and Terraform state!
 # Use `terraform destroy` instead if you wish to preserve data and state.

@@ -1,7 +1,11 @@
+# =======================================================================
 # Vaultron: A Terraformed, Consul-backed, Vault cluster
 #           on Docker for Linux or macOS
+# =======================================================================
 
-# Version variables #########################################################
+# -----------------------------------------------------------------------
+# Version variables
+# -----------------------------------------------------------------------
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
@@ -13,7 +17,9 @@ variable "consul_version" {
   default = "1.3.0"
 }
 
-# Global variables ##########################################################
+# -----------------------------------------------------------------------
+# Global variables
+# -----------------------------------------------------------------------
 
 terraform {
   backend "local" {
@@ -36,7 +42,9 @@ variable "secondary_datacenter_name" {
   default = "sura"
 }
 
-# Vault variables ###########################################################
+# -----------------------------------------------------------------------
+# Vault variables
+# -----------------------------------------------------------------------
 
 # Set TF_VAR_use_vault_oss to set this
 variable "use_vault_oss" {
@@ -83,7 +91,9 @@ variable "vault_server_log_level" {
   default = "debug"
 }
 
-# Consul variables ##########################################################
+# -----------------------------------------------------------------------
+# Consul variables
+# -----------------------------------------------------------------------
 
 # Set TF_VAR_consul_log_level to set this
 variable "consul_log_level" {
@@ -140,7 +150,9 @@ variable "consul_custom_instance_count" {
   default = "0"
 }
 
-# Telemetry variables #######################################################
+# -----------------------------------------------------------------------
+# Telemetry variables
+# -----------------------------------------------------------------------
 
 # Set TF_VAR_vaultron_telemetry_count to set this (either 0 or 1)
 variable "vaultron_telemetry_count" {

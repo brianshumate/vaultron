@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+# =======================================================================
 # This script contains common functions and is sourced by the
 # the other Vaultron scripts; there's nothing useful in here to run directly.
 #
@@ -11,6 +11,7 @@
 #         \033[0;36m[=]%sForm Vaultron! ...%s\n\033[0mn
 #     so we take the ding in the name of ANSI color greatness
 #     (void where prohibited)
+# =======================================================================
 
 export VAULTRON_TMP="$PWD/tmp"
 
@@ -56,7 +57,10 @@ msg() {
     esac
 }
 
+# -----------------------------------------------------------------------
 # Check CLI capabilities for renaming from <= v0.9.1 and v0.9.1+
+# -----------------------------------------------------------------------
+
 check_cli_cap() {
   VAULT_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
   VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
@@ -66,7 +70,6 @@ check_cli_cap() {
     export VAULT_CLI_CAP="1"
   fi
 }
-# End common bits
 
 # Begin Terraform specific bits
 tfmsg() {
@@ -136,4 +139,3 @@ destroy() {
     tfmsg "$tfout"
     return $ret
 }
-# End Terraform specific bits
