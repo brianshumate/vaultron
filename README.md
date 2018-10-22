@@ -54,56 +54,52 @@ After doing so, it takes just 3 steps to form your own Vaultron:
 When Vaultron is successfully formed, the output looks like this:
 
 ```
-[=] Form Vaultron! ...
-[=] Terraform has been successfully initialized!
-[=] Vault Docker image version:      0.10.4
-[=] Consul Docker image version:     1.2.0
-[=] Terraform plan: 11 to add, 0 to change, 0 to destroy.
-[=] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
-[^] Vaultron formed!
+[vaultron] [=] Form Vaultron! ...
+[vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [i] Vault OSS version: 0.11.3
+[vaultron] [i] Consul OSS version: 1.3.0
+[vaultron] [i] Terraform plan: 11 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
+[vaultron] [+] Vaultron formed!
 ```
 
-You are now almost ready interact with `vault` and `consul` CLI utilities or the Vault or Consul HTTP APIs and web user interfaces.
+You are now almost ready interact with Vault and Consul using the web user interfaces, `vault` and `consul` command line utilities or the HTTP APIs.
 
 Take a moment to verify that all of the Docker containers are indeed live:
 
 ```
 $ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                                                                                                                                                NAMES
-f8b9ca0d83f5        2d9787f3b752        "vault server -log-l…"   23 minutes ago      Up 23 minutes       0.0.0.0:8201->8200/tcp                                                                                                                                                               vault1
-b9c037a3469a        2d9787f3b752        "vault server -log-l…"   23 minutes ago      Up 23 minutes       0.0.0.0:8202->8200/tcp                                                                                                                                                               vault2
-0055663e5523        2d9787f3b752        "vault server -log-l…"   23 minutes ago      Up 23 minutes       0.0.0.0:8200->8200/tcp                                                                                                                                                               vault0
-9b385ea654c7        40ef6c98b292        "consul agent -confi…"   23 minutes ago      Up 23 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc1
-4c6360f8c43a        40ef6c98b292        "consul agent -confi…"   23 minutes ago      Up 23 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc2
-c1e4b4979cb8        40ef6c98b292        "consul agent -confi…"   23 minutes ago      Up 23 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc0
-62f94445902e        40ef6c98b292        "consul agent -serve…"   23 minutes ago      Up 23 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls2
-9343b3204353        40ef6c98b292        "consul agent -serve…"   23 minutes ago      Up 23 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls1
-307a02b668e0        40ef6c98b292        "consul agent -serve…"   23 minutes ago      Up 23 minutes       0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   consuls0
+22e315bb2c99        87b044e94891        "vault server -log-l…"   13 minutes ago      Up 12 minutes       0.0.0.0:8220->8200/tcp                                                                                                                                                               vault2
+dea2e1439c36        87b044e94891        "vault server -log-l…"   13 minutes ago      Up 12 minutes       0.0.0.0:8200->8200/tcp                                                                                                                                                               vault0
+97368600e6c3        87b044e94891        "vault server -log-l…"   13 minutes ago      Up 12 minutes       0.0.0.0:8210->8200/tcp                                                                                                                                                               vault1
+551522272b91        2d7f56f4c166        "consul agent -confi…"   13 minutes ago      Up 13 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc1
+d7ed14dac9ab        2d7f56f4c166        "consul agent -confi…"   13 minutes ago      Up 13 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc0
+1d506537aecd        2d7f56f4c166        "consul agent -confi…"   13 minutes ago      Up 13 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consulc2
+280ca578d305        2d7f56f4c166        "consul agent -serve…"   13 minutes ago      Up 13 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls1
+df0aa6b8dfc7        2d7f56f4c166        "consul agent -serve…"   13 minutes ago      Up 13 minutes       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           consuls2
+fb9dd912e317        2d7f56f4c166        "consul agent -serve…"   13 minutes ago      Up 13 minutes       0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   consuls0
 ```
 
-Then, export the necessary environment variables:
+Note the message from `form` about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
 
 ```
-$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
-$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
-$ export CONSUL_HTTP_SSL=true
-$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
-$ export VAULT_ADDR="https://127.0.0.1:8200"
-$ export VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem" \
+  CONSUL_HTTP_ADDR="127.0.0.1:8500" \
+  CONSUL_HTTP_SSL=true \
+  CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town" \
+  VAULT_ADDR="https://127.0.0.1:8200" \
+  VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
 ```
 
-Note the completion message about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron.
-
-You can instead source the `ion_darts` script to do this for you:
+You can instead source the `ion_darts` script to do all of this for you:
 
 ```
 $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-Before accessing the Vault or Consul web UIs you should add the Vaultron CA cert to your OS trust store.
-
-It is located at `etc/tls/ca-bundle.pem` from the root of this project.
+Before accessing the Vault or Consul web UIs you should add the Vaultron certificate authority (CA) certificate to your OS trust store. It is located at `etc/tls/ca-bundle.pem` under the root of this project.
 
 See the **TLS by Default** section for more details on handling Vaultron's Certificate Authority certificate.
 
