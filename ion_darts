@@ -9,11 +9,17 @@
 
 . ./skydome
 
-msg greeting "Exporting Vaultron environment variables ..."
-export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
-export CONSUL_HTTP_ADDR="127.0.0.1:8500"
-export CONSUL_HTTP_SSL=true
-export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
-export VAULT_ADDR="https://127.0.0.1:8200"
-export VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
+CONSUL_HTTP_ADDR="127.0.0.1:8500"
+CONSUL_HTTP_SSL=true
+CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
+VAULT_ADDR="https://127.0.0.1:8200"
+VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+export \
+CONSUL_CACERT \
+CONSUL_HTTP_ADDR \
+CONSUL_HTTP_SSL \
+CONSUL_HTTP_TOKEN \
+VAULT_ADDR \
+VAULT_CACERT
 msg success "Exported Vaultron environment variables!"

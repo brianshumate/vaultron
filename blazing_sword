@@ -46,12 +46,12 @@ enabled() {
   msg info "Enabled Auth Methods:"
   echo
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     AUTH_LIST_CMD="vault auth list"
   else
     AUTH_LIST_CMD="vault auth -methods"
   fi
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     SECRETS_LIST_CMD="vault secrets list"
   else
     SECRETS_LIST_CMD="vault mounts"
@@ -62,7 +62,7 @@ enabled() {
   echo
   $SECRETS_LIST_CMD
   echo
-  $TXTRST
+  tput setaf 0
 }
 
 # Enable a file based audit log
@@ -75,7 +75,7 @@ enable_audit_logging() {
 # Enable authentication backends
 enable_auth_backends() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     AUTH_ENABLE_CMD="vault auth enable"
   else
     AUTH_ENABLE_CMD="vault auth-enable"
@@ -117,7 +117,7 @@ get_initial_root_token() {
 # Initialize Vault and save temporary unseal keys and root token
 initialize_vault() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
   else
     INIT_CMD="vault init -key-shares=1  -key-threshold=1"
@@ -137,7 +137,7 @@ initialize_vault() {
 # Enable database secrets engine
 enable_database_secrets_engine() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     SECRETS_ENABLE_CMD="vault secrets enable"
   else
     SECRETS_ENABLE_CMD="vault mount"
@@ -154,7 +154,7 @@ enable_database_secrets_engine() {
 # Enable a handy mix of secrets engines
 enable_secrets_engines() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     SECRETS_ENABLE_CMD="vault secrets enable"
   else
     SECRETS_ENABLE_CMD="vault mount"
@@ -230,7 +230,7 @@ enable_secrets_engines() {
 # Get Vault status
 status() {
   msg info "Vault status:"
-  printf "\\n%s" "$(vault status)"
+  printf "\\n%s" "$TXTWHT$(vault status)$TXTRST"
   printf "\\n"
 }
 
@@ -246,7 +246,7 @@ telemetry_info() {
 # Unseal Vault
 unseal_vault() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     UNSEAL_CMD="vault operator unseal"
   else
     UNSEAL_CMD="vault unseal"

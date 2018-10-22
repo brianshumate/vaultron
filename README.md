@@ -98,7 +98,6 @@ You can instead source the `ion_darts` script to do this for you:
 
 ```
 $ . ./ion_darts
-[=] Exporting Vaultron environment variables ...
 [^] Exported Vaultron environment variables!
 ```
 

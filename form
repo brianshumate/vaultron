@@ -40,7 +40,7 @@ export CONSUL_HTTP_SSL=true
 export VAULT_ADDR="https://127.0.0.1:8200"
 export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
 
-# or use this command to do it for you:
+or use this command to do it for you:
 
 . ./ion_darts
 EOF
@@ -123,12 +123,16 @@ check_vault_version
 check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-  msg info "Vault Docker image version: UNKNOWN (custom binary)"
+  msg notice "Vault version: custom binary: cannot determine version"
 else
-  msg info "Vault version: ${TF_VAR_vault_version}"
+  msg info "Vault OSS version: ${TF_VAR_vault_version}"
 fi
 
-msg info "Consul version: ${TF_VAR_consul_version}"
+if [ "$TF_VAR_consul_custom" -gt 0 ]; then
+  msg notice "Consul version: custom binary: cannot determine version"
+else
+  msg info "Consul OSS version: ${TF_VAR_consul_version}"
+fi
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
