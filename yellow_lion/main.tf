@@ -1,18 +1,22 @@
-#############################################################################
+# =======================================================================
 # Yellow Lion
 # Vault telemetry stack
 # statsd, graphite, Grafana
-#############################################################################
+# =======================================================================
 
-# Variables
-
+# -----------------------------------------------------------------------
+# Global variables
+# -----------------------------------------------------------------------
 
 variable "grafana_version" {}
 variable "statsd_ip" {}
 variable "statsd_version" {}
 variable "vaultron_telemetry_count" {}
 
-# statsd/graphite image and container
+
+# -----------------------------------------------------------------------
+# statsd / graphite image and container
+# -----------------------------------------------------------------------
 
 resource "docker_image" "statsd" {
   count        = "${var.vaultron_telemetry_count}"
@@ -73,7 +77,9 @@ resource "docker_container" "statsd_graphite" {
 
 }
 
+# -----------------------------------------------------------------------
 # Grafana image and container
+# -----------------------------------------------------------------------
 
 resource "docker_image" "grafana" {
   count        = "${var.vaultron_telemetry_count}"
@@ -91,19 +97,28 @@ data "template_file" "grafana_config" {
   }
 }
 
+# -----------------------------------------------------------------------
 # Grafana dashboard bootstrap configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "grafana_dashboard_bootstrap_config" {
   count        = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/dashboard_bootstrap.yml.tpl")}"
 }
 
+# -----------------------------------------------------------------------
 # Grafana dashboard configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "grafana_dashboard_config" {
   count        = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/dashboard.json.tpl")}"
 }
 
-# Grafana container resource
+# -----------------------------------------------------------------------
+# Grafana container
+# -----------------------------------------------------------------------
+
 resource "docker_container" "grafana" {
   count        = "${var.vaultron_telemetry_count}"
   name  = "vgrafana"

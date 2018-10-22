@@ -1,9 +1,9 @@
-#############################################################################
+# =======================================================================
 # Black Lion
 # Vault servers
 #   - Standard OSS distribution
 #   - Custom binary (allows for custom builds, Enterprise, etc.)
-#############################################################################
+# ========================================================================
 
 # Vault variables
 variable "datacenter_name" {}
@@ -34,7 +34,10 @@ resource "docker_image" "vault" {
   keep_locally = true
 }
 
-# Vault Open Source servers configuration
+# -----------------------------------------------------------------------
+# Vault OSS server configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "vault_config" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
@@ -52,12 +55,14 @@ data "template_file" "vault_config" {
   }
 }
 
-# TLS CA Bundle
+# -----------------------------------------------------------------------
+# TLS configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "ca_bundle" {
   template = "${file("${path.module}/tls/ca-bundle.pem")}"
 }
 
-# Vault OSS Server TLS certificates and keys
 data "template_file" "vault_tls_cert" {
   count    = "${var.vault_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
@@ -68,7 +73,10 @@ data "template_file" "vault_tls_key" {
   template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
 }
 
+# -----------------------------------------------------------------------
 # Vault telemetry configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "telemetry_config" {
   template = "${file("${path.module}/templates/vault_telemetry.tpl")}"
   vars {
@@ -76,7 +84,10 @@ data "template_file" "telemetry_config" {
   }
 }
 
-# Vault Open Source servers
+# -----------------------------------------------------------------------
+# Vault OSS servers
+# -----------------------------------------------------------------------
+
 resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
   name  = "${format("vault%d", count.index)}"
@@ -143,11 +154,14 @@ resource "docker_container" "vault_oss_server" {
 
 }
 
-#############################################################################
-# Vault Custom build
-#############################################################################
+# -----------------------------------------------------------------------
+# Vault Custom binary (for Enterprise / source builds / etc.)
+# -----------------------------------------------------------------------
 
-# Vault Server TLS certificates and keys
+# -----------------------------------------------------------------------
+# TLS configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "vault_custom_tls_cert" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
@@ -158,8 +172,10 @@ data "template_file" "vault_custom_tls_key" {
   template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
 }
 
-# Vault custom servers configuration
-# This data type is for using custom Vault builds
+# -----------------------------------------------------------------------
+# Vault Custom binary configuration
+# -----------------------------------------------------------------------
+
 data "template_file" "vault_custom_config" {
   count    = "${var.vault_custom_instance_count}"
   template = "${file("${path.module}/templates/${var.vault_custom_config_template}")}"
@@ -181,8 +197,10 @@ data "template_file" "vault_custom_config" {
   }
 }
 
-# Vault custom servers
-# This resource is for installing custom Vault builds
+# -----------------------------------------------------------------------
+# Vault Custom binary servers
+# -----------------------------------------------------------------------
+
 resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "${format("vault%d", count.index)}"

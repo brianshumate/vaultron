@@ -20,9 +20,9 @@ TXTCYA="$(tput setaf 6)"
 TXTGRN="$(tput setaf 2)"
 TXTMGT="$(tput setaf 5)"
 TXTRED="$(tput setaf 1)"
-TXTRST="$(tput setaf 0)"
 TXTYLW="$(tput setaf 3)"
 TXTWHT="$(tput setaf 7)"
+TXTRST="$(tput sgr0)"
 
 msg() {
     MSGSRC="[vaultron]"

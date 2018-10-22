@@ -1,7 +1,7 @@
-#############################################################################
+# =======================================================================
 # Red Lion
 # Consul servers and client agents
-#############################################################################
+# =======================================================================
 
 # Consul module outputs
 
@@ -20,8 +20,9 @@ output "consul_client_ips" {
   value       = ["${docker_container.consul_oss_client.*.ip_address}"]
 }
 
-# Consul variables ##########################################################
-
+# -----------------------------------------------------------------------
+# Consul variables
+# -----------------------------------------------------------------------
 variable "consul_log_level" {}
 variable "datacenter_name" {}
 variable "consul_version" {}
@@ -44,7 +45,9 @@ resource "docker_image" "consul" {
   keep_locally = true
 }
 
-# Consul Open Source server common configuration ############################
+# -----------------------------------------------------------------------
+# Consul Open Source server common configuration
+# -----------------------------------------------------------------------
 
 data "template_file" "consul_oss_server_common_config" {
   count    = "${var.consul_oss}"
@@ -63,13 +66,13 @@ data "template_file" "consul_oss_server_common_config" {
   }
 }
 
-# TLS CA Bundle
+# -----------------------------------------------------------------------
+# TLS configuration
+# -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
   template = "${file("${path.module}/tls/ca-bundle.pem")}"
 }
-
-# Consul Server TLS certificates and keys
 
 data "template_file" "consuls0_tls_cert" {
   template = "${file("${path.module}/tls/consul-server-0.crt")}"
@@ -95,8 +98,9 @@ data "template_file" "consuls2_tls_key" {
   template = "${file("${path.module}/tls/consul-server-2.key")}"
 }
 
-
-# Consul Open Source Server 1 ###############################################
+# -----------------------------------------------------------------------
+# Consul OSS server 1
+# -----------------------------------------------------------------------
 
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
@@ -205,7 +209,9 @@ resource "docker_container" "consuls0" {
 
 }
 
-# Consul Open Source Server 2
+# -----------------------------------------------------------------------
+# Consul OSS server 2
+# -----------------------------------------------------------------------
 
 resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
@@ -258,7 +264,9 @@ resource "docker_container" "consuls1" {
 
 }
 
-# Consul Open Source Server 3
+# -----------------------------------------------------------------------
+# Consul OSS server 2
+# -----------------------------------------------------------------------
 
 resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
@@ -311,7 +319,9 @@ resource "docker_container" "consuls2" {
 
 }
 
-# Consul Open Source client common configuration
+# -----------------------------------------------------------------------
+# Consul OSS client common configuration
+# -----------------------------------------------------------------------
 
 data "template_file" "consulc_common_config" {
   count    = "${var.consul_oss}"
@@ -322,7 +332,9 @@ data "template_file" "consulc_common_config" {
   }
 }
 
-# Consul Client TLS certificates and keys
+# -----------------------------------------------------------------------
+# Consul OSS client TLS configuration
+# -----------------------------------------------------------------------
 
 data "template_file" "consul_client_tls_cert" {
   count    = "${var.consul_oss}"
@@ -341,9 +353,24 @@ resource "docker_container" "consul_oss_client" {
   name  = "${format("consulc%d", count.index)}"
   hostname  = "${format("consulc%d", count.index)}"
   domainname = "consul"
-  dns        = ["${docker_container.consuls0.ip_address}", "${docker_container.consuls1.ip_address}", "${docker_container.consuls2.ip_address}"]
+  dns        = ["${docker_container.consuls0.ip_address}",
+                "${docker_container.consuls1.ip_address}",
+                "${docker_container.consuls2.ip_address}"]
   dns_search = ["consul"]
   image = "${docker_image.consul.latest}"
+  entrypoint = ["${list("consul",
+                     "agent",
+                     "-config-dir=/consul/config",
+                     "-client=0.0.0.0",
+                     "-data-dir=/consul/data",
+                     "-node=vault${count.index}",
+                     "-datacenter=${var.datacenter_name}",
+                     "-join=${docker_container.consuls2.ip_address}",
+                     "-join=${docker_container.consuls1.ip_address}",
+                     "-join=${docker_container.consuls0.ip_address}"
+                     )}"]
+  must_run   = true
+  labels = { robot = "vaultron" }
 
   upload = {
     content = "${data.template_file.consulc_common_config.rendered}"
@@ -374,21 +401,4 @@ resource "docker_container" "consul_oss_client" {
     host_path      = "${path.module}/../../../consul/consulc${count.index}/data"
     container_path = "/consul/data"
   }
-
-#"-advertise=${var.vault_ips[count.index]}",
-  entrypoint = ["${list("consul",
-                     "agent",
-                     "-config-dir=/consul/config",
-                     "-client=0.0.0.0",
-                     "-data-dir=/consul/data",
-                     "-node=vault${count.index}",
-                     "-datacenter=${var.datacenter_name}",
-                     "-join=${docker_container.consuls2.ip_address}",
-                     "-join=${docker_container.consuls1.ip_address}",
-                     "-join=${docker_container.consuls0.ip_address}"
-                     )}"]
-  must_run   = true
-
-  labels = { robot = "vaultron" }
-
 }
