@@ -1,6 +1,7 @@
 ## v2.0.1
 
 - Vault v0.11.3
+- Consul v1.3.0
 - Use `vaultN` for Consul client node names
 - Update scripts
 - Clean up configuration
