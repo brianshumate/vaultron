@@ -246,12 +246,12 @@ $ . ./ion_darts
 
 $ consul members
 Node      Address          Status  Type    Build  Protocol  DC    Segment
-consuls0  172.17.0.6:8301  alive   server  1.2.2  2         arus  <all>
-consuls1  172.17.0.4:8301  alive   server  1.2.2  2         arus  <all>
-consuls2  172.17.0.5:8301  alive   server  1.2.2  2         arus  <all>
-consulc0  172.17.0.8:8301  alive   client  1.2.2  2         arus  <default>
-consulc1  172.17.0.7:8301  alive   client  1.2.2  2         arus  <default>
-consulc2  172.17.0.9:8301  alive   client  1.2.2  2         arus  <default>
+consuls0  172.17.0.2:8301  alive   server  1.3.0  2         arus  <all>
+consuls1  172.17.0.4:8301  alive   server  1.3.0  2         arus  <all>
+consuls2  172.17.0.3:8301  alive   server  1.3.0  2         arus  <all>
+vault0    172.17.0.7:8301  alive   client  1.3.0  2         arus  <default>
+vault1    172.17.0.6:8301  alive   client  1.3.0  2         arus  <default>
+vault2    172.17.0.5:8301  alive   client  1.3.0  2         arus  <default>
 ```
 
 Be sure to always use the same versions of Consul and Vault for both the CLI binaries on your host system and the container image.
@@ -268,9 +268,9 @@ Additionally Consul DNS API is also published from the first Consul server at `l
 $ dig -p 8600 @localhost consul.service.consul
 ...
 ;; ANSWER SECTION:
-consul.service.consul.  0   IN  A   172.17.0.5
-consul.service.consul.  0   IN  A   172.17.0.6
 consul.service.consul.  0   IN  A   172.17.0.4
+consul.service.consul.  0   IN  A   172.17.0.3
+consul.service.consul.  0   IN  A   172.17.0.2
 
 ;; ADDITIONAL SECTION:
 consul.service.consul.  0   IN  TXT "consul-network-segment="
@@ -285,7 +285,7 @@ or
 $ dig -p 8600 @localhost active.vault.service.consul
 ...
 ;; ANSWER SECTION:
-active.vault.service.consul. 0  IN  A   172.17.0.8
+active.vault.service.consul. 0  IN  A   172.17.0.7
 
 ;; ADDITIONAL SECTION:
 active.vault.service.consul. 0  IN  TXT "consul-network-segment="
@@ -298,17 +298,17 @@ or
 $ dig -p 8600 @localhost vault.service.consul SRV
 ...
 ;; ANSWER SECTION:
-vault.service.consul.   0   IN  SRV 1 1 8200 consulc0.node.arus.consul.
-vault.service.consul.   0   IN  SRV 1 1 8200 consulc2.node.arus.consul.
-vault.service.consul.   0   IN  SRV 1 1 8200 consulc1.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 vault1.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 vault2.node.arus.consul.
+vault.service.consul.   0   IN  SRV 1 1 8200 vault0.node.arus.consul.
 
 ;; ADDITIONAL SECTION:
-consulc0.node.arus.consul. 0    IN  A   172.17.0.8
-consulc0.node.arus.consul. 0    IN  TXT "consul-network-segment="
-consulc2.node.arus.consul. 0    IN  A   172.17.0.9
-consulc2.node.arus.consul. 0    IN  TXT "consul-network-segment="
-consulc1.node.arus.consul. 0    IN  A   172.17.0.7
-consulc1.node.arus.consul. 0    IN  TXT "consul-network-segment="
+vault1.node.arus.consul. 0  IN  A   172.17.0.6
+vault1.node.arus.consul. 0  IN  TXT "consul-network-segment="
+vault2.node.arus.consul. 0  IN  A   172.17.0.5
+vault2.node.arus.consul. 0  IN  TXT "consul-network-segment="
+vault0.node.arus.consul. 0  IN  A   172.17.0.7
+vault0.node.arus.consul. 0  IN  TXT "consul-network-segment="
 ...
 ```
 
@@ -318,7 +318,11 @@ or
 $ dig -p 8600 @localhost consuls0.node.consul
 ...
 ;; ANSWER SECTION:
-consuls0.node.consul. 0 IN A 172.17.0.2
+consuls0.node.consul.   0   IN  A   172.17.0.2
+
+;; ADDITIONAL SECTION:
+consuls0.node.consul.   0   IN  TXT "consul-network-segment="
+...
 ```
 
 ### Security Configuration?
@@ -429,15 +433,16 @@ See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/b
 Vaultron installs the official open source Vault binaries through the official Docker container images, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables prior to forming Vaultron:
 
 ```
-export TF_VAR_vault_oss_instance_count=0 \
-       TF_VAR_vault_custom_instance_count=3
+$ export TF_VAR_vault_oss_instance_count=0 \
+       TF_VAR_vault_custom_instance_count=3 \
+./form
 ```
 
 ## Basic Troubleshooting Questions
 
 ### I can access the Consul UI but it states that there are no services to show
 
-Access the settings (gear icon) in the navigation and ensure that the ACL master token value "vaultron-forms-and-eats-all-the-tacos-in-town" is present in the text field, then click **Close**.
+Access **Settings** in the navigation and ensure that the ACL master token is present in the text field, then click **Save** or **Close** depending on Consul version.
 
 ### Vault is Orange/Failing in the Consul Web UI
 
