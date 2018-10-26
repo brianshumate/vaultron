@@ -63,12 +63,17 @@ msg() {
 
 check_cli_cap() {
   VAULT_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
+  VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f1)"
+  if [ "$VAULT_MIN_VERSION" = "1" ]; then
+    export VAULT_CLI_CAP="1"
+else
   VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
   if [ "$VAULT_VERSION" = "0.9.1" ] || [ "$VAULT_MIN_VERSION" -lt "9" ]; then
     export VAULT_CLI_CAP="0"
   else
     export VAULT_CLI_CAP="1"
   fi
+fi
 }
 
 # Begin Terraform specific bits
