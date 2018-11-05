@@ -9,7 +9,7 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.11.3"
+  default = "0.11.4"
 }
 
 # Set TF_VAR_consul_version to set this
@@ -173,6 +173,10 @@ variable "statsd_version" {
 variable "statsd_ip" {
   default = "127.0.0.1"
 }
+
+# -----------------------------------------------------------------------
+# Module definitions
+# -----------------------------------------------------------------------
 
 module "telemetry" {
   source                       = "yellow_lion"

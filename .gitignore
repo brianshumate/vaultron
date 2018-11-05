@@ -1,5 +1,6 @@
 custom/consul*
 custom/vault*
+data/migration
 consulc0
 consulc1
 consulc2

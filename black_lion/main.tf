@@ -5,7 +5,10 @@
 #   - Custom binary (allows for custom builds, Enterprise, etc.)
 # ========================================================================
 
+# -----------------------------------------------------------------------
 # Vault variables
+# -----------------------------------------------------------------------
+
 variable "datacenter_name" {}
 variable "vault_version" {}
 variable "use_vault_oss" {}

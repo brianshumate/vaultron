@@ -62,8 +62,17 @@ check_docker() {
 # Check for existing vaultron-* namespaced containers
 check_existing_containers() {
   if [ "$(docker ps -a | grep -c vaultron)" -ge 1 ]; then
-    msg alert "Existing Docker images with vaultron prefix detected!"
+    msg alert "Existing Docker images with vaultron namespace detected!"
     msg alert "Please examine with 'docker ps -a' and cleanup before forming Vaultron!"
+    exit 1
+  fi
+}
+
+# Check for vault file in project directory
+check_existing_vault() {
+  if [ -f "$PWD"/vault ]; then
+    msg alert "There is a 'vault' file in the present working directory. This is not allowed!"
+    msg alert "Please remove the existing 'vault' before forming Vaultron!"
     exit 1
   fi
 }
@@ -109,7 +118,9 @@ fi
 
 # Preflight checks
 check_docker
+#check_existing_containers
 check_custom_binary vault
+check_existing_vault
 
 # DO IT.
 msg greeting "Form Vaultron! ..."

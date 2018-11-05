@@ -39,7 +39,7 @@ $ git clone https://github.com/brianshumate/vaultron.git \
 && open https://localhost:8200
 ```
 
-**NOTE**: This script persists the unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you're welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: This script persists the unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you're welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start for Linux or macOS
 
@@ -120,7 +120,7 @@ Speaking of which, here are some things you can do after Vaultron is formed:
 7. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 8. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
 
-**NOTE: `./unform` REMOVES ALMOST EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!**
+**NOTE: `./unform` ATTEMPTS TO REMOVE ALMOST EVERYTHING including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generate data will likely be created as uid 0 which means `./unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `./unform` or `./form` again.
 
 The Terraform provider modules _are not removed_ to save on resources and time involved in re-downloading them.
 

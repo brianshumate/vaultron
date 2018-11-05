@@ -1,8 +1,10 @@
-## v2.0.2 (UNRELEASED)
+## v2.0.2
 
-- Namespaced containers
+- Vault v0.11.4
+- Container namespace
 - Reloadable Vault log level
 - Update scripts
+- Update documentation
 
 ## v2.0.1
 

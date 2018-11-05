@@ -1,5 +1,7 @@
-# Vaultron CUSTOM
-#----------------------------------------------------------------------------
+# Vault OSS v0.11.4
+
+# Enable reloadable log level
+log_level ="${log_level}"
 
 cluster_name = "${cluster_name }"
 ui = true
@@ -28,14 +30,3 @@ max_lease_ttl = "50000h"       # 2083 days
 
 # Plugin path
 plugin_directory = "/vault/plugins"
-
-# Telemetry
-
-# telemetry {
-#    statsd_address = "${statsd_ip}:8125"
-#}
-
-# telemetry {
-#   dogstatsd_addr  = "172.17.0.2:8125"
-#   dogstatsd_tags  = [ "datacenter:arus"]
-# }
