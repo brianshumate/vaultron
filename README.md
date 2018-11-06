@@ -24,28 +24,28 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 ### Quickest Start for macOS
 
-Provided you have previously installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example verbatim to fully bootstrap Vaultron and open the the Vault UI in your browser.
+Once you have installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example to form Vaultron and open the the Vault web UI in your browser.
 
-You will likely be prompted for your password to add the Vaultron CA certificate to the System keychain. This will prevent TLS errors about an untrusted CA when using the Consul and Vault web UIs:
+You will likely be prompted for your password to add the Vaultron CA certificate to the System keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
 
 ```
-$ git clone https://github.com/brianshumate/vaultron.git \
-&& cd vaultron \
-&& ./form \
-&& . ./ion_darts \
-&& ./blazing_sword \
-&& sudo security add-trusted-cert -d -r trustAsRoot \
--k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem \
-&& open https://localhost:8200
+$ git clone https://github.com/brianshumate/vaultron.git && \
+  cd vaultron && \
+  ./form && \
+  . ./ion_darts && \
+  ./blazing_sword && \
+  sudo security add-trusted-cert -d -r trustAsRoot \
+  -k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem && \
+  open https://localhost:8200
 ```
 
-> **NOTE**: This script persists the unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you're welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: The `blazing_sword` script persists unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start for Linux or macOS
 
-Vaultron uses the latest Consul and Vault versions by default, make sure that you have first installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally for your OS, and that you have have [Docker](https://docs.docker.com/engine/installation/) installed as well.
+Vaultron uses the latest Consul and Vault versions by default, so make sure that you have also installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally, and that you have have [Docker](https://docs.docker.com/install/) installed as well.
 
-After doing so, it takes just 3 steps to form your own Vaultron:
+After doing so, it takes just 3 steps to form Vaultron:
 
 1. `$ git clone https://github.com/brianshumate/vaultron.git`
 2. `$ cd vaultron`
@@ -56,32 +56,32 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 0.11.3
+[vaultron] [i] Vault OSS version: 0.11.4
 [vaultron] [i] Consul OSS version: 1.3.0
 [vaultron] [i] Terraform plan: 11 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 ```
 
-You are now almost ready interact with Vault and Consul using the web user interfaces, `vault` and `consul` command line utilities or the HTTP APIs.
+You are now almost ready interact with Vault and Consul using their web user interfaces, command line interfaces, or their HTTP APIs.
 
-Take a moment to verify that all of the Docker containers are indeed live:
+Take a moment to verify that all of the Docker containers are up:
 
 ```
 $ docker ps -a
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                                                                                                                                                NAMES
-29f8473046b1        87b044e94891        "vault server -log-l…"   42 seconds ago      Up 39 seconds       0.0.0.0:8200->8200/tcp                                                                                                                                                               vaultron-vault0
-5bfd40204c8c        87b044e94891        "vault server -log-l…"   42 seconds ago      Up 39 seconds       0.0.0.0:8210->8200/tcp                                                                                                                                                               vaultron-vault1
-81d097d809c8        87b044e94891        "vault server -log-l…"   42 seconds ago      Up 39 seconds       0.0.0.0:8220->8200/tcp                                                                                                                                                               vaultron-vault2
-852b7c82454d        2d7f56f4c166        "consul agent -confi…"   44 seconds ago      Up 42 seconds       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc2
-78df678fe201        2d7f56f4c166        "consul agent -confi…"   44 seconds ago      Up 42 seconds       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc1
-2bc4465b5bd6        2d7f56f4c166        "consul agent -confi…"   44 seconds ago      Up 42 seconds       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc0
-67298c0020c6        2d7f56f4c166        "consul agent -serve…"   47 seconds ago      Up 44 seconds       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls1
-0f9710e15575        2d7f56f4c166        "consul agent -serve…"   47 seconds ago      Up 44 seconds       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls2
-8ebdc330c32b        2d7f56f4c166        "consul agent -serve…"   47 seconds ago      Up 44 seconds       0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   vaultron-consuls0
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                  PORTS                                                                                                                                                                                NAMES
+5643b81df7d7        ae66482e5cf4        "vault server -log-l…"   About a minute ago   Up About a minute       0.0.0.0:8220->8200/tcp                                                                                                                                                               vaultron-vault2
+6a084f79e2e9        ae66482e5cf4        "vault server -log-l…"   About a minute ago   Up About a minute       0.0.0.0:8200->8200/tcp                                                                                                                                                               vaultron-vault0
+35dce5a6b591        ae66482e5cf4        "vault server -log-l…"   About a minute ago   Up About a minute       0.0.0.0:8210->8200/tcp                                                                                                                                                               vaultron-vault1
+1105cc9221f7        2d7f56f4c166        "consul agent -confi…"   About a minute ago   Up About a minute       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc0
+5b507f2d3c50        2d7f56f4c166        "consul agent -confi…"   About a minute ago   Up About a minute       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc2
+0a66bba71e72        2d7f56f4c166        "consul agent -confi…"   About a minute ago   Up About a minute       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc1
+ad2ea457a9d0        2d7f56f4c166        "consul agent -serve…"   About a minute ago   Up About a minute       0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   vaultron-consuls0
+62efec5fd42f        2d7f56f4c166        "consul agent -serve…"   About a minute ago   Up About a minute       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls2
+4e6878d74f2c        2d7f56f4c166        "consul agent -serve…"   About a minute ago   Up About a minute       8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls1
 ```
 
-Note the message from `form` about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
+Note there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
 
 ```
 $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem" \

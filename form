@@ -150,7 +150,7 @@ fi
 
 if ! [ -z "$TF_VAR_consul_custom" ]; then
   if [ "$TF_VAR_consul_custom" -gt 0 ]; then
-    msg notice "Consul version: custom binary: cannot determine version"
+    msg info "Consul version: custom binary: cannot determine version"
   fi
 else
   msg info "Consul OSS version: ${TF_VAR_consul_version}"
