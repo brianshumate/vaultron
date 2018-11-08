@@ -110,6 +110,18 @@ check_custom_binary() {
   fi
 }
 
+if [ -z "$(command -v vault)" ]; then
+  msg alert "Vaultron cannot form! Could not locate vault command in PATH."
+  msg info "Get Vault from: https://www.vaultproject.io/downloads.html"
+  exit 1
+fi
+
+if [ -z "$(command -v consul)" ]; then
+  msg alert "Vaultron cannot form! Could not locate consul command in PATH."
+  msg info "Get Consul from: https://www.consul.io/downloads.html"
+  exit 1
+fi
+
 if [ -z "$(command -v terraform)" ]; then
   msg alert "Vaultron cannot form! Could not locate terraform command."
   msg info "Get Terraform from: https://www.terraform.io/downloads.html"
