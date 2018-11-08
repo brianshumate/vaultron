@@ -37,12 +37,12 @@ check_vault() {
 
 check_approle() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
-    v_auth_cmd="vault auth list"
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    V_AUTH_CMD="vault auth list"
   else
-    v_auth_cmd="vault auth -methods"
+    V_AUTH_CMD="vault auth -methods"
   fi
-  if ! $v_auth_cmd | grep approle > /dev/null 2>&1; then
+  if ! $V_AUTH_CMD | grep approle > /dev/null 2>&1; then
     msg alert "No AppRole Auth Method detected! Be sure to enable AppRole!"
     exit 1
   else
