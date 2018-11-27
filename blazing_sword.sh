@@ -1,0 +1,179 @@
+#!/bin/sh
+#
+# ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
+#
+# blazing_sword.sh
+#
+# Automatically starts and pre-populates Vault cluster for use in development
+# or other evaluation style use cases:
+#
+# - Initialize Vault
+# - Save key material to temporary file
+# - Unseal Vault with key material from temporary file
+# - Enable a range of auth methods and secrets engines with a vaultron prefix
+#   with blazing_sword Terraform configuration
+#
+# shellcheck disable=SC2154,SC2039,SC1091
+
+. ./skydome
+
+# Check for the existence of a temporary key material file
+check_vault_file() {
+  for file in ./vault/vault_*.tmp; do
+    if [ -e "$file" ]; then
+        msg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
+        exit 0
+    fi
+  done
+}
+
+# Authenticate with initial root token
+auth_root() {
+  msg info "Authenticating with Vault root token ..."
+  get_initial_root_token "${VAULT_DAT}"
+  vault auth "${INITIAL_ROOT_TOKEN}"  > /dev/null 2>&1
+}
+
+# List enabled auth methods and secrets engines
+enabled() {
+  echo
+  msg info "Enabled Auth Methods:"
+  echo
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    AUTH_LIST_CMD="vault auth list"
+  else
+    AUTH_LIST_CMD="vault auth -methods"
+  fi
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    SECRETS_LIST_CMD="vault secrets list"
+  else
+    SECRETS_LIST_CMD="vault mounts"
+  fi
+  $AUTH_LIST_CMD
+  echo
+  msg info "Enabled Secrets Engines:"
+  echo
+  $SECRETS_LIST_CMD
+  echo
+  tput setaf 0
+}
+
+# Get unseal key
+get_unseal_key() {
+  msg info "Get unseal key ..."
+  k0=$(grep 'Unseal Key 1' "${VAULT_DAT}" | awk '{print $NF}')
+}
+
+# Get the initial root token
+get_initial_root_token() {
+  msg info "Get initial root token ..."
+  INITIAL_ROOT_TOKEN=$(grep 'Initial Root Token' "${1}" | awk '{print $NF}')
+}
+
+# Initialize Vault and save temporary unseal keys and root token
+initialize_vault() {
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
+  else
+    INIT_CMD="vault init -key-shares=1  -key-threshold=1"
+  fi
+  msg info "Initializing Vault ..."
+  VAULT_DAT="./vault/vault_DEV_ONLY-$(date +%s).tmp"
+  # Wherein Perl is not yet dead and a subtle amount of line noise lives on!
+  if ! $INIT_CMD | perl -pe 's/\x1b\[[0-9;]*m//g' > "${VAULT_DAT}"; then
+    errors=$((errors + $?))
+    msg alert "Failed to initialize Vault!"
+    exit $errors
+  else
+    msg complete "Vault initialized!"
+  fi
+}
+
+# Get Vault status
+status() {
+  msg info "Vault status:"
+  printf "\\n%s" "$TXTWHT$(vault status)$TXTRST"
+  printf "\\n"
+}
+
+# Note about statsd server for Telemetry
+telemetry_info() {
+  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vstatsd) > /dev/null 2>&1; then
+    msg info "Telemetry: statsd address: $VSTATSD_ADDR"
+  else
+    msg alert "Failed to determine statsd address!"
+  fi
+}
+
+# Unseal Vault
+unseal_vault() {
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    UNSEAL_CMD="vault operator unseal"
+  else
+    UNSEAL_CMD="vault unseal"
+  fi
+  msg info "Unsealing Vault ..."
+  get_unseal_key
+
+  if ! VAULT_ADDR="https://localhost:8200" \
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault 1!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8210" \
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault 2!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  if ! VAULT_ADDR="https://localhost:8220" \
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    msg alert "Failed to unseal Vault 3!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  msg complete "Vault unsealed!"
+}
+
+msg greeting "Blazing Sword! ..."
+
+# Ain't nobody got time for your stale token up in here causing problems!
+if [ -z "$VAULT_TOKEN" ]; then
+  msg notice "Existing VAULT_TOKEN detected; unset it ..."
+  if ! unset VAULT_TOKEN; then
+    msg alert "Problem with unset of existing VAULT_TOKEN environment variable!"
+  else
+    msg success "Existing VAULT_TOKEN environment variable unset!"
+  fi
+fi
+
+# <wait 2> :lol:
+sleep 2
+
+initialize_vault
+unseal_vault
+auth_root
+
+msg info "Installing audit device, auth methods, and secrets engines ..."
+cd blazing_sword || exit 1
+rm -f terraform.tfstate > /dev/null 2>&1
+rm -f vault.plan > /dev/null 2>&1
+terraform init > /dev/null 2>&1 && \
+terraform plan -out vault.plan > /dev/null 2>&1 && \
+terraform apply "vault.plan" > /dev/null 2>&1
+cd .. | exit 1
+msg success "Audit device, auth methods, and secrets engines installed!"
+
+status
+enabled
+
+if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
+  telemetry_info
+fi

@@ -1,3 +1,5 @@
+blazing_sword/terraform.tfstate
+blazing_sword/vault.plan
 custom/consul*
 custom/vault*
 data/migration

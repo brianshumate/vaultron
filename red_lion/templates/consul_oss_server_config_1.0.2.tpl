@@ -18,6 +18,5 @@
     "http": -1,
     "https": 8500
   },
-  "ui": true,
-  "enable_script_checks": true
+  "ui": true
 }

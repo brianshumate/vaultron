@@ -59,15 +59,6 @@ check_docker() {
   fi
 }
 
-# Check for existing vaultron-* namespaced containers
-check_existing_containers() {
-  if [ "$(docker ps -a | grep -c vaultron)" -ge 1 ]; then
-    msg alert "Existing Docker images with vaultron namespace detected!"
-    msg alert "Please examine with 'docker ps -a' and cleanup before forming Vaultron!"
-    exit 1
-  fi
-}
-
 # Check for vault file in project directory
 check_existing_vault() {
   if [ -f "$PWD"/vault ]; then
@@ -78,7 +69,6 @@ check_existing_vault() {
 }
 
 # TerraFORM Vaultron!
-
 check_consul_version() {
   if [ ! -z "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
@@ -130,7 +120,6 @@ fi
 
 # Preflight checks
 check_docker
-#check_existing_containers
 check_custom_binary vault
 check_existing_vault
 
