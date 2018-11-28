@@ -33,13 +33,13 @@ $ git clone https://github.com/brianshumate/vaultron.git && \
   cd vaultron && \
   ./form && \
   . ./ion_darts && \
-  ./blazing_sword.sh && \
+  ./blazing_sword && \
   sudo security add-trusted-cert -d -r trustAsRoot \
   -k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem && \
   open https://localhost:8200
 ```
 
-> **NOTE**: The `blazing_sword.sh` script persists unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: The `blazing_sword` script persists unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start for Linux or macOS
 
@@ -130,7 +130,7 @@ If you want to tear down the containers, but preserve data, logs, and state, you
 $ terraform destroy -state=./tfstate/terraform.tfstate
 ```
 
-If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword.sh` script to do all of this for you with the additional Terraform configuration in `blazing_sword/main.tf`.
+If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you with the additional Terraform configuration in `blazing_sword/main.tf`.
 
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
@@ -227,7 +227,7 @@ Vaultron runs the `:latest` official Vault Docker container image, but if you wo
 ```
 $ export TF_VAR_vault_version=0.6.5
 $ ./form
-$ ./blazing_sword.sh
+$ ./blazing_sword
 ...
 Version: 0.6.5
 ...

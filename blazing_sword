@@ -34,6 +34,21 @@ auth_root() {
   vault auth "${INITIAL_ROOT_TOKEN}"  > /dev/null 2>&1
 }
 
+# Enable all the things
+
+enable_all() {
+  msg info "Enabling audit device, auth methods, and secrets engines ..."
+  cd examples/terraform || msg alert "Problem changing directory"; exit 1
+  rm -f terraform.tfstate > /dev/null 2>&1
+  rm -f vault.plan > /dev/null 2>&1
+  terraform init > /dev/null 2>&1 && \
+  terraform plan -out vault.plan > /dev/null 2>&1 && \
+  terraform apply "vault.plan" > /dev/null 2>&1
+  cd ../.. || msg alert "Problem changing directory"; exit 1
+  msg success "Audit device, auth methods, and secrets engines enabled!"
+
+}
+
 # List enabled auth methods and secrets engines
 enabled() {
   echo
@@ -155,22 +170,12 @@ if [ -z "$VAULT_TOKEN" ]; then
 fi
 
 # <wait 2> :lol:
-sleep 2
+# sleep 2
 
 initialize_vault
 unseal_vault
 auth_root
-
-msg info "Installing audit device, auth methods, and secrets engines ..."
-cd blazing_sword || exit 1
-rm -f terraform.tfstate > /dev/null 2>&1
-rm -f vault.plan > /dev/null 2>&1
-terraform init > /dev/null 2>&1 && \
-terraform plan -out vault.plan > /dev/null 2>&1 && \
-terraform apply "vault.plan" > /dev/null 2>&1
-cd .. | exit 1
-msg success "Audit device, auth methods, and secrets engines installed!"
-
+enable_all
 status
 enabled
 
