@@ -4,9 +4,9 @@
   "data_dir": "${data_dir}",
   "raft_protocol": 3,
   "acl_datacenter": "arus",
-  "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
+  "acl_master_token": "b4c0ffee-3b77-04af-36d6-738b697872e6",
   "acl_default_policy": "allow",
-  "acl_down_policy": "extend-cache",
+  "acl_down_policy": "allow",
   "recursors": [
     "${recursor1}",
     "${recursor2}"

@@ -12,6 +12,7 @@
 # - Unseal Vault with key material from temporary file
 # - Enable a range of auth methods and secrets engines with a vaultron prefix
 #   with blazing_sword Terraform configuration
+#   (see examples/terraform for the configuration used)
 #
 # shellcheck disable=SC2154,SC2039,SC1091
 
@@ -35,18 +36,16 @@ auth_root() {
 }
 
 # Enable all the things
-
 enable_all() {
-  msg info "Enabling audit device, auth methods, and secrets engines ..."
-  cd examples/terraform || msg alert "Problem changing directory"; exit 1
+  msg info "Enabling audit device, auth methods, secrets engines, and policies ..."
+  cd examples/terraform || exit 1
+  rm -rf .terraform > /dev/null 2>&1
   rm -f terraform.tfstate > /dev/null 2>&1
   rm -f vault.plan > /dev/null 2>&1
   terraform init > /dev/null 2>&1 && \
   terraform plan -out vault.plan > /dev/null 2>&1 && \
   terraform apply "vault.plan" > /dev/null 2>&1
-  cd ../.. || msg alert "Problem changing directory"; exit 1
-  msg success "Audit device, auth methods, and secrets engines enabled!"
-
+  msg success "Audit device, auth methods, secrets engines, and policies enabled!"
 }
 
 # List enabled auth methods and secrets engines
@@ -168,9 +167,6 @@ if [ -z "$VAULT_TOKEN" ]; then
     msg success "Existing VAULT_TOKEN environment variable unset!"
   fi
 fi
-
-# <wait 2> :lol:
-# sleep 2
 
 initialize_vault
 unseal_vault

@@ -1,9 +1,14 @@
+## v2.0.4 (UNRELEASED)
+
+- Update Consul ACL token format
+- Default log levels
+
 ## v2.0.3
 
 - Vault v0.11.5
 - Consul v1.4.0
 - Remove enable_script_checks from older Consul templates
-- blazing sword now uses a separate Terraform configuration
+- blazing_sword now uses a separate Terraform configuration
 - Update documentation
 
 ## v2.0.2

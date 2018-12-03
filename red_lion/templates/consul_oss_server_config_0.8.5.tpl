@@ -3,6 +3,8 @@
   "datacenter": "${datacenter}",
   "data_dir": "${data_dir}",
   "raft_protocol": 3,
+  "acl_datacenter": "arus",
+  "acl_master_token": "b4c0ffee-3b77-04af-36d6-738b697872e6",
   "acl_enforce_version_8": false,
   "acl_default_policy": "allow",
   "recursors": [

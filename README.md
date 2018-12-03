@@ -87,7 +87,7 @@ Note there is a message from the `form` script about setting important environme
 $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem" \
   CONSUL_HTTP_ADDR="127.0.0.1:8500" \
   CONSUL_HTTP_SSL=true \
-  CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town" \
+  CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
   VAULT_ADDR="https://127.0.0.1:8200" \
   VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
 ```
@@ -138,7 +138,7 @@ If you are familiar with Terraform you can also use Terraform commands instead, 
 $ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
 $ export CONSUL_HTTP_SSL=true
 $ export VAULT_ADDR="https://127.0.0.1:8200"
-$ export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
+$ export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 ```
 
 ## What's in the Box?
@@ -337,7 +337,7 @@ This was chosen to allow for ease of experimentation with ACL policies and the V
 
 The value used for the shared ACL Master Token is:
 
-- `vaultron-forms-and-eats-all-the-tacos-in-town`
+- `b4c0ffee-3b77-04af-36d6-738b697872e6`
 
 #### TLS by Default
 

@@ -1,7 +1,7 @@
 {
   "raft_protocol": 3,
   "acl_datacenter": "arus",
-  "acl_master_token": "vaultron-forms-and-eats-all-the-tacos-in-town",
+  "acl_master_token": "",
   "acl_default_policy": "allow",
   "acl_down_policy": "allow",
   "cert_file": "/etc/ssl/certs/consul-client.crt",

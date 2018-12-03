@@ -25,4 +25,3 @@ path "sys/*" {
 path "vaultron/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
-

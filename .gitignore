@@ -1,3 +1,4 @@
+examples/terraform/.terraform
 examples/terraform/terraform.tfstate
 examples/terraform//vault.plan
 custom/consul*

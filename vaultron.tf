@@ -1,6 +1,5 @@
 # =======================================================================
-# Vaultron: A Terraformed, Consul-backed, Vault cluster
-#           on Docker for Linux or macOS
+# Vaultron: A Terraformed, Consul-backed, Vault on Docker for Linux or macOS
 # =======================================================================
 
 # -----------------------------------------------------------------------

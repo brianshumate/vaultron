@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-
 import hvac
 
 client = hvac.Client(url='https://localhost:8200',

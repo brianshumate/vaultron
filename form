@@ -38,7 +38,7 @@ exporting the following environment variables in your shell:
 export CONSUL_HTTP_ADDR="127.0.0.1:8500"
 export CONSUL_HTTP_SSL=true
 export VAULT_ADDR="https://127.0.0.1:8200"
-export CONSUL_HTTP_TOKEN="vaultron-forms-and-eats-all-the-tacos-in-town"
+export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 
 or use this command to do it for you:
 
@@ -152,9 +152,9 @@ fi
 if ! [ -z "$TF_VAR_consul_custom" ]; then
   if [ "$TF_VAR_consul_custom" -gt 0 ]; then
     msg info "Consul version: custom binary: cannot determine version"
+    else
+    msg info "Consul OSS version: ${TF_VAR_consul_version}"
   fi
-else
-  msg info "Consul OSS version: ${TF_VAR_consul_version}"
 fi
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
