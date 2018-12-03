@@ -1,6 +1,6 @@
 examples/terraform/.terraform
 examples/terraform/terraform.tfstate
-examples/terraform//vault.plan
+examples/terraform/vault.plan
 custom/consul*
 custom/vault*
 data/migration
