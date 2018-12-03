@@ -182,27 +182,27 @@ Vaultron has to work around some current networking quirks of Docker for Mac to 
 |                 |            |            |                 Black Lion |
 |  +--------------+-   --------+--------   -+---------------             |
 |  |               |   |               |   |               |             |
-|  |     vault0    |   |     vault1    |   |     vault2    |             |
+|  |vaultron-vault0|   |vaultron-vault1|   |vaultron-vault2|             |
 |  |               |   |               |   |               |             |
 |  +-------+-^-----+   +-------+-^-----+   +-------+-^-----+             |
 |          | |                 | |                 | |                   |
 +------------------------------------------------------------------------+
 |          | |                 | |                 | |        Red Lion   |
-|  +-------v-+-----+   +-------v-+-----+   +-------v-+-----+             |
-|  |               |   |               |   |               |             |
-|  | Consul Client |   | Consul Client |   | Consul Client |             |
-|  |   (consulc0)  |   |   (consulc1)  |   |   (consulc2)  |             |
-|  |               |   |               |   |               |             |
-|  +-------+-^-----+   +-------+-^-----+   +-------+-^-----+             |
+|  +-------v-+-------+   +-----v-+----------+   +--v-+------------+      |
+|  |                 |   |                  |   |                 |      |
+|  | Consul Client   |   | Consul Client    |   | Consul Client   |      |
+|  |vaultron-consulc0|   |vaultron-consulc1)|   |vaultron-consulc2|      |
+|  |                 |   |                  |   |                 |      |
+|  +-------+-^-------+   +-----+-^----------+   +--+-^------------+      |
 |          | |                 | |                 | |                   |
 |          | |                 | |                 | |                   |
 |          | |                 | |                 | |                   |
-|  +-------v-+-----+   +-------v-+-----+   +-------v-+-----+             |
-|  |               |   |               |   |               |             |
-|  | Consul Server +---> Consul Server +---> Consul Server |             |
-|  |   (consuls0)  <---+   (consuls1)  <---+   (consuls2)  |             |
-|  |               |   |               |   |               |             |
-|  +---------------+   +---------------+   +---------------+             |
+|  +-------v-+-------+   +-----v-+---------+   +---v-+-----------+       |
+|  |                 |   |                 |   |                 |       |
+|  | Consul Server   +---> Consul Server   +---> Consul Server   |       |
+|  |vaultron-consuls0<---+vaultron-consuls1<---+vaultron-consuls2|       |
+|  |                 |   |                 |   |                 |       |
+|  +-----------------+   +-----------------+   +-----------------+       |
 +------------------------------------------------------------------------+
 ```
 
@@ -396,7 +396,7 @@ The Docker containers are named as shown in the [Basic Architecture Overview](#b
 You can view operational logs for any container with `docker logs` like so:
 
 ```
-docker logs vault0
+docker logs vaultron-vault0
 ```
 
 The Vault audit logs for any given _active server_ are available as:
