@@ -68,17 +68,17 @@ You are now nearly ready to interact with Vault and Consul using their web user 
 Take a moment to verify that all of the Docker containers are up:
 
 ```
-$ docker ps -a
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                                                                                                                                                                NAMES
-380160b1a3f2        f25bbb6ff2ef        "vault server -log-l…"   2 minutes ago       Up 2 minutes        0.0.0.0:8210->8200/tcp                                                                                                                                                               vaultron-vault1
-98b1bb16158e        f25bbb6ff2ef        "vault server -log-l…"   2 minutes ago       Up 2 minutes        0.0.0.0:8200->8200/tcp                                                                                                                                                               vaultron-vault0
-427ad325324e        f25bbb6ff2ef        "vault server -log-l…"   2 minutes ago       Up 2 minutes        0.0.0.0:8220->8200/tcp                                                                                                                                                               vaultron-vault2
-cd97158b22d2        10a92470333b        "consul agent -confi…"   2 minutes ago       Up 2 minutes        8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc0
-73269576ecbd        10a92470333b        "consul agent -confi…"   2 minutes ago       Up 2 minutes        8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc2
-fa90b4954872        10a92470333b        "consul agent -confi…"   2 minutes ago       Up 2 minutes        8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consulc1
-6f9bf45b8219        10a92470333b        "consul agent -serve…"   2 minutes ago       Up 2 minutes        8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls1
-ce6cd43ed1ad        10a92470333b        "consul agent -serve…"   2 minutes ago       Up 2 minutes        8300-8302/tcp, 8500/tcp, 8301-8302/udp, 8600/tcp, 8600/udp                                                                                                                           vaultron-consuls2
-815627189dee        10a92470333b        "consul agent -serve…"   2 minutes ago       Up 2 minutes        0.0.0.0:8300-8302->8300-8302/tcp, 0.0.0.0:8500->8500/tcp, 0.0.0.0:8555->8555/tcp, 0.0.0.0:8301-8302->8301-8302/udp, 8600/tcp, 8600/udp, 0.0.0.0:8600->53/tcp, 0.0.0.0:8600->53/udp   vaultron-consuls0
+$ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
+NAMES               STATUS
+vaultron-vault2     Up 7 minutes
+vaultron-vault0     Up 7 minutes
+vaultron-vault1     Up 7 minutes
+vaultron-consulc2   Up 7 minutes
+vaultron-consulc0   Up 7 minutes
+vaultron-consulc1   Up 7 minutes
+vaultron-consuls1   Up 7 minutes
+vaultron-consuls0   Up 7 minutes
+vaultron-consuls2   Up 7 minutes
 ```
 
 Note there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
@@ -99,9 +99,9 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located at `etc/tls/ca-bundle.pem` under the root of this project.
+> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca-bundle.pem`.
 
-See the **TLS by Default** section for more details on handling Vaultron's Certificate Authority certificate.
+See the **TLS by Default** section for more details on handling the Vaultron Certificate Authority certificate.
 
 ### What's Next?
 
@@ -120,7 +120,7 @@ Here are some other things you can do after Vaultron is formed:
 7. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 8. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
 
-**NOTE: `./unform` attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generate data will likely be created as uid 0 which means `./unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `./unform` or `./form` again.
+> **NOTE: `./unform` attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generated data will likely be created as uid 0 which means `./unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `./unform` or `./form` again; this will be improved in a future release.
 
 The Terraform provider modules _are not removed_ to save on resources and time involved in re-downloading them.
 
@@ -130,7 +130,7 @@ If you want to tear down the containers, but preserve data, logs, and state, you
 $ terraform destroy -state=./tfstate/terraform.tfstate
 ```
 
-If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you with the additional Terraform configuration in `blazing_sword/main.tf`.
+If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you. `blazing_sword` uses the additional Terraform configuration in `blazing_sword/main.tf`.
 
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
@@ -169,41 +169,44 @@ Here are some slightly more serious notes and questions about what Vaultron is a
 Vaultron has to work around some current networking quirks of Docker for Mac to do its thing and is only currently tested to function on Linux and macOS, but here is basically what you are getting by default:
 
 ```
-+-----------+-----------------------------------+------------------------+
-| __     __ |   Yellow Lion (optional)          |                        |
-| \ \   / / |   +----------------------------+  |                        |
-|  \ \ / /  |   |     Grafana Dashboard      |  |                        |
-|   \ V /   |   +----------------------------+  |                        |
-|    \_/    |   |     statsd / Graphite      |  |                        |
-|           |   +-^------------^------------^+  |                        |
-|           +-----------------------------------+                        |
-|                 |            |            |                            |
-+------------------------------------------------------------------------+
-|                 |            |            |                 Black Lion |
-|  +--------------+-   --------+--------   -+---------------             |
-|  |               |   |               |   |               |             |
-|  |vaultron-vault0|   |vaultron-vault1|   |vaultron-vault2|             |
-|  |               |   |               |   |               |             |
-|  +-------+-^-----+   +-------+-^-----+   +-------+-^-----+             |
-|          | |                 | |                 | |                   |
-+------------------------------------------------------------------------+
-|          | |                 | |                 | |        Red Lion   |
-|  +-------v-+-------+   +-----v-+----------+   +--v-+------------+      |
-|  |                 |   |                  |   |                 |      |
-|  | Consul Client   |   | Consul Client    |   | Consul Client   |      |
-|  |vaultron-consulc0|   |vaultron-consulc1)|   |vaultron-consulc2|      |
-|  |                 |   |                  |   |                 |      |
-|  +-------+-^-------+   +-----+-^----------+   +--+-^------------+      |
-|          | |                 | |                 | |                   |
-|          | |                 | |                 | |                   |
-|          | |                 | |                 | |                   |
-|  +-------v-+-------+   +-----v-+---------+   +---v-+-----------+       |
-|  |                 |   |                 |   |                 |       |
-|  | Consul Server   +---> Consul Server   +---> Consul Server   |       |
-|  |vaultron-consuls0<---+vaultron-consuls1<---+vaultron-consuls2|       |
-|  |                 |   |                 |   |                 |       |
-|  +-----------------+   +-----------------+   +-----------------+       |
-+------------------------------------------------------------------------+
++------------+--------------------------------------------------+------------+
+|            |              Yellow Lion (optional)              |            |
+| __     __  |    +-----------------------------------------+   |            |
+| \ \   / /  |    |                                         |   |            |
+|  \ \ / /   |    |            Grafana Dashboard            |   |            |
+|   \ V /    |    +-----------------------------------------+   |            |
+|    \_/     |    |                                         |   |            |
+|            |    |            statsd / Graphite            |   |            |
+|            |    +--^-----------------^------------------^-+   |            |
+|            +--------------------------------------------------+            |
+|                    |                 |                  |                  |
++----------------------------------------------------------------------------+
+|  Black Lion        |                 |                  |                  |
+|  +-----------------+--+   +----------+---------+   +----+---------------+  |
+|  |                    |   |                    |   |                    |  |
+|  |  Vault (active)    |   |  Vault (standby)   |   |  Vault (standby)   |  |
+|  |                    <---+                    |   |                    |  |
+|  |  vaultron-vault0   |   |  vaultron-vault1   |   |  vaultron-vault2   |  |
+|  |                    |   |                    |   |                    |  |
+|  |                    <----------------------------+                    |  |
+|  +---------------+--^-+   +--------------^--+--+   +---------------+--^-+  |
+|                  |  |                    |  |                      |  |    |
++----------------------------------------------------------------------------+
+|  Red Lion        |  |                    |  |                      |  |    |
+|                  |  |                    |  |                      |  |    |
+|  +---------------v--+-+   +--------------+--v--+   +---------------v--+-+  |
+|  | Consul client      |   | Consul client      |   | Consul client      |  |
+|  |                    |   |                    |   |                    |  |
+|  | vaultron-consulc0  |   | vaultron-consulc1  |   | vaultron-consulc2  |  |
+|  +-------^--+---------+   +-------^--+---------+   +-------^--+---------+  |
+|          |  |                     |  |                     |  |            |
+|          |  |                     |  |                     |  |            |
+|  +-------+--v---------+   +-------+--v---------+   +-------+--v---------+  |
+|  | Consul server      +---> Consul server      <---+ Consul server      |  |
+|  |                    |   |                    |   |                    |  |
+|  | vaultron-consuls0  <---+ vaultron-consuls1  +---> vaultron-consuls2  |  |
+|  +--------------------+   +--------------------+   +--------------------+  |
++----------------------------------------------------------------------------+
 ```
 
 Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers.
@@ -227,9 +230,8 @@ Vaultron runs the `:latest` official Vault Docker container image, but if you wo
 ```
 $ export TF_VAR_vault_version=0.6.5
 $ ./form
-$ ./blazing_sword
 ...
-Version: 0.6.5
+[vaultron] [i] Vault OSS version: 0.6.5
 ...
 ```
 
@@ -237,13 +239,8 @@ Similarly, to run a different version of the Consul container, set the `TF_VAR_c
 
 ```
 $ export TF_VAR_consul_version=0.7.5
-
 $ ./form
-
-$ . ./ion_darts
-[=] Exporting Vaultron environment variables ...
-[^] Exported Vaultron environment variables!
-
+# ...
 $ consul members
 Node      Address          Status  Type    Build  Protocol  DC    Segment
 consuls0  172.17.0.2:8301  alive   server  0.7.5  2         arus  <all>
@@ -459,7 +456,7 @@ Here is simple method to watch HA mode in action using two terminal sessions:
 ```
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=https://localhost:8210\|   | docker stop vault0                 |
+| VAULT_ADDR=https://localhost:8210\|   | docker stop vaultron-vault0        |
 | watch -n 1 vault status           |   |                                    |
 |                                   |   |                                    |
 | ...                               |   |                                    |

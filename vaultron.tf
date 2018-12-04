@@ -8,7 +8,7 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "0.11.5"
+  default = "1.0.0"
 }
 
 # Set TF_VAR_consul_version to set this

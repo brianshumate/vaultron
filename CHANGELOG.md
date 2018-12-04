@@ -1,5 +1,6 @@
-## v2.0.4 (UNRELEASED)
+## v2.1.0
 
+- Vault v1.0.0
 - Update Consul ACL token format
 - Default log levels
 
