@@ -1,7 +1,9 @@
 # Terraform with Vault
 
-This example contains the very Terraform configuration used to enable all of Vaultron's post-unseal configuration, including:
+This example contains the very Terraform configuration used to enable all of Vaultron's post-unseal configuration, including the followin:
 
-- File based audit device
-- Auth Methods
-- Secrets Engines
+## File Based Audit Device
+
+## Auth Methods
+
+## Secrets Engines

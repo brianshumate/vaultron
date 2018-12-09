@@ -22,8 +22,15 @@ if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."
 fi
 
-# Remove Consul client data
+# If we cannot write to the Consul data, it is likely owned by UID 0
+# Alert user and atttempt to change ownership of Consul to avoid failure with destroy
+if ! [ -w consul/consuls0 ]; then
+  msg notice "Consul data not writable; changing ownership of consul folder to $(whoami):$(id -gn) ..."
+  msg notice "You could be prompted by sudo for your user password ..."
+  sudo chown -R $(whoami):$(id -gn) consul/ > /dev/null 2>&1
+fi
 
+# Remove Consul client data
 rm -rf ./consul/consulc0
 errors=$((errors + $?))
 rm -rf ./consul/consulc1

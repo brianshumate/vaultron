@@ -9,6 +9,5 @@
   "ports": {
     "http": -1,
     "https": 8500
-  },
-  "enable_script_checks": true
+  }
 }
