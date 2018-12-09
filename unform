@@ -27,7 +27,7 @@ fi
 if ! [ -w consul/consuls0 ]; then
   msg notice "Consul data not writable; changing ownership of consul folder to $(whoami):$(id -gn) ..."
   msg notice "You could be prompted by sudo for your user password ..."
-  sudo chown -R $(whoami):$(id -gn) consul/ > /dev/null 2>&1
+  sudo chown -R $(whoami):$(id -gn) consul/
 fi
 
 # Remove Consul client data
