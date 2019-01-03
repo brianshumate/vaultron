@@ -23,16 +23,6 @@ fi
 
 TRANSITIZE=$(openssl rand -hex 4)
 
-check_vault() {
-  if command nc; then
-    PORT_CHECK="nc -z locahost 8200";
-  elif command timeout; then
-    PORT_CHECK="timeout 1 bash -c '</dev/tcp/localhost/8200'"
-  elif command gtimeout; then
-    PORT_CHECK="gtimeout 1 bash -c '</dev/tcp/localhost/8200'"
-  fi
-}
-
 check_transit() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
@@ -75,18 +65,14 @@ encrypt_plaintext() {
   printf "$txtrst\n"
 }
 
-if $PORT_CHECK; then
-  check_transit
-  generate_key
+check_vault
+check_transit
+generate_key
 
-  if ! encrypt_plaintext "$@"; then
-    errors=$((errors + $?));
-    msg "Problem encrypting plaintext!";
-    exit $errors
-  else
-    msg complete "Performed $1 plaintext encryption operations; logged in ./tmp/transitize-$TRANSITIZE.log"
-  fi
+if ! encrypt_plaintext "$@"; then
+  errors=$((errors + $?));
+  msg "Problem encrypting plaintext!";
+  exit $errors
 else
-  echo "Vault is not reachable at localhost! Giving up!"
-  exit 1
+  msg complete "Performed $1 plaintext encryption operations; logged in ./tmp/transitize-$TRANSITIZE.log"
 fi

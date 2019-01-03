@@ -25,16 +25,6 @@ fi
 
 APPRULEZ=$(openssl rand -hex 4)
 
-check_vault() {
-  if command nc; then
-    PORT_CHECK="nc -z locahost 8200";
-  elif command timeout; then
-    PORT_CHECK="timeout 1 bash -c '</dev/tcp/localhost/8200'"
-  elif command gtimeout; then
-    PORT_CHECK="gtimeout 1 bash -c '</dev/tcp/localhost/8200'"
-  fi
-}
-
 check_approle() {
   check_cli_cap
   if [ "$VAULT_CLI_CAP" -eq "1" ]; then
@@ -58,11 +48,14 @@ gen_role() {
     secret_id_ttl=720h \
     token_num_uses=999999 \
     token_ttl=360h \
+    period=400h \
     token_max_ttl=420h \
     secret_id_num_uses=999999 > /dev/null 2>&1; then
       msg alert "Failed to generate the apprulez-$APPRULEZ AppRole!"
       exit 1
   fi
+  msg info "AppRole role apprulez-$APPRULEZ configuration:"
+  vault read auth/vaultron-approle/role/apprulez-$APPRULEZ 2> /dev/null
   msg complete "Generated apprulez-$APPRULEZ role!"
 }
 
@@ -74,7 +67,7 @@ get_role_id() {
       exit 1
   fi
   ROLE_ID=$(vault read auth/vaultron-approle/role/apprulez-$APPRULEZ/role-id | grep role_id | awk '{print $2}')
-  msg complete "Got apprulez-$APPRULEZ role ID!"
+  msg complete "Got apprulez-$APPRULEZ role ID: $ROLE_ID"
 }
 
 get_secret_id() {
@@ -86,12 +79,12 @@ get_secret_id() {
       exit 1
   fi
   SECRET_ID=$(vault write -f auth/vaultron-approle/role/apprulez-$APPRULEZ/secret-id | grep -w secret_id | awk '{print $2}')
-  msg complete "Got apprulez-$APPRULEZ secret ID!"
+  msg complete "Got apprulez-$APPRULEZ secret ID: $SECRET_ID"
 }
 
 gen_token() {
   msg secret "Generating $1 AppRole tokens: "
-  printf '[@] '
+  printf '[vaultron] [@] '
   for _ in $(seq "$1"); do
     if ! vault write auth/vaultron-approle/login \
       role_id="$ROLE_ID" \
@@ -104,19 +97,15 @@ gen_token() {
   printf "$txtrst\n"
 }
 
-if $PORT_CHECK; then
-  check_approle
-  gen_role
-  get_role_id
-  get_secret_id
-  if ! gen_token "$@"; then
-    errors=$((errors + $?));
-    msg "Problem generating AppRole tokens!";
-    exit $errors
-  else
-    msg complete "Generated $1 AppRole tokens; logged in ./tmp/apprulez-$APPRULEZ.log"
-  fi
+check_vault
+check_approle
+gen_role
+get_role_id
+get_secret_id
+if ! gen_token "$@"; then
+  errors=$((errors + $?));
+  msg "Problem generating AppRole tokens!";
+  exit $errors
 else
-  echo "Vault is not reachable at localhost! Giving up!"
-  exit 1
+  msg complete "Generated $1 AppRole tokens; logged in ./tmp/apprulez-$APPRULEZ.log"
 fi

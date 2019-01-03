@@ -1,7 +1,10 @@
-## v2.1.1 (UNRELEASED)
+## v2.1.1
 
+- Vault v1.0.1
 - Consul configuration cleanup and updates
-- Add workaround to unform script for uid 0 owned local Consul data under Linux
+- Update example / test scripts
+- Add workaround to unform for uid 0 owned local Consul data under Linux
+- Update documentation
 
 ## v2.1.0
 

@@ -22,15 +22,28 @@ if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."
 fi
 
-# If we cannot write to the Consul data, then data is likely owned by UID 0
-# Alert user and atttempt to change ownership of consul/vault folders
-# to avoid failure with destroy
-if ! [ -w consul/consuls0 ]; then
-  msg notice "Consul data not writable; changing ownership of consul & vault folders to $(whoami):$(id -gn) ..."
-  msg notice "You could be prompted by sudo for your user password ..."
-  sudo chown -R $(whoami):$(id -gn) consul
-  sudo chown -R $(whoami):$(id -gn) vault
+# If we cannot write to the Consul data, alert user and attempt to change
+# ownership of consul/vault folders to avoid failure with Terraform destroy
+# NB: This occurs on Docker on Linux but not Docker for Mac.
+
+
+if [ "$(uname)" = "Linux" ]; then
+  if ! [ -w consul/consuls0 ]; then
+    msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
+    msg notice "You could be prompted by sudo for your user password to make this change ..."
+    if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" consul; then
+      msg alert "Failed to change ownership of consul data to $VAULTRON_USER:$VAULTRON_GROUP"
+      msg alert "Manual cleanup of consul folder contents required:"
+      ls -lha consul/
+    fi
+    if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" vault; then
+      msg alert "Failed to change ownership of vault data to $VAULTRON_USER:$VAULTRON_GROUP"
+      msg alert "Manual cleanup of vault folder contents required:"
+      ls -lha vault/
+    fi
+  fi
 fi
+
 
 # Remove Consul client data
 rm -rf ./consul/consulc0

@@ -10,12 +10,16 @@
 #     leading the printing of literal characters instead, for example:
 #         \033[0;36m[=]%sForm Vaultron! ...%s\n\033[0mn
 #     so we take the ding in the name of ANSI color greatness
-#     (void where prohibited)
+#     (void where prohibited) ✨🎉
 # =======================================================================
 
 export VAULTRON_TMP="$PWD/tmp"
 
-# Colors
+VAULTRON_USER="$(id -un)"
+VAULTRON_GROUP="$(id -gn)"
+export VAULTRON_USER VAULTRON_GROUP
+
+# Colors because the world is a colorful place 🌎
 TXTBLU="$(tput setaf 4)"
 TXTCYA="$(tput setaf 6)"
 TXTGRN="$(tput setaf 2)"
@@ -58,7 +62,7 @@ msg() {
 }
 
 # -----------------------------------------------------------------------
-# Check CLI capabilities for renaming from <= v0.9.1 and v0.9.1+
+# Basic CLI capabilities check (for renaming from <= v0.9.1 and v0.9.1+)
 # -----------------------------------------------------------------------
 
 check_cli_cap() {
@@ -76,7 +80,31 @@ else
 fi
 }
 
-# Begin Terraform specific bits
+# -----------------------------------------------------------------------
+# Basic connectivity check
+# -----------------------------------------------------------------------
+check_vault() {
+  if command nc -h > /dev/null 2>&1; then
+    if ! nc -z localhost 8200 > /dev/null 2>&1; then
+      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      exit 1
+    fi
+  elif command timeout; then
+    if ! timeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
+      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      exit 1
+    fi
+  elif command gtimeout; then
+    if ! gtimeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
+      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      exit 1
+    fi
+  fi
+}
+
+# -----------------------------------------------------------------------
+# Terraform specific bits
+# -----------------------------------------------------------------------
 tfmsg() {
     tfmsg_out="$(echo "$1" | awk '{
            # strip control characters for printing and matching
