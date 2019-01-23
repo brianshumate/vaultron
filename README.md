@@ -120,7 +120,7 @@ Here are some other things you can do after Vaultron is formed:
 7. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 8. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
 
-> **NOTE: `./unform` attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generated data will likely be created as uid 0 which means `./unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `./unform` or `./form` again; this will be improved in a future release.
+> **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generated data will likely be created as uid 0 which means `unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `unform` or `form` again; this will be improved in a future release.
 
 The Terraform provider modules _are not removed_ to save on resources and time involved in re-downloading them.
 

@@ -9,14 +9,16 @@ your Vault, and logged in with the initial root token.
 
 ## Run PostgreSQL Docker Container
 
-Use the official PostgreSQL Docker container:
+Use the official PostgreSQL Docker container with TLS configuration from the `certs` folder:
 
 ```
 $ docker run \
+  --rm \
   -p5432:5432 \
-  --name vaultron_postgres \
+  -v $PWD/certs/:/docker-entrypoint-initdb.d/ \
+  --name vaultron-postgres \
   -e POSTGRES_PASSWORD=vaultron \
-  -d postgres
+  -d postgres -l
 ```
 
 Determine the PostgreSQL Docker container's internal IP address:
@@ -24,16 +26,16 @@ Determine the PostgreSQL Docker container's internal IP address:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    vaultron_postgres
-172.17.0.2
+    vaultron-postgres
+172.17.0.11
 ```
 
 ## Configure Vault
 
-Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+Enable a database secrets engine mount at `vaultron-database`:
 
 ```
-$ vault secrets enable -path=vaultron_database database
+$ vault secrets enable -path=vaultron-database database
 ```
 
 Next, configure a simple PostgreSQL connection without SSL:
@@ -42,8 +44,9 @@ Next, configure a simple PostgreSQL connection without SSL:
 $ vault write vaultron-database/config/postgresql \
     plugin_name=postgresql-database-plugin \
     allowed_roles="postgresql-readonly" \
-    connection_url="postgresql://postgres:vaultron@172.17.0.2:5432?sslmode=disable"
-
+    connection_url="postgresql://{{username}}:{{password}}@172.17.0.11:5432/postgres" \
+    username="postgres" \
+    password="vaultron"
 
 The following warnings were returned from the Vault server:
 * Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
@@ -65,13 +68,13 @@ Retrieve a read only PostgreSQL database credential:
 
 ```
 $ vault read vaultron-database/creds/postgresql-readonly
-Key             Value
----             -----
-lease_id        database/creds/readonly/ddc27039-ef66-a22b-c2f4-61fbfbbefd8a
-lease_duration  1h0m0s
-lease_renewable true
-password        A1a-1p2p9yxwzsp51047
-username        v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218
+Key                Value
+---                -----
+lease_id           vaultron-database/creds/postgresql-readonly/YI3ggiSuDlciDdoERmPzjtqc
+lease_duration     1h
+lease_renewable    true
+password           A1a-jmZWpMUU1KbyXbGg
+username           v-root-postgres-XHXdOR7W0d51lmieNdQv-1548174025
 ```
 
 Log in to PostgreSQL container with read-only credential:
@@ -80,7 +83,7 @@ Log in to PostgreSQL container with read-only credential:
 $ psql \
   --host=127.0.0.1 \
   --dbname=postgres \
-  --username=v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218 \
+  --username=v-root-postgres-XHXdOR7W0d51lmieNdQv-1548174025 \
   --password
 
 # Use password 'A1a-1p2p9yxwzsp51047' from above
