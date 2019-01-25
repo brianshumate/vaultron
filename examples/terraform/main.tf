@@ -114,6 +114,11 @@ resource "vault_mount" "vaultron_ssh_client_signer" {
   description = "Vaultron example SSH Secrets Engine (client)"
 }
 
+resource "vault_mount" "vaultron_totp" {
+  path        = "vaultron-totp"
+  type        = "totp"
+  description = "Vaultron example TOTP Secrets Engine"
+}
 
 # -----------------------------------------------------------------------
 # Policy Resources
