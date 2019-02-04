@@ -178,15 +178,55 @@ path "identity/*" {
 path "auth/token/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
+
+# Manage KV secrets
+path "kv/*" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
 EOT
 }
 
-resource "vault_policy" "vaultron_example_ns" {
-  name = "vaultron-example-ns"
+resource "vault_policy" "vaultron_example_namespace_ns" {
+  name = "vaultron-example-namespace-ns"
   policy = <<EOT
-// Vaultron example policy: "example vaultron namespace"
+  # Manage Vaultron namespaces
 path "sys/namespaces/vaultron/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
+# Manage policies via API
+path "sys/policies/*" {
+   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
+# Manage policies via CLI
+path "sys/policy/*" {
+   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+
+# List policies via CLI
+path "sys/policy" {
+   capabilities = ["read", "update", "list"]
+}
+
+# Enable and manage secrets engines
+path "sys/mounts/*" {
+   capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# List available secret engines
+path "sys/mounts" {
+  capabilities = [ "read" ]
+}
+
+# Create and manage entities and groups
+path "identity/*" {
+   capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+# Manage tokens
+path "auth/token/*" {
+   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
 EOT
 }

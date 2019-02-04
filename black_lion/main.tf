@@ -185,6 +185,7 @@ data "template_file" "vault_custom_config" {
 
   vars {
     address            = "0.0.0.0:8200"
+    alt_address        = "0.0.0.0:443"
     consul_address     = "${element(var.consul_client_ips, count.index)}"
     datacenter         = "${var.datacenter_name}"
     log_level          = "${var.vault_server_log_level}"
