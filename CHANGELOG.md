@@ -1,3 +1,9 @@
+## v2.1.3
+
+- Vault v1.0.3
+- Consul v1.4.2
+- Updated examples / documentation
+
 ## v2.1.2
 
 - Vault v1.0.2

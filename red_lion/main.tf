@@ -121,6 +121,10 @@ resource "docker_container" "consuls0" {
   domainname = "consul"
   dns_search  = ["consul"]
 
+  capabilities {
+    add = ["SYS_PTRACE"]
+  }
+
   volumes {
     host_path      = "${path.module}/../../../consul/consuls0/config"
     container_path = "/consul/config"
@@ -232,6 +236,10 @@ resource "docker_container" "consuls1" {
   domainname = "consul"
   dns_search  = ["consul"]
 
+  capabilities {
+    add = ["SYS_PTRACE"]
+  }
+
   volumes {
     host_path      = "${path.module}/../../../consul/consuls1/config"
     container_path = "/consul/config"
@@ -286,6 +294,10 @@ resource "docker_container" "consuls2" {
   hostname  = "consuls2"
   domainname = "consul"
   dns_search  = ["consul"]
+
+  capabilities {
+    add = ["SYS_PTRACE"]
+  }
 
   volumes {
     host_path      = "${path.module}/../../../consul/consuls2/config"
@@ -371,6 +383,10 @@ resource "docker_container" "consul_oss_client" {
                      )}"]
   must_run   = true
   labels = { robot = "vaultron" }
+
+  capabilities {
+    add = ["SYS_PTRACE"]
+  }
 
   upload = {
     content = "${data.template_file.consulc_common_config.rendered}"

@@ -230,3 +230,89 @@ path "auth/token/*" {
 }
 EOT
 }
+
+resource "vault_policy" "vaultron_example_token_admin" {
+  name = "vaultron-example-token-admin"
+  policy = <<EOT
+# List available auth methods
+path "sys/auth" {
+  capabilities = [ "read" ]
+}
+
+# Read default token configuration
+path "sys/auth/token/tune" {
+  capabilities = [ "read", "sudo" ]
+}
+
+# Create and manage tokens (renew, lookup, revoke, etc.)
+path "auth/token/*" {
+  capabilities = [ "create", "read", "update", "delete", "list", "sudo" ]
+}
+
+# List available secrets engines
+path "sys/mounts" {
+  capabilities = [ "read" ]
+}
+
+# Tune the database secrets engine TTL
+path "sys/mounts/database/tune" {
+  capabilities = [ "update" ]
+}
+EOT
+}
+
+
+resource "vault_policy" "vaultron_example_token_identity" {
+  name = "vaultron-example-token-identity"
+  policy = <<EOT
+# Configure auth methods
+path "sys/auth" {
+  capabilities = [ "read", "list" ]
+}
+
+# Configure auth methods
+path "sys/auth/*" {
+  capabilities = [ "create", "update", "read", "delete", "list", "sudo" ]
+}
+
+# Manage userpass auth methods
+path "auth/userpass/*" {
+  capabilities = [ "create", "read", "update", "delete" ]
+}
+
+# Manage github auth methods
+path "auth/github/*" {
+  capabilities = [ "create", "read", "update", "delete" ]
+}
+
+# Display the Policies tab in UI
+path "sys/policies" {
+  capabilities = [ "read", "list" ]
+}
+
+# Create and manage ACL policies from UI
+path "sys/policies/acl/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+
+# Create and manage policies
+path "sys/policy" {
+  capabilities = [ "read", "list" ]
+}
+
+# Create and manage policies
+path "sys/policy/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+
+# List available secret engines to retrieve accessor ID
+path "sys/mounts" {
+  capabilities = [ "read" ]
+}
+
+# Create and manage entities and groups
+path "identity/*" {
+  capabilities = [ "create", "read", "update", "delete", "list" ]
+}
+EOT
+}
