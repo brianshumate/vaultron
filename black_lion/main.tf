@@ -98,7 +98,7 @@ resource "docker_container" "vault_oss_server" {
   entrypoint = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
-  hostname  = "${format("vault%d", count.index)}"
+  hostname  = "${format("vaults%d", count.index)}"
   domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]
@@ -212,7 +212,7 @@ resource "docker_container" "vault_custom_server" {
   entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
-  hostname  = "${format("vault%d", count.index)}"
+  hostname  = "${format("vaults%d", count.index)}"
   domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
   dns_search = ["consul"]

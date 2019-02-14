@@ -1,4 +1,5 @@
 {
+  "node_id": "${node_id}",
   "bootstrap_expect": 3,
   "datacenter": "${datacenter}",
   "data_dir": "${data_dir}",

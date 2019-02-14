@@ -23,6 +23,7 @@ output "consul_client_ips" {
 # -----------------------------------------------------------------------
 # Consul variables
 # -----------------------------------------------------------------------
+
 variable "consul_log_level" {}
 variable "datacenter_name" {}
 variable "consul_version" {}
@@ -108,6 +109,7 @@ resource "docker_container" "consuls0" {
   entrypoint = ["consul",
     "agent",
     "-server",
+    "-node-id=c0ffee74-a33e-4200-99ae-12dc45a4a6ae",
     "-config-dir=/consul/config",
     "-node=consuls0",
     "-client=0.0.0.0",
@@ -223,6 +225,7 @@ resource "docker_container" "consuls1" {
   entrypoint = ["consul",
     "agent",
     "-server",
+    "-node-id=c0ffee74-77f0-44ea-849a-4bfeef9b07c4",
     "-config-dir=/consul/config",
     "-node=consuls1",
     "-client=0.0.0.0",
@@ -273,7 +276,7 @@ resource "docker_container" "consuls1" {
 }
 
 # -----------------------------------------------------------------------
-# Consul OSS server 2
+# Consul OSS server 3
 # -----------------------------------------------------------------------
 
 resource "docker_container" "consuls2" {
@@ -282,6 +285,7 @@ resource "docker_container" "consuls2" {
   entrypoint = ["consul",
     "agent",
     "-server",
+    "-node-id=c0ffee74-cb59-4bec-9eba-ca4a3fe56646",
     "-config-dir=/consul/config",
     "-node=consuls2",
     "-client=0.0.0.0",
@@ -341,6 +345,7 @@ data "template_file" "consulc_common_config" {
 
   vars {
     common_configuration = "true"
+    node_id = "${uuid()}"
   }
 }
 
