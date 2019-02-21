@@ -42,9 +42,10 @@ enable_all() {
   rm -rf .terraform > /dev/null 2>&1
   rm -f terraform.tfstate > /dev/null 2>&1
   rm -f vault.plan > /dev/null 2>&1
+  get_initial_root_token
   terraform init > /dev/null 2>&1 && \
-  terraform plan -out vault.plan > /dev/null 2>&1 && \
-  terraform apply "vault.plan" > /dev/null 2>&1
+  VAULT_TOKEN=$INITIAL_ROOT_TOKEN terraform plan -out vault.plan > /dev/null 2>&1 && \
+  VAULT_TOKEN=$INITIAL_ROOT_TOKEN terraform apply "vault.plan" > /dev/null 2>&1
   msg success "Audit device, auth methods, secrets engines, and policies enabled!"
 }
 

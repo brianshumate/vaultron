@@ -339,13 +339,18 @@ resource "docker_container" "consuls2" {
 # Consul OSS client common configuration
 # -----------------------------------------------------------------------
 
+resource "random_id" "agent_node_id" {
+  count = "${var.consul_oss_instance_count}"
+  byte_length = 16
+}
+
 data "template_file" "consulc_common_config" {
-  count    = "${var.consul_oss}"
+  count = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
 
   vars {
     common_configuration = "true"
-    node_id = "${uuid()}"
+    agent_node_id = "${uuid()}"
   }
 }
 
@@ -354,12 +359,12 @@ data "template_file" "consulc_common_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "consul_client_tls_cert" {
-  count    = "${var.consul_oss}"
+  count = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("consul-client-%d.crt", count.index)}")}"
 }
 
 data "template_file" "consul_client_tls_key" {
-  count    = "${var.consul_oss}"
+  count = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("consul-client-%d.key", count.index)}")}"
 }
 
@@ -394,7 +399,7 @@ resource "docker_container" "consul_oss_client" {
   }
 
   upload = {
-    content = "${data.template_file.consulc_common_config.rendered}"
+    content = "${data.template_file.consulc_common_config.*.rendered[count.index]}"
     file    = "/consul/config/common_config.json"
   }
 

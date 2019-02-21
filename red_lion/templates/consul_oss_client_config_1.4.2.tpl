@@ -1,4 +1,5 @@
 {
+  "node_id": "${agent_node_id}",
   "raft_protocol": 3,
   "acl_datacenter": "arus",
   "acl_master_token": "b4c0ffee-3b77-04af-36d6-738b697872e6",
