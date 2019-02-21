@@ -30,9 +30,20 @@ check_vault_file() {
 
 # Authenticate with initial root token
 auth_root() {
-  msg info "Authenticating with Vault root token ..."
+  check_cli_cap
   get_initial_root_token "${VAULT_DAT}"
-  vault auth "${INITIAL_ROOT_TOKEN}"  > /dev/null 2>&1
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    LOGIN_CMD="vault login $INITIAL_ROOT_TOKEN"
+  else
+    LOGIN_CMD="vault auth $INITIAL_ROOT_TOKEN"
+  fi
+  msg info "Authenticating with initial root token ..."
+  if ! $LOGIN_CMD > /dev/null 2>&1; then
+    msg alert "Could not authenticate with initial root token!"
+    exit 1
+  else
+    msg success "Authenticated with initial root token!"
+  fi
 }
 
 # Enable all the things
@@ -42,10 +53,9 @@ enable_all() {
   rm -rf .terraform > /dev/null 2>&1
   rm -f terraform.tfstate > /dev/null 2>&1
   rm -f vault.plan > /dev/null 2>&1
-  get_initial_root_token
   terraform init > /dev/null 2>&1 && \
-  VAULT_TOKEN=$INITIAL_ROOT_TOKEN terraform plan -out vault.plan > /dev/null 2>&1 && \
-  VAULT_TOKEN=$INITIAL_ROOT_TOKEN terraform apply "vault.plan" > /dev/null 2>&1
+  terraform plan -out vault.plan > /dev/null 2>&1 && \
+  terraform apply "vault.plan" > /dev/null 2>&1
   msg success "Audit device, auth methods, secrets engines, and policies enabled!"
 }
 
