@@ -1,3 +1,10 @@
+## v2.1.4
+
+- Fixup scripts
+- Update templates for Consul
+- Use specific Node IDs in Consul so that ancient versions work again
+- Update LDAP auth method examples
+
 ## v2.1.3
 
 - Vault v1.0.3

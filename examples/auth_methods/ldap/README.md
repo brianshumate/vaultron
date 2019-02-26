@@ -3,23 +3,25 @@
 This is a quick up and running for Vaultron with OpenLDAP and the Vault LDAP auth method. The following resources are useful to familiarize yourself with while using this guide:
 
 - [osixia/openldap Docker container image](https://github.com/osixia/docker-openldap)
-- `/usr/bin/ldapsearch` (macOS)
+- `ldapsearch -h`
 - `man ldapsearch`
 
-## Start the Container
+## Start a Container
+
+Instantiate an OpenLDAP container with some initial settings:
 
 ```
 $ docker run \
 -p 389:389 \
 -p 636:636 \
---name vaultron_openldap \
+--name vaultron-openldap \
 --env LDAP_ORGANISATION="Vaultron" \
 --env LDAP_DOMAIN="vaultron.waves" \
 --env LDAP_ADMIN_PASSWORD="vaultron" \
 --detach osixia/openldap:latest
 ```
 
-This will start an OpenLDAP container with the standard and secure LDAP ports exposed to the host.
+This will start an OpenLDAP container with both the standard and secure LDAP ports exposed to the host.
 
 Use this command to obtain the internal IP address that Vault will use to connect to the running container.
 
@@ -35,7 +37,9 @@ $ docker inspect \
 Let's do a quick initial `ldapsearch` within the container itself to ensure that the container is working:
 
 ```
-$ docker exec vaultron_openldap ldapsearch -x -H ldap://localhost -b dc=vaultron,dc=waves -D "cn=admin,dc=vaultron,dc=waves" -w vaultron
+$ docker exec vaultron-openldap \
+  ldapsearch -x -H ldap://localhost -b dc=vaultron,dc=waves \
+  -D "cn=admin,dc=vaultron,dc=waves" -w vaultron
 ```
 
 This should result in the dump of an extended LDIF similar to this one:
@@ -86,38 +90,69 @@ $ ldapsearch \
 -w vaultron
 ```
 
+## Add Basic Config
+
+You can add a basic configuration with user from the file `vaultron.ldif`:
+
+```
+$ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" \
+  -f examples/auth_methods/ldap/vaultron.ldif
+```
+
 ## Configure Vault
 
-Vaultron already enables the LDAP auth method as `vaultron_ldap`:
+Vaultron already enables the LDAP auth method as `vaultron-ldap`:
 
 ```
 $ vault auth list
-Path                  Type        Description
-----                  ----        -----------
-token/                token       token based credentials
-vaultron_approle/     approle     n/a
-vaultron_ldap/        ldap        n/a
-vaultron_userpass/    userpass    n/a
+Path                  Type        Accessor                  Description
+----                  ----        --------                  -----------
+token/                token       auth_token_43d79f4c       token based credentials
+vaultron-approle/     approle     auth_approle_b27b182f     Vaultron example AppRole auth method
+vaultron-cert/        cert        auth_cert_241a03ca        Vaultron example X.509 certificate auth method
+vaultron-ldap/        ldap        auth_ldap_bdb558f7        Vaultron example LDAP auth method
+vaultron-userpass/    userpass    auth_userpass_c48213b7    Vaultron example Username and password auth method
 ```
 
-So we need to begin configuring it now:
+Configure it like this:
 
 ```
-$ vault write auth/vaultron_ldap/config \
-    url="ldap://172.17.0.13" \
-    userdn="ou=Users,dc=vaultron,dc=waves" \
-    groupdn="ou=Users,dc=vaultron,dc=waves" \
-    groupfilter="(&(objectClass=person)(uid={{.Username}}))" \
-    groupattr="memberOf" \
-    binddn="cn=admin,ou=users,dc=vaultron,dc=waves" \
-    bindpass='vaultron' \
-    insecure_tls=true \
-    starttls=false
+$ vault write auth/vaultron-ldap/config \
+  url="ldap://172.17.0.13" \
+  userdn="ou=users,dc=vaultron,dc=waves" \
+  groupdn="ou=groups,dc=vaultron,dc=waves" \
+  groupfilter="(|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}}))" \
+  groupattr="cn" \
+  starttls=false \
+  binddn="cn=admin,dc=vaultron,dc=waves" \
+  bindpass="vaultron"
+Success! Data written to: auth/vaultron-ldap/config
 ```
 
 Add a LDAP group to Vault policy mapping:
 
 
 ```
-$ vault write auth/vaultron_ldap/groups/users policies=example
+$ vault write auth/vaultron-ldap/groups/dev policies=wildcard
+```
+
+## Authenticate
+
+Login:
+
+```
+$ Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You do NOT need to run "vault login"
+again. Future Vault requests will automatically use this token.
+
+Key                    Value
+---                    -----
+token                  s.IphcK09HOfS4rjFA8gq8G1g5
+token_accessor         8vEMZqSMo6bomj315Gm6StlT
+token_duration         50000h
+token_renewable        true
+token_policies         ["default" "wildcard"]
+identity_policies      []
+policies               ["default" "wildcard"]
+token_meta_username    vaultron
 ```

@@ -1,0 +1,74 @@
+# Vaultron LDAP Advanced Example LDIF
+#
+# This is random groups and users in the context of impersonating some AD
+# specific configuration and behavior within OpenLDAP
+#
+# Add with `ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" -f vaultron.ldif`
+
+# Pseudo-AD attributes and classes
+
+attributetype ( 1.2.840.113556.1.4.750 NAME 'groupType'
+   SYNTAX '1.3.6.1.4.1.1466.115.121.1.27' SINGLE-VALUE
+)
+
+attributetype ( 1.3.114.7.4.2.0.33 NAME 'memberOf'
+    SYNTAX '1.3.6.1.4.1.1466.115.121.1.26'
+)
+
+objectclass ( 1.2.840.113556.1.5.9 NAME 'user'
+        DESC 'a user'
+        SUP organizationalPerson STRUCTURAL
+        MUST ( cn )
+        MAY ( userPassword $ memberOf ) )
+
+objectclass ( 1.2.840.113556.1.5.8 NAME 'group'
+        DESC 'a group of users'
+        SUP top STRUCTURAL
+        MUST ( groupType $ cn )
+        MAY ( member ) )
+
+# Users and Groups
+
+
+dn: dc=vaultron
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+dc: vaultron
+o: LocalBranch
+
+dn: ou=People,dc=vaultron
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+description: Test database
+
+dn: cn=Users,dc=vaultron
+objectClass: groupOfNames
+objectClass: top
+cn: Users
+member: cn=Manager,cn=Users,dc=vaultron
+
+dn: cn=Manager,cn=Users,dc=vaultron
+objectClass: person
+objectClass: top
+cn: Manager
+sn: Manager
+userPassword:: e1NIQX1tc0lKSXJCVU1XdmlPRUtsdktmV255bjJuWGM9
+
+dn: cn=ReadWrite,ou=People,dc=vaultron
+objectClass: group
+objectClass: top
+cn: ReadWrite
+groupType: 2147483650
+member: cn=sysconf,ou=People,dc=vaultron
+
+dn: cn=sysopr,ou=People,dc=vaultron
+objectClass: user
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: sysopr
+sn: team
+memberOf: cn=ReadOnly,ou=People,dc=vaultron
+userPassword:: e1NIQX1jUkR0cE5DZUJpcWw1S09Rc0tWeXJBMHNBaUE9
