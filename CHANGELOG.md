@@ -1,3 +1,8 @@
+## v2.1.5 (UNRELEASED)
+
+- Disable client certs in custom template
+- Update documentation
+
 ## v2.1.4
 
 - Fixup scripts

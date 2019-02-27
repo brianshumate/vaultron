@@ -6,6 +6,8 @@
 
 **Vaultron** uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
+> **NOTE**: While every effort is made to document Vaultron itself here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation**.
+
 ## Why?
 
 It's a reasonably useful Vault & Consul environment deployed on your macOS or Linux computer _in a about 1 minute_.

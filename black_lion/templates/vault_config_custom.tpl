@@ -9,6 +9,7 @@ listener "tcp" {
   tls_disable = "${tls_disable}"
   tls_cert_file = "/etc/ssl/certs/vault-server.crt"
   tls_key_file = "/etc/ssl/vault-server.key"
+  tls_disable_client_certs = true
   # tls_disable_client_certs = true
   # proxy_protocol_behavior = "allow_authorized"
   # proxy_protocol_authorized_addrs = "172.17.0.0/24"
