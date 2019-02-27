@@ -95,9 +95,9 @@ resource "docker_container" "vault_oss_server" {
   count = "${var.vault_oss_instance_count}"
   name  = "vaultron-${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
-  entrypoint = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
+  command = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   hostname  = "${format("vaults%d", count.index)}"
   domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
@@ -209,9 +209,9 @@ resource "docker_container" "vault_custom_server" {
   count = "${var.vault_custom_instance_count}"
   name  = "vaultron-${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
-  entrypoint = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   env      = ["VAULT_CLUSTER_INTERFACE=eth0",
               "VAULT_REDIRECT_INTERFACE=eth0"]
+  command = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   hostname  = "${format("vaults%d", count.index)}"
   domainname = "consul"
   dns        = ["${var.consul_server_ips}"]
