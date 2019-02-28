@@ -125,7 +125,7 @@ status() {
 
 # Note about statsd server for Telemetry
 telemetry_info() {
-  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vstatsd) > /dev/null 2>&1; then
+  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vstatsd) > /dev/null 2>&1; then
     msg info "Telemetry: statsd address: $VSTATSD_ADDR"
   else
     msg alert "Failed to determine statsd address!"
@@ -189,3 +189,5 @@ enabled
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
+
+$TXTRST

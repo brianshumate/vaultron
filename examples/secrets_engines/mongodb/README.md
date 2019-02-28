@@ -9,7 +9,7 @@ The guide presumes that you have formed Vaultron, initialized and unsealed your 
 Use the official MongoDB Docker container:
 
 ```
-$ docker run -p 27017:27017 --name vaultron_mongodb -d mongo
+$ docker run -p 27017:27017 --name vaultron-mongodb -d mongo
 ```
 
 Determine the MongoDB Docker container's internal IP address:
@@ -17,7 +17,7 @@ Determine the MongoDB Docker container's internal IP address:
 ```
 $ docker inspect \
   --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-  vaultron_mongodb
+  vaultron-mongodb
 172.17.0.12
 ```
 

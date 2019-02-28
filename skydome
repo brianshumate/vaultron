@@ -89,12 +89,12 @@ check_vault() {
       msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
       exit 1
     fi
-  elif command timeout; then
+  elif command timeout > /dev/null 2>&1; then
     if ! timeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
       msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
       exit 1
     fi
-  elif command gtimeout; then
+  elif command gtimeout > /dev/null 2>&1; then
     if ! gtimeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
       msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
       exit 1

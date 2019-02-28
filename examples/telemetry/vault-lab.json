@@ -80,7 +80,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.expire.num_leases"
+          "target": "stats.gauges.vault.vaults0.consul.expire.num_leases"
         }
       ],
       "thresholds": "50000,100000",
@@ -611,17 +611,17 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.runtime.alloc_bytes"
+          "target": "stats.gauges.vault.vaults0.consul.runtime.alloc_bytes"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.gauges.vault.vault1.consul.runtime.alloc_bytes"
+          "target": "stats.gauges.vault.vaults1.consul.runtime.alloc_bytes"
         },
         {
           "refCount": 0,
           "refId": "C",
-          "target": "stats.gauges.vault.vault2.consul.runtime.alloc_bytes"
+          "target": "stats.gauges.vault.vaults2.consul.runtime.alloc_bytes"
         }
       ],
       "thresholds": [],
@@ -706,17 +706,17 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.runtime.sys_bytes"
+          "target": "stats.gauges.vault.vaults0.consul.runtime.sys_bytes"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.gauges.vault.vault1.consul.runtime.sys_bytes"
+          "target": "stats.gauges.vault.vaults1.consul.runtime.sys_bytes"
         },
         {
           "refCount": 0,
           "refId": "C",
-          "target": "stats.gauges.vault.vault2.consul.runtime.sys_bytes"
+          "target": "stats.gauges.vault.vaults2.consul.runtime.sys_bytes"
         }
       ],
       "thresholds": [],
@@ -801,17 +801,17 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.runtime.num_goroutines"
+          "target": "stats.gauges.vault.vaults0.consul.runtime.num_goroutines"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.gauges.vault.vault1.consul.runtime.num_goroutines"
+          "target": "stats.gauges.vault.vaults1.consul.runtime.num_goroutines"
         },
         {
           "refCount": 0,
           "refId": "C",
-          "target": "stats.gauges.vault.vault2.consul.runtime.num_goroutines"
+          "target": "stats.gauges.vault.vaults2.consul.runtime.num_goroutines"
         }
       ],
       "thresholds": [],
@@ -896,17 +896,17 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.runtime.heap_objects"
+          "target": "stats.gauges.vault.vaults0.consul.runtime.heap_objects"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.gauges.vault.vault1.consul.runtime.heap_objects"
+          "target": "stats.gauges.vault.vaults1.consul.runtime.heap_objects"
         },
         {
           "refCount": 0,
           "refId": "C",
-          "target": "stats.gauges.vault.vault2.consul.runtime.heap_objects"
+          "target": "stats.gauges.vault.vaults2.consul.runtime.heap_objects"
         }
       ],
       "thresholds": [],
@@ -1231,7 +1231,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.gauges.vault.vault0.consul.wal.gc.deleted"
+          "target": "stats.gauges.vault.vaults0.consul.wal.gc.deleted"
         }
       ],
       "thresholds": [],

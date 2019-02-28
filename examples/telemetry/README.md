@@ -100,7 +100,7 @@ $ ./form
 
 Now we're ready for the initial Grafana configuration! This mostly involves adding our Graphite data source, and you can begin like this:
 
-1. Vist http://localhost:3000
+1. Vist http://127.0.0.1:3000/login
 2. login as user `admin` with password `vaultron` (or custom password value)
 3. Click **Add data source** and modify only the following:
   - Name: `Vaultron`
