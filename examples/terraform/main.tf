@@ -66,6 +66,13 @@ resource "vault_auth_backend" "vaultron_ldap" {
 # Secrets Engines Resources
 # -----------------------------------------------------------------------
 
+resource "vault_mount" "vaultron_db" {
+  path = "vaultron-database"
+  type = "database"
+  description = "Vaultron example Database secrets engine"
+}
+
+
 resource "vault_mount" "vaultron_kv" {
   path        = "vaultron-kv"
   type        = "kv"

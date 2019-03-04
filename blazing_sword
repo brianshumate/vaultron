@@ -14,7 +14,7 @@
 #   with blazing_sword Terraform configuration
 #   (see examples/terraform for the configuration used)
 #
-# shellcheck disable=SC2154,SC2039,SC1091
+# shellcheck disable=SC1091,SC2039,SC2059,SC2086,SC2154
 
 . ./skydome
 
@@ -106,14 +106,14 @@ initialize_vault() {
   fi
   msg info "Initializing Vault ..."
   VAULT_DAT="./vault/vault_DEV_ONLY-$(date +%s).tmp"
-  # Wherein Perl is not yet dead and a subtle amount of line noise lives on!
-  if ! $INIT_CMD | perl -pe 's/\x1b\[[0-9;]*m//g' > "${VAULT_DAT}"; then
-    errors=$((errors + $?))
-    msg alert "Failed to initialize Vault!"
-    exit $errors
+  # Tidy control characters from initialization output before writing
+  if output="$($INIT_CMD)"; then
+    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"
   else
-    msg complete "Vault initialized!"
+    msg alert "Failed to initialize Vault!"
+    exit "$output"
   fi
+   msg complete "Vault initialized!"
 }
 
 # Get Vault status
@@ -190,4 +190,4 @@ if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
 
-tput sgr0
+printf $TXTRST

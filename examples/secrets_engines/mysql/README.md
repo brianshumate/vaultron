@@ -17,7 +17,7 @@ $ ./eye_beams_mysql
 Use the official MySQL Docker container:
 
 ```
-$ docker run --name vaultron_mysql \
+$ docker run --name vaultron-mysql \
     -e MYSQL_ROOT_PASSWORD=vaultron \
     -p 3306:3306 \
     -d mysql:latest
@@ -28,22 +28,22 @@ Determine the MySQL Docker container's internal IP address:
 ```
 $ docker inspect \
     --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    vaultron_mysql
+    vaultron-mysql
 172.17.0.2
 ```
 
 ## Configure Vault
 
-Vaultron enables the database secrets engine at `vaultron_database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+Vaultron enables the database secrets engine at `vaultron-database` if using `blazing sword`; if you set up manually, you'll need to enable it:
 
 ```
-$ vault secrets enable -path=vaultron_database database
+$ vault secrets enable -path=vaultron-database database
 ```
 
 Next, write the MySQL secrets engine configuration:
 
 ```
-$ vault write vaultron_database/config/mysql \
+$ vault write vaultron-database/config/mysql \
     plugin_name=mysql-database-plugin \
     connection_url="root:vaultron@tcp(172.17.0.2:3306)/" \
     allowed_roles="mysql-readonly"
@@ -55,21 +55,21 @@ The following warnings were returned from the Vault server:
 Write an initial MySQL read only user role:
 
 ```
-$ vault write vaultron_database/roles/mysql-readonly \
+$ vault write vaultron-database/roles/mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: vaultron_database/roles/mysql-readonly
+Success! Data written to: vaultron-database/roles/mysql-readonly
 ```
 
 Retrieve a read only MySQL database credential:
 
 ```
-$ vault read vaultron_database/creds/mysql-readonly
+$ vault read vaultron-database/creds/mysql-readonly
 Key                Value
 ---                -----
-lease_id           vaultron_database/creds/mysql-readonly/0669a169-ea0a-67c3-5c5d-00c4e1beb9d2
+lease_id           vaultron-database/creds/mysql-readonly/0669a169-ea0a-67c3-5c5d-00c4e1beb9d2
 lease_duration     1h
 lease_renewable    true
 password           A1a-2r5u92yx8w8w4sr8
