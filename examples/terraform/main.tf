@@ -6,7 +6,7 @@
 # ========================================================================
 
 # We presume Vault at https://localhost:8200
-# and the presence of ~/.vault-token here.
+# and the presence of a ~/.vault-token here.
 
 provider "vault" {
 
@@ -78,6 +78,13 @@ resource "vault_mount" "vaultron_kv" {
   type        = "kv"
   description = "Vaultron example KV version 1 secrets engine"
 }
+
+#resource "vault_mount" "vaultron_kv_v2" {
+#  path        = "vaultron-kv-v2"
+#  type        = "kv-v2"
+#  description = "Vaultron example KV version 2 secrets engine"
+#}
+
 
 resource "vault_mount" "vaultron_aws" {
   path        = "vaultron-aws"

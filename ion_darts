@@ -9,17 +9,51 @@
 
 . ./skydome
 
-CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
-CONSUL_HTTP_ADDR="127.0.0.1:8500"
-CONSUL_HTTP_SSL=true
-CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
-VAULT_ADDR="https://127.0.0.1:8200"
-VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
-export \
-CONSUL_CACERT \
-CONSUL_HTTP_ADDR \
-CONSUL_HTTP_SSL \
-CONSUL_HTTP_TOKEN \
-VAULT_ADDR \
-VAULT_CACERT
-msg success "Exported Vaultron environment variables!"
+# ChromeOS Linux VM environment
+crosvm_env() {
+	ETH0IP="$(/sbin/ifconfig eth0 | grep -w 'inet' | awk '{print $2}')"
+	CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
+	CONSUL_HTTP_ADDR="$ETH0IP:8500"
+	CONSUL_HTTP_SSL=true
+	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+	VAULT_ADDR="https://$ETH0IP:8200"
+	VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+	export \
+	CONSUL_CACERT \
+	CONSUL_HTTP_ADDR \
+	CONSUL_HTTP_SSL \
+	CONSUL_HTTP_TOKEN \
+	VAULT_ADDR \
+	VAULT_CACERT
+	msg success "Exported Vaultron environment variables:"
+	msg success "CONSUL_HTTP_ADDR: $CONSUL_HTTP_ADDR"
+	msg success "VAULT_ADDR: $VAULT_ADDR"
+}
+
+# All others
+default_env() {
+	CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
+	CONSUL_HTTP_ADDR="127.0.0.1:8500"
+	CONSUL_HTTP_SSL=true
+	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+	VAULT_ADDR="https://127.0.0.1:8200"
+	VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+	export \
+	CONSUL_CACERT \
+	CONSUL_HTTP_ADDR \
+	CONSUL_HTTP_SSL \
+	CONSUL_HTTP_TOKEN \
+	VAULT_ADDR \
+	VAULT_CACERT
+	msg success "Exported Vaultron environment variables:"
+	msg success "CONSUL_HTTP_ADDR: $CONSUL_HTTP_ADDR"
+	msg success "VAULT_ADDR: $VAULT_ADDR"
+}
+
+
+if ! [ -z $SOMMELIER_VERSION ]; then
+	crosvm_env
+else
+  default_env
+fi
+
