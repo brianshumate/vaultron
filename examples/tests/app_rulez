@@ -2,7 +2,7 @@
 #
 # app_rulez
 #
-# Sequentially create N AppRole tokens in Vault
+# Enable an AppRole role, then sequentially create N AppRole tokens from it
 #
 # Role name: apprulez-$APPRULEZ
 #
@@ -40,6 +40,7 @@ check_approle() {
   fi
 }
 
+# NB: The tokens are bound to the Docker CIDR
 gen_role() {
   msg info "Generating apprulez-$APPRULEZ role ..."
   if ! vault write \
@@ -47,6 +48,7 @@ gen_role() {
     policies=sudo,vaultron-dev \
     secret_id_ttl=720h \
     token_num_uses=999999 \
+    token_bound_cidrs="172.17.0.0/24" \
     token_ttl=360h \
     period=400h \
     token_max_ttl=420h \

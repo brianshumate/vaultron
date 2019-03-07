@@ -12,10 +12,19 @@ if [ -z "$SKYDOME" ]; then
 fi
 . $SKYDOME
 
+check_cli_cap
+if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    SECRETS_LIST_CMD="vault secrets list"
+    SECRETS_ENABLE_CMD="vault secrets enable"
+  else
+    SECRETS_LIST_CMD="vault mounts"
+    SECRETS_ENABLE_CMD="vault mount"
+fi
+
 msg greeting "Engage Eye Beams for MySQL! ..."
 
 launch_docker_container() {
-docker run --name vaultron_mysql \
+docker run --name vaultron-mysql \
   -e MYSQL_ROOT_PASSWORD=vaultron \
   -p 3306:3306 \
   -d mysql:latest > /dev/null 2>&1
@@ -29,44 +38,47 @@ else
   msg complete "Launched MySQL Docker container!"
 fi
 
-MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron_mysql)"
+MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-mysql)"
 
-if ! vault mounts | grep 'database_' > /dev/null 2>&1; then
-  msg info "Mount Vault database backend ..."
-  if vault mount database > /dev/null 2>&1; then
-    msg complete "Mounted Vault database backend!"
+if ! $SECRETS_LIST_CMD | grep 'vaultron-database' > /dev/null 2>&1; then
+  msg info "Enable Database secrets engine ..."
+  if $SECRETS_ENABLE_CMD -path=vaultron-database database > /dev/null 2>&1; then
+    msg complete "Enabled Database secrets engine!"
   else
-    msg alert "Problem mounting MySQL database secret backend!"
+    msg alert "Problem enabling MySQL database secrets engine!"
     exit 1
   fi
 fi
 
-# XXX: Sad sleepy hack — should instead be done deterministically
 msg info "Pausing while MySQL at $MYSQL_CONTAINER_IP wakes up ..."
-sleep 20
+# Use vault0 and netcat to determine when the MySQL container port is open...
+MYSQL_READY=1
+while [ "$MYSQL_READY" = "1" ]; do
+  sleep 1; sdocker exec -it vaultron-vault0 nc -z "$MYSQL_CONTAINER_IP" 3306 ; export MYSQL_READY=$? ;
+done
 
 msg info "Configure MySQL secret backend ..."
-if vault write database/config/mysql \
+if vault write vaultron-database/config/mysql \
   plugin_name=mysql-database-plugin \
   connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
-  allowed_roles="mysql-readonly"  > /dev/null 2>&1; then
+  allowed_roles="mysql-readonly"; then
   msg complete "Configured MySQL secret backend!"
 else
-    msg alert "Problem configuring MySQL database secret backend"
+    msg alert "Problem configuring MySQL database secrets engine!"
     exit 1
 fi
 
 msg info "Configure MySQL read-only role ..."
-if vault write database/roles/mysql-readonly \
+if vault write vaultron-database/roles/mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
-    max_ttl="24h"  > /dev/null 2>&1; then
+    max_ttl="24h" > /dev/null 2>&1; then
     msg complete "Configured MySQL read-only role!"
 else
     msg alert "Problem configuring MySQL read-only role"
     exit 1
 fi
 
-msg complete "MySQL secret backend enabled! Use the following command to get a MySQL credential:"
-msg complete "vault read database/creds/mysql-readonly"
+msg complete "MySQL secrets engine enabled! Use the following command to get a MySQL credential:"
+msg complete "vault read vaultron-database/creds/mysql-readonly"

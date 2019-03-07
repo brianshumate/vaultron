@@ -4,7 +4,14 @@
 
 Using the example `migrate.hcl` included in this project, you can migrate Vaultron data from Consul to a file system representation that can be used with the file system storage backend.
 
-Vault should not be operational when `vault operator migrate` is used.
+Vault should not be operational when `vault operator migrate` is used. You can stop the Vault server containers like this:
+
+```
+$ for i in {0..2}; do docker stop vaultron-vault$i; done
+vaultron-vault0
+vaultron-vault1
+vaultron-vault2
+```
 
 Execute this from the root of the Vaultron project:
 
