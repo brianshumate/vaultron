@@ -1,5 +1,6 @@
-## v2.1.5 (UNRELEASED)
+## v2.1.5
 
+- Consul v1.4.3
 - Disable client certs in custom template
 - Update documentation
 

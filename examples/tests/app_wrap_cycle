@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1090,2086
+
+# super low wrap TTL, YMMV
+WRAP_TTL="1"
+
+# Wrapped token is always fetched from what _should be_ active...
+export VAULT_ADDR=https://localhost:8200
+WRAPPED_TOKEN="$(vault write -format=json -wrap-ttl=$WRAP_TTL -f auth/approle/role/my-role/secret-id | jq -r '.wrap_info.token')"
+if [ "$WRAPPED_TOKEN" == "" ]; then
+    echo 2>&1 "Empty wrapped token!"
+    exit 1
+fi
+echo "got Wrapping Token: $WRAPPED_TOKEN"
+
+# Choose one of the performance standbys for unwrapping...
+export VAULT_ADDR="https://127.0.0.1:82$(( ( RANDOM % 2 )  + 1 ))0"
+
+# echo "TEST"
+# vault token lookup "$WRAPPED_TOKEN"
+# echo "END TEST"
+
+echo "unwrap with $VAULT_ADDR ..."
+SECRET_ID="$(vault unwrap -format=json $WRAPPED_TOKEN | jq -r '.data.secret_id')"
+if [ "$SECRET_ID" == "" ]; then
+    echo 2>&1 "Empty secret ID!"
+    exit 1
+fi
+echo "got Secret ID: $SECRET_ID"
+
+echo
