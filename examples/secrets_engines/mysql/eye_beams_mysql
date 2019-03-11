@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # This script is used to setup a MySQL Docker container
-# for Vaultron secret backend use
+# for Vaultron secret engine use
 #
 # shellcheck disable=SC1090,SC1091,SC2059
 
@@ -50,18 +50,18 @@ if ! $SECRETS_LIST_CMD | grep 'vaultron-database' > /dev/null 2>&1; then
   fi
 fi
 
-msg info "Pausing while MySQL at $MYSQL_CONTAINER_IP wakes up ..."
+msg info "Waiting for MySQL container at $MYSQL_CONTAINER_IP ..."
 # Use vault0 and netcat to determine when the MySQL container port is open...
 MYSQL_READY=1
 while [ "$MYSQL_READY" = "1" ]; do
-  sleep 1; sdocker exec -it vaultron-vault0 nc -z "$MYSQL_CONTAINER_IP" 3306 ; export MYSQL_READY=$? ;
+  sleep 1; docker exec -it vaultron-vault0 nc -z "$MYSQL_CONTAINER_IP" 3306 ; export MYSQL_READY=$? ;
 done
 
 msg info "Configure MySQL secret backend ..."
 if vault write vaultron-database/config/mysql \
   plugin_name=mysql-database-plugin \
   connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
-  allowed_roles="mysql-readonly"; then
+  allowed_roles="vaultron-mysql-readonly" > /dev/null 2>&1; then
   msg complete "Configured MySQL secret backend!"
 else
     msg alert "Problem configuring MySQL database secrets engine!"
@@ -69,16 +69,16 @@ else
 fi
 
 msg info "Configure MySQL read-only role ..."
-if vault write vaultron-database/roles/mysql-readonly \
+if vault write vaultron-database/roles/vaultron-mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
     max_ttl="24h" > /dev/null 2>&1; then
-    msg complete "Configured MySQL read-only role!"
+    msg complete "Configured MySQL vaultron-read-only role!"
 else
-    msg alert "Problem configuring MySQL read-only role"
+    msg alert "Problem configuring MySQL vaultron-read-only role"
     exit 1
 fi
 
 msg complete "MySQL secrets engine enabled! Use the following command to get a MySQL credential:"
-msg complete "vault read vaultron-database/creds/mysql-readonly"
+msg complete "vault read vaultron-database/creds/vaultron-mysql-readonly"

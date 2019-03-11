@@ -1,12 +1,25 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1090,2086
 
+if ! vault list auth/vaultron-approle/role/ | grep -w "my-role" > /dev/null 2>&1; then
+  if ! vault write auth/vaultron-approle/role/my-role \
+    secret_id_ttl=10m \
+    token_num_uses=10 \
+    token_ttl=20m \
+    token_max_ttl=30m \
+    secret_id_num_uses=40 > /dev/null 2>&1; then
+        echo 2>&1 "cannot create AppRole role"
+        exit 1
+    fi
+fi
+
 # super low wrap TTL, YMMV
+APPROLE="vaultron-approle"
 WRAP_TTL="1"
 
 # Wrapped token is always fetched from what _should be_ active...
 export VAULT_ADDR=https://localhost:8200
-WRAPPED_TOKEN="$(vault write -format=json -wrap-ttl=$WRAP_TTL -f auth/approle/role/my-role/secret-id | jq -r '.wrap_info.token')"
+WRAPPED_TOKEN="$(vault write -format=json -wrap-ttl=$WRAP_TTL -f auth/$APPROLE/role/my-role/secret-id | jq -r '.wrap_info.token')"
 if [ "$WRAPPED_TOKEN" == "" ]; then
     echo 2>&1 "Empty wrapped token!"
     exit 1

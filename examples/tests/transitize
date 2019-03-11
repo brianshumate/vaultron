@@ -26,11 +26,11 @@ TRANSITIZE=$(openssl rand -hex 4)
 check_transit() {
   check_cli_cap
   if [ "$vault_cli_cap" -eq "1" ]; then
-    v_auth_cmd="vault secrets list"
+    V_AUTH_CMD="vault secrets list"
   else
-    v_auth_cmd="vault mounts"
+    V_AUTH_CMD="vault mounts"
   fi
-  if ! $v_auth_cmd | grep transit > /dev/null 2>&1; then
+  if ! $V_AUTH_CMD | grep transit > /dev/null 2>&1; then
     msg alert "No Transit Secrets Engine detected! Be sure to mount Transit at vaultron-transit!"
     exit 1
   else
