@@ -35,7 +35,7 @@ EOF
 ```
 
 ```
-echo "POST https://localhost:8200/v1/auth/vaultron-userpass/login/vegeta" \
+$ echo "POST https://localhost:8200/v1/auth/vaultron-userpass/login/vegeta" \
   | vegeta attack \
   -insecure \
   -header="Content-Type: application/json" \

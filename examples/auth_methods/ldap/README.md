@@ -28,7 +28,7 @@ Use this command to obtain the internal IP address that Vault will use to connec
 ```
 $ docker inspect \
   --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-  vaultron_openldap
+  vaultron-openldap
 172.17.0.13
 ```
 
@@ -97,6 +97,14 @@ You can add a basic configuration with user from the file `vaultron.ldif`:
 ```
 $ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" \
   -f examples/auth_methods/ldap/vaultron.ldif
+Enter LDAP Password: # it's: vaultron
+adding new entry "ou=groups,dc=vaultron,dc=waves"
+
+adding new entry "ou=users,dc=vaultron,dc=waves"
+
+adding new entry "cn=dev,ou=groups,dc=vaultron,dc=waves"
+
+adding new entry "cn=vaultron,ou=users,dc=vaultron,dc=waves"
 ```
 
 ## Configure Vault
@@ -140,15 +148,16 @@ $ vault write auth/vaultron-ldap/groups/dev policies=wildcard
 
 Login:
 
-```
-$ Success! You are now authenticated. The token information displayed below
+$ vault login -method=ldap -path=vaultron-ldap username=vaultron
+Password (will be hidden):
+Success! You are now authenticated. The token information displayed below
 is already stored in the token helper. You do NOT need to run "vault login"
 again. Future Vault requests will automatically use this token.
 
 Key                    Value
 ---                    -----
-token                  s.IphcK09HOfS4rjFA8gq8G1g5
-token_accessor         8vEMZqSMo6bomj315Gm6StlT
+token                  s.8vX2bgQHPeRH80Co65D5bCtO
+token_accessor         bNSurq73EyEFYxhpsEzR1QIi
 token_duration         50000h
 token_renewable        true
 token_policies         ["default" "wildcard"]

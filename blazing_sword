@@ -111,7 +111,8 @@ initialize_vault() {
     echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"
   else
     msg alert "Failed to initialize Vault!"
-    exit "$output"
+    mst alert "$output"
+    exit 1
   fi
    msg complete "Vault initialized!"
 }
