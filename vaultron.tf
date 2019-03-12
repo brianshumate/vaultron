@@ -55,6 +55,11 @@ variable "vault_ent_id" {
   default = "vault:latest"
 }
 
+# Set TF_VAR_vault_server_log_level to set this
+variable "vault_server_log_level" {
+  default = "debug"
+}
+
 # Set TF_VAR_vault_path to set this
 variable "vault_path" {
   default = "vault"
@@ -85,10 +90,11 @@ variable "vault_custom_config_template" {
   default = "vault_config_custom.tpl"
 }
 
-# Set TF_VAR_vault_server_log_level to set this
-variable "vault_server_log_level" {
-  default = "debug"
+# Set TF_VAR_vault_server_tls_disable to set this
+variable "vault_server_tls_disable" {
+  default = "false"
 }
+
 
 # -----------------------------------------------------------------------
 # Consul variables

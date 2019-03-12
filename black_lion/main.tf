@@ -27,8 +27,9 @@ variable "vault_oss_instance_count" {}
 variable "vault_custom_instance_count" {}
 variable "vault_custom_config_template" {}
 variable "statsd_ip" {}
-
+variable "vault_server_tls_disable" {}
 variable "vaultron_telemetry_count" {}
+
 
 # This is the official Vault Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/vault/
@@ -53,7 +54,7 @@ data "template_file" "vault_config" {
     vault_path         = "${var.vault_path}"
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable        = false
+    tls_disable        = "${var.vault_server_tls_disable}"
     service_tags       = "vaultron"
   }
 }

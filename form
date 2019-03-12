@@ -49,7 +49,7 @@ EOF
 # Check for Docker proc and socket and bail out if either is absent
 check_docker() {
   DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
-  if [ "$DOCK_PROC_COUNT" -lt 2 ]; then
+  if [ "$DOCK_PROC_COUNT" -lt 1 ]; then
     msg alert "Docker daemon not detected - cannot form Vaultron!"
     exit 1
   fi
