@@ -90,10 +90,10 @@ variable "vault_custom_config_template" {
   default = "vault_config_custom.tpl"
 }
 
-# Set TF_VAR_vault_server_tls_disable to set this
-variable "vault_server_tls_disable" {
-  default = "false"
-}
+// # Set TF_VAR_vault_server_tls_disable to set this
+// variable "vault_server_tls_disable" {
+//   default = "false"
+// }
 
 
 # -----------------------------------------------------------------------

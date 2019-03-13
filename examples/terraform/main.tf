@@ -105,7 +105,7 @@ resource "vault_mount" "vaultron_pki_root" {
 }
 
 resource "vault_mount" "vaultron_pki_int" {
-  path        = "vaultron-root-int"
+  path        = "vaultron-int-pki"
   type        = "pki"
   description = "Vaultron example PKI secrets engine (for int CA)"
 }
