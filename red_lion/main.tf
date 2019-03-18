@@ -106,6 +106,7 @@ data "template_file" "consuls2_tls_key" {
 resource "docker_container" "consuls0" {
   count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
+
   entrypoint = ["consul",
     "agent",
     "-server",
@@ -115,13 +116,18 @@ resource "docker_container" "consuls0" {
     "-client=0.0.0.0",
     "-dns-port=53",
   ]
-  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  labels = { robot = "vaultron" }
-  must_run = true
-  name  = "vaultron-consuls0"
-  hostname  = "consuls0"
+
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+
+  labels = {
+    robot = "vaultron"
+  }
+
+  must_run   = true
+  name       = "vaultron-consuls0"
+  hostname   = "consuls0"
   domainname = "consul"
-  dns_search  = ["consul"]
+  dns_search = ["consul"]
 
   capabilities {
     add = ["SYS_PTRACE"]
@@ -212,7 +218,6 @@ resource "docker_container" "consuls0" {
     external = "8600"
     protocol = "udp"
   }
-
 }
 
 # -----------------------------------------------------------------------
@@ -222,6 +227,7 @@ resource "docker_container" "consuls0" {
 resource "docker_container" "consuls1" {
   count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
+
   entrypoint = ["consul",
     "agent",
     "-server",
@@ -231,13 +237,18 @@ resource "docker_container" "consuls1" {
     "-client=0.0.0.0",
     "-dns-port=53",
   ]
-  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  labels = { robot = "vaultron" }
-  must_run = true
-  name  = "vaultron-consuls1"
-  hostname  = "consuls1"
+
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+
+  labels = {
+    robot = "vaultron"
+  }
+
+  must_run   = true
+  name       = "vaultron-consuls1"
+  hostname   = "consuls1"
   domainname = "consul"
-  dns_search  = ["consul"]
+  dns_search = ["consul"]
 
   capabilities {
     add = ["SYS_PTRACE"]
@@ -272,7 +283,6 @@ resource "docker_container" "consuls1" {
     content = "${data.template_file.consuls1_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
-
 }
 
 # -----------------------------------------------------------------------
@@ -282,6 +292,7 @@ resource "docker_container" "consuls1" {
 resource "docker_container" "consuls2" {
   count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
+
   entrypoint = ["consul",
     "agent",
     "-server",
@@ -291,13 +302,18 @@ resource "docker_container" "consuls2" {
     "-client=0.0.0.0",
     "-dns-port=53",
   ]
-  env   = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
-  labels = { robot = "vaultron" }
-  must_run = true
-  name  = "vaultron-consuls2"
-  hostname  = "consuls2"
+
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+
+  labels = {
+    robot = "vaultron"
+  }
+
+  must_run   = true
+  name       = "vaultron-consuls2"
+  hostname   = "consuls2"
   domainname = "consul"
-  dns_search  = ["consul"]
+  dns_search = ["consul"]
 
   capabilities {
     add = ["SYS_PTRACE"]
@@ -332,7 +348,6 @@ resource "docker_container" "consuls2" {
     content = "${data.template_file.consuls2_tls_key.rendered}"
     file    = "/etc/ssl/consul-server.key"
   }
-
 }
 
 # -----------------------------------------------------------------------
@@ -340,17 +355,17 @@ resource "docker_container" "consuls2" {
 # -----------------------------------------------------------------------
 
 resource "random_id" "agent_node_id" {
-  count = "${var.consul_oss_instance_count}"
+  count       = "${var.consul_oss_instance_count}"
   byte_length = 16
 }
 
 data "template_file" "consulc_common_config" {
-  count = "${var.consul_oss_instance_count}"
+  count    = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
 
   vars {
     common_configuration = "true"
-    agent_node_id = "${uuid()}"
+    agent_node_id        = "${uuid()}"
   }
 }
 
@@ -359,27 +374,31 @@ data "template_file" "consulc_common_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "consul_client_tls_cert" {
-  count = "${var.consul_oss_instance_count}"
+  count    = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("consul-client-%d.crt", count.index)}")}"
 }
 
 data "template_file" "consul_client_tls_key" {
-  count = "${var.consul_oss_instance_count}"
+  count    = "${var.consul_oss_instance_count}"
   template = "${file("${path.module}/tls/${format("consul-client-%d.key", count.index)}")}"
 }
 
 # Consul Open Source Clients
 
 resource "docker_container" "consul_oss_client" {
-  count = "${var.consul_oss_instance_count}"
-  name  = "vaultron-${format("consulc%d", count.index)}"
-  hostname  = "${format("consulc%d", count.index)}"
+  count      = "${var.consul_oss_instance_count}"
+  name       = "vaultron-${format("consulc%d", count.index)}"
+  hostname   = "${format("consulc%d", count.index)}"
   domainname = "consul"
-  dns        = ["${docker_container.consuls0.ip_address}",
-                "${docker_container.consuls1.ip_address}",
-                "${docker_container.consuls2.ip_address}"]
+
+  dns = ["${docker_container.consuls0.ip_address}",
+    "${docker_container.consuls1.ip_address}",
+    "${docker_container.consuls2.ip_address}",
+  ]
+
   dns_search = ["consul"]
-  image = "${docker_image.consul.latest}"
+  image      = "${docker_image.consul.latest}"
+
   entrypoint = ["${list("consul",
                      "agent",
                      "-config-dir=/consul/config",
@@ -391,8 +410,12 @@ resource "docker_container" "consul_oss_client" {
                      "-join=${docker_container.consuls1.ip_address}",
                      "-join=${docker_container.consuls0.ip_address}"
                      )}"]
-  must_run   = true
-  labels = { robot = "vaultron" }
+
+  must_run = true
+
+  labels = {
+    robot = "vaultron"
+  }
 
   capabilities {
     add = ["SYS_PTRACE"]

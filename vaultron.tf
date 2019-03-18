@@ -95,7 +95,6 @@ variable "vault_custom_config_template" {
 //   default = "false"
 // }
 
-
 # -----------------------------------------------------------------------
 # Consul variables
 # -----------------------------------------------------------------------
@@ -184,11 +183,11 @@ variable "statsd_ip" {
 # -----------------------------------------------------------------------
 
 module "telemetry" {
-  source                       = "yellow_lion"
-  grafana_version              = "${var.grafana_version}"
-  statsd_ip                    = "${var.statsd_ip}"
-  statsd_version               = "${var.statsd_version}"
-  vaultron_telemetry_count     = "${var.vaultron_telemetry_count}"
+  source                   = "yellow_lion"
+  grafana_version          = "${var.grafana_version}"
+  statsd_ip                = "${var.statsd_ip}"
+  statsd_version           = "${var.statsd_version}"
+  vaultron_telemetry_count = "${var.vaultron_telemetry_count}"
 }
 
 module "consul_cluster" {

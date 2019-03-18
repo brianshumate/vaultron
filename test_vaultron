@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# =======================================================================
 # Basic Vaultron lifecycle functionality tests
 #
 # 1.  Test ./unform
@@ -14,7 +14,8 @@
 # 10. Test Consul server data directories presence after unforming
 # 11. Test Terraform configuration directory presence after unforming
 # 12. Test Terraform init, plan, apply log output presence after unforming
-#
+# =======================================================================
+
 # shellcheck disable=SC1091,SC1117
 
 export txtblu="\033[0;34m" # Blue

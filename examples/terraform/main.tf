@@ -330,3 +330,13 @@ path "identity/*" {
 }
 EOT
 }
+
+resource "vault_policy" "ldap_dev" {
+  name = "ldap-dev"
+  policy = <<EOT
+// Vaultron example policy: "ldap-dev"
+path "vaultron-kv/*" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+EOT
+}

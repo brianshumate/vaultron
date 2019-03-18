@@ -92,7 +92,7 @@ $ ldapsearch \
 
 ## Add Basic Config
 
-You can add a basic configuration with user from the file `vaultron.ldif`:
+You can add a basic configuration with user and groups from the file `vaultron.ldif`:
 
 ```
 $ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" \
@@ -137,11 +137,15 @@ $ vault write auth/vaultron-ldap/config \
 Success! Data written to: auth/vaultron-ldap/config
 ```
 
-Add a LDAP group to Vault policy mapping:
+## Group Policy Mapping
 
+Create basic LDAP group -> policy mappings:
 
 ```
-$ vault write auth/vaultron-ldap/groups/dev policies=wildcard
+$ vault write auth/vaultron-ldap/groups/users policies=ldap-user && \
+  vault write auth/vaultron-ldap/groups/dev policies=ldap-dev
+Success! Data written to: auth/vaultron-ldap/groups/users
+Success! Data written to: auth/vaultron-ldap/groups/dev
 ```
 
 ## Authenticate
@@ -156,12 +160,13 @@ again. Future Vault requests will automatically use this token.
 
 Key                    Value
 ---                    -----
-token                  s.8vX2bgQHPeRH80Co65D5bCtO
-token_accessor         bNSurq73EyEFYxhpsEzR1QIi
+token                  s.8OGe9X2XqXXyJI99el886Cm5
+token_accessor         FV9nfhzTg6z2DyOmCFVAw8xu
 token_duration         50000h
 token_renewable        true
-token_policies         ["default" "wildcard"]
+token_policies         ["default" "ldap-dev"]
 identity_policies      []
-policies               ["default" "wildcard"]
+policies               ["default" "ldap-dev"]
 token_meta_username    vaultron
 ```
+

@@ -29,3 +29,19 @@ cn: vaultron
 sn: vaultron
 memberOf: cn=dev,ou=groups,dc=vaultron,dc=waves
 userPassword: vaultron
+
+dn: cn=vaultron,ou=users,dc=vaultron,dc=waves
+objectClass: person
+objectClass: top
+cn: dev
+sn: dev
+memberOf: cn=dev,ou=groups,dc=vaultron,dc=waves
+userPassword: vaultron
+
+dn: cn=vaultron,ou=users,dc=vaultron,dc=waves
+objectClass: person
+objectClass: top
+cn: user
+sn: user
+memberOf: cn=users,ou=groups,dc=vaultron,dc=waves
+userPassword: vaultron

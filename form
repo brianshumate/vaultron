@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-#
+# =======================================================================
 # This script is used to form Vaultron with Terraform
 #
 # Some of these would work only for pure POSIX
 # shellcheck disable=SC2154,SC1091
+# =======================================================================
 
 . ./skydome
 
@@ -46,19 +47,6 @@ or use this command to do it for you:
 EOF
 }
 
-# Check for Docker proc and socket and bail out if either is absent
-check_docker() {
-  DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
-  if [ "$DOCK_PROC_COUNT" -lt 1 ]; then
-    msg alert "Docker daemon not detected - cannot form Vaultron!"
-    exit 1
-  fi
-  if ! [ -S /var/run/docker.sock ]; then
-    msg alert "Docker socket not detected - cannot form Vaultron!"
-    exit 1
-  fi
-}
-
 # Check for vault file in project directory
 check_existing_vault() {
   if [ -f "$PWD"/vault ]; then
@@ -70,7 +58,7 @@ check_existing_vault() {
 
 # TerraFORM Vaultron!
 check_consul_version() {
-  if [ ! -z "$TF_VAR_consul_version" ]; then
+  if [ -n "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/consul_oss_server_config_${TF_VAR_consul_version}.tpl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
        msg alert "Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
@@ -81,7 +69,7 @@ check_consul_version() {
 }
 
 check_vault_version() {
-  if [ ! -z "$TF_VAR_vault_version" ]; then
+  if [ -n "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="./black_lion/templates/vault_config_${TF_VAR_vault_version}.tpl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
        msg alert "Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
@@ -149,7 +137,7 @@ else
   msg info "Vault OSS version: ${TF_VAR_vault_version}"
 fi
 
-if ! [ -z "$TF_VAR_consul_custom" ]; then
+if [ -n "$TF_VAR_consul_custom" ]; then
   if [ "$TF_VAR_consul_custom" -gt 0 ]; then
     msg info "Consul version: custom binary: cannot determine version"
   else

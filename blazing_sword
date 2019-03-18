@@ -1,6 +1,6 @@
 #!/bin/sh
-#
-# ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
+# =======================================================================
+#           ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
 #
 # blazing_sword.sh
 #
@@ -15,6 +15,7 @@
 #   (see examples/terraform for the configuration used)
 #
 # shellcheck disable=SC1091,SC2039,SC2059,SC2086,SC2154
+# =======================================================================
 
 . ./skydome
 

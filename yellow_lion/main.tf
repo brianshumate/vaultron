@@ -13,7 +13,6 @@ variable "statsd_ip" {}
 variable "statsd_version" {}
 variable "vaultron_telemetry_count" {}
 
-
 # -----------------------------------------------------------------------
 # statsd / graphite image and container
 # -----------------------------------------------------------------------
@@ -25,11 +24,11 @@ resource "docker_image" "statsd" {
 }
 
 resource "docker_container" "statsd_graphite" {
-  count = "${var.vaultron_telemetry_count}"
-  name  = "vaultron-vstatsd"
-  image = "${docker_image.statsd.latest}"
+  count    = "${var.vaultron_telemetry_count}"
+  name     = "vaultron-vstatsd"
+  image    = "${docker_image.statsd.latest}"
   must_run = true
-  restart = "always"
+  restart  = "always"
 
   ports {
     internal = "80"
@@ -73,8 +72,9 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
-  labels = { robot = "vaultron" }
-
+  labels = {
+    robot = "vaultron"
+  }
 }
 
 # -----------------------------------------------------------------------
@@ -89,7 +89,7 @@ resource "docker_image" "grafana" {
 
 # Grafana configuration
 data "template_file" "grafana_config" {
-  count        = "${var.vaultron_telemetry_count}"
+  count    = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/datasource.yml.tpl")}"
 
   vars {
@@ -102,7 +102,7 @@ data "template_file" "grafana_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "grafana_dashboard_bootstrap_config" {
-  count        = "${var.vaultron_telemetry_count}"
+  count    = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/dashboard_bootstrap.yml.tpl")}"
 }
 
@@ -111,7 +111,7 @@ data "template_file" "grafana_dashboard_bootstrap_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "grafana_dashboard_config" {
-  count        = "${var.vaultron_telemetry_count}"
+  count    = "${var.vaultron_telemetry_count}"
   template = "${file("${path.module}/templates/dashboard.json.tpl")}"
 }
 
@@ -120,17 +120,20 @@ data "template_file" "grafana_dashboard_config" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "grafana" {
-  count        = "${var.vaultron_telemetry_count}"
-  name  = "vaultron-vgrafana"
-  image = "${docker_image.grafana.latest}"
-  env   = ["GF_INSTANCE_NAME=Vaultron"]
-  env   = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]
-  env   = ["GF_ALLOW_SIGN_UP=false"]
-  env   = ["GF_DISABLE_GRAVATAR=true"]
-  env   = ["GF_ALLOW_ORG_CREATE=false"]
-  env   = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
+  count    = "${var.vaultron_telemetry_count}"
+  name     = "vaultron-vgrafana"
+  image    = "${docker_image.grafana.latest}"
+  env      = ["GF_INSTANCE_NAME=Vaultron"]
+  env      = ["GF_SECURITY_ADMIN_PASSWORD=vaultron"]
+  env      = ["GF_ALLOW_SIGN_UP=false"]
+  env      = ["GF_DISABLE_GRAVATAR=true"]
+  env      = ["GF_ALLOW_ORG_CREATE=false"]
+  env      = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
   must_run = true
-  labels = { robot = "vaultron" }
+
+  labels = {
+    robot = "vaultron"
+  }
 
   volumes {
     host_path      = "${path.module}/../../../grafana/data"

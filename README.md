@@ -143,6 +143,28 @@ $ export VAULT_ADDR="https://127.0.0.1:8200"
 $ export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 ```
 
+### Advanced Example
+
+The following is a more advanced example of forming Vaultron; it uses a range of environment variables to define additional configuration and includes the statsd/Graphite/Grafana telemetry container to visualize Vault telemetry.
+
+```
+export \
+  TF_VAR_consul_custom=0 \
+  TF_VAR_vault_oss_instance_count=0 \
+  TF_VAR_vault_custom_instance_count=3 \
+  TF_VAR_vaultron_telemetry_count=1 \
+  TF_VAR_vault_server_log_level=trace \
+  TF_VAR_consul_log_level=err
+```
+
+What this does line by line:
+
+- Enable zero custom Consul instances (custom Consul feature not available yet)
+- Enable 3 custom Vault instances which use the binary you place into the `custom` folder
+- Enables the statsd/Graphite/Grafana telemetry container
+- Set Vault log level to _trace_
+- Set Consul log level to _err_
+
 ## What's in the Box?
 
 Whimsical Vaultron technical specification quick reference card:
@@ -217,6 +239,20 @@ An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled 
 
 Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
 
+### Environment Variables
+
+Vaultron makes use of environment variables to override Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
+
+Here are the names and purposes of each:
+
+#### TF_VAR_vault_version
+
+Specify a particular Vault OSS version to use; note that this setting has zero effect when the value of `TF_VAR_vault_custom_instance_count` is greater than zero.
+
+#### TF_VAR_consul_version
+
+Specify a particular Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions.
+
 ### Published Ports
 
 Each Vault instance is available to the local computer, but through Docker's published ports scheme only, so the addresses of the Vault servers are:
@@ -225,9 +261,9 @@ Each Vault instance is available to the local computer, but through Docker's pub
 - localhost:8210
 - localhost:8220
 
-### Changing Vault and Consul Versions
+### Changing Vault OSS and Consul OSS Versions
 
-Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different version, you can export the `TF_VAR_vault_version` environment variable to override:
+Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different OSS version, you can export the `TF_VAR_vault_version` environment variable to override:
 
 ```
 $ export TF_VAR_vault_version=0.6.5

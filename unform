@@ -1,20 +1,23 @@
 #!/bin/sh
-#
+# =======================================================================
 # This script unforms Vaultron
 #
 # CAUTION: This removes all Vault data and Terraform state!
 # Use `terraform destroy` instead if you wish to selectively preserve data.
 #
 # shellcheck disable=SC1091
-#
+# =======================================================================
 
 . ./skydome
 
+# Preflight checks
 if [ -z "$(command -v terraform)" ]; then
   msg alert "Vaultron cannot unform! Could not locate terraform command."
   msg info "Get Terraform from: https://www.terraform.io/downloads.html"
   exit 1
 fi
+
+check_docker
 
 msg greeting "Unform Vaultron ..."
 
@@ -24,9 +27,7 @@ fi
 
 # If we cannot write to the Consul data, alert user and attempt to change
 # ownership of consul/vault folders to avoid failure with Terraform destroy
-# NB: This occurs on Docker on Linux but not Docker for Mac.
-
-
+# NB: This occurs on Docker on Linux but not Docker for Mac
 if [ "$(uname)" = "Linux" ]; then
   if ! [ -w consul/consuls0 ]; then
     msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
@@ -43,7 +44,6 @@ if [ "$(uname)" = "Linux" ]; then
     fi
   fi
 fi
-
 
 # Remove Consul client data
 rm -rf ./consul/consulc0

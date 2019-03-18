@@ -81,6 +81,21 @@ fi
 }
 
 # -----------------------------------------------------------------------
+# Check for Docker proc and socket and bail out if either is absent
+# -----------------------------------------------------------------------
+check_docker() {
+  DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
+  if [ "$DOCK_PROC_COUNT" -lt 1 ]; then
+    msg alert "Docker daemon not detected - cannot form Vaultron!"
+    exit 1
+  fi
+  if ! [ -S /var/run/docker.sock ]; then
+    msg alert "Docker socket not detected - cannot form Vaultron!"
+    exit 1
+  fi
+}
+
+# -----------------------------------------------------------------------
 # Basic connectivity check
 # -----------------------------------------------------------------------
 check_vault() {
