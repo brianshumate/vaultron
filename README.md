@@ -473,6 +473,8 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 ./form
 ```
 
+> **NOTE**: When using custom binaries in this way, Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version.
+
 ## Basic Troubleshooting Questions
 
 ### I can access the Consul UI but it states that there are no services to show
