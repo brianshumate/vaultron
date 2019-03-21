@@ -28,6 +28,7 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Total lease count",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -38,7 +39,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 5,
+        "w": 4,
         "x": 0,
         "y": 0
       },
@@ -84,7 +85,7 @@
         }
       ],
       "thresholds": "50000,100000",
-      "title": "Secret Count",
+      "title": "Lease Count",
       "type": "singlestat",
       "valueFontSize": "120%",
       "valueMaps": [
@@ -107,6 +108,87 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Total lease count",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 26,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "refId": "A",
+          "target": "stats.gauges.vault.vaults0.consul.wal.gc.total"
+        }
+      ],
+      "thresholds": "50000,100000",
+      "title": "WAL Count",
+      "type": "singlestat",
+      "valueFontSize": "120%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "total"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": true,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "datasource": "Vaultron",
+      "decimals": 0,
+      "description": "Total audit device request failures",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -118,7 +200,7 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 5,
+        "x": 8,
         "y": 0
       },
       "id": 7,
@@ -186,6 +268,7 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Total audit device response failures",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -197,7 +280,7 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 8,
+        "x": 11,
         "y": 0
       },
       "id": 8,
@@ -265,6 +348,7 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Median Barrier GET time",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -276,7 +360,7 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 11,
+        "x": 14,
         "y": 0
       },
       "id": 10,
@@ -344,6 +428,7 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Median Barrier PUT time",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -355,7 +440,7 @@
       "gridPos": {
         "h": 3,
         "w": 3,
-        "x": 14,
+        "x": 17,
         "y": 0
       },
       "id": 17,
@@ -423,85 +508,7 @@
       ],
       "datasource": "Vaultron",
       "decimals": 0,
-      "format": "ms",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 3,
-        "x": 17,
-        "y": 0
-      },
-      "id": 18,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "refId": "A",
-          "target": "stats.timers.vault.rollback.attempt.vaultron-kv-.count"
-        }
-      ],
-      "thresholds": "100,5000",
-      "title": "Rollback KV",
-      "type": "singlestat",
-      "valueFontSize": "50%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": true,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "Vaultron",
-      "decimals": 0,
+      "description": "Median token check time",
       "format": "ms",
       "gauge": {
         "maxValue": 100,
@@ -576,10 +583,11 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
+      "description": "Total memory in bytes allocated to the heap",
       "fill": 5,
       "gridPos": {
-        "h": 5,
-        "w": 6,
+        "h": 4,
+        "w": 5,
         "x": 0,
         "y": 3
       },
@@ -612,7 +620,8 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.alloc_bytes"
+          "target": "stats.gauges.vault.vaults0.consul.runtime.alloc_bytes",
+          "textEditor": true
         },
         {
           "refCount": 0,
@@ -672,11 +681,12 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
+      "description": "Total memory in bytes obtained from the operating system",
       "fill": 5,
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
+        "h": 4,
+        "w": 5,
+        "x": 5,
         "y": 3
       },
       "id": 3,
@@ -768,107 +778,11 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
-      "fill": 4,
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 12,
-        "y": 3
-      },
-      "id": 4,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 0,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refCount": 0,
-          "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.num_goroutines"
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.num_goroutines"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.num_goroutines"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Goroutines",
-      "tooltip": {
-        "shared": true,
-        "sort": 1,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "none",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Vaultron",
       "fill": 5,
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
+        "h": 4,
+        "w": 5,
+        "x": 10,
         "y": 3
       },
       "id": 5,
@@ -956,6 +870,200 @@
     },
     {
       "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Vaultron",
+      "description": "Total number of running goroutines",
+      "fill": 4,
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 15,
+        "y": 3
+      },
+      "id": 4,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 0,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "stats.gauges.vault.vaults0.consul.runtime.num_goroutines"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "stats.gauges.vault.vaults1.consul.runtime.num_goroutines"
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "stats.gauges.vault.vaults2.consul.runtime.num_goroutines"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Goroutines",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Vaultron",
+      "description": "Total garbage collection pause time since startup in nanoseconds",
+      "fill": 0,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 3
+      },
+      "id": 25,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": false,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": true,
+      "targets": [
+        {
+          "refCount": 0,
+          "refId": "A",
+          "target": "stats.gauges.vault.vaults0.consul.runtime.total_gc_pause_ns"
+        },
+        {
+          "refCount": 0,
+          "refId": "B",
+          "target": "stats.gauges.vault.vaults1.consul.runtime.total_gc_pause_ns"
+        },
+        {
+          "refCount": 0,
+          "refId": "C",
+          "target": "stats.gauges.vault.vaults2.consul.runtime.total_gc_pause_ns"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "GC Pause",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ns",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -965,7 +1073,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 8
+        "y": 7
       },
       "id": 16,
       "legend": {
@@ -1048,7 +1156,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 8
+        "y": 7
       },
       "id": 12,
       "legend": {
@@ -1131,7 +1239,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 8
+        "y": 7
       },
       "id": 14,
       "legend": {
@@ -1214,7 +1322,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 8
+        "y": 7
       },
       "id": 13,
       "legend": {
@@ -1298,7 +1406,7 @@
         "h": 5,
         "w": 5,
         "x": 0,
-        "y": 12
+        "y": 11
       },
       "id": 21,
       "legend": {
@@ -1383,7 +1491,7 @@
         "h": 5,
         "w": 5,
         "x": 5,
-        "y": 12
+        "y": 11
       },
       "id": 22,
       "legend": {
@@ -1468,7 +1576,7 @@
         "h": 5,
         "w": 5,
         "x": 10,
-        "y": 12
+        "y": 11
       },
       "id": 23,
       "legend": {
@@ -1548,12 +1656,13 @@
       "dashes": false,
       "datasource": "Vaultron",
       "decimals": 0,
+      "description": "Median WAL persistence time",
       "fill": 5,
       "gridPos": {
         "h": 5,
         "w": 9,
         "x": 15,
-        "y": 12
+        "y": 11
       },
       "id": 20,
       "legend": {
@@ -1581,14 +1690,14 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.vault.database.mongodb.CreateUser"
+          "target": "stats.timers.vault.wal.persistWALs.median"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "MongoDB CreateUser",
+      "title": "WAL Persist",
       "tooltip": {
         "shared": true,
         "sort": 0,
