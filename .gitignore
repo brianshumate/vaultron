@@ -1,6 +1,10 @@
 examples/terraform/.terraform
 examples/terraform/terraform.tfstate
 examples/terraform/vault.plan
+examples/agent/*.txt
+examples/agent/*.pid
+examples/agent/*.hcl
+examples/agent/vaultron-agent-example
 custom/consul*
 custom/vault*
 data/migration

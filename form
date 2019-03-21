@@ -132,6 +132,8 @@ check_vault_version
 check_consul_version
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+  # we won't be needing this...
+  unset TF_VAR_vault_version
   msg notice "Vault version: custom binary: cannot determine version"
 else
   msg info "Vault OSS version: ${TF_VAR_vault_version}"

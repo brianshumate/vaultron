@@ -58,16 +58,16 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 0.11.5
-[vaultron] [i] Consul OSS version: 1.4.0
-[vaultron] [i] Terraform plan: 11 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 11 added, 0 changed, 0 destroyed.
+[vaultron] [i] Vault OSS version: 1.1.0
+[vaultron] [i] Consul OSS version: 1.4.3
+[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 ```
 
-You are now nearly ready to interact with Vault and Consul using their web user interfaces, command line interfaces, or their HTTP APIs.
+You are now nearly ready to interact with Vault and Consul using their web user interfaces, command line interfaces, or HTTP APIs.
 
-Take a moment to verify that all of the Docker containers are up:
+Take a moment to verify that all of the Vaultron Docker containers are up:
 
 ```
 $ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
@@ -107,20 +107,20 @@ See the **TLS by Default** section for more details on handling the Vaultron Cer
 
 ### What's Next?
 
-If you are new to Vault, then using Vaultron is a nice way to quickly get acquainted! Please begin by checking out the official [Vault Getting Started documentation](https://www.vaultproject.io/intro/getting-started/install.html).
+If you are new to Vault, then using Vaultron is a nice way to quickly get acquainted! Please begin by checking out the official [Vault Getting Started Guide](https://learn.hashicorp.com/vault/?track=getting-started#getting-started).
 
-You can follow along from the [Your First Secret](https://www.vaultproject.io/intro/getting-started/first-secret.html) page onward after initializing, unsealing, and authenticating with the root token.
-
-Here are some other things you can do after Vaultron is formed:
+#### Ten Things You Can do After Vaultron is Formed
 
 1. Initialize Vault with `vault operator init`
 2. Unseal Vault with `vault operator unseal` using 3 of the 5 unseal keys presented when you initialized Vault
 3. Authenticate to Vault with the initial root token presented during initialization
-4. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
-5. Use the Vault web UI at [https://localhost:8200](https://localhost:8200)
-6. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
-7. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-8. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
+4. After initializing and unsealing your vault, and then authenticating with the root token, you can follow along with the [Your First Secret](https://learn.hashicorp.com/vault/getting-started/first-secret) page
+5. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
+6. Use the Vault web UI at [https://localhost:8200](https://localhost:8200)
+7. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
+8. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
+9. Check out and experiment with the examples in the `examples` folders
+10. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
 
 > **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generated data will likely be created as uid 0 which means `unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `unform` or `form` again; this will be improved in a future release.
 
@@ -145,7 +145,7 @@ $ export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 
 ### Advanced Example
 
-The following is a more advanced example of forming Vaultron; it uses a range of environment variables to define additional configuration and includes the statsd/Graphite/Grafana telemetry container to visualize Vault telemetry.
+The following is a more advanced example of forming Vaultron; it uses a range of environment variables to define additional configuration and includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
 
 ```
 export \
@@ -159,9 +159,9 @@ export \
 
 What this does line by line:
 
-- Enable zero custom Consul instances (custom Consul feature not available yet)
-- Enable 3 custom Vault instances which use the binary you place into the `custom` folder
-- Enables the statsd/Graphite/Grafana telemetry container
+- Enable zero custom Consul instances (custom Consul binary feature not available yet)
+- Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder
+- Enable the statsd/Graphite/Grafana telemetry container
 - Set Vault log level to _trace_
 - Set Consul log level to _err_
 
@@ -252,6 +252,16 @@ Specify a particular Vault OSS version to use; note that this setting has zero e
 #### TF_VAR_consul_version
 
 Specify a particular Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions.
+
+#### TF_VAR_datacenter_name
+
+Set the datacenter name
+
+#### TF_VAR_use_vault_oss
+
+- Default: `1`
+
+Set to `1` to use OSS Vault binaries from releases.hashicorp.com or `0` when using custom binaries.
 
 ### Published Ports
 
