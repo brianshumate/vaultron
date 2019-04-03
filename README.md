@@ -261,7 +261,7 @@ Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions
 
 #### TF_VAR_datacenter_name
 
-Datacenter name
+Vault datacenter name
 
 - Default: `arus`
 
@@ -273,7 +273,13 @@ Datacenter name
 
 #### TF_VAR_vault_server_log_level
 
-A valid log level: _trace_, _debug_, _info_, _warning_, or _error_
+A valid Vault log level: _trace_, _debug_, _info_, _warning_, or _error_
+
+- Default: `debug`
+
+#### TF_VAR_consul_log_level
+
+A valid Consul log level: _trace_, _debug_, _info_, _warn_, or _err_
 
 - Default: `debug`
 
@@ -316,6 +322,59 @@ Number of Vault custom containers
 Specify an alternative configuration file template in `black_lion/templates/custom`
 
 - Default: `vault_config_custom.tpl`
+
+#### TF_VAR_use_consul_oss
+
+- Default: `1`
+
+#### TF_VAR_consul_recursor_1
+
+DNS recursor 1
+
+-Default: `1.1.1.1`
+
+
+#### TF_VAR_consul_recursor_2
+
+DNS recursor 2
+
+- Default: `1.0.0.1`
+
+
+#### TF_VAR_consul_acl_datacenter
+
+Consul datacenter name
+
+- Default: `arus`
+
+
+#### TF_VAR_consul_data_dir
+
+- Default: `/consul/data`
+
+
+#### TF_VAR_consul_oss
+
+`1` to use OSS Vault binaries from releases.hashicorp.com (currently only option)
+
+- Default: `1`
+
+#### TF_VAR_consul_oss_instance_count
+
+Number of Consul OSS containers
+
+- Default: `3`
+
+
+#### TF_VAR_consul_oss
+
+- Default: `0`
+
+
+#### TF_VAR_consul_custom_instance_count
+
+- Default: `0`
+
 
 ### Published Ports
 

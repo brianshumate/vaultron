@@ -51,8 +51,10 @@ resource "docker_image" "consul" {
 # -----------------------------------------------------------------------
 
 data "template_file" "consul_oss_server_common_config" {
-  count    = "${var.consul_oss}"
-  template = "${file("${path.module}/templates/consul_oss_server_config_${var.consul_version}.tpl")}"
+  # XXX: why is count needed here?
+  #
+  # count    = "${var.consul_oss}"
+  template = "${file("${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.tpl")}"
 
   vars {
     log_level        = "${var.consul_log_level}"
@@ -104,7 +106,8 @@ data "template_file" "consuls2_tls_key" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "consuls0" {
-  count = "${var.consul_oss}"
+  # XXX: Singleton resource / why count?
+  # count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
 
   entrypoint = ["consul",
@@ -225,7 +228,8 @@ resource "docker_container" "consuls0" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "consuls1" {
-  count = "${var.consul_oss}"
+  # XXX: Singleton resource / why count?
+  # count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
 
   entrypoint = ["consul",
@@ -290,7 +294,8 @@ resource "docker_container" "consuls1" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "consuls2" {
-  count = "${var.consul_oss}"
+  # XXX: Singleton resource / why count?
+  # count = "${var.consul_oss}"
   image = "${docker_image.consul.latest}"
 
   entrypoint = ["consul",
@@ -361,7 +366,7 @@ resource "random_id" "agent_node_id" {
 
 data "template_file" "consulc_common_config" {
   count    = "${var.consul_oss_instance_count}"
-  template = "${file("${path.module}/templates/consul_oss_client_config_${var.consul_version}.tpl")}"
+  template = "${file("${path.module}/templates/oss/consul_oss_client_config_${var.consul_version}.tpl")}"
 
   vars {
     common_configuration = "true"
