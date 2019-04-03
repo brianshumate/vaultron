@@ -1,6 +1,7 @@
 ## v2.2.1 (UNRELEASED)
 
 - Consul v1.4.4
+- Update TLS certificates
 - Update documentation
 
 ## v2.2.0

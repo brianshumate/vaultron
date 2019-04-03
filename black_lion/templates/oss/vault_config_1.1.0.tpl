@@ -1,4 +1,4 @@
-# Vault OSS v1.0.3
+# Vault OSS v1.1.0
 
 # -----------------------------------------------------------------------
 # Global configuration
@@ -23,6 +23,9 @@ listener "tcp" {
   tls_cert_file = "/etc/ssl/certs/vault-server.crt"
   tls_key_file = "/etc/ssl/vault-server.key"
   tls_disable_client_certs = true
+  tls_min_version                 = "tls12"
+  tls_cipher_suites               = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  tls_prefer_server_cipher_suites = "true"
 }
 
 # -----------------------------------------------------------------------

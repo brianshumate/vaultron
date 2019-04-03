@@ -47,7 +47,7 @@ resource "docker_image" "vault" {
 
 data "template_file" "vault_config" {
   count    = "${var.vault_oss_instance_count}"
-  template = "${file("${path.module}/templates/vault_config_${var.vault_version}.tpl")}"
+  template = "${file("${path.module}/templates/oss/vault_config_${var.vault_version}.tpl")}"
 
   vars {
     address            = "0.0.0.0:8200"
@@ -85,7 +85,7 @@ data "template_file" "vault_tls_key" {
 # -----------------------------------------------------------------------
 
 data "template_file" "telemetry_config" {
-  template = "${file("${path.module}/templates/vault_telemetry.tpl")}"
+  template = "${file("${path.module}/templates/extras/vault_telemetry.tpl")}"
 
   vars {
     statsd_ip = "${var.statsd_ip}"
@@ -192,7 +192,7 @@ data "template_file" "vault_custom_tls_key" {
 
 data "template_file" "vault_custom_config" {
   count    = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/templates/${var.vault_custom_config_template}")}"
+  template = "${file("${path.module}/templates/custom/${var.vault_custom_config_template}")}"
 
   vars {
     address            = "0.0.0.0:8200"

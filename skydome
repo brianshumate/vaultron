@@ -4,7 +4,7 @@
 # the other Vaultron scripts; there's nothing useful in here to run directly.
 #
 # shellcheck disable=SC2059
-#                       ^
+# ^
 # NB: we must roll with this sole shellcheck exception because the ANSI
 #     escape sequences as expanded by string formatting are ineffective
 #     leading the printing of literal characters instead, for example:

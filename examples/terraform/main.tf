@@ -8,9 +8,7 @@
 # We presume Vault at https://localhost:8200
 # and the presence of a ~/.vault-token here.
 
-provider "vault" {
-
-}
+provider "vault" {}
 
 # -----------------------------------------------------------------------
 # Variables
@@ -28,7 +26,7 @@ resource "vault_audit" "vaultron_audit_device" {
   type = "file"
 
   options = {
-    file_path = "/vault/logs/audit.log"
+    file_path   = "/vault/logs/audit.log"
     description = "Vaultron example file audit device"
   }
 }
@@ -38,40 +36,38 @@ resource "vault_audit" "vaultron_audit_device" {
 # -----------------------------------------------------------------------
 
 resource "vault_auth_backend" "vaultron_approle" {
-  type = "approle"
-  path = "vaultron-approle"
+  type        = "approle"
+  path        = "vaultron-approle"
   description = "Vaultron example AppRole auth method"
 }
 
 resource "vault_auth_backend" "vaultron_cert" {
-  type = "cert"
-  path = "vaultron-cert"
+  type        = "cert"
+  path        = "vaultron-cert"
   description = "Vaultron example X.509 certificate auth method"
 }
 
 resource "vault_auth_backend" "vaultron_userpass" {
-  type = "userpass"
-  path = "vaultron-userpass"
+  type        = "userpass"
+  path        = "vaultron-userpass"
   description = "Vaultron example Username and password auth method"
 }
 
 resource "vault_auth_backend" "vaultron_ldap" {
-  type = "ldap"
-  path = "vaultron-ldap"
+  type        = "ldap"
+  path        = "vaultron-ldap"
   description = "Vaultron example LDAP auth method"
 }
-
 
 # -----------------------------------------------------------------------
 # Secrets Engines Resources
 # -----------------------------------------------------------------------
 
 resource "vault_mount" "vaultron_db" {
-  path = "vaultron-database"
-  type = "database"
+  path        = "vaultron-database"
+  type        = "database"
   description = "Vaultron example Database secrets engine"
 }
-
 
 resource "vault_mount" "vaultron_kv" {
   path        = "vaultron-kv"
@@ -84,7 +80,6 @@ resource "vault_mount" "vaultron_kv" {
 #  type        = "kv-v2"
 #  description = "Vaultron example KV version 2 secrets engine"
 #}
-
 
 resource "vault_mount" "vaultron_aws" {
   path        = "vaultron-aws"
@@ -140,6 +135,7 @@ resource "vault_mount" "vaultron_totp" {
 
 resource "vault_policy" "vaultron_wildcard" {
   name = "wildcard"
+
   policy = <<EOT
 // Vaultron example policy: "vaultron-wildcard"
 path "*" {
@@ -150,6 +146,7 @@ EOT
 
 resource "vault_policy" "vaultron_example_root_ns" {
   name = "vaultron-example-root-ns"
+
   policy = <<EOT
 // Vaultron example policy: "example root namespace"
 # Manage namespaces
@@ -202,6 +199,7 @@ EOT
 
 resource "vault_policy" "vaultron_example_namespace_ns" {
   name = "vaultron-example-namespace-ns"
+
   policy = <<EOT
   # Manage Vaultron namespaces
 path "sys/namespaces/vaultron/*" {
@@ -247,6 +245,7 @@ EOT
 
 resource "vault_policy" "vaultron_example_token_admin" {
   name = "vaultron-example-token-admin"
+
   policy = <<EOT
 # List available auth methods
 path "sys/auth" {
@@ -275,9 +274,9 @@ path "sys/mounts/database/tune" {
 EOT
 }
 
-
 resource "vault_policy" "vaultron_example_token_identity" {
   name = "vaultron-example-token-identity"
+
   policy = <<EOT
 # Configure auth methods
 path "sys/auth" {
@@ -333,6 +332,7 @@ EOT
 
 resource "vault_policy" "ldap_dev" {
   name = "ldap-dev"
+
   policy = <<EOT
 // Vaultron example policy: "ldap-dev"
 path "vaultron-kv/*" {

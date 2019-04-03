@@ -6,7 +6,7 @@
 
 **Vaultron** uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
-> **NOTE**: While every effort is made to document Vaultron itself here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation**.
+> **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on Vault itself**.
 
 ## Why?
 
@@ -28,7 +28,7 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 Once you have installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example to form Vaultron and open the the Vault web UI in your browser.
 
-You will likely be prompted for your password to add the Vaultron CA certificate to the System keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
+You will likely be prompted for your password to add the Vaultron CA certificate to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
 
 ```
 $ git clone https://github.com/brianshumate/vaultron.git && \
@@ -241,27 +241,81 @@ Vault servers connect directly to the Consul clients, which in turn connect to t
 
 ### Environment Variables
 
-Vaultron makes use of environment variables to override Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
+Vaultron uses environment variables to override Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
 
 Here are the names and purposes of each:
 
 #### TF_VAR_vault_version
 
-Specify a particular Vault OSS version to use; note that this setting has zero effect when the value of `TF_VAR_vault_custom_instance_count` is greater than zero.
+Vault OSS version to use
+
+> NOTE: Setting this has no effect when the value of `TF_VAR_vault_custom_instance_count` is greater than zero as the custom binary then determines the version used.
+
+- Default: latest OSS version
 
 #### TF_VAR_consul_version
 
-Specify a particular Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions.
+Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions.
+
+- Default: latest OSS version
 
 #### TF_VAR_datacenter_name
 
-Set the datacenter name
+Datacenter name
+
+- Default: `arus`
 
 #### TF_VAR_use_vault_oss
 
+`1` to use OSS Vault binaries from releases.hashicorp.com or `0` when using custom binaries
+
 - Default: `1`
 
-Set to `1` to use OSS Vault binaries from releases.hashicorp.com or `0` when using custom binaries.
+#### TF_VAR_vault_server_log_level
+
+A valid log level: _trace_, _debug_, _info_, _warning_, or _error_
+
+- Default: `debug`
+
+#### TF_VAR_vault_path
+
+Set `path` value for storage stanza
+
+- Default: `vault`
+
+#### TF_VAR_vault_cluster_name
+
+Cluster name
+
+- Default: `vaultron`
+
+#### TF_VAR_disable_clustering
+
+Disable Consul HA clustering
+
+- Default `false`
+
+#### TF_VAR_vault_oss_instance_count
+
+Number of Vault OSS containers
+
+- Default: `3`
+
+> NOTE: You must also set `TF_VAR_vault_custom_instance_count=0` when setting this.
+
+#### TF_VAR_vault_custom_instance_count
+
+Number of Vault custom containers
+
+- Default: `0`
+
+> NOTE: You must also set `TF_VAR_vault_oss_instance_count=0` when setting this.
+
+#### TF_VAR_vault_custom_config_template
+
+Specify an alternative configuration file template in `black_lion/templates/custom`
+
+- Default: `vault_config_custom.tpl`
 
 ### Published Ports
 
