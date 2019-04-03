@@ -13,7 +13,7 @@ variable "vault_version" {
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.4.3"
+  default = "1.4.4"
 }
 
 # -----------------------------------------------------------------------
@@ -116,12 +116,12 @@ variable "consul_ent_id" {
 
 # Set TF_VAR_consul_recursor_1 to set this
 variable "consul_recursor_1" {
-  default = "84.200.69.80"
+  default = "1.1.1.1"
 }
 
 # Set TF_VAR_consul_recursor_2 to set this
 variable "consul_recursor_2" {
-  default = "84.200.70.40"
+  default = "1.0.0.1"
 }
 
 # Set TF_VAR_consul_acl_datacenter to set this
