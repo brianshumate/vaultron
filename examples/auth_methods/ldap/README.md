@@ -126,7 +126,7 @@ Configure it like this:
 
 ```
 $ vault write auth/vaultron-ldap/config \
-  url="ldap://172.17.0.13" \
+  url="ldap://172.17.0.11" \
   userdn="ou=users,dc=vaultron,dc=waves" \
   groupdn="ou=groups,dc=vaultron,dc=waves" \
   groupfilter="(|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}}))" \
