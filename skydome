@@ -86,11 +86,16 @@ fi
 check_docker() {
   DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
   if [ "$DOCK_PROC_COUNT" -lt 1 ]; then
-    msg alert "Docker daemon not detected - cannot form Vaultron!"
+    msg alert "Docker process not detected; cannot form Vaultron."
     exit 1
+  else
+    if ! docker ps > /dev/null 2>&1; then
+      msg alert "Cannot connect to Docker daemon; cannot form Vaultron."
+      exit 1
+    fi
   fi
   if ! [ -S /var/run/docker.sock ]; then
-    msg alert "Docker socket not detected - cannot form Vaultron!"
+    msg alert "Docker socket not detected; cannot form Vaultron."
     exit 1
   fi
 }
@@ -101,17 +106,17 @@ check_docker() {
 check_vault() {
   if command nc -h > /dev/null 2>&1; then
     if ! nc -z localhost 8200 > /dev/null 2>&1; then
-      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      msg alert "Cannot connect to Vault at $VAULT_ADDR."
       exit 1
     fi
   elif command timeout > /dev/null 2>&1; then
     if ! timeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
-      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      msg alert "Cannot connect to Vault at $VAULT_ADDR."
       exit 1
     fi
   elif command gtimeout > /dev/null 2>&1; then
     if ! gtimeout 1 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
-      msg alert "Cannot connect to Vault at localhost! Run away! Run away!"
+      msg alert "Cannot connect to Vault at $VAULT_ADDR."
       exit 1
     fi
   fi

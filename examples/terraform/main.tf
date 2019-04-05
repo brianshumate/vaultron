@@ -330,6 +330,19 @@ path "identity/*" {
 EOT
 }
 
+# LDAP related policies
+
+resource "vault_policy" "ldap_user" {
+  name = "ldap-user"
+
+  policy = <<EOT
+// Vaultron example policy: "ldap-user"
+path "vaultron-kv/*" {
+  capabilities = ["create", "update", "read", "list"]
+}
+EOT
+}
+
 resource "vault_policy" "ldap_dev" {
   name = "ldap-dev"
 
