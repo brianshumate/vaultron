@@ -1,0 +1,50 @@
+# Vault OSS v1.1.0
+
+# -----------------------------------------------------------------------
+# Global configuration
+# -----------------------------------------------------------------------
+
+cluster_name = "${cluster_name }"
+log_level ="${log_level}"
+ui = true
+plugin_directory = "/vault/plugins"
+
+# Default TTLs
+default_lease_ttl = "50000h"   # 2083 days
+max_lease_ttl = "50000h"       # 2083 days
+
+# -----------------------------------------------------------------------
+# Listener configuration
+# -----------------------------------------------------------------------
+
+listener "tcp" {
+  address = "${address}"
+  tls_disable = "${tls_disable}"
+  tls_cert_file = "/etc/ssl/certs/vault-server.crt"
+  tls_key_file = "/etc/ssl/vault-server.key"
+  tls_disable_client_certs = true
+  tls_min_version                 = "tls12"
+  tls_cipher_suites               = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  tls_prefer_server_cipher_suites = "true"
+}
+
+# -----------------------------------------------------------------------
+# Storage configuration
+# -----------------------------------------------------------------------
+
+storage "consul" {
+  address = "${consul_address}:8500"
+  scheme = "https"
+  tls_ca_file  = "/etc/ssl/certs/ca-bundle.pem"
+  token   = "b4c0ffee-3b77-04af-36d6-738b697872e6"
+  path = "vault/"
+  disable_clustering = "${disable_clustering}"
+  service_tags = "${service_tags}"
+}
+
+# -----------------------------------------------------------------------
+# Optional cloud seal configuration
+# -----------------------------------------------------------------------
+
+# GCPKMS
+
