@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+#
+# approlls
+#
+# Enable an AppRole role, then sequentially create N AppRole tokens from it
+#
+# Role name $APPROLE
+#
+# shellcheck disable=SC1090,SC1091,SC1117,SC2059,SC2086,SC2089,SC2090,SC2154
+
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+program="$(basename "$0")"
+
+if [ $# -eq 0 ]
+  then
+    msg alert "Usage: ${program} <number_of_tokens>"
+    exit 1
+fi
+
+APPROLE=$(openssl rand -hex 4)
+
+check_approle() {
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    V_AUTH_CMD="vault auth list"
+  else
+    V_AUTH_CMD="vault auth -methods"
+  fi
+  if ! $V_AUTH_CMD | grep approle > /dev/null 2>&1; then
+    msg alert "No AppRole Auth Method detected! Be sure to enable AppRole!"
+    exit 1
+  else
+    msg info "AppRole Auth Method is enabled - creating role ..."
+  fi
+}
+
+# NB: The tokens are bound to the Docker CIDR
+gen_role() {
+  msg info "Generating $APPROLE role ..."
+  if ! vault write \
+    auth/approle/role/$APPROLE \
+    policies=sudo,vaultron-dev \
+    secret_id_ttl=720h \
+    token_num_uses=999999 \
+    token_bound_cidrs="172.17.0.0/24" \
+    token_ttl=360h \
+    period=400h \
+    token_max_ttl=420h \
+    secret_id_num_uses=999999 > /dev/null 2>&1; then
+      msg alert "Failed to generate the $APPROLE AppRole role!"
+      exit 1
+  fi
+  msg info "AppRole role $APPROLE configuration:"
+  vault read auth/approle/role/$APPROLE 2> /dev/null
+  msg complete "Generated $APPROLE role!"
+}
+
+get_role_id() {
+  msg info "Getting $APPROLE role ID ..."
+  if ! vault read auth/approle/role/$APPROLE/role-id | \
+    grep role_id | awk '{print $2}' > /dev/null 2>&1; then
+      msg alert "Failed to get $APPROLE role ID!"
+      exit 1
+  fi
+  ROLE_ID=$(vault read auth/approle/role/$APPROLE/role-id | grep role_id | awk '{print $2}')
+  msg complete "Got $APPROLE role ID: $ROLE_ID"
+}
+
+get_secret_id() {
+  #vault write -f auth/approle/role/approle/secret-id
+  msg info "Getting $APPROLE secret ID ..."
+  if ! vault write -f auth/approle/role/$APPROLE/secret-id | \
+    grep -w secret_id | awk '{print $2}' > /dev/null 2>&1; then
+      msg alert "Failed to get $APPROLE secret ID!"
+      exit 1
+  fi
+  SECRET_ID=$(vault write -f auth/approle/role/$APPROLE/secret-id | grep -w secret_id | awk '{print $2}')
+  msg complete "Got $APPROLE secret ID: $SECRET_ID"
+}
+
+gen_token() {
+  msg secret "Generating $1 AppRole tokens: "
+  printf '[vaultron] [@] '
+  for _ in $(seq "$1"); do
+    if ! vault write auth/approle/login \
+      role_id="$ROLE_ID" \
+      secret_id="$SECRET_ID" >> ./tmp/$APPROLE.log 2>&1; then
+      printf "${txtred}e${txtrst}"
+    else
+      printf "${txtgrn}.${txtrst}"
+  fi
+  done
+  printf "$txtrst\n"
+}
+
+check_vault
+check_approle
+gen_role
+get_role_id
+get_secret_id
+if ! gen_token "$@"; then
+  errors=$((errors + $?));
+  msg "Problem generating AppRole tokens!";
+  exit $errors
+else
+  msg complete "Generated $1 AppRole tokens; logged in ./tmp/$APPROLE.log"
+fi
