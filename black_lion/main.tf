@@ -67,7 +67,7 @@ data "template_file" "vault_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
-  template = "${file("${path.module}/tls/ca-bundle.pem")}"
+  template = "${file("${path.module}/tls/ca.pem")}"
 }
 
 data "template_file" "vault_tls_cert" {
@@ -148,7 +148,7 @@ resource "docker_container" "vault_oss_server" {
 
   upload {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload {
@@ -278,7 +278,7 @@ resource "docker_container" "vault_custom_server" {
 
   upload {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload {

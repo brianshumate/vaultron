@@ -37,7 +37,7 @@ $ git clone https://github.com/brianshumate/vaultron.git && \
   . ./ion_darts && \
   ./blazing_sword && \
   sudo security add-trusted-cert -d -r trustAsRoot \
-  -k /Library/Keychains/System.keychain ./etc/tls/ca-bundle.pem && \
+  -k /Library/Keychains/System.keychain ./etc/tls/ca.pem && \
   open https://localhost:8200
 ```
 
@@ -86,12 +86,12 @@ vaultron-consuls2   Up 7 minutes
 Note there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
 
 ```
-$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem" \
+$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
   CONSUL_HTTP_ADDR="127.0.0.1:8500" \
   CONSUL_HTTP_SSL=true \
   CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
   VAULT_ADDR="https://127.0.0.1:8200" \
-  VAULT_CA_CERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+  VAULT_CA_CERT="$(pwd)/black_lion/tls/ca.pem"
 ```
 
 You can instead source the `ion_darts` script to do all of this for you:
@@ -101,7 +101,7 @@ $ . ./ion_darts
 [^] Exported Vaultron environment variables!
 ```
 
-> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca-bundle.pem`.
+> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`.
 
 See the **TLS by Default** section for more details on handling the Vaultron Certificate Authority certificate.
 

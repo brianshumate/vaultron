@@ -353,3 +353,15 @@ path "vaultron-kv/*" {
 }
 EOT
 }
+
+# Prometheus Metrics Policy
+resource "vault_policy" "prometheus" {
+  name = "prometheus"
+
+  policy = <<EOT
+// Vaultron example Prometheus metrics gathering policy: "vaultron-prometheus"
+path "/sys/metrics" {
+  capabilities = ["read"]
+}
+EOT
+}

@@ -1,6 +1,6 @@
-###
-### Vaultron: Vault Enterprise custom configuration file (with HSM support)
-###
+#----------------------------------------------------------------------------
+### Vaultron custom with HSM support
+#----------------------------------------------------------------------------
 
 cluster_name = "${cluster_name }"
 ui = true
@@ -16,7 +16,7 @@ listener "tcp" {
 storage "consul" {
   address = "${consul_address}:8500"
   scheme = "https"
-  tls_ca_file  = "/etc/ssl/certs/ca-bundle.pem"
+  tls_ca_file  = "/etc/ssl/certs/ca.pem"
   token = "b4c0ffee-3b77-04af-36d6-738b697872e6"
   path = "vault/"
   disable_clustering = "${disable_clustering}"
@@ -30,3 +30,11 @@ max_lease_ttl = "50000h"       # 2083 days
 # Plugin path
 plugin_directory = "/vault/plugins"
 
+# -----------------------------------------------------------------------
+# Enable Prometheus metrics by default
+# -----------------------------------------------------------------------
+
+telemetry {
+  prometheus_retention_time = "30s"
+  disable_hostname          = false
+}

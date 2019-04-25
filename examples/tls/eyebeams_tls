@@ -1,0 +1,140 @@
+#!/bin/sh
+#
+# This script is used to setup PKI Secrets Engines from the exiting
+# certificates and keys in `etc/tls`
+# shellcheck disable=SC1090,SC1091,SC2059
+
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+check_cli_cap
+if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    SECRETS_LIST_CMD="vault secrets list"
+    SECRETS_ENABLE_CMD="vault secrets enable"
+    SECRETS_TUNE_CMD="vault secrets tune"
+  else
+    SECRETS_LIST_CMD="vault mounts"
+    SECRETS_ENABLE_CMD="vault mount"
+    SECRETS_TUNE_CMD="vault mount tune"
+fi
+
+msg greeting "Engage Eye Beams for PKI! ..."
+
+if ! $SECRETS_TUNE_CMD \
+  -max-lease-ttl=50000h \
+  vaultron-root-pki > /dev/null 2>&1; then
+    msg alert "Could not tune Secrets Engine!"
+    exit 1
+else
+    msg success "Tuned Secrets Engine"
+fi
+
+if ! vault write \
+  vaultron-root-pki/config/ca \
+  pem_bundle=@vaultron-root-ca-bundle.pem \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Root CA!"
+    exit 1
+else
+    msg success "Configured Root CA"
+fi
+
+if ! vault write vaultron-root-pki/config/urls \
+  issuing_certificates="http://127.0.0.1:8200/v1/pki/ca" \
+  crl_distribution_points="http://127.0.0.1:8200/v1/pki/crl" \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Root CA URLs!"
+    exit 1
+else
+    msg success "Configured Root CA URLs"
+fi
+
+
+if ! vault write vaultron-root-pki/roles/vaultron-consul-root \
+  allow_localhost=true \
+  allowed_domains=arus.consul,sura.consul \
+  allow_subdomains=true \
+  allow_bare_domains=true \
+  allow_glob_domains=true \
+  allow_ip_sans=true \
+  generate_lease=true \
+  organization="Vaultron Lab" \
+  country="United States of America" \
+  locality="Kittyhawk" \
+  province="Outer Banks" \
+  max_ttl=42000h \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Root CA role!"
+    exit 1
+else
+    msg success "Configured Root CA role"
+fi
+
+if ! $SECRETS_TUNE_CMD \
+  -max-lease-ttl=50000h \
+  vaultron-int-pki \
+    > /dev/null 2>&1; then
+    msg alert "Could not tune Secrets Engine!"
+    exit 1
+else
+    msg success "Tuned Secrets Engine"
+fi
+
+
+if ! vault write \
+  vaultron-int-pki/config/ca \
+  pem_bundle=@vaultron-int-ca-bundle.pem \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Intermediate CA!"
+    exit 1
+else
+    msg success "Configured Intermediate CA"
+fi
+
+
+if ! vault write \
+  vaultron-int-pki/intermediate/set-signed \
+  certificate=@vaultron-intermediate-signed.pem \
+  > /dev/null 2>&1; then
+    msg alert "Could not set signed Intermediate CA!"
+    exit 1
+else
+    msg success "Set signed Intermediate CA"
+fi
+
+
+if ! vault write \
+  vaultron-int-pki/config/urls \
+  issuing_certificates="http://127.0.0.1:8200/v1/pki_int/ca" \
+  crl_distribution_points="http://127.0.0.1:8200/v1/pki_int/crl" \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Intermediate CA URLs!"
+    exit 1
+else
+    msg success "Configured Intermediate CA URLs"
+fi
+
+if ! vault write vaultron-int-pki/roles/vaultron-int \
+  allow_subdomains=true \
+  allowed_domains=arus.consul,node.arus.consul,node.sura.consul,node.consul,service.consul \
+  allow_bare_domains=true \
+  allow_glob_domains=true \
+  allow_ip_sans=true \
+  allow_localhost="true" \
+  generate_lease=true \
+  organization="Vaultron Lab" \
+  country="United States of America" \
+  locality="Kittyhawk" \
+  province="Outer Banks" \
+  max_ttl=42000h \
+  ttl=42000h \
+  > /dev/null 2>&1; then
+    msg alert "Could not configure Intermediate CA role!"
+    exit 1
+else
+    msg success "Configured Intermediate CA role"
+fi
