@@ -12,6 +12,6 @@ listener "tcp" {
 backend "consul" {
   address = "${consul_address}:8500"
   scheme = "https"
-  tls_ca_file  = "/etc/ssl/certs/ca-bundle.pem"
+  tls_ca_file  = "/etc/ssl/certs/ca.pem"
   path = "vault/"
 }

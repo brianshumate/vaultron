@@ -74,7 +74,7 @@ data "template_file" "consul_oss_server_common_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
-  template = "${file("${path.module}/tls/ca-bundle.pem")}"
+  template = "${file("${path.module}/tls/ca.pem")}"
 }
 
 data "template_file" "consuls0_tls_cert" {
@@ -153,7 +153,7 @@ resource "docker_container" "consuls0" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload = {
@@ -275,7 +275,7 @@ resource "docker_container" "consuls1" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload = {
@@ -341,7 +341,7 @@ resource "docker_container" "consuls2" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload = {
@@ -433,7 +433,7 @@ resource "docker_container" "consul_oss_client" {
 
   upload = {
     content = "${data.template_file.ca_bundle.rendered}"
-    file    = "/etc/ssl/certs/ca-bundle.pem"
+    file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload = {

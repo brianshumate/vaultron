@@ -1,5 +1,12 @@
-## v2.2.1 (UNRELEASED)
+## v2.2.2 (UNRELEASED)
 
+- Reissued all certificates and keys
+- Renamed CA cert file
+- Update documentation
+
+## v2.2.1
+
+- Vault v1.1.1
 - Consul v1.4.4
 - Update TLS certificates
 - Update documentation

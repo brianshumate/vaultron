@@ -5,7 +5,7 @@
   "acl_default_policy": "allow",
   "cert_file": "/etc/ssl/certs/consul-client.crt",
   "key_file": "/etc/ssl/consul-client.key",
-  "ca_file": "/etc/ssl/certs/ca-bundle.pem",
+  "ca_file": "/etc/ssl/certs/ca.pem",
   "ports": {
     "http": -1,
     "https": 8500

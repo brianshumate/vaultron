@@ -16,12 +16,12 @@ crosvm_env() {
 	# CONSUL_CONTAINER_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-consuls0 )
 	# VAULT_CONTAINER_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0 )
 	ETH0IP="$(/sbin/ifconfig eth0 | grep -w 'inet' | awk '{print $2}')"
-	CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
+	CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem"
 	CONSUL_HTTP_ADDR="$ETH0IP:8500"
 	CONSUL_HTTP_SSL=true
 	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 	VAULT_ADDR="https://$ETH0IP:8200"
-	VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+	VAULT_CACERT="$(pwd)/black_lion/tls/ca.pem"
 	export \
 	CONSUL_CACERT \
 	CONSUL_HTTP_ADDR \
@@ -36,12 +36,12 @@ crosvm_env() {
 
 # All others
 default_env() {
-	CONSUL_CACERT="$(pwd)/red_lion/tls/ca-bundle.pem"
+	CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem"
 	CONSUL_HTTP_ADDR="127.0.0.1:8500"
 	CONSUL_HTTP_SSL=true
 	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 	VAULT_ADDR="https://127.0.0.1:8200"
-	VAULT_CACERT="$(pwd)/black_lion/tls/ca-bundle.pem"
+	VAULT_CACERT="$(pwd)/black_lion/tls/ca.pem"
 	export \
 	CONSUL_CACERT \
 	CONSUL_HTTP_ADDR \

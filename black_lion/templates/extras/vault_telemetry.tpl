@@ -1,6 +1,7 @@
 # Yellow Lion
 
 telemetry {
-    statsd_address = "${statsd_ip}:8125"
     disable_hostname = false
+    prometheus_retention_time = "30s"
+    statsd_address = "${statsd_ip}:8125"
 }

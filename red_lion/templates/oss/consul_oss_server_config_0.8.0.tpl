@@ -9,7 +9,7 @@
   ],
   "cert_file": "/etc/ssl/certs/consul-server.crt",
   "key_file": "/etc/ssl/consul-server.key",
-  "ca_file": "/etc/ssl/certs/ca-bundle.pem",
+  "ca_file": "/etc/ssl/certs/ca.pem",
   "ports": {
     "http": -1,
     "https": 8500
