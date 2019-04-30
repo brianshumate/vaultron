@@ -34,7 +34,7 @@ plugin_directory = "/vault/plugins"
 # Enable Prometheus metrics by default
 # -----------------------------------------------------------------------
 
-telemetry {
-  prometheus_retention_time = "30s"
-  disable_hostname          = false
-}
+# telemetry {
+#   prometheus_retention_time = "30s"
+#   disable_hostname          = false
+# }
