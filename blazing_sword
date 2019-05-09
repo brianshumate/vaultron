@@ -111,7 +111,7 @@ initialize_vault() {
   if output="$($INIT_CMD)"; then
     echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"
   else
-    msg alert "Failed to initialize Vault!"
+    msg alert "Cannot initialize Vault!"
     msg alert "$output"
     exit 1
   fi
@@ -130,7 +130,25 @@ telemetry_info() {
   if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vstatsd) > /dev/null 2>&1; then
     msg info "Telemetry: statsd address: $VSTATSD_ADDR"
   else
-    msg alert "Failed to determine statsd address!"
+    msg alert "Cannot determine statsd address!"
+  fi
+}
+
+# Consul leader container info
+consul_leader_info() {
+  if CONSUL_LEADER_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-consuls0) > /dev/null 2>&1; then
+    msg info "Consul leader address: $CONSUL_LEADER_ADDR"
+  else
+    msg alert "Cannot determine Consul leader address!"
+  fi
+}
+
+# Initial Vault active container info
+vault_active_info() {
+  if VAULT_ACTIVE_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0) > /dev/null 2>&1; then
+    msg info "Vault active address: $VAULT_ACTIVE_ADDR"
+  else
+    msg alert "Cannot determine active Vault address!"
   fi
 }
 
@@ -147,21 +165,21 @@ unseal_vault() {
 
   if ! VAULT_ADDR="https://localhost:8200" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault 1!"
+    msg alert "Cannot unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8210" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault 2!"
+    msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
 
   if ! VAULT_ADDR="https://localhost:8220" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
-    msg alert "Failed to unseal Vault 3!"
+    msg alert "Cannot unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
   fi
@@ -171,7 +189,7 @@ unseal_vault() {
 
 msg greeting "Blazing Sword! ..."
 
-# Ain't nobody got time for your stale token up in here causing problems!
+# Ain't nobody got time for your stale token up in here!
 if [ -z "$VAULT_TOKEN" ]; then
   msg notice "Existing VAULT_TOKEN detected; unset it ..."
   if ! unset VAULT_TOKEN; then
@@ -187,6 +205,8 @@ auth_root
 enable_all
 status
 enabled
+consul_leader_info
+vault_active_info
 
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info

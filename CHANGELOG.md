@@ -2,6 +2,7 @@
 
 - Reissued all certificates and keys
 - Renamed CA cert file
+- Update unform cleanup tasks
 - Update documentation
 
 ## v2.2.1

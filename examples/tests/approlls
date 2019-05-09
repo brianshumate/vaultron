@@ -40,19 +40,17 @@ check_approle() {
   fi
 }
 
-# NB: The tokens are bound to the Docker CIDR
+# NB: The tokens are bound to the Docker CIDR and are Batch Tokens!
 gen_role() {
   msg info "Generating $APPROLE role ..."
   if ! vault write \
     auth/approle/role/$APPROLE \
     policies=sudo,vaultron-dev \
     secret_id_ttl=2160h \
-    token_num_uses=999999 \
     token_bound_cidrs="172.17.0.0/24" \
     token_ttl=360h \
-    period=400h \
     token_max_ttl=420h \
-    secret_id_num_uses=999999 > /dev/null 2>&1; then
+    token_type="batch"; then
       msg alert "Failed to generate the $APPROLE AppRole role!"
       exit 1
   fi
