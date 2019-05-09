@@ -27,7 +27,7 @@ Determine the MySQL Docker container's internal IP address:
 
 ```
 $ docker inspect \
-    --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+  --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
     vaultron-mysql
 172.17.0.2
 ```
@@ -63,6 +63,8 @@ $ vault write vaultron-database/roles/mysql-readonly \
 Success! Data written to: vaultron-database/roles/mysql-readonly
 ```
 
+## Get a Credential
+
 Retrieve a read only MySQL database credential:
 
 ```
@@ -75,6 +77,8 @@ lease_renewable    true
 password           A1a-2r5u92yx8w8w4sr8
 username           v-root-mysql-read-y70xuqw302x3x3
 ```
+
+## Log in to MySQL
 
 Log in to MySQL container with read-only credential:
 
