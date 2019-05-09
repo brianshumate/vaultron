@@ -105,6 +105,12 @@ resource "vault_mount" "vaultron_pki_int" {
   description = "Vaultron example PKI secrets engine (for int CA)"
 }
 
+resource "vault_mount" "vaultron_rabbitmq" {
+  path        = "vaultron-rabbitmq"
+  type        = "rabbitmq"
+  description = "Vaultron example RbbitMQ secrets engine"
+}
+
 resource "vault_mount" "vaultron_transit" {
   path        = "vaultron-transit"
   type        = "transit"

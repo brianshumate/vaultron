@@ -1,6 +1,7 @@
 ## v2.2.2 (UNRELEASED)
 
 - Reissued all certificates and keys
+- Add RabbitMQ example
 - Renamed CA cert file
 - Update unform cleanup tasks
 - Update documentation
