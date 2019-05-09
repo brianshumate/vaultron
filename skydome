@@ -50,7 +50,7 @@ msg() {
             printf "%s%s [*] %s %s\\n" "$TXTMGT" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         notice)
-            printf "%s%s [-] %s %s\\n" "$TXTYLW" "$MSGSRC" "$MSGTXT" "$TXTRST"
+            printf "%s%s [?] %s %s\\n" "$TXTYLW" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         alert)
             printf "%s%s [!] %s %s\\n" "$TXTRED" "$MSGSRC" "$MSGTXT" "$TXTRST"
