@@ -1,5 +1,6 @@
 ## v2.2.2 (UNRELEASED)
 
+- Consul v1.5.0
 - Reissued all certificates and keys
 - Add RabbitMQ example
 - Renamed CA cert file
