@@ -37,7 +37,7 @@ $ vault write -f auth/vaultron-approle/role/wildcard/secret-id \
 Write Vault agent configuration:
 
 ```
-$ tee vault_agent.hcl <<EOF
+$ cat << EOF >> vault_agent.hcl
 pid_file = "./pidfile"
 
 vault {

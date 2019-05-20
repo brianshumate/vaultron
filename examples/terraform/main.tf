@@ -75,11 +75,11 @@ resource "vault_mount" "vaultron_kv" {
   description = "Vaultron example KV version 1 secrets engine"
 }
 
-#resource "vault_mount" "vaultron_kv_v2" {
-#  path        = "vaultron-kv-v2"
-#  type        = "kv-v2"
-#  description = "Vaultron example KV version 2 secrets engine"
-#}
+resource "vault_mount" "vaultron_kv_v2" {
+  path        = "vaultron-kv-v2"
+  type        = "kv-v2"
+  description = "Vaultron example KV version 2 secrets engine"
+}
 
 resource "vault_mount" "vaultron_aws" {
   path        = "vaultron-aws"

@@ -121,7 +121,7 @@ initialize_vault() {
 # Get Vault status
 status() {
   msg info "Vault status:"
-  printf "\\n%s" "$TXTWHT$(vault status)$TXTRST"
+  printf "\\n%s" "$(vault status)"
   printf "\\n"
 }
 
@@ -146,7 +146,7 @@ consul_leader_info() {
 # Initial Vault active container info
 vault_active_info() {
   if VAULT_ACTIVE_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0) > /dev/null 2>&1; then
-    msg info "Vault active address: $VAULT_ACTIVE_ADDR"
+    msg info "Active Vault address: $VAULT_ACTIVE_ADDR"
   else
     msg alert "Cannot determine active Vault address!"
   fi
@@ -205,8 +205,8 @@ auth_root
 enable_all
 status
 enabled
-consul_leader_info
 vault_active_info
+consul_leader_info
 
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
