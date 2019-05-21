@@ -1,5 +1,6 @@
-## v2.2.2 (UNRELEASED)
+## v2.2.2
 
+- Vault v1.1.12
 - Consul v1.5.0
 - Reissued all certificates and keys
 - Add RabbitMQ example
