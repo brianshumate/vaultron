@@ -118,7 +118,7 @@ resource "docker_container" "vault_oss_server" {
   must_run = true
 
   capabilities {
-    add = ["IPC_LOCK", "SYS_PTRACE"]
+    add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
   }
 
   volumes {
@@ -238,7 +238,7 @@ resource "docker_container" "vault_custom_server" {
   must_run = true
 
   capabilities {
-    add = ["IPC_LOCK", "SYS_PTRACE"]
+    add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
   }
 
   volumes {

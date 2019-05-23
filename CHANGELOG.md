@@ -1,3 +1,7 @@
+## v2.2.3
+
+- Add NET_ADMIN and SYS_PTRACE capabilities to all containers
+
 ## v2.2.2
 
 - Vault v1.1.12

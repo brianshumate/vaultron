@@ -133,7 +133,7 @@ resource "docker_container" "consuls0" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
   volumes {
@@ -255,7 +255,7 @@ resource "docker_container" "consuls1" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
   volumes {
@@ -321,7 +321,7 @@ resource "docker_container" "consuls2" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
   volumes {
@@ -423,7 +423,7 @@ resource "docker_container" "consul_oss_client" {
   }
 
   capabilities {
-    add = ["SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
   upload = {
