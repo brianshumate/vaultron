@@ -30,6 +30,10 @@ resource "docker_container" "statsd_graphite" {
   must_run = true
   restart  = "always"
 
+  capabilities {
+    add = ["NET_ADMIN", "SYS_PTRACE"]
+  }
+
   ports {
     internal = "80"
     external = "80"
@@ -130,6 +134,10 @@ resource "docker_container" "grafana" {
   env      = ["GF_ALLOW_ORG_CREATE=false"]
   env      = ["GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
   must_run = true
+
+  capabilities {
+    add = ["NET_ADMIN", "SYS_PTRACE"]
+  }
 
   labels = {
     robot = "vaultron"
