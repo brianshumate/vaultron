@@ -378,11 +378,13 @@ Number of Consul OSS containers
 
 ### Published Ports
 
-Each Vault instance is available to the local computer, but through Docker's published ports scheme only, so the addresses of the Vault servers are:
+Each Vault instance is available to the local computer, but through Docker's published ports scheme only, so the API addresses of the Vault servers are:
 
-- localhost:8200
-- localhost:8210
-- localhost:8220
+- `https://localhost:8200`
+- `https://localhost:8210`
+- `https://localhost:8220`
+
+The cluster port (for the Active instance only) is also forwarded to localhost at `https://localhost:8201`
 
 ### Changing Vault OSS and Consul OSS Versions
 
@@ -670,22 +672,54 @@ or:
 
 You are specifying either a non-existent version (maybe a typo?) or you are specifying a version for which no Docker images exists. This second case is not a problem with Vaultron, there are some versions of Consul and Vault which were released as binaries, but not available as Docker images.
 
+### Some Other Undefined Problem!
+
+Have you tried turning it off an on again?
+
+No, seriously — given the nature of this project, sometimes if you cannot resolve the issue root cause, then the easiest way out of a jam could be the _old nuke it from orbit and start_ over approach.
+
+In this case, when you're stumped and don't mind starting anew, then just `unform` and `form` Vaultron again:
+
+```
+$ ./unform
+[vaultron] [=] Unform Vaultron ...
+[vaultron] [*] Vaultron unformed!
+```
+
+```
+./form
+[vaultron] [=] Form Vaultron! ...
+...
+```
+
+Other things that can help include:
+
+- Unset all related Vaultron `TF_VAR_*` environment variables
+- Closing Terminal session/tarting with a fresh Terminal session
+- Using the latest release version from GitHub.
+
+Note that the GitHub Master branch strives to remain relatively stable, but a release is usually preferred.
+
 ## Resources
 
 Here are some links to resources for the technologies used in this project:
 
-1. [Vault Docker Hub repository](https://hub.docker.com/_/vault/)
-2. [hashicorp/docker-consul](https://github.com/hashicorp/docker-consul)
-3. [Consul Docker Hub repository](https://hub.docker.com/_/consul/)
-4. [hashicorp/docker-vault](https://github.com/hashicorp/docker-vault)
-5. [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
-6. [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
-7. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
-8. [Terraform](https://www.terraform.io/)
-9. [Consul](https://www.consul.io/)
-10. [Vault](https://www.vaultproject.io/)
-11. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
-12. [Docker](https://www.docker.com/)
+1. [Vault](https://www.vaultproject.io/)
+2. [Consul](https://www.consul.io/)
+3. [Terraform](https://www.terraform.io/)
+4. [Vault Docker Hub repository](https://hub.docker.com/_/vault/)
+5. [hashicorp/docker-vault](https://github.com/hashicorp/docker-vault)
+6. [Consul Docker Hub repository](https://hub.docker.com/_/consul/)
+7. [hashicorp/docker-consul](https://github.com/hashicorp/docker-consul)
+8. [Vault Documentation](https://www.vaultproject.io/docs/)
+9. [Learn about secrets management and data protection with HashiCorp Vault](https://learn.hashicorp.com/vault/)
+10. [Consul Documentation](https://www.consul.io/docs/index.html)
+11. [Consul ACL System guide](https://www.consul.io/docs/guides/acl.html)
+12. [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
+13. [Official Consul Docker Image blog post](https://www.hashicorp.com/blog/official-consul-docker-image/)
+14. [Terraform CLI Documentation](https://www.terraform.io/docs/cli-index.html)
+15. [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
+16. [Docker](https://www.docker.com/)
 
 ## Who?
 
