@@ -1,5 +1,5 @@
 # =======================================================================
-# Vaultron: A Terraformed, Consul-backed, Vault on Docker for Linux or macOS
+# Vaultron: Terraformed, Consul-backed, Vault on Docker for Linux & macOS
 # =======================================================================
 
 # -----------------------------------------------------------------------
@@ -13,7 +13,7 @@ variable "vault_version" {
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.5.0"
+  default = "1.5.1"
 }
 
 # -----------------------------------------------------------------------

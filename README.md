@@ -58,11 +58,27 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.1.0
-[vaultron] [i] Consul OSS version: 1.4.3
+[vaultron] [i] Vault OSS version: 1.1.2
+[vaultron] [i] Consul OSS version: 1.5.1
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
+
+You can now visit the Vault web UI at https://localhost:8200
+
+or visit the Consul web UI at https://localhost:8500
+
+You can also interact with vault and consul CLI utilities after
+exporting the following environment variables in your shell:
+
+export CONSUL_HTTP_ADDR="127.0.0.1:8500"
+export CONSUL_HTTP_SSL=true
+export VAULT_ADDR="https://127.0.0.1:8200"
+export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+
+or use this command to do it for you:
+
+. ./ion_darts
 ```
 
 You are now nearly ready to interact with Vault and Consul using their web user interfaces, command line interfaces, or HTTP APIs.
