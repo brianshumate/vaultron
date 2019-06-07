@@ -1,5 +1,5 @@
 # =======================================================================
-# Vaultron: A Terraformed, Consul-backed, Vault on Docker for Linux or macOS
+# Vaultron: Terraformed, Consul-backed, Vault on Docker for Linux & macOS
 # =======================================================================
 
 # -----------------------------------------------------------------------
@@ -8,12 +8,12 @@
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "1.1.2"
+  default = "1.1.3"
 }
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.5.0"
+  default = "1.5.1"
 }
 
 # -----------------------------------------------------------------------
@@ -183,7 +183,7 @@ variable "statsd_ip" {
 # -----------------------------------------------------------------------
 
 module "telemetry" {
-  source                   = "yellow_lion"
+  source                   = "./yellow_lion"
   grafana_version          = "${var.grafana_version}"
   statsd_ip                = "${var.statsd_ip}"
   statsd_version           = "${var.statsd_version}"
@@ -191,7 +191,7 @@ module "telemetry" {
 }
 
 module "consul_cluster" {
-  source                       = "red_lion"
+  source                       = "./red_lion"
   consul_acl_datacenter        = "${var.consul_acl_datacenter}"
   consul_custom                = "${var.consul_custom}"
   consul_custom_instance_count = "${var.consul_custom_instance_count}"
@@ -208,7 +208,7 @@ module "consul_cluster" {
 }
 
 module "vaultron" {
-  source                       = "black_lion"
+  source                       = "./black_lion"
   datacenter_name              = "${var.datacenter_name}"
   consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
   consul_client_ips            = ["${module.consul_cluster.consul_client_ips}"]
