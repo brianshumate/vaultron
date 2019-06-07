@@ -1,3 +1,8 @@
+## v2.3.0 (UNRELEASED)
+
+- Vault v1.1.3
+- Update documentation
+
 ## v2.2.4
 
 - Consul v1.5.1

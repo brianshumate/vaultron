@@ -4,9 +4,9 @@
 
 ## What?
 
-**Vaultron** uses [Terraform](https://www.terraform.io/) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
+**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.11.x required) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
-> **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on Vault itself**.
+> **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on using Vault itself**.
 
 ## Why?
 
@@ -24,9 +24,11 @@ Some of the more popular uses of Vaultron are:
 
 Terraform assembles individual pieces to form Vaultron from the official [Vault Docker image](https://hub.docker.com/_/vault/) and [Consul Docker image](https://hub.docker.com/_/consul/).
 
+> **NOTE**: Vaultron does not yet support Terraform v0.12.0 as the Docker Provider has not yet been updated to function with v0.12.0. Once support is there, Vaultron will be updated to use it.
+
 ### Quickest Start for macOS
 
-Once you have installed Consul, Terraform, Vault and Docker on your Mac, you can use the following example to form Vaultron and open the the Vault web UI in your browser.
+Once you have installed the `consul`, `terraform`, `vault` binaries along with Docker on your Mac, you can use the following example to form Vaultron and open the the Vault web UI in your browser.
 
 You will likely be prompted for your password to add the Vaultron CA certificate to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
 
@@ -58,7 +60,7 @@ When Vaultron is successfully formed, the output looks like this:
 ```
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.1.2
+[vaultron] [i] Vault OSS version: 1.1.3
 [vaultron] [i] Consul OSS version: 1.5.1
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
@@ -265,7 +267,7 @@ Here are the names and purposes of each:
 
 Vault OSS version to use
 
-> NOTE: Setting this has no effect when the value of `TF_VAR_vault_custom_instance_count` is greater than zero as the custom binary then determines the version used.
+> NOTE: Setting this has no effect when the value of `TF_VAR_vault_custom_instance_count` is greater than zero as the custom binary itself then determines the version used.
 
 - Default: latest OSS version
 
@@ -404,7 +406,7 @@ The cluster port (for the Active instance only) is also forwarded to localhost a
 
 ### Changing Vault OSS and Consul OSS Versions
 
-Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different OSS version, you can export the `TF_VAR_vault_version` environment variable to override:
+Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different _OSS version_, you can export the `TF_VAR_vault_version` environment variable to override:
 
 ```
 $ export TF_VAR_vault_version=0.6.5
@@ -432,7 +434,9 @@ vault2    172.17.0.6:8301  alive   client  0.7.5  2         arus  <default>
 
 > **NOTE**: Be sure to always use the same versions of Consul and Vault binaries on your host system and the container image.
 
-If the version of Consul or Vault you want to use does not have an official Docker image, you'll encounter an error.
+This changes the OSS version only; when using a custom Vault binary, the binary itself determines the version; see the **A note about custom Binaries** section for more details about using custom binaries.
+
+Also note that if the OSS version of Consul or Vault you want to use does not have an official Docker image available, you'll encounter an error.
 
 ### Consul DNS
 
@@ -614,7 +618,7 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 ./form
 ```
 
-> **NOTE**: When using custom binaries in this way, Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version.
+> **NOTE**: When using custom binaries in this way the binary must be for Linux/AMD64 as that is the platform for the containers, also Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version so keep that in mind as well.
 
 ## Basic Troubleshooting Questions
 
@@ -671,6 +675,18 @@ or this:
 This means that Vaultron had problems durring the `terraform plan` or `terraform apply` steps. You can run those commands manually and inspect their output to troubleshoot the issue.
 
 Other red and equally frightening errors could occur, and these are usually accompanied by an explanation from Terraform regarding the nature of the problem.
+
+### Vault Containers with Custom Binary are Exiting
+
+My Vault containers are exiting and the `docker logs vaultron-vault0` output resembles this:
+
+```
+Using eth0 for VAULT_REDIRECT_ADDR: http://172.17.0.10:8200
+Using eth0 for VAULT_CLUSTER_ADDR: https://172.17.0.10:8201
+/vault/custom/vault: line 3: syntax error: unexpected end of file (expecting “)”)
+```
+
+This is a symptom of using the incorrect custom binary platform; the containers Vaultron uses are Linux AMD64 based, so you must place a Linux/AMD64 version of the `vault` binary into the `custom` directory to successfully use custom binaries.
 
 ### Unsupported Versions?
 
