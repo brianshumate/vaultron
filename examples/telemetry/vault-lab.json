@@ -60,6 +60,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -140,6 +141,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -220,6 +222,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -300,6 +303,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -380,6 +384,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -460,6 +465,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -540,6 +546,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -561,7 +568,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.timers.vault.core.check_token.median"
+          "target": "stats.timers.vault.core.check_token.count"
         }
       ],
       "thresholds": "100,500",
@@ -607,6 +614,7 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -705,6 +713,7 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -801,6 +810,7 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -898,6 +908,7 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -995,6 +1006,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1089,6 +1101,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1172,6 +1185,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1255,6 +1269,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1338,6 +1353,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1422,6 +1438,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1507,6 +1524,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1592,6 +1610,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {},
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1662,40 +1681,45 @@
       "id": 20,
       "links": [],
       "options": {
-        "maxValue": "200",
-        "minValue": 0,
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "decimals": null,
+            "max": "200",
+            "min": 0,
+            "unit": "ms"
+          },
+          "mappings": [],
+          "thresholds": [
+            {
+              "color": "#7EB26D",
+              "index": 0,
+              "value": null
+            },
+            {
+              "color": "#FADE2A",
+              "index": 1,
+              "value": 100
+            },
+            {
+              "color": "#F2495C",
+              "index": 2,
+              "value": 150
+            }
+          ]
+        },
+        "orientation": "auto",
         "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "thresholds": [
-          {
-            "color": "#7EB26D",
-            "index": 0,
-            "value": null
-          },
-          {
-            "color": "#FADE2A",
-            "index": 1,
-            "value": 100
-          },
-          {
-            "color": "#F2495C",
-            "index": 2,
-            "value": 150
-          }
-        ],
-        "valueMappings": [],
-        "valueOptions": {
-          "decimals": null,
-          "prefix": "",
-          "stat": "avg",
-          "suffix": "",
-          "unit": "ms"
-        }
+        "showThresholdMarkers": true
       },
+      "pluginVersion": "6.2.2",
       "targets": [
         {
           "refId": "A",
-          "target": "stats.timers.vault.core.handle_request.median"
+          "target": "stats.timers.vault.core.handle_request.count",
+          "textEditor": true
         }
       ],
       "timeFrom": null,
