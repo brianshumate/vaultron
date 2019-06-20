@@ -24,7 +24,7 @@ Some of the more popular uses of Vaultron are:
 
 Terraform assembles individual pieces to form Vaultron from the official [Vault Docker image](https://hub.docker.com/_/vault/) and [Consul Docker image](https://hub.docker.com/_/consul/).
 
-> **NOTE**: Vaultron does not yet support Terraform v0.12.0 as the Docker Provider has not yet been updated to function with v0.12.0. Once support is there, Vaultron will be updated to use it.
+> **NOTE**: **Vaultron does not yet support Terraform v0.12.0** as the Terraform Docker Provider has not yet been updated to function with v0.12.0. Once support is there, Vaultron will be updated to use it.
 
 ### Quickest Start for macOS
 
