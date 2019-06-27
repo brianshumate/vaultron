@@ -57,7 +57,6 @@ data "template_file" "vault_config" {
     vault_path         = "${var.vault_path}"
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
-    tls_disable        = 0
     service_tags       = "vaultron"
   }
 }
@@ -101,7 +100,7 @@ resource "docker_container" "vault_oss_server" {
   name  = "vaultron-${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
-  env = ["VAULT_CLUSTER_INTERFACE=eth0",
+  env = ["VAULT_REDIRECT_ADDR=https://0.0.0.0:8200", "VAULT_CLUSTER_INTERFACE=eth0",
     "VAULT_REDIRECT_INTERFACE=eth0",
   ]
 
@@ -204,7 +203,6 @@ data "template_file" "vault_custom_config" {
     cluster_name       = "${var.vault_cluster_name}"
     disable_clustering = "${var.disable_clustering}"
     statsd_ip          = "${var.statsd_ip}"
-    tls_disable        = 0
     tls_cert           = "/vault/config/vault-server.crt"
     tls_key            = "/vault/config/vault-server.key"
     service_tags       = "vaultron"
@@ -221,7 +219,7 @@ resource "docker_container" "vault_custom_server" {
   name  = "vaultron-${format("vault%d", count.index)}"
   image = "${docker_image.vault.latest}"
 
-  env = ["VAULT_CLUSTER_INTERFACE=eth0",
+  env = ["VAULT_REDIRECT_ADDR=https://0.0.0.0:8200", "VAULT_CLUSTER_INTERFACE=eth0",
     "VAULT_REDIRECT_INTERFACE=eth0",
   ]
 
