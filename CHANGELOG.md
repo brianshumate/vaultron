@@ -1,6 +1,8 @@
-## v2.3.0 (UNRELEASED)
+## v2.3.0
 
 - Vault v1.1.3
+- terraform fmt all the things!
+- Set an explicit https VAULT_REDIRECT_ADDR in env
 - Update documentation
 
 ## v2.2.4
