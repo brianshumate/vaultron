@@ -3,6 +3,10 @@
 # Consul servers and client agents
 # =======================================================================
 
+terraform {
+  required_version = ">= 0.12"
+}
+
 # Consul module outputs
 
 output "consul_oss_server_ips" {
