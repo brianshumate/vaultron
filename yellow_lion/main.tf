@@ -153,7 +153,7 @@ resource "docker_container" "grafana" {
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/grafana/data"
+    host_path      = "${path.cwd}/grafana/data"
     container_path = "/var/lib/grafana"
   }
 

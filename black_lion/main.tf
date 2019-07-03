@@ -156,17 +156,17 @@ resource "docker_container" "vault_oss_server" {
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/vault${count.index}/audit_log"
+    host_path      = "${path.cwd}/vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/vault${count.index}/config"
+    host_path      = "${path.cwd}/vault/vault${count.index}/config"
     container_path = "/vault/config"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/plugins"
+    host_path      = "${path.cwd}/vault/plugins"
     container_path = "/vault/plugins"
   }
 
@@ -283,27 +283,27 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/custom/"
+    host_path      = "${path.cwd}/custom/"
     container_path = "/vault/custom"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/vault${count.index}/audit_log"
+    host_path      = "${path.cwd}/vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/vault${count.index}/config"
+    host_path      = "${path.cwd}/vault/vault${count.index}/config"
     container_path = "/vault/config"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/vault${count.index}/data"
+    host_path      = "${path.cwd}/vault/vault${count.index}/data"
     container_path = "/vault/data"
   }
 
   volumes {
-    host_path      = "/Users/brent/hc/vaultron/vault/plugins"
+    host_path      = "${path.cwd}/vault/plugins"
     container_path = "/vault/plugins"
   }
 
