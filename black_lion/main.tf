@@ -9,30 +9,53 @@
 # Vault variables
 # -----------------------------------------------------------------------
 
-variable "datacenter_name" {}
-variable "vault_version" {}
-variable "use_vault_oss" {}
-variable "vault_ent_id" {}
-variable "vault_path" {}
-variable "vault_cluster_name" {}
-variable "disable_clustering" {}
-variable "vault_server_log_level" {}
+variable "datacenter_name" {
+}
+
+variable "vault_version" {
+}
+
+variable "use_vault_oss" {
+}
+
+variable "vault_ent_id" {
+}
+
+variable "vault_path" {
+}
+
+variable "vault_cluster_name" {
+}
+
+variable "disable_clustering" {
+}
+
+variable "vault_server_log_level" {
+}
 
 variable "consul_server_ips" {
-  type = "list"
+  type = list(string)
 }
 
 variable "consul_client_ips" {
-  type = "list"
+  type = list(string)
 }
 
-variable "vault_oss_instance_count" {}
-variable "vault_custom_instance_count" {}
-variable "vault_custom_config_template" {}
-variable "statsd_ip" {}
+variable "vault_oss_instance_count" {
+}
+
+variable "vault_custom_instance_count" {
+}
+
+variable "vault_custom_config_template" {
+}
+
+variable "statsd_ip" {
+}
 
 // variable "vault_server_tls_disable" {}
-variable "vaultron_telemetry_count" {}
+variable "vaultron_telemetry_count" {
+}
 
 # This is the official Vault Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/vault/
@@ -46,17 +69,19 @@ resource "docker_image" "vault" {
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_config" {
-  count    = "${var.vault_oss_instance_count}"
-  template = "${file("${path.module}/templates/oss/vault_config_${var.vault_version}.tpl")}"
+  count = var.vault_oss_instance_count
+  template = file(
+    "${path.module}/templates/oss/vault_config_${var.vault_version}.tpl",
+  )
 
-  vars {
+  vars = {
     address            = "0.0.0.0:8200"
-    consul_address     = "${element(var.consul_client_ips, count.index)}"
-    datacenter         = "${var.datacenter_name}"
-    log_level          = "${var.vault_server_log_level}"
-    vault_path         = "${var.vault_path}"
-    cluster_name       = "${var.vault_cluster_name}"
-    disable_clustering = "${var.disable_clustering}"
+    consul_address     = element(var.consul_client_ips, count.index)
+    datacenter         = var.datacenter_name
+    log_level          = var.vault_server_log_level
+    vault_path         = var.vault_path
+    cluster_name       = var.vault_cluster_name
+    disable_clustering = var.disable_clustering
     service_tags       = "vaultron"
   }
 }
@@ -66,17 +91,21 @@ data "template_file" "vault_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
-  template = "${file("${path.module}/tls/ca.pem")}"
+  template = file("${path.module}/tls/ca.pem")
 }
 
 data "template_file" "vault_tls_cert" {
-  count    = "${var.vault_oss_instance_count}"
-  template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
+  count = var.vault_oss_instance_count
+  template = file(
+    "${path.module}/tls/${format("vault-server-%d.crt", count.index)}",
+  )
 }
 
 data "template_file" "vault_tls_key" {
-  count    = "${var.vault_oss_instance_count}"
-  template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
+  count = var.vault_oss_instance_count
+  template = file(
+    "${path.module}/tls/${format("vault-server-%d.key", count.index)}",
+  )
 }
 
 # -----------------------------------------------------------------------
@@ -84,10 +113,10 @@ data "template_file" "vault_tls_key" {
 # -----------------------------------------------------------------------
 
 data "template_file" "telemetry_config" {
-  template = "${file("${path.module}/templates/extras/vault_telemetry.tpl")}"
+  template = file("${path.module}/templates/extras/vault_telemetry.tpl")
 
-  vars {
-    statsd_ip = "${var.statsd_ip}"
+  vars = {
+    statsd_ip = var.statsd_ip
   }
 }
 
@@ -96,18 +125,20 @@ data "template_file" "telemetry_config" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "vault_oss_server" {
-  count = "${var.vault_oss_instance_count}"
+  count = var.vault_oss_instance_count
   name  = "vaultron-${format("vault%d", count.index)}"
-  image = "${docker_image.vault.latest}"
+  image = docker_image.vault.latest
 
-  env = ["VAULT_REDIRECT_ADDR=https://0.0.0.0:8200", "VAULT_CLUSTER_INTERFACE=eth0",
+  env = [
+    "VAULT_REDIRECT_ADDR=https://0.0.0.0:8200",
+    "VAULT_CLUSTER_INTERFACE=eth0",
     "VAULT_REDIRECT_INTERFACE=eth0",
   ]
 
   command    = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
-  hostname   = "${format("vaults%d", count.index)}"
+  hostname   = format("vaults%d", count.index)
   domainname = "consul"
-  dns        = ["${var.consul_server_ips}"]
+  dns        = var.consul_server_ips
   dns_search = ["consul"]
 
   labels = {
@@ -136,33 +167,33 @@ resource "docker_container" "vault_oss_server" {
   }
 
   upload {
-    content = "${element(data.template_file.vault_config.*.rendered, count.index)}"
+    content = element(data.template_file.vault_config.*.rendered, count.index)
     file    = "/vault/config/main.hcl"
   }
 
   upload {
-    content = "${data.template_file.telemetry_config.rendered}"
-    file    = "${var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl"}"
+    content = data.template_file.telemetry_config.rendered
+    file    = var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl"
   }
 
   upload {
-    content = "${data.template_file.ca_bundle.rendered}"
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload {
-    content = "${element(data.template_file.vault_tls_cert.*.rendered, count.index)}"
+    content = element(data.template_file.vault_tls_cert.*.rendered, count.index)
     file    = "/etc/ssl/certs/vault-server.crt"
   }
 
-  upload = {
-    content = "${element(data.template_file.vault_tls_key.*.rendered, count.index)}"
+  upload {
+    content = element(data.template_file.vault_tls_key.*.rendered, count.index)
     file    = "/etc/ssl/vault-server.key"
   }
 
   ports {
     internal = "8200"
-    external = "${format("82%d0", count.index)}"
+    external = format("82%d0", count.index)
     protocol = "tcp"
   }
 }
@@ -176,13 +207,17 @@ resource "docker_container" "vault_oss_server" {
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_tls_cert" {
-  count    = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/tls/${format("vault-server-%d.crt", count.index)}")}"
+  count = var.vault_custom_instance_count
+  template = file(
+    "${path.module}/tls/${format("vault-server-%d.crt", count.index)}",
+  )
 }
 
 data "template_file" "vault_custom_tls_key" {
-  count    = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/tls/${format("vault-server-%d.key", count.index)}")}"
+  count = var.vault_custom_instance_count
+  template = file(
+    "${path.module}/tls/${format("vault-server-%d.key", count.index)}",
+  )
 }
 
 # -----------------------------------------------------------------------
@@ -190,19 +225,21 @@ data "template_file" "vault_custom_tls_key" {
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_config" {
-  count    = "${var.vault_custom_instance_count}"
-  template = "${file("${path.module}/templates/custom/${var.vault_custom_config_template}")}"
+  count = var.vault_custom_instance_count
+  template = file(
+    "${path.module}/templates/custom/${var.vault_custom_config_template}",
+  )
 
-  vars {
+  vars = {
     address            = "0.0.0.0:8200"
     alt_address        = "0.0.0.0:443"
-    consul_address     = "${element(var.consul_client_ips, count.index)}"
-    datacenter         = "${var.datacenter_name}"
-    log_level          = "${var.vault_server_log_level}"
-    vault_path         = "${var.vault_path}"
-    cluster_name       = "${var.vault_cluster_name}"
-    disable_clustering = "${var.disable_clustering}"
-    statsd_ip          = "${var.statsd_ip}"
+    consul_address     = element(var.consul_client_ips, count.index)
+    datacenter         = var.datacenter_name
+    log_level          = var.vault_server_log_level
+    vault_path         = var.vault_path
+    cluster_name       = var.vault_cluster_name
+    disable_clustering = var.disable_clustering
+    statsd_ip          = var.statsd_ip
     tls_cert           = "/vault/config/vault-server.crt"
     tls_key            = "/vault/config/vault-server.key"
     service_tags       = "vaultron"
@@ -215,18 +252,20 @@ data "template_file" "vault_custom_config" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "vault_custom_server" {
-  count = "${var.vault_custom_instance_count}"
+  count = var.vault_custom_instance_count
   name  = "vaultron-${format("vault%d", count.index)}"
-  image = "${docker_image.vault.latest}"
+  image = docker_image.vault.latest
 
-  env = ["VAULT_REDIRECT_ADDR=https://0.0.0.0:8200", "VAULT_CLUSTER_INTERFACE=eth0",
+  env = [
+    "VAULT_REDIRECT_ADDR=https://0.0.0.0:8200",
+    "VAULT_CLUSTER_INTERFACE=eth0",
     "VAULT_REDIRECT_INTERFACE=eth0",
   ]
 
   command    = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
-  hostname   = "${format("vaults%d", count.index)}"
+  hostname   = format("vaults%d", count.index)
   domainname = "consul"
-  dns        = ["${var.consul_server_ips}"]
+  dns        = var.consul_server_ips
   dns_search = ["consul"]
 
   labels = {
@@ -265,33 +304,43 @@ resource "docker_container" "vault_custom_server" {
   }
 
   upload {
-    content = "${element(data.template_file.vault_custom_config.*.rendered, count.index)}"
-    file    = "/vault/config/main.hcl"
+    content = element(
+      data.template_file.vault_custom_config.*.rendered,
+      count.index,
+    )
+    file = "/vault/config/main.hcl"
   }
 
   upload {
-    content = "${data.template_file.telemetry_config.rendered}"
-    file    = "${var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl"}"
+    content = data.template_file.telemetry_config.rendered
+    file    = var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl"
   }
 
   upload {
-    content = "${data.template_file.ca_bundle.rendered}"
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
   upload {
-    content = "${element(data.template_file.vault_custom_tls_cert.*.rendered, count.index)}"
-    file    = "/etc/ssl/certs/vault-server.crt"
+    content = element(
+      data.template_file.vault_custom_tls_cert.*.rendered,
+      count.index,
+    )
+    file = "/etc/ssl/certs/vault-server.crt"
   }
 
   upload {
-    content = "${element(data.template_file.vault_custom_tls_key.*.rendered, count.index)}"
-    file    = "/etc/ssl/vault-server.key"
+    content = element(
+      data.template_file.vault_custom_tls_key.*.rendered,
+      count.index,
+    )
+    file = "/etc/ssl/vault-server.key"
   }
 
   ports {
     internal = "8200"
-    external = "${format("82%d0", count.index)}"
+    external = format("82%d0", count.index)
     protocol = "tcp"
   }
 }
+

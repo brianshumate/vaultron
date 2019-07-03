@@ -9,34 +9,59 @@ output "consul_oss_server_ips" {
   description = "Consul OSS Server IP addresses"
 
   value = [
-    "${docker_container.consuls0.*.ip_address}",
-    "${docker_container.consuls1.*.ip_address}",
-    "${docker_container.consuls2.*.ip_address}",
+    docker_container.consuls0.*.ip_address,
+    docker_container.consuls1.*.ip_address,
+    docker_container.consuls2.*.ip_address,
   ]
 }
 
 output "consul_client_ips" {
   description = "Consul OSS Client IP addresses"
-  value       = ["${docker_container.consul_oss_client.*.ip_address}"]
+  value       = [docker_container.consul_oss_client.*.ip_address]
 }
 
 # -----------------------------------------------------------------------
 # Consul variables
 # -----------------------------------------------------------------------
 
-variable "consul_log_level" {}
-variable "datacenter_name" {}
-variable "consul_version" {}
-variable "use_consul_oss" {}
-variable "consul_ent_id" {}
-variable "consul_recursor_1" {}
-variable "consul_recursor_2" {}
-variable "consul_acl_datacenter" {}
-variable "consul_data_dir" {}
-variable "consul_custom" {}
-variable "consul_custom_instance_count" {}
-variable "consul_oss" {}
-variable "consul_oss_instance_count" {}
+variable "consul_log_level" {
+}
+
+variable "datacenter_name" {
+}
+
+variable "consul_version" {
+}
+
+variable "use_consul_oss" {
+}
+
+variable "consul_ent_id" {
+}
+
+variable "consul_recursor_1" {
+}
+
+variable "consul_recursor_2" {
+}
+
+variable "consul_acl_datacenter" {
+}
+
+variable "consul_data_dir" {
+}
+
+variable "consul_custom" {
+}
+
+variable "consul_custom_instance_count" {
+}
+
+variable "consul_oss" {
+}
+
+variable "consul_oss_instance_count" {
+}
 
 # This is the official Consul Docker image that Vaultron uses by default.
 # See also: https://hub.docker.com/_/consul/
@@ -54,17 +79,19 @@ data "template_file" "consul_oss_server_common_config" {
   # XXX: why is count needed here?
   #
   # count    = "${var.consul_oss}"
-  template = "${file("${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.tpl")}"
+  template = file(
+    "${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.tpl",
+  )
 
-  vars {
-    log_level        = "${var.consul_log_level}"
+  vars = {
+    log_level        = var.consul_log_level
     acl_datacenter   = "arus"
     bootstrap_expect = 3
-    datacenter       = "${var.datacenter_name}"
-    data_dir         = "${var.consul_data_dir}"
+    datacenter       = var.datacenter_name
+    data_dir         = var.consul_data_dir
     client           = "0.0.0.0"
-    recursor1        = "${var.consul_recursor_1}"
-    recursor2        = "${var.consul_recursor_2}"
+    recursor1        = var.consul_recursor_1
+    recursor2        = var.consul_recursor_2
     ui               = "true"
   }
 }
@@ -74,31 +101,31 @@ data "template_file" "consul_oss_server_common_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
-  template = "${file("${path.module}/tls/ca.pem")}"
+  template = file("${path.module}/tls/ca.pem")
 }
 
 data "template_file" "consuls0_tls_cert" {
-  template = "${file("${path.module}/tls/consul-server-0.crt")}"
+  template = file("${path.module}/tls/consul-server-0.crt")
 }
 
 data "template_file" "consuls1_tls_cert" {
-  template = "${file("${path.module}/tls/consul-server-1.crt")}"
+  template = file("${path.module}/tls/consul-server-1.crt")
 }
 
 data "template_file" "consuls2_tls_cert" {
-  template = "${file("${path.module}/tls/consul-server-2.crt")}"
+  template = file("${path.module}/tls/consul-server-2.crt")
 }
 
 data "template_file" "consuls0_tls_key" {
-  template = "${file("${path.module}/tls/consul-server-0.key")}"
+  template = file("${path.module}/tls/consul-server-0.key")
 }
 
 data "template_file" "consuls1_tls_key" {
-  template = "${file("${path.module}/tls/consul-server-1.key")}"
+  template = file("${path.module}/tls/consul-server-1.key")
 }
 
 data "template_file" "consuls2_tls_key" {
-  template = "${file("${path.module}/tls/consul-server-2.key")}"
+  template = file("${path.module}/tls/consul-server-2.key")
 }
 
 # -----------------------------------------------------------------------
@@ -108,9 +135,10 @@ data "template_file" "consuls2_tls_key" {
 resource "docker_container" "consuls0" {
   # XXX: Singleton resource / why count?
   # count = "${var.consul_oss}"
-  image = "${docker_image.consul.latest}"
+  image = docker_image.consul.latest
 
-  entrypoint = ["consul",
+  entrypoint = [
+    "consul",
     "agent",
     "-server",
     "-node-id=c0ffee74-a33e-4200-99ae-12dc45a4a6ae",
@@ -146,23 +174,23 @@ resource "docker_container" "consuls0" {
     container_path = "/consul/data"
   }
 
-  upload = {
-    content = "${data.template_file.consul_oss_server_common_config.rendered}"
+  upload {
+    content = data.template_file.consul_oss_server_common_config.rendered
     file    = "/consul/config/common_config.json"
   }
 
-  upload = {
-    content = "${data.template_file.ca_bundle.rendered}"
+  upload {
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
-  upload = {
-    content = "${data.template_file.consuls0_tls_cert.rendered}"
+  upload {
+    content = data.template_file.consuls0_tls_cert.rendered
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
-  upload = {
-    content = "${data.template_file.consuls0_tls_key.rendered}"
+  upload {
+    content = data.template_file.consuls0_tls_key.rendered
     file    = "/etc/ssl/consul-server.key"
   }
 
@@ -230,9 +258,10 @@ resource "docker_container" "consuls0" {
 resource "docker_container" "consuls1" {
   # XXX: Singleton resource / why count?
   # count = "${var.consul_oss}"
-  image = "${docker_image.consul.latest}"
+  image = docker_image.consul.latest
 
-  entrypoint = ["consul",
+  entrypoint = [
+    "consul",
     "agent",
     "-server",
     "-node-id=c0ffee74-77f0-44ea-849a-4bfeef9b07c4",
@@ -268,23 +297,23 @@ resource "docker_container" "consuls1" {
     container_path = "/consul/data"
   }
 
-  upload = {
-    content = "${data.template_file.consul_oss_server_common_config.rendered}"
+  upload {
+    content = data.template_file.consul_oss_server_common_config.rendered
     file    = "/consul/config/common_config.json"
   }
 
-  upload = {
-    content = "${data.template_file.ca_bundle.rendered}"
+  upload {
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
-  upload = {
-    content = "${data.template_file.consuls1_tls_cert.rendered}"
+  upload {
+    content = data.template_file.consuls1_tls_cert.rendered
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
-  upload = {
-    content = "${data.template_file.consuls1_tls_key.rendered}"
+  upload {
+    content = data.template_file.consuls1_tls_key.rendered
     file    = "/etc/ssl/consul-server.key"
   }
 }
@@ -296,9 +325,10 @@ resource "docker_container" "consuls1" {
 resource "docker_container" "consuls2" {
   # XXX: Singleton resource / why count?
   # count = "${var.consul_oss}"
-  image = "${docker_image.consul.latest}"
+  image = docker_image.consul.latest
 
-  entrypoint = ["consul",
+  entrypoint = [
+    "consul",
     "agent",
     "-server",
     "-node-id=c0ffee74-cb59-4bec-9eba-ca4a3fe56646",
@@ -334,23 +364,23 @@ resource "docker_container" "consuls2" {
     container_path = "/consul/data"
   }
 
-  upload = {
-    content = "${data.template_file.consul_oss_server_common_config.rendered}"
+  upload {
+    content = data.template_file.consul_oss_server_common_config.rendered
     file    = "/consul/config/common_config.json"
   }
 
-  upload = {
-    content = "${data.template_file.ca_bundle.rendered}"
+  upload {
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
-  upload = {
-    content = "${data.template_file.consuls2_tls_cert.rendered}"
+  upload {
+    content = data.template_file.consuls2_tls_cert.rendered
     file    = "/etc/ssl/certs/consul-server.crt"
   }
 
-  upload = {
-    content = "${data.template_file.consuls2_tls_key.rendered}"
+  upload {
+    content = data.template_file.consuls2_tls_key.rendered
     file    = "/etc/ssl/consul-server.key"
   }
 }
@@ -360,17 +390,19 @@ resource "docker_container" "consuls2" {
 # -----------------------------------------------------------------------
 
 resource "random_id" "agent_node_id" {
-  count       = "${var.consul_oss_instance_count}"
+  count       = var.consul_oss_instance_count
   byte_length = 16
 }
 
 data "template_file" "consulc_common_config" {
-  count    = "${var.consul_oss_instance_count}"
-  template = "${file("${path.module}/templates/oss/consul_oss_client_config_${var.consul_version}.tpl")}"
+  count = var.consul_oss_instance_count
+  template = file(
+    "${path.module}/templates/oss/consul_oss_client_config_${var.consul_version}.tpl",
+  )
 
-  vars {
+  vars = {
     common_configuration = "true"
-    agent_node_id        = "${uuid()}"
+    agent_node_id        = uuid()
   }
 }
 
@@ -379,42 +411,48 @@ data "template_file" "consulc_common_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "consul_client_tls_cert" {
-  count    = "${var.consul_oss_instance_count}"
-  template = "${file("${path.module}/tls/${format("consul-client-%d.crt", count.index)}")}"
+  count = var.consul_oss_instance_count
+  template = file(
+    "${path.module}/tls/${format("consul-client-%d.crt", count.index)}",
+  )
 }
 
 data "template_file" "consul_client_tls_key" {
-  count    = "${var.consul_oss_instance_count}"
-  template = "${file("${path.module}/tls/${format("consul-client-%d.key", count.index)}")}"
+  count = var.consul_oss_instance_count
+  template = file(
+    "${path.module}/tls/${format("consul-client-%d.key", count.index)}",
+  )
 }
 
 # Consul Open Source Clients
 
 resource "docker_container" "consul_oss_client" {
-  count      = "${var.consul_oss_instance_count}"
+  count      = var.consul_oss_instance_count
   name       = "vaultron-${format("consulc%d", count.index)}"
-  hostname   = "${format("consulc%d", count.index)}"
+  hostname   = format("consulc%d", count.index)
   domainname = "consul"
 
-  dns = ["${docker_container.consuls0.ip_address}",
-    "${docker_container.consuls1.ip_address}",
-    "${docker_container.consuls2.ip_address}",
+  dns = [
+    docker_container.consuls0.ip_address,
+    docker_container.consuls1.ip_address,
+    docker_container.consuls2.ip_address,
   ]
 
   dns_search = ["consul"]
-  image      = "${docker_image.consul.latest}"
+  image      = docker_image.consul.latest
 
-  entrypoint = ["${list("consul",
-                     "agent",
-                     "-config-dir=/consul/config",
-                     "-client=0.0.0.0",
-                     "-data-dir=/consul/data",
-                     "-node=vault${count.index}",
-                     "-datacenter=${var.datacenter_name}",
-                     "-join=${docker_container.consuls2.ip_address}",
-                     "-join=${docker_container.consuls1.ip_address}",
-                     "-join=${docker_container.consuls0.ip_address}"
-                     )}"]
+  entrypoint = [
+    "consul",
+    "agent",
+    "-config-dir=/consul/config",
+    "-client=0.0.0.0",
+    "-data-dir=/consul/data",
+    "-node=vault${count.index}",
+    "-datacenter=${var.datacenter_name}",
+    "-join=${docker_container.consuls2.ip_address}",
+    "-join=${docker_container.consuls1.ip_address}",
+    "-join=${docker_container.consuls0.ip_address}",
+  ]
 
   must_run = true
 
@@ -426,24 +464,30 @@ resource "docker_container" "consul_oss_client" {
     add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
-  upload = {
-    content = "${data.template_file.consulc_common_config.*.rendered[count.index]}"
+  upload {
+    content = data.template_file.consulc_common_config[count.index].rendered
     file    = "/consul/config/common_config.json"
   }
 
-  upload = {
-    content = "${data.template_file.ca_bundle.rendered}"
+  upload {
+    content = data.template_file.ca_bundle.rendered
     file    = "/etc/ssl/certs/ca.pem"
   }
 
-  upload = {
-    content = "${element(data.template_file.consul_client_tls_cert.*.rendered, count.index)}"
-    file    = "/etc/ssl/certs/consul-client.crt"
+  upload {
+    content = element(
+      data.template_file.consul_client_tls_cert.*.rendered,
+      count.index,
+    )
+    file = "/etc/ssl/certs/consul-client.crt"
   }
 
-  upload = {
-    content = "${element(data.template_file.consul_client_tls_key.*.rendered, count.index)}"
-    file    = "/etc/ssl/consul-client.key"
+  upload {
+    content = element(
+      data.template_file.consul_client_tls_key.*.rendered,
+      count.index,
+    )
+    file = "/etc/ssl/consul-client.key"
   }
 
   volumes {
@@ -456,3 +500,4 @@ resource "docker_container" "consul_oss_client" {
     container_path = "/consul/data"
   }
 }
+

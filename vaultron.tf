@@ -184,44 +184,45 @@ variable "statsd_ip" {
 
 module "telemetry" {
   source                   = "./yellow_lion"
-  grafana_version          = "${var.grafana_version}"
-  statsd_ip                = "${var.statsd_ip}"
-  statsd_version           = "${var.statsd_version}"
-  vaultron_telemetry_count = "${var.vaultron_telemetry_count}"
+  grafana_version          = var.grafana_version
+  statsd_ip                = var.statsd_ip
+  statsd_version           = var.statsd_version
+  vaultron_telemetry_count = var.vaultron_telemetry_count
 }
 
 module "consul_cluster" {
   source                       = "./red_lion"
-  consul_acl_datacenter        = "${var.consul_acl_datacenter}"
-  consul_custom                = "${var.consul_custom}"
-  consul_custom_instance_count = "${var.consul_custom_instance_count}"
-  consul_data_dir              = "${var.consul_data_dir}"
-  consul_ent_id                = "${var.consul_ent_id}"
-  consul_log_level             = "${var.consul_log_level}"
-  consul_recursor_1            = "${var.consul_recursor_1}"
-  consul_recursor_2            = "${var.consul_recursor_2}"
-  consul_oss                   = "${var.consul_oss}"
-  consul_oss_instance_count    = "${var.consul_oss_instance_count}"
-  consul_version               = "${var.consul_version}"
-  datacenter_name              = "${var.datacenter_name}"
-  use_consul_oss               = "${var.use_consul_oss}"
+  consul_acl_datacenter        = var.consul_acl_datacenter
+  consul_custom                = var.consul_custom
+  consul_custom_instance_count = var.consul_custom_instance_count
+  consul_data_dir              = var.consul_data_dir
+  consul_ent_id                = var.consul_ent_id
+  consul_log_level             = var.consul_log_level
+  consul_recursor_1            = var.consul_recursor_1
+  consul_recursor_2            = var.consul_recursor_2
+  consul_oss                   = var.consul_oss
+  consul_oss_instance_count    = var.consul_oss_instance_count
+  consul_version               = var.consul_version
+  datacenter_name              = var.datacenter_name
+  use_consul_oss               = var.use_consul_oss
 }
 
 module "vaultron" {
   source                       = "./black_lion"
-  datacenter_name              = "${var.datacenter_name}"
-  consul_server_ips            = ["${module.consul_cluster.consul_oss_server_ips}"]
-  consul_client_ips            = ["${module.consul_cluster.consul_client_ips}"]
-  disable_clustering           = "${var.disable_clustering}"
-  use_vault_oss                = "${var.use_vault_oss}"
-  vault_cluster_name           = "${var.vault_cluster_name}"
-  vault_custom_config_template = "${var.vault_custom_config_template}"
-  vault_custom_instance_count  = "${var.vault_custom_instance_count}"
-  vault_ent_id                 = "${var.vault_ent_id}"
-  vault_oss_instance_count     = "${var.vault_oss_instance_count}"
-  vault_path                   = "${var.vault_path}"
-  vault_server_log_level       = "${var.vault_server_log_level}"
-  vault_version                = "${var.vault_version}"
-  vaultron_telemetry_count     = "${var.vaultron_telemetry_count}"
-  statsd_ip                    = "${module.telemetry.statsd_ip}"
+  datacenter_name              = var.datacenter_name
+  consul_server_ips            = [module.consul_cluster.consul_oss_server_ips]
+  consul_client_ips            = [module.consul_cluster.consul_client_ips]
+  disable_clustering           = var.disable_clustering
+  use_vault_oss                = var.use_vault_oss
+  vault_cluster_name           = var.vault_cluster_name
+  vault_custom_config_template = var.vault_custom_config_template
+  vault_custom_instance_count  = var.vault_custom_instance_count
+  vault_ent_id                 = var.vault_ent_id
+  vault_oss_instance_count     = var.vault_oss_instance_count
+  vault_path                   = var.vault_path
+  vault_server_log_level       = var.vault_server_log_level
+  vault_version                = var.vault_version
+  vaultron_telemetry_count     = var.vaultron_telemetry_count
+  statsd_ip                    = module.telemetry.statsd_ip
 }
+
