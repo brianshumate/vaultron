@@ -1,3 +1,7 @@
+## v3.0.0 (UNRELEASED)
+
+- BREAKING CHANGE: Terraform v0.12.0+ only (thanks @fprimex)
+
 ## v2.3.0
 
 - Vault v1.1.3
