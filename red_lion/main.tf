@@ -9,15 +9,15 @@ output "consul_oss_server_ips" {
   description = "Consul OSS Server IP addresses"
 
   value = [
-    docker_container.consuls0.*.ip_address,
-    docker_container.consuls1.*.ip_address,
-    docker_container.consuls2.*.ip_address,
+    docker_container.consuls0.network_data[0].ip_address,
+    docker_container.consuls1.network_data[0].ip_address,
+    docker_container.consuls2.network_data[0].ip_address,
   ]
 }
 
 output "consul_client_ips" {
   description = "Consul OSS Client IP addresses"
-  value       = [docker_container.consul_oss_client.*.ip_address]
+  value       = docker_container.consul_oss_client.*.ip_address
 }
 
 # -----------------------------------------------------------------------
@@ -165,12 +165,12 @@ resource "docker_container" "consuls0" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls0/config"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls0/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls0/data"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls0/data"
     container_path = "/consul/data"
   }
 
@@ -288,12 +288,12 @@ resource "docker_container" "consuls1" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls1/config"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls1/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls1/data"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls1/data"
     container_path = "/consul/data"
   }
 
@@ -355,12 +355,12 @@ resource "docker_container" "consuls2" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls2/config"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls2/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consuls2/data"
+    host_path      = "/Users/brent/hc/vaultron/consul/consuls2/data"
     container_path = "/consul/data"
   }
 
@@ -491,12 +491,12 @@ resource "docker_container" "consul_oss_client" {
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consulc${count.index}/config"
+    host_path      = "/Users/brent/hc/vaultron/consul/consulc${count.index}/config"
     container_path = "/consul/config"
   }
 
   volumes {
-    host_path      = "${path.module}/../../../consul/consulc${count.index}/data"
+    host_path      = "/Users/brent/hc/vaultron/consul/consulc${count.index}/data"
     container_path = "/consul/data"
   }
 }

@@ -210,8 +210,8 @@ module "consul_cluster" {
 module "vaultron" {
   source                       = "./black_lion"
   datacenter_name              = var.datacenter_name
-  consul_server_ips            = [module.consul_cluster.consul_oss_server_ips]
-  consul_client_ips            = [module.consul_cluster.consul_client_ips]
+  consul_server_ips            = module.consul_cluster.consul_oss_server_ips
+  consul_client_ips            = module.consul_cluster.consul_client_ips
   disable_clustering           = var.disable_clustering
   use_vault_oss                = var.use_vault_oss
   vault_cluster_name           = var.vault_cluster_name
