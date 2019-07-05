@@ -30,13 +30,13 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 Install the following on the system where you will form Vaultron:
 
-- [Docker CE](https://docs.docker.com/v17.12/install/#server) for Linux **or**
+- [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/0.12.3/)
-- [Vault]
+- [Vault](https://www.vaultproject.io/)
   - [OSS vault binaries](https://releases.hashicorp.com/vault/1.1.3/)
 
 ### Quickest Start for macOS
