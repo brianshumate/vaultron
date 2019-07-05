@@ -4,7 +4,7 @@
 
 ## What?
 
-**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.11.x required) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
+**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.12.0+ required) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
 > **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on using Vault itself**.
 
@@ -34,7 +34,7 @@ Install the following on the system where you will form Vaultron:
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
-- [Terraform](https://www.terraform.io/) (version 0.12.3+ required)
+- [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/0.12.3/)
 - [Vault]
   - [OSS vault binaries](https://releases.hashicorp.com/vault/1.1.3/)

@@ -1,6 +1,7 @@
-## v3.0.0 (UNRELEASED)
+## v3.0.0
 
-- BREAKING CHANGE: Terraform v0.12.0+ only (thanks @fprimex)
+- BREAKING CHANGE: Vaultron now requires Terraform v0.12.0+ (thanks @fprimex)
+- Update documentation
 
 ## v2.3.0
 
