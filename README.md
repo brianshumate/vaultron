@@ -24,11 +24,24 @@ Some of the more popular uses of Vaultron are:
 
 Terraform assembles individual pieces to form Vaultron from the official [Vault Docker image](https://hub.docker.com/_/vault/) and [Consul Docker image](https://hub.docker.com/_/consul/).
 
-> **NOTE**: **Vaultron does not yet support Terraform v0.12.0** as the Terraform Docker Provider has not yet been updated to function with v0.12.0. Once support is there, Vaultron will be updated to use it.
+### Prerequisites
+
+> **NOTE**: **Vaultron only supports Terraform version 0.12.0 and beyond** and is incompatible with previous Terraform versions.
+
+Install the following on the system where you will form Vaultron:
+
+- [Docker CE](https://docs.docker.com/v17.12/install/#server) for Linux **or**
+- [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
+- [Consul](https://www.consul.io/)
+  - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
+- [Terraform](https://www.terraform.io/) (version 0.12.3+ required)
+  - [OSS terraform binaries](https://releases.hashicorp.com/terraform/0.12.3/)
+- [Vault]
+  - [OSS vault binaries](https://releases.hashicorp.com/vault/1.1.3/)
 
 ### Quickest Start for macOS
 
-Once you have installed the `consul`, `terraform`, `vault` binaries along with Docker on your Mac, you can use the following example to form Vaultron and open the the Vault web UI in your browser.
+Once you have the prerequisites installed, you can use the following example to form Vaultron and open the the Vault web UI in your browser on macOS.
 
 You will likely be prompted for your password to add the Vaultron CA certificate to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
 
