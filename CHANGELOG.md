@@ -1,7 +1,9 @@
-## NEXT
+## v3.0.1
 
-- Add Vaultron Docker private network
-- Statically assign container IP addresses
+- Consul v1.5.2
+- Add a Vaultron Docker private network to top level Terraform configuration
+- Statically assign container IP addresses within vaultron-network
+- Add SKIP_CHOWN to Vault container resources
 - Update TLS certificates
 - Update documentation
 

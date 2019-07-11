@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------
 
 cluster_name     = "${cluster_name}"
+cluster_address  = "${cluster_address}"
 log_level        = "${log_level}"
 ui               = true
 plugin_directory = "/vault/plugins"

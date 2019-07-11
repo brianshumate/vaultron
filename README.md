@@ -728,6 +728,19 @@ If you encounter TLS related errors when Vaultron previously worked for you, the
 
 Try removing the previous CA certificate (which will appear as "node.arus.consul") and reinstalling the current CA certificate from `etc/tls/ca.pem`.
 
+### Error: Unable to create network: Error response from daemon: Pool overlaps with other one on this address space
+
+If you encounter this error, it is typically due to something going wrong during `unform`, leaving the private network still around.
+
+You will need to manually remove the Docker private network like so:
+
+```
+$ docker network rm vaultron-network
+vaultron-network
+```
+
+Then try to `./unform` and `./form` again.
+
 ### Unsupported Versions?
 
 If you try exporting `TF_VAR_consul_version` or `TF_VAR_vault_version` to a specific version, but get this error when you attempt to form Vaultron:

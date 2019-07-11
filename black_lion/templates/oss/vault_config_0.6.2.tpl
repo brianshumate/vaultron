@@ -3,9 +3,10 @@
 cluster_name = "${cluster_name}"
 
 listener "tcp" {
-  address       = "0.0.0.0:8200"
-  tls_cert_file = "/etc/ssl/certs/vault-server.crt"
-  tls_key_file  = "/etc/ssl/vault-server.key"
+  address         = "0.0.0.0:8200"
+  cluster_address = "${cluster_address}"
+  tls_cert_file   = "/etc/ssl/certs/vault-server.crt"
+  tls_key_file    = "/etc/ssl/vault-server.key"
 }
 
 backend "consul" {
