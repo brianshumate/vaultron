@@ -74,9 +74,9 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
 [vaultron] [i] Vault OSS version: 1.1.3
-[vaultron] [i] Consul OSS version: 1.5.1
-[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
+[vaultron] [i] Consul OSS version: 1.5.2
+[vaultron] [i] Terraform plan: 15 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform apply complete! resources: 15 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 
 You can now visit the Vault web UI at https://localhost:8200
@@ -221,7 +221,7 @@ Here are some slightly more serious notes and questions about what Vaultron is a
 
 ### Basic Architecture Overview
 
-Vaultron has to work around some current networking quirks of Docker for Mac to do its thing and is only currently tested to function on Linux and macOS, but here is basically what you are getting by default:
+Vaultron is only currently tested to function on Linux and macOS, but here is basically what you are getting by default:
 
 ```
 +------------+--------------------------------------------------+------------+
@@ -264,11 +264,32 @@ Vaultron has to work around some current networking quirks of Docker for Mac to 
 +----------------------------------------------------------------------------+
 ```
 
-Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers.
+Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_:
+
+- `vaultron-vault0`
+  - Docker private network IP: 10.10.42.200
+- `vaultron-vault1`
+  - Docker private network IP: 10.10.42.201
+- `vaultron-vault2`
+  - Docker private network IP: 10.10.42.202
+- `vaultron-consuls0`
+  - Docker private network IP: 10.10.42.100
+- `vaultron-consuls1`
+  - Docker private network IP: 10.10.42.101
+- `vaultron-consuls2`
+  - Docker private network IP: 10.10.42.102
+- `vaultron-consulc0`
+  - Docker private network IP: 10.10.42.40
+- `vaultron-consulc1`
+  - Docker private network IP: 10.10.42.41
+- `vaultron-consulc2`
+  - Docker private network IP: 10.10.42.42
 
 An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details.
 
 Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
+
+This is unfortunately both simultaneously simpler and more complex, since in most production deployments, you want the Consul client agent on the Vault server, so this is more a "sidecar style" approach used out of ease of deployment at the cost of 3 extra containers and more complexity.
 
 ### Environment Variables
 
@@ -700,6 +721,12 @@ Using eth0 for VAULT_CLUSTER_ADDR: https://172.17.0.10:8201
 ```
 
 This is a symptom of using the incorrect custom binary platform; the containers Vaultron uses are Linux AMD64 based, so you must place a Linux/AMD64 version of the `vault` binary into the `custom` directory to successfully use custom binaries.
+
+### NET::ERR_CERT_AUTHORITY_INVALID or Other TLS Errors When it Was Working?!
+
+If you encounter TLS related errors when Vaultron previously worked for you, there's a possibility that the TLS certificates were updated since you last installed the CA certificate for Vaultron.
+
+Try removing the previous CA certificate (which will appear as "node.arus.consul") and reinstalling the current CA certificate from `etc/tls/ca.pem`.
 
 ### Unsupported Versions?
 

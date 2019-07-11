@@ -1,3 +1,10 @@
+## NEXT
+
+- Add Vaultron Docker private network
+- Statically assign container IP addresses
+- Update TLS certificates
+- Update documentation
+
 ## v3.0.0
 
 - BREAKING CHANGE: Vaultron now requires Terraform v0.12.0+ (thanks @fprimex)

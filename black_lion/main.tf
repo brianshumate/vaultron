@@ -80,6 +80,9 @@ data "template_file" "vault_config" {
 
   vars = {
     address            = "0.0.0.0:8200"
+    api_addr           = "https://${format("10.10.42.20%d", count.index)}:8200"
+    cluster_addr       = "https://${format("10.10.42.20%d", count.index)}:8201"
+    cluster_address    = "${format("10.10.42.20%d", count.index)}:8201"
     consul_address     = element(var.consul_client_ips, count.index)
     datacenter         = var.datacenter_name
     log_level          = var.vault_server_log_level
@@ -134,9 +137,9 @@ resource "docker_container" "vault_oss_server" {
   image = docker_image.vault.latest
 
   env = [
-    "VAULT_REDIRECT_ADDR=https://0.0.0.0:8200",
-    "VAULT_CLUSTER_INTERFACE=eth0",
-    "VAULT_REDIRECT_INTERFACE=eth0",
+    "VAULT_API_ADDR=https://${format("10.10.42.20%d", count.index)}:8200",
+    "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200",
+    "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201"
   ]
 
   command    = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
@@ -153,6 +156,11 @@ resource "docker_container" "vault_oss_server" {
 
   capabilities {
     add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
+  }
+
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "${format("10.10.42.20%d", count.index)}"
   }
 
   volumes {
@@ -236,10 +244,14 @@ data "template_file" "vault_custom_config" {
 
   vars = {
     address            = "0.0.0.0:8200"
+    api_addr           = "https://${format("10.10.42.20%d", count.index)}:8200"
     alt_address        = "0.0.0.0:443"
+    cluster_addr       = "https://${format("10.10.42.20%d", count.index)}:8201"
+    cluster_address    = "${format("10.10.42.20%d", count.index)}:8201"
     consul_address     = element(var.consul_client_ips, count.index)
     datacenter         = var.datacenter_name
     log_level          = var.vault_server_log_level
+    node_id            = uuid()
     vault_path         = var.vault_path
     cluster_name       = var.vault_cluster_name
     disable_clustering = var.disable_clustering
@@ -260,11 +272,11 @@ resource "docker_container" "vault_custom_server" {
   name  = "vaultron-${format("vault%d", count.index)}"
   image = docker_image.vault.latest
 
-  env = [
-    "VAULT_REDIRECT_ADDR=https://0.0.0.0:8200",
-    "VAULT_CLUSTER_INTERFACE=eth0",
-    "VAULT_REDIRECT_INTERFACE=eth0",
-  ]
+  #env = [
+  #  "VAULT_API_ADDR=https://${format("10.10.42.20%d", count.index)}:8200",
+  #  "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200",
+  #  "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201"
+  #]
 
   command    = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   hostname   = format("vaults%d", count.index)
@@ -280,6 +292,11 @@ resource "docker_container" "vault_custom_server" {
 
   capabilities {
     add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
+  }
+
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "${format("10.10.42.20%d", count.index)}"
   }
 
   volumes {

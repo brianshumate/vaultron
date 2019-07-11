@@ -168,6 +168,11 @@ resource "docker_container" "consuls0" {
     add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "10.10.42.100"
+  }
+
   volumes {
     host_path      = "${path.cwd}/consul/consuls0/config"
     container_path = "/consul/config"
@@ -291,6 +296,11 @@ resource "docker_container" "consuls1" {
     add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "10.10.42.101"
+  }
+
   volumes {
     host_path      = "${path.cwd}/consul/consuls1/config"
     container_path = "/consul/config"
@@ -356,6 +366,11 @@ resource "docker_container" "consuls2" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_PTRACE"]
+  }
+
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "10.10.42.102"
   }
 
   volumes {
@@ -451,7 +466,6 @@ resource "docker_container" "consul_oss_client" {
     "-config-dir=/consul/config",
     "-client=0.0.0.0",
     "-data-dir=/consul/data",
-    "-node=vault${count.index}",
     "-datacenter=${var.datacenter_name}",
     "-join=${docker_container.consuls2.ip_address}",
     "-join=${docker_container.consuls1.ip_address}",
@@ -466,6 +480,11 @@ resource "docker_container" "consul_oss_client" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_PTRACE"]
+  }
+
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "${format("10.10.42.4%d", count.index)}"
   }
 
   upload {
