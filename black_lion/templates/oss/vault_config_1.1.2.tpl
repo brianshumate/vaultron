@@ -4,6 +4,7 @@
 # Global configuration
 # -----------------------------------------------------------------------
 
+api_addr     = "${api_addr}"
 cluster_name     = "${cluster_name}"
 cluster_address  = "${cluster_address}"
 log_level        = "${log_level}"

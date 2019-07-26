@@ -8,6 +8,8 @@ examples/agent/vaultron-agent-example
 custom/consul*
 custom/vault*
 data/migration
+influxdb.conf
+influxdb_data
 consulc0
 consulc1
 consulc2

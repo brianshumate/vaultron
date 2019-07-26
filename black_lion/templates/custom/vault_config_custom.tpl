@@ -4,7 +4,7 @@
 
 api_addr     = "${api_addr}"
 cluster_addr = "${cluster_addr}"
-cluster_name = "${cluster_name}"
+# cluster_name = "${cluster_name}"
 ui           = true
 
 listener "tcp" {
@@ -39,7 +39,7 @@ max_lease_ttl     = "50000h" # 2083 days
 plugin_directory = "/vault/plugins"
 
 # -----------------------------------------------------------------------
-# Enable Prometheus metrics by default
+# Enable Prometheus metrics by default (eventually)
 # -----------------------------------------------------------------------
 
 # telemetry {

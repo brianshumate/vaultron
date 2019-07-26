@@ -3,6 +3,7 @@
 # Enable reloadable log level
 log_level = "${log_level}"
 
+api_addr     = "${api_addr}"
 cluster_name = "${cluster_name}"
 ui           = true
 

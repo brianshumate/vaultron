@@ -1,5 +1,6 @@
 # Vault OSS v0.10.1
 
+api_addr     = "${api_addr}"
 cluster_name = "${cluster_name}"
 ui           = true
 

@@ -1,3 +1,10 @@
+## NEXT
+
+- Vault v1.1.4
+- Consul v1.5.3
+- API_ADDR set in config template instead of environment variable
+- Add vault_server_log_format and matching TF_VAR for choosing log format
+
 ## v3.0.1
 
 - Consul v1.5.2

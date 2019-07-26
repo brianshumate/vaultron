@@ -59,6 +59,11 @@ variable "vault_ent_id" {
   default = "vault:latest"
 }
 
+# Set TF_VAR_vault_server_log_format to set this
+variable "vault_server_log_format" {
+  default = "standard"
+}
+
 # Set TF_VAR_vault_server_log_level to set this
 variable "vault_server_log_level" {
   default = "debug"
@@ -236,6 +241,7 @@ module "vaultron" {
   vault_ent_id                 = var.vault_ent_id
   vault_oss_instance_count     = var.vault_oss_instance_count
   vault_path                   = var.vault_path
+  vault_server_log_format      = var.vault_server_log_format
   vault_server_log_level       = var.vault_server_log_level
   vault_version                = var.vault_version
   vaultron_telemetry_count     = var.vaultron_telemetry_count

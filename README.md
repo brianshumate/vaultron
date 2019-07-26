@@ -32,6 +32,7 @@ Install the following on the system where you will form Vaultron:
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
+  - Tested with version 2.0.0.3 (31259)
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
@@ -323,9 +324,16 @@ Vault datacenter name
 
 - Default: `1`
 
+
+#### TF_VAR_vault_server_log_format (Vault v0.10.0+)
+
+A valid Vault server log format: _standard_ or _json_
+
+- Default: `standard`
+
 #### TF_VAR_vault_server_log_level
 
-A valid Vault log level: _trace_, _debug_, _info_, _warning_, or _error_
+A valid Vault server log level: _trace_, _debug_, _info_, _warning_, or _error_
 
 - Default: `debug`
 
@@ -706,7 +714,7 @@ or this:
 [e] Vaultron cannot form! Check terraform plan output.
 ```
 
-This means that Vaultron had problems durring the `terraform plan` or `terraform apply` steps. You can run those commands manually and inspect their output to troubleshoot the issue.
+This means that Vaultron had problems during the `terraform plan` or `terraform apply` steps. You can run those commands manually and inspect their output to troubleshoot the issue.
 
 Other red and equally frightening errors could occur, and these are usually accompanied by an explanation from Terraform regarding the nature of the problem.
 

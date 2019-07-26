@@ -1,5 +1,6 @@
 # Vault OSS v0.7.0
 
+api_addr     = "${api_addr}"
 cluster_name = "${cluster_name}"
 
 listener "tcp" {
