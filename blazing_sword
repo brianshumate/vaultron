@@ -199,6 +199,7 @@ if [ -z "$VAULT_TOKEN" ]; then
   fi
 fi
 
+sleep 1
 initialize_vault
 unseal_vault
 auth_root
