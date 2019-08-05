@@ -1,6 +1,5 @@
 # Vault OSS v0.8.1
 
-api_addr     = "${api_addr}"
 cluster_name = "${cluster_name}"
 
 listener "tcp" {
@@ -8,7 +7,6 @@ listener "tcp" {
   cluster_address          = "${cluster_address}"
   tls_cert_file            = "/etc/ssl/certs/vault-server.crt"
   tls_key_file             = "/etc/ssl/vault-server.key"
-  tls_disable_client_certs = "true"
 }
 
 storage "consul" {

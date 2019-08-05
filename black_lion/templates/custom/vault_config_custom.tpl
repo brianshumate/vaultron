@@ -2,9 +2,12 @@
 # Vaultron CUSTOM
 #----------------------------------------------------------------------------
 
+# disable_performance_standby = true
+
 api_addr     = "${api_addr}"
 cluster_addr = "${cluster_addr}"
 # cluster_name = "${cluster_name}"
+
 ui           = true
 
 listener "tcp" {
