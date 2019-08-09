@@ -1,3 +1,10 @@
+## v3.1.1
+
+- Vault v1.2.1
+- Add `SYS_ADMIN` capability to all containers
+- Update all templates filenames and template filename references
+- Update documentation
+
 ## v3.1.0
 
 - Vault v1.2.0

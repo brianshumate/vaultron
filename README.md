@@ -381,7 +381,7 @@ Number of Vault custom containers
 
 Specify an alternative configuration file template in `black_lion/templates/custom`
 
-- Default: `vault_config_custom.tpl`
+- Default: `vault_config_custom.hcl`
 
 #### TF_VAR_use_consul_oss
 
@@ -551,6 +551,22 @@ consuls0.node.consul.   0   IN  TXT "consul-network-segment="
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
+#### Docker Container / OS
+
+To better facilitate requirements, advanced troubleshooting, and debugging, the following capabilities are added:
+
+- Vault containers:
+  - `IPC_LOCK`
+  - `NET_ADMIN`
+  - `SYS_ADMIN`
+  - `SYS_PTRACE`
+  - `SYSLOG`
+- Consul containers:
+  - `NET_ADMIN`
+  - `SYS_ADMIN`
+  - `SYS_PTRACE`
+  - `SYSLOG`
+
 #### Consul ACLs by Default
 
 > **Consul ACLs with a **default allow policy** are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**
@@ -661,6 +677,10 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 ```
 
 > **NOTE**: When using custom binaries in this way the binary must be for Linux/AMD64 as that is the platform for the containers, also Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version so keep that in mind as well.
+
+One disadvantage of the current custom binary scheme is that it chooses a simplest approach to introducing the `vault` binary by changing the path from which `vault` is executed. This breaks the preferred dedicated user model such that the process is executed by the _root_ user instead of the _vault_ user, so please keep this in mind when using custom binaries.
+
+All OSS containers do execute _vault_ as the _vault_ user.
 
 ## Basic Troubleshooting Questions
 

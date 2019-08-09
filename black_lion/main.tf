@@ -77,7 +77,7 @@ resource "docker_image" "vault" {
 data "template_file" "vault_config" {
   count = var.vault_oss_instance_count
   template = file(
-    "${path.module}/templates/oss/vault_config_${var.vault_version}.tpl",
+    "${path.module}/templates/oss/vault_config_${var.vault_version}.hcl",
   )
 
   vars = {
@@ -122,7 +122,7 @@ data "template_file" "vault_tls_key" {
 # -----------------------------------------------------------------------
 
 data "template_file" "telemetry_config" {
-  template = file("${path.module}/templates/extras/vault_telemetry.tpl")
+  template = file("${path.module}/templates/extras/vault_telemetry.hcl")
 
   vars = {
     statsd_ip = var.statsd_ip
@@ -153,7 +153,7 @@ resource "docker_container" "vault_oss_server" {
   must_run = true
 
   capabilities {
-    add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
+    add = ["IPC_LOCK", "NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG", "SYS_RAWIO"]
   }
 
   networks_advanced {
@@ -285,7 +285,7 @@ resource "docker_container" "vault_custom_server" {
   must_run = true
 
   capabilities {
-    add = ["IPC_LOCK", "NET_ADMIN", "SYS_PTRACE"]
+    add = ["IPC_LOCK", "NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
   }
 
   networks_advanced {

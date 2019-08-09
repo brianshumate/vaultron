@@ -63,7 +63,7 @@ Note that the *admin* user password is set to "vaultron" in the example, and som
 
 #### Initial Vaultron Configuration
 
-Now, edit the custom configuration for Vaultron, located in `black_lion/templates/vault_config_custom.tpl`, and add a `telemetry` stanza containing the IP address and port for the Graphite container:
+Now, edit the custom configuration for Vaultron, located in `black_lion/templates/vault_config_custom.hcl`, and add a `telemetry` stanza containing the IP address and port for the Graphite container:
 
 ```
 telemetry {

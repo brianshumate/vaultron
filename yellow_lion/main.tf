@@ -105,7 +105,7 @@ resource "docker_image" "grafana" {
 # Grafana configuration
 data "template_file" "grafana_config" {
   count    = var.vaultron_telemetry_count
-  template = file("${path.module}/templates/datasource.yml.tpl")
+  template = file("${path.module}/templates/datasource.yml.hcl")
 
   vars = {
     statsd_ip = element(
@@ -121,7 +121,7 @@ data "template_file" "grafana_config" {
 
 data "template_file" "grafana_dashboard_bootstrap_config" {
   count    = var.vaultron_telemetry_count
-  template = file("${path.module}/templates/dashboard_bootstrap.yml.tpl")
+  template = file("${path.module}/templates/dashboard_bootstrap.yml.hcl")
 }
 
 # -----------------------------------------------------------------------
@@ -130,7 +130,7 @@ data "template_file" "grafana_dashboard_bootstrap_config" {
 
 data "template_file" "grafana_dashboard_config" {
   count    = var.vaultron_telemetry_count
-  template = file("${path.module}/templates/dashboard.json.tpl")
+  template = file("${path.module}/templates/dashboard.json.hcl")
 }
 
 # -----------------------------------------------------------------------

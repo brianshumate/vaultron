@@ -12,7 +12,7 @@ terraform {
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "1.2.0"
+  default = "1.2.1"
 }
 
 # Set TF_VAR_consul_version to set this
@@ -96,7 +96,7 @@ variable "vault_custom_instance_count" {
 
 # Set TF_VAR_vault_custom_config_template to set this
 variable "vault_custom_config_template" {
-  default = "vault_config_custom.tpl"
+  default = "vault_config_custom.hcl"
 }
 
 // # Set TF_VAR_vault_server_tls_disable to set this

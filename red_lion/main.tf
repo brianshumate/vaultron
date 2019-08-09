@@ -84,7 +84,7 @@ data "template_file" "consul_oss_server_common_config" {
   #
   # count    = "${var.consul_oss}"
   template = file(
-    "${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.tpl",
+    "${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.hcl",
   )
 
   vars = {
@@ -165,7 +165,7 @@ resource "docker_container" "consuls0" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["NET_ADMIN", "SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
   }
 
   networks_advanced {
@@ -293,7 +293,7 @@ resource "docker_container" "consuls1" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["NET_ADMIN", "SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
   }
 
   networks_advanced {
@@ -365,7 +365,7 @@ resource "docker_container" "consuls2" {
   dns_search = ["consul"]
 
   capabilities {
-    add = ["NET_ADMIN", "SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
   }
 
   networks_advanced {
@@ -416,7 +416,7 @@ resource "random_id" "agent_node_id" {
 data "template_file" "consulc_common_config" {
   count = var.consul_oss_instance_count
   template = file(
-    "${path.module}/templates/oss/consul_oss_client_config_${var.consul_version}.tpl",
+    "${path.module}/templates/oss/consul_oss_client_config_${var.consul_version}.hcl",
   )
 
   vars = {
@@ -443,7 +443,7 @@ data "template_file" "consul_client_tls_key" {
   )
 }
 
-# Consul Open Source Clients
+# Consul Open Source Client agents
 
 resource "docker_container" "consul_oss_client" {
   count      = var.consul_oss_instance_count
@@ -465,6 +465,7 @@ resource "docker_container" "consul_oss_client" {
     "agent",
     "-config-dir=/consul/config",
     "-client=0.0.0.0",
+    "-advertise=${format("10.10.42.4%d", count.index)}",
     "-data-dir=/consul/data",
     "-datacenter=${var.datacenter_name}",
     "-join=${docker_container.consuls2.ip_address}",
@@ -479,7 +480,7 @@ resource "docker_container" "consul_oss_client" {
   }
 
   capabilities {
-    add = ["NET_ADMIN", "SYS_PTRACE"]
+    add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
   }
 
   networks_advanced {
