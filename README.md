@@ -688,38 +688,6 @@ All OSS containers do execute _vault_ as the _vault_ user.
 
 Access **Settings** in the navigation and ensure that the ACL master token is present in the text field, then click **Save** or **Close** depending on Consul version.
 
-### Vault is Orange/Failing in the Consul Web UI
-
-Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
-
-Unsealing Vault should solve that for you!
-
-### Something, Something — HA Problem!
-
-High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
-
-Here is simple method to watch HA mode in action using two terminal sessions:
-
-```
-Terminal 1                              Terminal 2
-+-----------------------------------+   +------------------------------------+
-| VAULT_ADDR=https://localhost:8210\|   | docker stop vaultron-vault0        |
-| watch -n 1 vault status           |   |                                    |
-|                                   |   |                                    |
-| ...                               |   |                                    |
-| HA Enabled             true       |   |                                    |
-| HA Cluster             https://...|   |                                    |
-| HA Mode                standby    |   |                                    |
-| ...                               |   |                                    |
-|                                   |   |                                    |
-|                                   |   |                                    |
-+-----------------------------------+   +------------------------------------+
-```
-
-1. In Terminal 1, set `VAULT_ADDR` to one of the two Vault standby containers and use `watch` to keep an eye on the output of `vault status` while noting the values of `Mode:` and `Leader:`
-2. In Terminal 2, stop the *active* Vault instance with `docker stop`
-3. You should notice that the value of `Leader:` changes instantly and if the second standby Vault is elected the new active, the value of `Mode:` will also reflect that instantly as well
-
 ### Vaultron Does Not Form — Halp!
 
 Instead of seeing the glorious interlocks activated, dyna-therms connected, infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
@@ -737,6 +705,25 @@ or this:
 This means that Vaultron had problems during the `terraform plan` or `terraform apply` steps. You can run those commands manually and inspect their output to troubleshoot the issue.
 
 Other red and equally frightening errors could occur, and these are usually accompanied by an explanation from Terraform regarding the nature of the problem.
+
+### Unknown token: 208:30 IDENT var.grafana_version
+
+If you encounter an error forming Vaultron like the following:
+
+```
+Error: Error parsing <path>/vaultron.tf: At 208:30: Unknown token: 208:30 IDENT var.grafana_version
+```
+
+where `<path>` is your Vaultron project path, then you are likely attempting to form Vaultron on a Terraform version < v0.12.0; note that the [Prerequisites](#Prerequisites) section mentions the requirement of Terraform v0.12.0+.
+
+You can confirm your current version with `terraform version` and proceed accordingly.
+
+### Vault is Orange/Failing in the Consul Web UI
+
+Vault is expected to appear as failing in the Consul UI if you have not yet unsealed it.
+
+Unsealing Vault should solve that for you!
+
 
 ### Vault Containers with Custom Binary are Exiting
 
@@ -768,6 +755,32 @@ vaultron-network
 ```
 
 Then try to `./unform` and `./form` again.
+
+### Something, Something — Storage HA Problem!
+
+High Availability mode has been shown to work as expected, however because of the current published ports method for exposing the Vault servers, you must be sure to point your client to the correct Vault server with `VAULT_ADDR` once that server becomes the new active server.
+
+Here is simple method to watch HA mode in action using two terminal sessions:
+
+```
+Terminal 1                              Terminal 2
++-----------------------------------+   +------------------------------------+
+| VAULT_ADDR=https://localhost:8210\|   | docker stop vaultron-vault0        |
+| watch -n 1 vault status           |   |                                    |
+|                                   |   |                                    |
+| ...                               |   |                                    |
+| HA Enabled             true       |   |                                    |
+| HA Cluster             https://...|   |                                    |
+| HA Mode                standby    |   |                                    |
+| ...                               |   |                                    |
+|                                   |   |                                    |
+|                                   |   |                                    |
++-----------------------------------+   +------------------------------------+
+```
+
+1. In Terminal 1, set `VAULT_ADDR` to one of the two Vault standby containers and use `watch` to keep an eye on the output of `vault status` while noting the values of `Mode:` and `Leader:`
+2. In Terminal 2, stop the *active* Vault instance with `docker stop`
+3. You should notice that the value of `Leader:` changes instantly and if the second standby Vault is elected the new active, the value of `Mode:` will also reflect that instantly as well
 
 ### Unsupported Versions?
 
