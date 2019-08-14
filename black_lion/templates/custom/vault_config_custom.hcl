@@ -8,7 +8,7 @@ api_addr     = "${api_addr}"
 cluster_addr = "${cluster_addr}"
 # cluster_name = "${cluster_name}"
 
-ui           = true
+ui = true
 
 listener "tcp" {
   address                  = "${address}"
@@ -51,6 +51,6 @@ plugin_directory = "/vault/plugins"
 # }
 
 telemetry {
-  dogstatsd_addr   = "172.17.0.12:8125"
+  dogstatsd_addr   = "172.17.0.2:8125"
   disable_hostname = true
 }

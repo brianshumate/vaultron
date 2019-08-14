@@ -1,6 +1,6 @@
 # Import CAs
 
-To import and reconfigure CAs on a new Vaultron, do these steps or use `eyebeams_pki`:
+To import and reconfigure CAs on a new Vaultron, do these steps or use `eyebeams_tls`:
 
 ### Tune Root CA
 

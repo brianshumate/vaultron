@@ -152,7 +152,7 @@ resource "docker_container" "consuls0" {
     "-dns-port=53",
   ]
 
-  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
   labels = {
     robot = "vaultron"
@@ -166,6 +166,14 @@ resource "docker_container" "consuls0" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
+  }
+
+  healthcheck {
+    test         = ["CMD", "consul", "info"]
+    interval     = "10s"
+    timeout      = "2s"
+    start_period = "10s"
+    retries      = 2
   }
 
   networks_advanced {
@@ -280,7 +288,7 @@ resource "docker_container" "consuls1" {
     "-dns-port=53",
   ]
 
-  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
   labels = {
     robot = "vaultron"
@@ -294,6 +302,14 @@ resource "docker_container" "consuls1" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
+  }
+
+  healthcheck {
+    test         = ["CMD", "consul", "info"]
+    interval     = "10s"
+    timeout      = "2s"
+    start_period = "10s"
+    retries      = 2
   }
 
   networks_advanced {
@@ -352,7 +368,7 @@ resource "docker_container" "consuls2" {
     "-dns-port=53",
   ]
 
-  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS="]
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
   labels = {
     robot = "vaultron"
@@ -366,6 +382,14 @@ resource "docker_container" "consuls2" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
+  }
+
+  healthcheck {
+    test         = ["CMD", "consul", "info"]
+    interval     = "10s"
+    timeout      = "2s"
+    start_period = "10s"
+    retries      = 2
   }
 
   networks_advanced {
@@ -473,6 +497,8 @@ resource "docker_container" "consul_oss_client" {
     "-join=${docker_container.consuls0.ip_address}",
   ]
 
+  env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
+
   must_run = true
 
   labels = {
@@ -481,6 +507,14 @@ resource "docker_container" "consul_oss_client" {
 
   capabilities {
     add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
+  }
+
+  healthcheck {
+    test         = ["CMD", "consul", "info"]
+    interval     = "10s"
+    timeout      = "2s"
+    start_period = "10s"
+    retries      = 2
   }
 
   networks_advanced {
