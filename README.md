@@ -104,18 +104,20 @@ Take a moment to verify that all of the Vaultron Docker containers are up:
 ```
 $ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
 NAMES               STATUS
-vaultron-vault2     Up 7 minutes (healthy)
-vaultron-vault1     Up 7 minutes (healthy)
-vaultron-vault0     Up 7 minutes (healthy)
-vaultron-consulc2   Up 7 minutes (healthy)
-vaultron-consulc0   Up 7 minutes (healthy)
-vaultron-consulc1   Up 7 minutes (healthy)
-vaultron-consuls0   Up 7 minutes (healthy)
-vaultron-consuls1   Up 7 minutes (healthy)
-vaultron-consuls2   Up 7 minutes (healthy)
+vaultron-vault0     Up 8 minutes (unhealthy)
+vaultron-vault2     Up 8 minutes (unhealthy)
+vaultron-vault1     Up 8 minutes (unhealthy)
+vaultron-consulc2   Up 8 minutes (healthy)
+vaultron-consulc1   Up 8 minutes (healthy)
+vaultron-consulc0   Up 8 minutes (healthy)
+vaultron-consuls0   Up 8 minutes (healthy)
+vaultron-consuls2   Up 8 minutes (healthy)
+vaultron-consuls1   Up 8 minutes (healthy)
 ```
 
-Note there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
+Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed.
+
+Note also that there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
 
 ```
 $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \

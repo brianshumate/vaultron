@@ -156,6 +156,14 @@ resource "docker_container" "vault_oss_server" {
     add = ["IPC_LOCK", "NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG", "SYS_RAWIO"]
   }
 
+  healthcheck {
+    test         = ["CMD", "vault", "status"]
+    interval     = "10s"
+    timeout      = "2s"
+    start_period = "10s"
+    retries      = 2
+  }
+
   networks_advanced {
     name         = "vaultron-network"
     ipv4_address = "${format("10.10.42.20%d", count.index)}"
