@@ -76,7 +76,7 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [i] Terraform has been successfully initialized!
 [vaultron] [i] Vault OSS version: 1.1.3
 [vaultron] [i] Consul OSS version: 1.5.2
-[vaultron] [i] Terraform plan: 15 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform plan: 15 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 15 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 
@@ -757,6 +757,67 @@ vaultron-network
 ```
 
 Then try to `./unform` and `./form` again.
+
+### Vaultron cannot form; there are Vaultron containers currently stopped or running
+
+Vaultron does not allow `./form` to be used when there are already existing Vaultron Docker containers stopped or running. You can encounter an error like the following:
+
+```
+[vaultron] [!] Vaultron cannot form; there are Vaultron containers currently stopped or running
+[vaultron] [i] Please unform existing Vaultron or use docker stop and docker rm to manually
+[vaultron] [i] clean up the vaultron- containers shown here:
+
+NAMES               STATUS
+vaultron-vault2     Up About a minute (healthy)
+vaultron-vault1     Up About a minute (healthy)
+vaultron-vault0     Up About a minute (healthy)
+vaultron-consulc0   Up About a minute (healthy)
+vaultron-consulc1   Up About a minute (healthy)
+vaultron-consulc2   Up About a minute (healthy)
+vaultron-consuls1   Up About a minute (healthy)
+vaultron-consuls0   Up About a minute (healthy)
+vaultron-consuls2   Up About a minute (healthy)
+```
+
+If this condition occurs, be sure that you are not trying to `form` Vaultron while it is already up and running.
+
+If `unform` fails to clean up the containers, you will need to use `docker stop` and `docker rm` to stop and remove the containers like this:
+
+```
+$ for i in {0..2}; do docker stop "vaultron-vault${i}" \
+  && docker rm "vaultron-vault${i}"; \
+  done
+vaultron-vault0
+vaultron-vault0
+vaultron-vault1
+vaultron-vault1
+vaultron-vault2
+vaultron-vault2
+```
+
+```
+$ for i in {0..2}; do docker stop "vaultron-consuls${i}" \
+  && docker rm "vaultron-consuls${i}"; \
+  done
+vaultron-consuls0
+vaultron-consuls0
+vaultron-consuls1
+vaultron-consuls1
+vaultron-consuls2
+vaultron-consuls2
+```
+
+```
+$ for i in {0..2}; do docker stop "vaultron-consulc${i}" \
+  && docker rm "vaultron-consulc${i}"; \
+  done
+vaultron-consulc0
+vaultron-consulc0
+vaultron-consulc1
+vaultron-consulc1
+vaultron-consulc2
+vaultron-consulc2
+```
 
 ### Something, Something — Storage HA Problem!
 

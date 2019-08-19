@@ -46,6 +46,9 @@ if [ "$(uname)" = "Linux" ]; then
   fi
 fi
 
+# Manually remove the network
+docker network rm vaultron-network > /dev/null 2>&1
+
 # Remove Consul client data
 rm -rf ./consul/consulc0
 errors=$((errors + $?))
@@ -55,7 +58,6 @@ rm -rf ./consul/consulc2
 errors=$((errors + $?))
 
 # Remove Consul server data
-
 rm -rf ./consul/consuls0
 errors=$((errors + $?))
 rm -rf ./consul/consuls1
@@ -64,7 +66,6 @@ rm -rf ./consul/consuls2
 errors=$((errors + $?))
 
 # Remove Vault server data
-
 rm -rf ./vault/vault0
 errors=$((errors + $?))
 rm -rf ./vault/vault1
@@ -75,12 +76,10 @@ rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
 # Remove Telemetry data
-
 rm -rf ./grafana
 errors=$((errors + $?))
 
 # Remove Terraform state, plans, backend configuration, and logs
-
 rm -f ./tfstate/terraform.tfstate*
 errors=$((errors + $?))
 rm -f ./tfstate/vaultron*.plan

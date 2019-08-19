@@ -12,7 +12,7 @@ TF_VAR_vault_custom_instance_count="${TF_VAR_vault_custom_instance_count:-0}"
 
 if [ ! -d "$VAULTRON_TMP" ]; then
   if ! mkdir -p "$VAULTRON_TMP" 2>/dev/null; then
-    msg alert "Cannot create temporary directory: $VAULTRON_TMP"
+    msg alert "Vaultron cannot form; cannot create temporary directory: $VAULTRON_TMP!"
     exit 1
   fi
 fi
@@ -22,7 +22,7 @@ if [ -z "$TF_VAR_vaultron_telemetry_count" ]; then
 fi
 
 if [ "$TF_VAR_vaultron_telemetry_count" -gt 1 ]; then
-  msg alert "Cannot form Vaultron with TF_VAR_vaultron_telemetry_count greater than one!"
+  msg alert "Vaultron cannot form; TF_VAR_vaultron_telemetry_count value cannot be greater than one!"
   exit 1
 fi
 
@@ -50,8 +50,20 @@ EOF
 # Check for vault file in project directory
 check_existing_vault() {
   if [ -f "$PWD"/vault ]; then
-    msg alert "There is a 'vault' file in the present working directory. This is not allowed!"
-    msg alert "Please remove the existing 'vault' before forming Vaultron!"
+    msg alert "Vaultron cannot form; there is a 'vault' file in the present working directory, but this is not allowed!"
+    msg info "Please remove the existing 'vault' before forming Vaultron."
+    exit 1
+  fi
+}
+
+# Check for existing Vaultron containers
+check_existing_vaultron_containers() {
+  if docker ps -a | grep vaultron > /dev/null 2>&1; then
+    msg alert "Vaultron cannot form; there are Vaultron containers currently stopped or running"
+    msg info "Please unform existing Vaultron or use docker stop and docker rm to manually"
+    msg info "clean up the vaultron- containers shown here:"
+    echo
+    docker ps -a -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
     exit 1
   fi
 }
@@ -61,7 +73,7 @@ check_consul_version() {
   if [ -n "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="./red_lion/templates/oss/consul_oss_server_config_${TF_VAR_consul_version}.hcl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
-       msg alert "Sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}";
+       msg alert "Vaultron cannot form; sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}!";
        unset TF_VAR_consul_version;
        kill -INT $$
     fi
@@ -72,7 +84,7 @@ check_vault_version() {
   if [ -n "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="./black_lion/templates/oss/vault_config_${TF_VAR_vault_version}.hcl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
-       msg alert "Sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}";
+       msg alert "Vaultron cannot form; sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}!";
        unset TF_VAR_vault_version;
        kill -INT $$
     fi
@@ -82,26 +94,26 @@ check_vault_version() {
 check_custom_binary() {
   if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
     if [ ! -f ./custom/"$1" ]; then
-      msg alert "Vaultron cannot form! You specified a custom binary to use, but ./custom/$1 was not found."
+      msg alert "Vaultron cannot form; custom binary specified, but ./custom/$1 was not found!"
       exit 1
     fi
   fi
 }
 
 if [ -z "$(command -v vault)" ]; then
-  msg alert "Vaultron cannot form! Could not locate vault command in PATH."
+  msg alert "Vaultron cannot form; could not locate vault command in PATH!"
   msg info "Get Vault from: https://www.vaultproject.io/downloads.html"
   exit 1
 fi
 
 if [ -z "$(command -v consul)" ]; then
-  msg alert "Vaultron cannot form! Could not locate consul command in PATH."
+  msg alert "Vaultron cannot form; could not locate consul command in PATH!"
   msg info "Get Consul from: https://www.consul.io/downloads.html"
   exit 1
 fi
 
 if [ -z "$(command -v terraform)" ]; then
-  msg alert "Vaultron cannot form! Could not locate terraform command."
+  msg alert "Vaultron cannot form; could not locate terraform command in PATH!"
   msg info "Get Terraform from: https://www.terraform.io/downloads.html"
   exit 1
 fi
@@ -109,6 +121,7 @@ fi
 # Preflight checks
 check_docker
 check_custom_binary vault
+check_existing_vaultron_containers
 check_existing_vault
 
 # DO IT.
@@ -117,7 +130,7 @@ msg greeting "Form Vaultron! ..."
 tflogdir
 
 if ! init; then
-  msg alert "Vaultron cannot form! terraform init output from $init_out:"
+  msg alert "Vaultron cannot form; here is the terraform init output from $init_out:"
   cat "$init_out"
   exit 1
 fi
@@ -152,13 +165,13 @@ fi
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
 
 if ! plan "${plan_file}"; then
-  msg alert "Vaultron cannot form! terraform plan output from $plan_out:"
+  msg alert "Vaultron cannot form; here is the terraform plan output from $plan_out:"
   cat "$plan_out"
   exit 1
 fi
 
 if ! apply "${plan_file}"; then
-  msg alert "Vaultron cannot form! terraform apply output from $apply_out:"
+  msg alert "Vaultron cannot form; here is the terraform apply output from $apply_out:"
   cat "$apply_out"
   exit 1
 fi
