@@ -779,9 +779,9 @@ vaultron-consuls0   Up About a minute (healthy)
 vaultron-consuls2   Up About a minute (healthy)
 ```
 
-If this condition occurs, be sure that you are not trying to `form` Vaultron while it is already up and running.
+If this occurs, be sure that you are not trying to `form` Vaultron while it is already up and running.
 
-If `unform` fails to clean up the containers, you will need to use `docker stop` and `docker rm` to stop and remove the containers like this:
+If `unform` fails to clean up the containers, you will need to use `docker stop` and `docker rm` to stop and remove the containers:
 
 ```
 $ for i in {0..2}; do docker stop "vaultron-vault${i}" \
