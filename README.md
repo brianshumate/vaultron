@@ -924,6 +924,25 @@ or:
 
 You are specifying either a non-existent version (maybe a typo?) or you are specifying a version for which no Docker images exists. This second case is not a problem with Vaultron, there are some versions of Consul and Vault which were released as binaries, but not available as Docker images.
 
+### syntax error: unexpected end of file (expecting ")")
+
+If Vaultron forms, but the Vault containers all exit and you observe this error when inspecting the docker logs for the Vault containers:
+
+```
+/vault/custom/vault: line 3: syntax error: unexpected end of file (expecting ")")
+```
+
+This is likely because you have placed a macOS version of the `vault` binary in the `custom` directory instead of a Linux binary.
+
+This can be confirmed with the `file` command:
+
+```
+$ file custom/vault
+custom/vault: Mach-O 64-bit executable x86_64
+```
+
+If this is the case, please replace the `vault` binary with the Linux AMD64 version.
+
 ### Some Other Undefined Problem!
 
 Have you tried turning it off an on again?
