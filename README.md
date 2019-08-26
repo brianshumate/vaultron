@@ -95,7 +95,8 @@ Install the following on the system where you will form Vaultron:
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.0.0.3 (31259)
+  - Tested with version 2.1.0.1
+  - Engine version: 19.03.1
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
