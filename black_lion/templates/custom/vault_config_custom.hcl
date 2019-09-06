@@ -45,12 +45,12 @@ plugin_directory = "/vault/plugins"
 # Enable Prometheus metrics by default (eventually)
 # -----------------------------------------------------------------------
 
-# telemetry {
-#   prometheus_retention_time = "30s"
-#   disable_hostname          = false
-# }
-
 telemetry {
-  dogstatsd_addr   = "172.17.0.2:8125"
-  disable_hostname = true
+  prometheus_retention_time = "30s"
+  disable_hostname          = false
 }
+
+# telemetry {
+#   dogstatsd_addr   = "172.17.0.2:8125"
+#   disable_hostname = true
+# }

@@ -686,12 +686,10 @@ Here is a tree showing the folder structure for a Consul server:
 
 ### What Are The Default TTL Values?
 
-Vaultron tries to be reasonable in accommodating developer use cases, but also wants to keep cruft to a minimum. To that end, the default TTL value is lowered, and the maximum TTL value is raised to these values:
+Vaultron tries to be more flexible for developer use cases and to that end the default lease TTL and maximum TTL values are raised in the Vault server configuration file to the following:
 
 - `default_lease_ttl`: **50000h** (2083 days)
 - `max_lease_ttl`: **50000h** (2083 days)
-
-That's 7 days and 999 days respectively.
 
 ### What About Logs?
 
