@@ -1,3 +1,7 @@
+## NEXT
+
+- Revert to default system-wide TTL and Maximum TTL values
+
 ## v3.1.2
 
 - Vault v1.2.2

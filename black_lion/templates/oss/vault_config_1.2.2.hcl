@@ -11,10 +11,6 @@ log_level        = "${log_level}"
 ui               = true
 plugin_directory = "/vault/plugins"
 
-# Default TTLs
-default_lease_ttl = "50000h" # 2083 days
-max_lease_ttl     = "50000h" # 2083 days
-
 # -----------------------------------------------------------------------
 # Listener configuration
 # -----------------------------------------------------------------------

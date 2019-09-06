@@ -3,10 +3,10 @@
 cluster_name = "${cluster_name}"
 
 listener "tcp" {
-  address                  = "${address}"
-  cluster_address          = "${cluster_address}"
-  tls_cert_file            = "/etc/ssl/certs/vault-server.crt"
-  tls_key_file             = "/etc/ssl/vault-server.key"
+  address         = "${address}"
+  cluster_address = "${cluster_address}"
+  tls_cert_file   = "/etc/ssl/certs/vault-server.crt"
+  tls_key_file    = "/etc/ssl/vault-server.key"
 }
 
 storage "consul" {
@@ -18,10 +18,6 @@ storage "consul" {
   disable_clustering = "${disable_clustering}"
   service_tags       = "${service_tags}"
 }
-
-# Default TTL values
-default_lease_ttl = "50000h" # 2083 days
-max_lease_ttl     = "50000h" # 2083 days
 
 # Plugin path
 plugin_directory = "/vault/plugins"

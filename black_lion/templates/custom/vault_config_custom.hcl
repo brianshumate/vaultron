@@ -34,10 +34,6 @@ storage "consul" {
   service_tags       = "${service_tags}"
 }
 
-# Default TTL values
-default_lease_ttl = "50000h" # 2083 days
-max_lease_ttl     = "50000h" # 2083 days
-
 # Plugin path
 plugin_directory = "/vault/plugins"
 

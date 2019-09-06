@@ -45,7 +45,6 @@
       - [Consul ACLs by Default](#consul-acls-by-default)
       - [TLS by Default](#tls-by-default)
     + [Where's My Vault Data?](#wheres-my-vault-data)
-    + [What Are The Default TTL Values?](#what-are-the-default-ttl-values)
     + [What About Logs?](#what-about-logs)
     + [Telemetry Notes](#telemetry-notes)
     + [A note about custom Binaries](#a-note-about-custom-binaries)
@@ -60,6 +59,7 @@
     + [Vaultron cannot form; there are Vaultron containers currently stopped or running](#vaultron-cannot-form-there-are-vaultron-containers-currently-stopped-or-running)
     + [Something, Something — Storage HA Problem!](#something-something--storage-ha-problem)
     + [Unsupported Versions?](#unsupported-versions)
+    + [syntax error: unexpected end of file (expecting ")")](#syntax-error-unexpected-end-of-file-expecting-)
     + [Some Other Undefined Problem!](#some-other-undefined-problem)
   * [Resources](#resources)
   * [Who?](#who)
@@ -683,13 +683,6 @@ Here is a tree showing the folder structure for a Consul server:
                 ├── local.snapshot
                 └── remote.snapshot
 ```
-
-### What Are The Default TTL Values?
-
-Vaultron tries to be more flexible for developer use cases and to that end the default lease TTL and maximum TTL values are raised in the Vault server configuration file to the following:
-
-- `default_lease_ttl`: **50000h** (2083 days)
-- `max_lease_ttl`: **50000h** (2083 days)
 
 ### What About Logs?
 
