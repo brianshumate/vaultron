@@ -58,10 +58,10 @@ check_existing_vault() {
 
 # Check for existing Vaultron containers
 check_existing_vaultron_containers() {
-  if docker ps -a | grep vaultron > /dev/null 2>&1; then
-    msg alert "Vaultron cannot form; there are Vaultron containers currently stopped or running"
+  if docker ps -a | grep 'vaultron-{vault,consul}' > /dev/null 2>&1; then
+    msg alert "Vaultron cannot form; there are Vaultron specific Vault or Consul containers currently running or stopped"
     msg info "Please unform existing Vaultron or use docker stop and docker rm to manually"
-    msg info "clean up the vaultron- containers shown here:"
+    msg info "clean up the containers shown here:"
     echo
     docker ps -a -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
     exit 1

@@ -15,6 +15,8 @@ $ docker run \
 -p 389:389 \
 -p 636:636 \
 --name vaultron-openldap \
+--network vaultron-network \
+--ip 10.10.42.140 \
 --env LDAP_ORGANISATION="Vaultron" \
 --env LDAP_DOMAIN="vaultron.waves" \
 --env LDAP_ADMIN_PASSWORD="vaultron" \
@@ -22,15 +24,6 @@ $ docker run \
 ```
 
 This will start an OpenLDAP container with both the standard and secure LDAP ports exposed to the host.
-
-Use this command to obtain the internal IP address that Vault will use to connect to the running container.
-
-```
-$ docker inspect \
-  --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-  vaultron-openldap
-172.17.0.13
-```
 
 ## Test Search
 
@@ -97,7 +90,7 @@ You can add a basic configuration with user and groups from the file `vaultron.l
 ```
 $ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" \
   -f examples/auth_methods/ldap/vaultron.ldif
-Enter LDAP Password: # it's: vaultron
+Enter LDAP Password: # pssst, it's: vaultron
 adding new entry "ou=groups,dc=vaultron,dc=waves"
 
 adding new entry "ou=users,dc=vaultron,dc=waves"
@@ -122,11 +115,11 @@ vaultron-ldap/        ldap        auth_ldap_bdb558f7        Vaultron example LDA
 vaultron-userpass/    userpass    auth_userpass_c48213b7    Vaultron example Username and password auth method
 ```
 
-Configure it like this:
+Configure it using the Docker internal host IP address and initial settings like this:
 
 ```
 $ vault write auth/vaultron-ldap/config \
-  url="ldap://172.17.0.11" \
+  url="ldap://10.10.42.140" \
   userdn="ou=users,dc=vaultron,dc=waves" \
   groupdn="ou=groups,dc=vaultron,dc=waves" \
   groupfilter="(|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}}))" \
@@ -150,8 +143,9 @@ Success! Data written to: auth/vaultron-ldap/groups/dev
 
 ## Authenticate
 
-Login:
+Login (the password is vaultron):
 
+```
 $ vault login -method=ldap -path=vaultron-ldap username=vaultron
 Password (will be hidden):
 Success! You are now authenticated. The token information displayed below
@@ -160,13 +154,12 @@ again. Future Vault requests will automatically use this token.
 
 Key                    Value
 ---                    -----
-token                  s.8OGe9X2XqXXyJI99el886Cm5
-token_accessor         FV9nfhzTg6z2DyOmCFVAw8xu
-token_duration         50000h
+token                  s.D7w1Wp8pWxZOZuvEcMWKThrP
+token_accessor         mrdAKI5AiNjH3r9m0vBMasyO
+token_duration         768h
 token_renewable        true
 token_policies         ["default" "ldap-dev"]
 identity_policies      []
 policies               ["default" "ldap-dev"]
 token_meta_username    vaultron
 ```
-

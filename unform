@@ -46,8 +46,17 @@ if [ "$(uname)" = "Linux" ]; then
   fi
 fi
 
-# Manually remove the network
-docker network rm vaultron-network > /dev/null 2>&1
+# Remove the private network
+if ! docker network rm vaultron-network > /dev/null 2>&1; then
+  msg alert "Cannot remove private Docker network vaultron-network"
+  msg info "Retrying network removal ..."
+    if ! docker network rm vaultron-network > /dev/null 2>&1; then
+      msg alert "Private Docker network vaultron-network removal retry failed"
+      msg info "Please manually remove private Docker network vaultron-network"
+      exit 1
+    fi
+fi
+msg success "Docker private network vaultron-network removed"
 
 # Remove Consul client data
 rm -rf ./consul/consulc0

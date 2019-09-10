@@ -802,7 +802,7 @@ Try removing the previous CA certificate (which will appear as "node.arus.consul
 
 ### Error: Unable to create network: Error response from daemon: Pool overlaps with other one on this address space
 
-If you encounter this error, it is typically due to something going wrong during `unform`, leaving the private network still around.
+If you encounter this error, it is typically due to something going wrong during `unform`, leaving the Docker private network dangling.
 
 You will need to manually remove the Docker private network like so:
 
