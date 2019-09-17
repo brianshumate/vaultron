@@ -17,6 +17,7 @@ consulc2
 consuls0
 consuls1
 consuls2
+yellow_lion/grafana_data
 tfstate
 vault0
 vault1
@@ -37,6 +38,5 @@ tf-destroy*.log
 tmp
 tmp/*
 vault-plugin-database-oracle*
-grafana
 payload.json
 
