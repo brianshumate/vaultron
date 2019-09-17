@@ -1,6 +1,11 @@
-## NEXT
+## v3.2.0
 
+- Vault v1.2.3
+- Consul v1.6.1
 - Revert to default system-wide TTL and Maximum TTL values
+- Create private network in form/do not manage with TF
+- Begin TLS configuration for Grafana and other container friends
+- Update documentation
 
 ## v3.1.2
 

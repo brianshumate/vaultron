@@ -14,6 +14,11 @@
     + [Advanced Example](#advanced-example)
   * [What's in the Box?](#whats-in-the-box)
     + [Basic Architecture Overview](#basic-architecture-overview)
+      - [Vault Servers](#vault-servers)
+      - [Consul Servers](#consul-servers)
+      - [Consul Clients](#consul-clients)
+      - [statsd](#statsd)
+      - [Grafana](#grafana)
     + [Environment Variables](#environment-variables)
       - [TF_VAR_vault_version](#tf_var_vault_version)
       - [TF_VAR_consul_version](#tf_var_consul_version)
@@ -44,6 +49,7 @@
       - [Docker Container / OS](#docker-container--os)
       - [Consul ACLs by Default](#consul-acls-by-default)
       - [TLS by Default](#tls-by-default)
+        * [Vault PKI Secrets Engine Based TLS Configuration](#vault-pki-secrets-engine-based-tls-configuration)
     + [Where's My Vault Data?](#wheres-my-vault-data)
     + [What About Logs?](#what-about-logs)
     + [Telemetry Notes](#telemetry-notes)
@@ -55,7 +61,6 @@
     + [Vault is Orange/Failing in the Consul Web UI](#vault-is-orangefailing-in-the-consul-web-ui)
     + [Vault Containers with Custom Binary are Exiting](#vault-containers-with-custom-binary-are-exiting)
     + [NET::ERR_CERT_AUTHORITY_INVALID or Other TLS Errors When it Was Working?!](#neterr_cert_authority_invalid-or-other-tls-errors-when-it-was-working)
-    + [Error: Unable to create network: Error response from daemon: Pool overlaps with other one on this address space](#error-unable-to-create-network-error-response-from-daemon-pool-overlaps-with-other-one-on-this-address-space)
     + [Vaultron cannot form; there are Vaultron containers currently stopped or running](#vaultron-cannot-form-there-are-vaultron-containers-currently-stopped-or-running)
     + [Something, Something — Storage HA Problem!](#something-something--storage-ha-problem)
     + [Unsupported Versions?](#unsupported-versions)
@@ -218,11 +223,13 @@ If you are new to Vault, then using Vaultron is a nice way to quickly get acquai
 7. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
 8. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
 9. Check out and experiment with the examples in the `examples` folders
-10. Clean up or reset: disassemble Vaultron and clean up Vault data with `./unform`
+10. Clean up or reset: disassemble Vaultron and clean up Vault data with `unform`
 
-> **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!** On Linux, generated data will likely be created as uid 0 which means `unform` will fail and the data in `vault/` and `consul/` subdirectories will need to be manually removed before attempting to `unform` or `form` again; this will be improved in a future release.
+> **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!**
 
-The Terraform provider modules _are not removed_ to save on resources and time involved in re-downloading them.
+The Docker private network is not removed for reasons detailed elsewhere in this documentation.
+
+The Terraform provider modules _are also not removed_ to save on resources and time involved in re-downloading them.
 
 If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead:
 
@@ -252,6 +259,7 @@ export \
   TF_VAR_vault_custom_instance_count=3 \
   TF_VAR_vaultron_telemetry_count=1 \
   TF_VAR_vault_server_log_level=trace \
+  TF_VAR_vault_log_format=json \
   TF_VAR_consul_log_level=err
 ```
 
@@ -261,6 +269,7 @@ What this does line by line:
 - Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder
 - Enable the statsd/Graphite/Grafana telemetry container
 - Set Vault log level to _trace_
+- Set Vault log formate to _json_
 - Set Consul log level to _err_
 
 ## What's in the Box?
@@ -333,18 +342,25 @@ Vaultron is only currently tested to function on Linux and macOS, but here is ba
 
 Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_:
 
+#### Vault Servers
+
 - `vaultron-vault0`
   - Docker private network IP: 10.10.42.200
 - `vaultron-vault1`
   - Docker private network IP: 10.10.42.201
 - `vaultron-vault2`
   - Docker private network IP: 10.10.42.202
+
+#### Consul Servers
+
 - `vaultron-consuls0`
   - Docker private network IP: 10.10.42.100
 - `vaultron-consuls1`
   - Docker private network IP: 10.10.42.101
 - `vaultron-consuls2`
   - Docker private network IP: 10.10.42.102
+
+#### Consul Clients
 - `vaultron-consulc0`
   - Docker private network IP: 10.10.42.40
 - `vaultron-consulc1`
@@ -352,7 +368,17 @@ Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 
 - `vaultron-consulc2`
   - Docker private network IP: 10.10.42.42
 
-An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details.
+> NOTE: The `form` script creates the attachable Docker private network _vaultron-network_ with a subnet of 10.10.42.0/24 if it is not found to already be present. It is not removed by `unform` however, as other containers that are not part of Vaultron could be using it even when Vaultron's containers are stopped or removed.
+
+An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details. It uses the following IPs:
+
+#### statsd
+- `vaultron-vstatsd`
+  - Docker private network IP: 10.10.42.219
+
+#### Grafana
+- `vaultron-vgrafana`
+  - Docker private network IP: 10.10.42.220
 
 Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
 
@@ -661,6 +687,23 @@ Here are some additional resources related to configuring ACLs and TLS:
 - [Consul Encryption documentation](https://www.consul.io/docs/agent/encryption.html)
 - [Vault TCP Listener documentation](https://www.vaultproject.io/docs/configuration/listener/tcp.html)
 
+##### Vault PKI Secrets Engine Based TLS Configuration
+
+All of the TLS certificates and keys used by Vaultron were created by Vaultron itself as documented in [examples/tls/README.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README.md).
+
+There are also some additional certificate/key pairs already generated for use in configuring TLS for other containers often used with Vaultron, and specifically including the following:
+
+- Grafana
+- LDAP
+- MySQL
+- MongoDB
+- PostgreSQL
+- Prometheus
+
+You can even import the PKI Secrets Engines for the Root and Intermediate CAs and generate more roles, certificates, etc. as described in [examples/tls/README-IMPORT.md](https://github.com/brianshumate/vaultron/blob/master/examples/tls/README-IMPORT.md).
+
+There's also an `examples/tls/eybeams_tls` script that will do this import for you.
+
 ### Where's My Vault Data?
 
 Vault data are stored in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers.
@@ -702,7 +745,7 @@ The Vault audit logs for any given _active server_ are available as:
 
 ### Telemetry Notes
 
-Vaultron includes a comprehensive telemetry gathering and graphing stack provided by the Yellow Lion module. This module is optional and enabled by an environment variable value.
+Vaultron includes a comprehensive telemetry gathering and graphing stack provided by the **Yellow Lion** module. This module is optional and enabled by an environment variable value.
 
 It provides statsd, Graphite, and Grafana from the addition of two official Grafana container images.
 
@@ -712,9 +755,9 @@ You can enable Yellow Lion by setting the value of the *TF_VAR_vaultron_telemetr
 $ export TF_VAR_vaultron_telemetry_count=1
 ```
 
-prior to the execution of `./form`.
+prior to the execution of `form`.
 
-Once Vaultron is formed, you can then access Grafana at: http://127.0.0.1:3000/
+You can then access Grafana at: https://127.0.0.1:3000/ After Vaultron is formed and login with the following credentials:
 
 - username: `admin`
 - password: `vaultron`
@@ -800,22 +843,9 @@ If you encounter TLS related errors when Vaultron previously worked for you, the
 
 Try removing the previous CA certificate (which will appear as "node.arus.consul") and reinstalling the current CA certificate from `etc/tls/ca.pem`.
 
-### Error: Unable to create network: Error response from daemon: Pool overlaps with other one on this address space
-
-If you encounter this error, it is typically due to something going wrong during `unform`, leaving the Docker private network dangling.
-
-You will need to manually remove the Docker private network like so:
-
-```
-$ docker network rm vaultron-network
-vaultron-network
-```
-
-Then try to `./unform` and `./form` again.
-
 ### Vaultron cannot form; there are Vaultron containers currently stopped or running
 
-Vaultron does not allow `./form` to be used when there are already existing Vaultron Docker containers stopped or running. You can encounter an error like the following:
+Vaultron does not allow `form` to be used when there are already existing Vaultron Docker containers stopped or running. You can encounter an error like the following:
 
 ```
 [vaultron] [!] Vaultron cannot form; there are Vaultron containers currently stopped or running
@@ -834,7 +864,7 @@ vaultron-consuls0   Up About a minute (healthy)
 vaultron-consuls2   Up About a minute (healthy)
 ```
 
-If this occurs, be sure that you are not trying to `form` Vaultron while it is already up and running.
+If this occurs, be sure that you are not trying to `form` Vaultron while it is already up and running (hint check the output of `docker ps -a | grep vaultron`).
 
 If `unform` fails to clean up the containers, you will need to use `docker stop` and `docker rm` to stop and remove the containers:
 
@@ -950,7 +980,7 @@ $ ./unform
 ```
 
 ```
-./form
+$ ./form
 [vaultron] [=] Form Vaultron! ...
 ...
 ```

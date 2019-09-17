@@ -1,7 +1,7 @@
-# Yellow Lion
+# Vaultron Yellow Lion
 
 telemetry {
-    # disable_hostname = false
-    # prometheus_retention_time = "30s"
-    statsd_address = "${statsd_ip}:8125"
+  disable_hostname = true
+  statsd_address   = "${statsd_ip}:8125"
+  # prometheus_retention_time = "30s"
 }

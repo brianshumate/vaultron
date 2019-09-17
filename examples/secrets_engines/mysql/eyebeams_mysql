@@ -21,7 +21,7 @@ if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     SECRETS_ENABLE_CMD="vault mount"
 fi
 
-msg greeting "Engage Eye Beams for MySQL! ..."
+msg greeting "Engage Eye Beams for MySQL!"
 
 launch_docker_container() {
 docker run --name vaultron-mysql \
@@ -32,10 +32,10 @@ docker run --name vaultron-mysql \
 
 msg info "Launch MySQL Docker container ..."
 if ! launch_docker_container; then
-  msg alert "Problem Launching MySQL Docker container!"
+  msg alert "Cannot start MySQL Docker container!"
   exit 1
 else
-  msg complete "Launched MySQL Docker container!"
+  msg complete "Started MySQL Docker container!"
 fi
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-mysql)"
@@ -45,7 +45,7 @@ if ! $SECRETS_LIST_CMD | grep 'vaultron-database' > /dev/null 2>&1; then
   if $SECRETS_ENABLE_CMD -path=vaultron-database database > /dev/null 2>&1; then
     msg complete "Enabled Database secrets engine!"
   else
-    msg alert "Problem enabling MySQL database secrets engine!"
+    msg alert "Cannot enable Database secrets engine!"
     exit 1
   fi
 fi
@@ -57,18 +57,18 @@ while [ "$MYSQL_READY" = "1" ]; do
   sleep 1; docker exec -it vaultron-vault0 nc -z "$MYSQL_CONTAINER_IP" 3306 ; export MYSQL_READY=$? ;
 done
 
-msg info "Configure MySQL secret backend ..."
+msg info "Configure MySQL Secrets Engine ..."
 if vault write vaultron-database/config/mysql \
   plugin_name=mysql-database-plugin \
   connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
   allowed_roles="vaultron-mysql-readonly" > /dev/null 2>&1; then
-  msg complete "Configured MySQL secret backend!"
+  msg complete "Configured MySQL Secrets Engine!"
 else
-    msg alert "Problem configuring MySQL database secrets engine!"
+    msg alert "Cannot configure MySQL Secrets Engine!"
     exit 1
 fi
 
-msg info "Configure MySQL read-only role ..."
+msg info "Configure MySQL vaultron-read-only role ..."
 if vault write vaultron-database/roles/vaultron-mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
@@ -76,7 +76,7 @@ if vault write vaultron-database/roles/vaultron-mysql-readonly \
     max_ttl="24h" > /dev/null 2>&1; then
     msg complete "Configured MySQL vaultron-read-only role!"
 else
-    msg alert "Problem configuring MySQL vaultron-read-only role"
+    msg alert "Cannot configure MySQL vaultron-read-only role"
     exit 1
 fi
 

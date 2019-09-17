@@ -12,15 +12,16 @@ Instantiate an OpenLDAP container with some initial settings:
 
 ```
 $ docker run \
--p 389:389 \
--p 636:636 \
---name vaultron-openldap \
---network vaultron-network \
---ip 10.10.42.140 \
---env LDAP_ORGANISATION="Vaultron" \
---env LDAP_DOMAIN="vaultron.waves" \
---env LDAP_ADMIN_PASSWORD="vaultron" \
---detach osixia/openldap:latest
+  --detach \
+  --env LDAP_ORGANISATION="Vaultron" \
+  --env LDAP_DOMAIN="vaultron.waves" \
+  --env LDAP_ADMIN_PASSWORD="vaultron" \
+  --ip 10.10.42.221 \
+  --name vaultron-openldap \
+  --network vaultron-network \
+  -p 389:389 \
+  -p 636:636 \
+  osixia/openldap:latest
 ```
 
 This will start an OpenLDAP container with both the standard and secure LDAP ports exposed to the host.

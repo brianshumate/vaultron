@@ -12,12 +12,12 @@ terraform {
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "1.2.2"
+  default = "1.2.3"
 }
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.5.3"
+  default = "1.6.1"
 }
 
 # -----------------------------------------------------------------------
@@ -191,13 +191,13 @@ variable "statsd_ip" {
 # Vaultron private network
 # -----------------------------------------------------------------------
 
-resource "docker_network" "private_network" {
-  name       = "vaultron-network"
-  attachable = true
-  ipam_config {
-    subnet = "10.10.42.0/24"
-  }
-}
+# resource "docker_network" "private_network" {
+#   name       = "vaultron-network"
+#   attachable = true
+#   ipam_config {
+#     subnet = "10.10.42.0/24"
+#   }
+# }
 
 # -----------------------------------------------------------------------
 # Module definitions

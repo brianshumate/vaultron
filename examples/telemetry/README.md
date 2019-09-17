@@ -1,5 +1,7 @@
 ## Visualizing Vault Telemetry
 
+> **NOTE**: This can all be included in Vaultron by setting `TF_VAR_vaultron_telemetry_count=1`. Review the main README for more details on Vaultron's built in telemetry configuration
+
 ![](https://github.com/brianshumate/vaultron/blob/master/share/metrics.png?raw=true)
 
 These are random insights and solutions for visualizing Vaultron telementry metrics with other container based solutions.

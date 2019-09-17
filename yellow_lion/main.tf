@@ -45,6 +45,11 @@ resource "docker_container" "statsd_graphite" {
     add = ["NET_ADMIN", "SYS_PTRACE"]
   }
 
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "10.10.42.219"
+  }
+
   ports {
     internal = "80"
     external = "80"
@@ -134,6 +139,26 @@ data "template_file" "grafana_dashboard_config" {
 }
 
 # -----------------------------------------------------------------------
+# TLS configuration
+# -----------------------------------------------------------------------
+
+data "template_file" "int_ca_crt" {
+  template = file("${path.module}/tls/vaultron-int-ca.crt")
+}
+
+data "template_file" "root_ca_crt" {
+  template = file("${path.module}/tls/vaultron-root-ca.crt")
+}
+
+data "template_file" "grafana_tls_cert" {
+  template = file("${path.module}/tls/grafana.crt")
+}
+
+data "template_file" "grafana_tls_key" {
+  template = file("${path.module}/tls/grafana.key")
+}
+
+# -----------------------------------------------------------------------
 # Grafana container
 # -----------------------------------------------------------------------
 
@@ -141,11 +166,16 @@ resource "docker_container" "grafana" {
   count    = var.vaultron_telemetry_count
   name     = "vaultron-vgrafana"
   image    = docker_image.grafana[0].latest
-  env      = ["GF_INSTANCE_NAME=Vaultron", "GF_SECURITY_ADMIN_PASSWORD=vaultron", "GF_ALLOW_SIGN_UP=false", "GF_DISABLE_GRAVATAR=true", "GF_ALLOW_ORG_CREATE=false", "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource"]
+  env      = ["GF_INSTANCE_NAME=Vaultron", "GF_SECURITY_ADMIN_PASSWORD=vaultron", "GF_ALLOW_SIGN_UP=false", "GF_DISABLE_GRAVATAR=true", "GF_ALLOW_ORG_CREATE=false", "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource", "GF_SERVER_PROTOCOL=https", "GF_SERVER_CERT_FILE=/etc/ssl/certs/grafana.crt", "GF_SERVER_CERT_KEY=/etc/ssl/certs/grafana.key"]
   must_run = true
 
   capabilities {
     add = ["NET_ADMIN", "SYS_PTRACE"]
+  }
+
+  networks_advanced {
+    name         = "vaultron-network"
+    ipv4_address = "10.10.42.220"
   }
 
   labels = {
@@ -153,8 +183,28 @@ resource "docker_container" "grafana" {
   }
 
   volumes {
-    host_path      = "${path.cwd}/grafana/data"
+    host_path      = "${path.cwd}/yellow_lion/grafana_data"
     container_path = "/var/lib/grafana"
+  }
+
+  upload {
+    content = element(data.template_file.int_ca_crt.*.rendered, count.index)
+    file    = "/usr/local/share/ca-certificates/vaultron-int-ca.crt"
+  }
+
+  upload {
+    content = element(data.template_file.root_ca_crt.*.rendered, count.index)
+    file    = "/usr/local/share/ca-certificates/vaultron-root-ca.crt"
+  }
+
+  upload {
+    content = element(data.template_file.grafana_tls_cert.*.rendered, count.index)
+    file    = "/etc/ssl/certs/grafana.crt"
+  }
+
+  upload {
+    content = element(data.template_file.grafana_tls_key.*.rendered, count.index)
+    file    = "/etc/ssl/certs/grafana.key"
   }
 
   upload {

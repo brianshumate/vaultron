@@ -56,6 +56,18 @@ check_existing_vault() {
   fi
 }
 
+# Check for existing Vaultron private network and create if missing
+check_and_create_vaultron_private_network() {
+if ! docker network ls | grep vaultron-network > /dev/null 2>&1; then
+  msg notice "vaultron-network not present; creating ..."
+  if ! docker network create --attachable  --subnet "10.10.42.0/24" vaultron-network; then
+    msg alert "Cannot create vaultron-network; Vaultron cannot form without private network!"
+    exit 1
+  fi
+  msg success "Created attachable vaultron-network with subnet 10.10.42.0/24"
+fi
+}
+
 # Check for existing Vaultron containers
 check_existing_vaultron_containers() {
   if docker ps -a | grep 'vaultron-{vault,consul}' > /dev/null 2>&1; then
@@ -120,6 +132,7 @@ fi
 
 # Preflight checks
 check_docker
+check_and_create_vaultron_private_network
 check_custom_binary vault
 check_existing_vaultron_containers
 check_existing_vault

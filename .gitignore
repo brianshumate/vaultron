@@ -8,6 +8,7 @@ examples/agent/vaultron-agent-example
 custom/consul*
 custom/vault*
 data/migration
+hc*.json
 influxdb.conf
 influxdb_data
 consulc0

@@ -47,16 +47,18 @@ if [ "$(uname)" = "Linux" ]; then
 fi
 
 # Remove the private network
-if ! docker network rm vaultron-network > /dev/null 2>&1; then
-  msg alert "Cannot remove private Docker network vaultron-network"
-  msg info "Retrying network removal ..."
-    if ! docker network rm vaultron-network > /dev/null 2>&1; then
-      msg alert "Private Docker network vaultron-network removal retry failed"
-      msg info "Please manually remove private Docker network vaultron-network"
-      exit 1
-    fi
-fi
-msg success "Docker private network vaultron-network removed"
+# if docker network ls | grep vaultron; then
+#   if ! docker network rm vaultron-network; then
+#     msg alert "Cannot remove private Docker network vaultron-network"
+#     msg info "Retrying network removal ..."
+#       if ! docker network rm vaultron-network; then
+#         msg alert "Private Docker network vaultron-network removal retry # failed"
+#         msg info "Please manually remove private Docker network # vaultron-network"
+#         exit 1
+#       fi
+#   fi
+#   msg success "Docker private network vaultron-network removed"
+# fi
 
 # Remove Consul client data
 rm -rf ./consul/consulc0
@@ -85,7 +87,7 @@ rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
 # Remove Telemetry data
-rm -rf ./grafana
+rm -rf ./yellow_lion/grafana_data
 errors=$((errors + $?))
 
 # Remove Terraform state, plans, backend configuration, and logs
