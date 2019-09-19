@@ -1,5 +1,10 @@
 ## NEXT
 
+- Update Yellow Lion / telemetry / dashboard / etc.
+- Update Black Lion custom template
+- Update Agent guide
+- Update documentation
+
 ## v3.2.0
 
 - Vault v1.2.3

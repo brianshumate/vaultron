@@ -13,6 +13,7 @@ Instantiate an OpenLDAP container with some initial settings:
 ```
 $ docker run \
   --detach \
+  --rm \
   --env LDAP_ORGANISATION="Vaultron" \
   --env LDAP_DOMAIN="vaultron.waves" \
   --env LDAP_ADMIN_PASSWORD="vaultron" \
@@ -25,6 +26,10 @@ $ docker run \
 ```
 
 This will start an OpenLDAP container with both the standard and secure LDAP ports exposed to the host.
+
+Unfortunately we cannot yet use TLS with the OpenLDAP container because of an incompatibility between our Vault-generate TLS certificate and key and GNUTLS used by the OpenLDAP container.
+
+See also: https://github.com/osixia/docker-openldap/issues/28
 
 ## Test Search
 
@@ -77,11 +82,11 @@ You should also be able to use `ldapsearch` directly on the host:
 
 ```
 $ ldapsearch \
--x \
--H ldap://localhost \
--b dc=vaultron,dc=waves \
--D "cn=admin,dc=vaultron,dc=waves" \
--w vaultron
+  -x \
+  -H ldap://localhost \
+  -b dc=vaultron,dc=waves \
+  -D "cn=admin,dc=vaultron,dc=waves" \
+  -w vaultron
 ```
 
 ## Add Basic Config
@@ -120,7 +125,7 @@ Configure it using the Docker internal host IP address and initial settings like
 
 ```
 $ vault write auth/vaultron-ldap/config \
-  url="ldap://10.10.42.140" \
+  url="ldap://10.10.42.221" \
   userdn="ou=users,dc=vaultron,dc=waves" \
   groupdn="ou=groups,dc=vaultron,dc=waves" \
   groupfilter="(|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}}))" \
@@ -155,12 +160,33 @@ again. Future Vault requests will automatically use this token.
 
 Key                    Value
 ---                    -----
-token                  s.D7w1Wp8pWxZOZuvEcMWKThrP
-token_accessor         mrdAKI5AiNjH3r9m0vBMasyO
+token                  s.gQkexqIF280KhXET0pshqP8f
+token_accessor         fTBokaefI9jv6uPtdOB6UQAD
 token_duration         768h
 token_renewable        true
 token_policies         ["default" "ldap-dev"]
 identity_policies      []
 policies               ["default" "ldap-dev"]
 token_meta_username    vaultron
+```
+
+## Troubleshoot
+
+
+### connection refused
+
+If you encounter an error like this:
+
+```
+Error writing data to auth/vaultron-ldap/config: Put https://127.0.0.1:8200/v1/auth/vaultron-ldap/config: dial tcp 127.0.0.1:8200: connect: connection refused
+```
+
+Be sure that Vaultron is actually formed and the Vault containers are running:
+
+```
+$ docker ps -f name=vaultron-vault --format "table {{.Names}}\t{{.Status}}"
+NAMES               STATUS
+vaultron-vault0     Up 2 minutes (healthy)
+vaultron-vault1     Up 2 minutes (healthy)
+vaultron-vault2     Up 2 minutes (healthy)
 ```

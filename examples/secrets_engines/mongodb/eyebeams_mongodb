@@ -23,16 +23,25 @@ fi
 
 msg greeting "Engage Eye Beams for MongoDB! ..."
 
-launch_docker_container() {
-docker run --name vaultron-mongodb -d mongo > /dev/null 2>&1
+start_docker_container() {
+  docker run \
+    --detach \
+    --rm \
+    --ip 10.10.42.222 \
+    --name vaultron-mongodb \
+    --network vaultron-network \
+    -p 27017:27017 \
+    mongo > /dev/null 2>&1
 }
 
-msg info "Launch MongoDB Docker container ..."
-if ! launch_docker_container; then
-  msg alert "Problem Launching MongoDB Docker container!"
-  exit 1
-else
-  msg complete "Launched MongoDB Docker container!"
+if ! docker ps -a | grep vaultron-mongodb > /dev/null 2>&1; then
+msg info "Start MongoDB Docker container ..."
+  if ! start_docker_container; then
+    msg alert "Problem Starting MongoDB Docker container!"
+    exit 1
+  else
+    msg complete "Started MongoDB Docker container!"
+  fi
 fi
 
 MONGODB_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-mongodb)"
@@ -40,28 +49,29 @@ MONGODB_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networ
 if ! $SECRETS_LIST_CMD | grep 'vaultron-database' > /dev/null 2>&1; then
   msg info "Enable Database secrets engine ..."
   if $SECRETS_ENABLE_CMD -path=vaultron-database database > /dev/null 2>&1; then
-    msg complete "Enabled Database secrets engine!"
+    msg complete "Enabled Database Secrets Engine!"
   else
-    msg alert "Problem enabling MongoDB database secrets engine!"
+    msg alert "Problem enabling MongoDB database Secrets Engine!"
     exit 1
   fi
 fi
 
+# Use vault0 and netcat to determine when
+# the MongoDB container port is open ...
 msg info "Pausing while MongoDB at $MONGODB_CONTAINER_IP wakes up ..."
-# Use vault0 and netcat to determine when the MongoDB container port is open...
 MONGODB_READY=1
 while [ "$MONGODB_READY" = "1" ]; do
   sleep 1; docker exec -it vaultron-vault0 nc -z "$MONGODB_CONTAINER_IP" 27017 ; export MONGODB_READY=$? ;
 done
 
-msg info "Configure MongoDB secret backend ..."
+msg info "Configure MongoDB database Secrets Engine ..."
 if vault write vaultron-database/config/mongodb \
   plugin_name=mongodb-database-plugin \
   allowed_roles="vaultron-role" \
   connection_url="mongodb://$MONGODB_CONTAINER_IP:27017/admin?ssl=false" > /dev/null 2>&1; then
-  msg complete "Configured MongoDB secret backend!"
+  msg complete "Configured MongoDB database Secrets Engine!"
 else
-    msg alert "Problem configuring MongoDB database secrets engine!"
+    msg alert "Problem configuring MongoDB database Secrets Engine!"
     exit 1
 fi
 
@@ -77,5 +87,5 @@ else
     exit 1
 fi
 
-msg complete "MongoDB secrets engine enabled! Use the following command to get a MongoDB credential:"
+msg complete "MongoDB database Secrets Engine enabled! Use the following command to get a MongoDB user credential:"
 msg complete "vault read vaultron-database/creds/vaultron-role"
