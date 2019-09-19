@@ -60,7 +60,7 @@ check_existing_vault() {
 check_and_create_vaultron_private_network() {
 if ! docker network ls | grep vaultron-network > /dev/null 2>&1; then
   msg notice "vaultron-network not present; creating ..."
-  if ! docker network create --attachable  --subnet "10.10.42.0/24" vaultron-network; then
+  if ! docker network create --attachable  --subnet "10.10.42.0/24" vaultron-network > /dev/null 2>&1; then
     msg alert "Cannot create vaultron-network; Vaultron cannot form without private network!"
     exit 1
   fi

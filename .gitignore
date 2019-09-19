@@ -39,4 +39,8 @@ tmp
 tmp/*
 vault-plugin-database-oracle*
 payload.json
+role_id.txt
+secret_id.txt
+vault_agent.hcl
+vaultron-agent-example
 

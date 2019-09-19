@@ -60,6 +60,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -81,10 +82,10 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.expire.num_leases"
+          "target": "stats.gauges.vault.expire.num_leases"
         }
       ],
-      "thresholds": "50000,100000",
+      "thresholds": "5000,10000",
       "title": "Lease Count",
       "type": "singlestat",
       "valueFontSize": "120%",
@@ -140,6 +141,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -161,7 +163,7 @@
       "targets": [
         {
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.wal.gc.total"
+          "target": "stats.gauges.vault.wal.gc.total"
         }
       ],
       "thresholds": "50000,100000",
@@ -220,6 +222,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -300,6 +303,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -380,6 +384,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -460,6 +465,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -540,6 +546,7 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
+      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -585,9 +592,10 @@
       "datasource": "Vaultron",
       "description": "Total memory in bytes allocated to the heap",
       "fill": 5,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
-        "w": 5,
+        "w": 8,
         "x": 0,
         "y": 3
       },
@@ -607,6 +615,9 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -620,122 +631,19 @@
         {
           "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.alloc_bytes",
-          "textEditor": true
+          "target": "stats.gauges.vault.runtime.alloc_bytes"
         },
         {
           "refCount": 0,
           "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.alloc_bytes"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.alloc_bytes"
+          "target": "stats.gauges.vault.runtime.sys_bytes"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Memory (alloc.bytes)",
-      "tooltip": {
-        "shared": true,
-        "sort": 1,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Vaultron",
-      "description": "Total memory in bytes obtained from the operating system",
-      "fill": 5,
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 5,
-        "y": 3
-      },
-      "id": 3,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "rightSide": false,
-        "show": false,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 0,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "refCount": 0,
-          "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.sys_bytes"
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.sys_bytes"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.sys_bytes"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Memory (sys.bytes)",
+      "title": "Memory (alloc & sys bytes)",
       "tooltip": {
         "shared": true,
         "sort": 1,
@@ -779,10 +687,11 @@
       "dashes": false,
       "datasource": "Vaultron",
       "fill": 5,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 5,
-        "x": 10,
+        "x": 8,
         "y": 3
       },
       "id": 5,
@@ -801,6 +710,9 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -812,19 +724,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.heap_objects"
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.heap_objects"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.heap_objects"
+          "target": "stats.gauges.vault.runtime.heap_objects"
         }
       ],
       "thresholds": [],
@@ -876,10 +777,11 @@
       "datasource": "Vaultron",
       "description": "Total number of running goroutines",
       "fill": 4,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 15,
+        "w": 5,
+        "x": 13,
         "y": 3
       },
       "id": 4,
@@ -898,6 +800,9 @@
       "linewidth": 0,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -909,19 +814,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.num_goroutines"
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.num_goroutines"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.num_goroutines"
+          "target": "stats.gauges.vault.runtime.num_goroutines"
         }
       ],
       "thresholds": [],
@@ -973,10 +867,11 @@
       "datasource": "Vaultron",
       "description": "Total garbage collection pause time since startup in nanoseconds",
       "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
-        "w": 5,
-        "x": 19,
+        "w": 6,
+        "x": 18,
         "y": 3
       },
       "id": 25,
@@ -995,6 +890,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1006,19 +904,8 @@
       "steppedLine": true,
       "targets": [
         {
-          "refCount": 0,
           "refId": "A",
-          "target": "stats.gauges.vault.vaults0.consul.runtime.total_gc_pause_ns"
-        },
-        {
-          "refCount": 0,
-          "refId": "B",
-          "target": "stats.gauges.vault.vaults1.consul.runtime.total_gc_pause_ns"
-        },
-        {
-          "refCount": 0,
-          "refId": "C",
-          "target": "stats.gauges.vault.vaults2.consul.runtime.total_gc_pause_ns"
+          "target": "stats.gauges.vault.runtime.total_gc_pause_ns"
         }
       ],
       "thresholds": [],
@@ -1063,12 +950,23 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
       "datasource": "Vaultron",
-      "fill": 1,
+      "format": "ms",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
       "gridPos": {
         "h": 4,
         "w": 6,
@@ -1076,74 +974,63 @@
         "y": 7
       },
       "id": 16,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
+      "interval": null,
       "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "options": {},
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false,
+        "ymax": null,
+        "ymin": null
+      },
+      "tableColumn": "",
       "targets": [
         {
           "refId": "A",
-          "target": "stats.timers.vault.token.create.median"
+          "target": "stats.timers.vault.token.store.median"
         }
       ],
-      "thresholds": [],
+      "thresholds": "",
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Token Create",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
         {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "valueName": "current"
     },
     {
       "aliasColors": {},
@@ -1152,6 +1039,7 @@
       "dashes": false,
       "datasource": "Vaultron",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 6,
@@ -1172,6 +1060,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1235,6 +1126,7 @@
       "dashes": false,
       "datasource": "Vaultron",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 6,
@@ -1255,6 +1147,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1313,11 +1208,12 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 6,
@@ -1334,10 +1230,13 @@
         "total": false,
         "values": false
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1396,12 +1295,13 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
       "decimals": 0,
       "fill": 5,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 5,
@@ -1418,10 +1318,13 @@
         "total": true,
         "values": true
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1481,12 +1384,13 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
       "decimals": 0,
       "fill": 5,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 5,
@@ -1503,10 +1407,13 @@
         "total": true,
         "values": true
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1566,12 +1473,13 @@
     },
     {
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Vaultron",
       "decimals": 0,
       "fill": 5,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 5,
@@ -1588,10 +1496,13 @@
         "total": true,
         "values": true
       },
-      "lines": true,
+      "lines": false,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1662,36 +1573,39 @@
       "id": 20,
       "links": [],
       "options": {
-        "maxValue": "200",
-        "minValue": 0,
+        "fieldOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "defaults": {
+            "decimals": null,
+            "mappings": [],
+            "max": "200",
+            "min": 0,
+            "thresholds": [
+              {
+                "color": "#7EB26D",
+                "value": null
+              },
+              {
+                "color": "#FADE2A",
+                "value": 100
+              },
+              {
+                "color": "#F2495C",
+                "value": 150
+              }
+            ],
+            "unit": "ms"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "auto",
         "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "thresholds": [
-          {
-            "color": "#7EB26D",
-            "index": 0,
-            "value": null
-          },
-          {
-            "color": "#FADE2A",
-            "index": 1,
-            "value": 100
-          },
-          {
-            "color": "#F2495C",
-            "index": 2,
-            "value": 150
-          }
-        ],
-        "valueMappings": [],
-        "valueOptions": {
-          "decimals": null,
-          "prefix": "",
-          "stat": "avg",
-          "suffix": "",
-          "unit": "ms"
-        }
+        "showThresholdMarkers": true
       },
+      "pluginVersion": "6.3.5",
       "targets": [
         {
           "refId": "A",
@@ -1704,7 +1618,7 @@
       "type": "gauge"
     }
   ],
-  "schemaVersion": 18,
+  "schemaVersion": 19,
   "style": "dark",
   "tags": [],
   "templating": {

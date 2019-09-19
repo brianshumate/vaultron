@@ -558,4 +558,3 @@ resource "docker_container" "consul_oss_client" {
     container_path = "/consul/data"
   }
 }
-

@@ -21,23 +21,21 @@ Success! Data written to: auth/vaultron-approle/role/wildcard
 Save role-id:
 
 ```
-$ vault read auth/vaultron-approle/role/wildcard/role-id \
-  -format=json \
-  | jq -r '.data.role_id' > ./role_id.txt
+$ vault read -field=role_id auth/vaultron-approle/role/wildcard/role-id \
+  > ./role_id.txt
 ```
 
 Save secret-id:
 
 ```
-$ vault write -f auth/vaultron-approle/role/wildcard/secret-id \
-  -format=json \
-  | jq -r '.data.secret_id' > ./secret_id.txt
+$ vault write -f -field=secret_id auth/vaultron-approle/role/wildcard/secret-id \
+  > ./secret_id.txt
 ```
 
 Write Vault agent configuration:
 
 ```
-$ cat << EOF >> vault_agent.hcl
+$ cat << EOF > vault_agent.hcl
 pid_file = "./pidfile"
 
 vault {
