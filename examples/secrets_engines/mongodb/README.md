@@ -4,9 +4,11 @@ The following mini-guide shows how to set up Vaultron with a MongoDB Docker cont
 
 The guide presumes that you have formed Vaultron, initialized and unsealed your Vault, and logged in with the initial root token.
 
+> **NOTE**: This guide presumes that you are issuing the example commands from within the directory containing this README.md. For the MongoDB Database Secrets Engine, that would be `$VAULTRON_ROOT/examples/secrets_engines/mongodb` where `$VAULTRON_ROOT` represents the `vaultron` repository root.
+
 ## Run MongoDB Docker Container
 
-Use the official MongoDB Docker container:
+Start the official MongoDB Docker container with TLS support:
 
 ```
 $ docker run \
@@ -16,36 +18,41 @@ $ docker run \
   --name vaultron-mongodb \
   --network vaultron-network \
   -p 27017:27017 \
-  mongo
-```
-
-Determine the MongoDB Docker container's internal IP address:
-
-```
-$ docker inspect \
-  --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-  vaultron-mongodb
-172.17.0.12
+  --volume $PWD/tls:/etc/ssl/ \
+  mongo --sslMode requireSSL --sslPEMKeyFile /etc/ssl/mongodb.pem
 ```
 
 ## Configure Vault
 
-Vaultron enables the database secrets engine at `vaultron-database` if using `blazing sword`; if you set up manually, you'll need to enable it:
+Vaultron enables a Database Secrets Engine at `vaultron-database` if using `blazing sword`; if you set up manually, you might need to enable it:
 
 ```
 $ vault secrets enable -path=vaultron-database database
 ```
 
-Next, configure the MongoDB connection:
+If you encounter an error like:
+
+```
+Error enabling: Error making API request.
+
+URL: POST https://127.0.0.1:8200/v1/sys/mounts/vaultron-database
+Code: 400. Errors:
+
+* path is already in use at vaultron-database/
+```
+
+Then most likely the `vaultron-database` Secrets Engine was already enabled, and it is fine to continue.
+
+Next, configure the Secrets Engine MongoDB connection:
 
 ```
 $ vault write vaultron-database/config/mongodb \
   plugin_name=mongodb-database-plugin \
   allowed_roles="mongodb-readonly" \
-  connection_url="mongodb://172.17.0.12:27017/admin?ssl=false"
+  connection_url="mongodb://10.10.42.222:27017/admin?ssl=true"
 ```
 
-Add a read only user role:
+Add a read-only user role:
 
 ```
 $ vault write vaultron-database/roles/mongodb-readonly \
@@ -53,10 +60,18 @@ $ vault write vaultron-database/roles/mongodb-readonly \
   creation_statements='{ "db": "admin", "roles": [{ "role": "readWrite" }, {"role": "read", "db": "foo"}] }' \
   default_ttl="1h" \
   max_ttl="24h"
+Success! Data written to: vaultron-database/roles/mongodb-readonly
 ```
 
-Retrieve a read only MongoDB database credential:
+Retrieve a read-only MongoDB database credential:
 
 ```
 $ vault read vaultron-database/creds/mongodb-readonly
+Key                Value
+---                -----
+lease_id           vaultron-database/creds/mongodb-readonly/oJ7Me3gsNTzE25GVFu76nwyp
+lease_duration     1h
+lease_renewable    true
+password           A1a-O5vOhIWDs3vMjB56
+username           v-root-mongodb-readonl-6QO4IgSkgtkxOPHiKtD3-1568912320
 ```

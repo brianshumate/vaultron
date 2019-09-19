@@ -1,6 +1,6 @@
 {
   "plugin_name": "mongodb-database-plugin",
   "allowed_roles": "readonly",
-  "connection_url": "mongodb://172.17.0.11:27017/admin?ssl=false",
+  "connection_url": "mongodb://10.10.42.222:27017/admin",
   "write_concern": "{ \"wmode\": \"majority\", \"wtimeout\": 5000 }"
 }

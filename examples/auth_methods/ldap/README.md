@@ -6,6 +6,8 @@ This is a quick up and running for Vaultron with OpenLDAP and the Vault LDAP aut
 - `ldapsearch -h`
 - `man ldapsearch`
 
+> **NOTE**: This guide presumes that you are issuing the example commands from within the directory containing this README.md. For the LDAP Auth Method, that would be `$VAULTRON_ROOT/examples/auth_methods/ldap` where `$VAULTRON_ROOT` represents the `vaultron` repository root.
+
 ## Start a Container
 
 Instantiate an OpenLDAP container with some initial settings:
@@ -25,9 +27,9 @@ $ docker run \
   osixia/openldap:latest
 ```
 
-This will start an OpenLDAP container with both the standard and secure LDAP ports exposed to the host.
+This will start the container with both insecure and LDAPS ports exposed to the host.
 
-Unfortunately we cannot yet use TLS with the OpenLDAP container because of an incompatibility between our Vault-generate TLS certificate and key and GNUTLS used by the OpenLDAP container.
+> **NOTE**: Unfortunately we cannot yet use TLS/LDAPS with the OpenLDAP container because of an incompatibility between our Vault-generate TLS certificate and key and GNUTLS used by the OpenLDAP container.
 
 See also: https://github.com/osixia/docker-openldap/issues/28
 
@@ -41,7 +43,7 @@ $ docker exec vaultron-openldap \
   -D "cn=admin,dc=vaultron,dc=waves" -w vaultron
 ```
 
-This should result in the dump of an extended LDIF similar to this one:
+This should result in the dump of an extended LDIF similar to this example:
 
 ```
 # extended LDIF
@@ -94,16 +96,16 @@ $ ldapsearch \
 You can add a basic configuration with user and groups from the file `vaultron.ldif`:
 
 ```
-$ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" \
-  -f examples/auth_methods/ldap/vaultron.ldif
-Enter LDAP Password: # pssst, it's: vaultron
+$ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" -f vaultron.ldif
+Enter LDAP Password:
+# pssst, it's: vaultron
 adding new entry "ou=groups,dc=vaultron,dc=waves"
 
 adding new entry "ou=users,dc=vaultron,dc=waves"
 
 adding new entry "cn=dev,ou=groups,dc=vaultron,dc=waves"
 
-adding new entry "cn=vaultron,ou=users,dc=vaultron,dc=waves"
+adding new entry "cn=akira,ou=users,dc=vaultron,dc=waves"
 ```
 
 ## Configure Vault
@@ -149,10 +151,10 @@ Success! Data written to: auth/vaultron-ldap/groups/dev
 
 ## Authenticate
 
-Login (the password is vaultron):
+Login (the password is: kogane):
 
 ```
-$ vault login -method=ldap -path=vaultron-ldap username=vaultron
+$ vault login -method=ldap -path=vaultron-ldap username=akira
 Password (will be hidden):
 Success! You are now authenticated. The token information displayed below
 is already stored in the token helper. You do NOT need to run "vault login"
@@ -160,14 +162,14 @@ again. Future Vault requests will automatically use this token.
 
 Key                    Value
 ---                    -----
-token                  s.gQkexqIF280KhXET0pshqP8f
-token_accessor         fTBokaefI9jv6uPtdOB6UQAD
+token                  s.zG8OdMcMR6HIofNqDOFivbpC
+token_accessor         CDoy5UpCFPxMjNh2koWvhIOB
 token_duration         768h
 token_renewable        true
 token_policies         ["default" "ldap-dev"]
 identity_policies      []
 policies               ["default" "ldap-dev"]
-token_meta_username    vaultron
+token_meta_username    akira
 ```
 
 ## Troubleshoot

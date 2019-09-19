@@ -6,37 +6,45 @@ container to use the Vault PostgreSQL secrets engine.
 The guide presumes that you have formed Vaultron, initialized and unsealed
 your Vault, and logged in with the initial root token.
 
+> **NOTE**: This guide presumes that you are issuing the example commands from within the directory containing this README.md. For the PostgreSQL database Secrets Engine, that would be `$VAULTRON_ROOT/examples/secrets_engines/postgresql` where `$VAULTRON_ROOT` represents the `vaultron` repository root.
 
 ## Run PostgreSQL Docker Container
 
-Use the official PostgreSQL Docker container with TLS configuration from the `certs` folder:
+Use the official PostgreSQL Docker container with TLS configuration from the `tls` folder:
 
 ```
 $ docker run \
+  --detach \
   --rm \
-  -p5432:5432 \
-  -v $PWD/certs/:/docker-entrypoint-initdb.d/ \
+  --env POSTGRES_PASSWORD=vaultron \
+  --ip 10.10.42.224 \
   --name vaultron-postgres \
-  -e POSTGRES_PASSWORD=vaultron \
-  -d postgres -l
-```
-
-Determine the PostgreSQL Docker container's internal IP address:
-
-```
-$ docker inspect \
-    --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    vaultron-postgres
-172.17.0.11
+  --network vaultron-network \
+  -p 5432:5432 \
+  --volume $PWD/tls/:/docker-entrypoint-initdb.d/ \
+  postgres -l
 ```
 
 ## Configure Vault
 
-Enable a database secrets engine mount at `vaultron-database`:
+If necessary, enable a database Secrets Engine at `vaultron-database`:
 
 ```
 $ vault secrets enable -path=vaultron-database database
 ```
+
+If you encounter an error like:
+
+```
+Error enabling: Error making API request.
+
+URL: POST https://127.0.0.1:8200/v1/sys/mounts/vaultron-database
+Code: 400. Errors:
+
+* path is already in use at vaultron-database/
+```
+
+Then most likely the `vaultron-database` Secrets Engine was already enabled, and it is fine to continue.
 
 Next, configure a simple PostgreSQL connection without SSL:
 
@@ -44,12 +52,9 @@ Next, configure a simple PostgreSQL connection without SSL:
 $ vault write vaultron-database/config/postgresql \
     plugin_name=postgresql-database-plugin \
     allowed_roles="postgresql-readonly" \
-    connection_url="postgresql://{{username}}:{{password}}@172.17.0.11:5432/postgres" \
+    connection_url="postgresql://{{username}}:{{password}}@10.10.42.224:5432/postgres" \
     username="postgres" \
     password="vaultron"
-
-The following warnings were returned from the Vault server:
-* Read access to this endpoint should be controlled via ACLs as it will return the connection details as is, including passwords, if any.
 ```
 
 Write an initial PostgreSQL read only user role:
@@ -61,7 +66,7 @@ $ vault write vaultron-database/roles/postgresql-readonly \
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO \"{{name}}\";" \
     default_ttl="1h" \
     max_ttl="24h"
-Success! Data written to: database/roles/postgresql-readonly
+Success! Data written to: vaultron-database/roles/postgresql-readonly
 ```
 
 Retrieve a read only PostgreSQL database credential:
@@ -70,11 +75,11 @@ Retrieve a read only PostgreSQL database credential:
 $ vault read vaultron-database/creds/postgresql-readonly
 Key                Value
 ---                -----
-lease_id           vaultron-database/creds/postgresql-readonly/YI3ggiSuDlciDdoERmPzjtqc
+lease_id           vaultron-database/creds/postgresql-readonly/yGpOdn8U07ZcMoxbkNuspugF
 lease_duration     1h
 lease_renewable    true
-password           A1a-jmZWpMUU1KbyXbGg
-username           v-root-postgres-XHXdOR7W0d51lmieNdQv-1548174025
+password           A1a-dA3idE2CHlAkJE6j
+username           v-root-postgres-h8aaThdKfzttomBGeiq7-1568914524
 ```
 
 Log in to PostgreSQL container with read-only credential:
@@ -88,8 +93,9 @@ $ psql \
 
 # Use password 'A1a-1p2p9yxwzsp51047' from above
 Password for user v-root-readonly-1r9s3w2qwzx3t2r0rzr0-1513092218:
-psql (10.1)
+psql (11.3, server 11.5 (Debian 11.5-1.pgdg90+1))
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
 Type "help" for help.
 
-postgres=
+postgres=>
 ```

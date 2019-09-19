@@ -20,12 +20,12 @@ objectClass: groupofnames
 objectClass: top
 description: testing group for dev
 cn: dev
-member: cn=vaultron,ou=users,dc=vaultron,dc=waves
+member: cn=akira,ou=users,dc=vaultron,dc=waves
 
-dn: cn=vaultron,ou=users,dc=vaultron,dc=waves
+dn: cn=akira,ou=users,dc=vaultron,dc=waves
 objectClass: person
 objectClass: top
 cn: vaultron
 sn: vaultron
 memberOf: cn=dev,ou=groups,dc=vaultron,dc=waves
-userPassword: vaultron
+userPassword: kogane

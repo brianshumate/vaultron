@@ -19,21 +19,13 @@ Use the official MySQL Docker container:
 ```
 $ docker run \
   --detach \
+  --rm \
   --env MYSQL_ROOT_PASSWORD=vaultron \
   --ip 10.10.42.223 \
   --name vaultron-openldap \
   --network vaultron-network \
   -p 3306:3306 \
   mysql:latest
-```
-
-Determine the MySQL Docker container's internal IP address:
-
-```
-$ docker inspect \
-  --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
-    vaultron-mysql
-172.17.0.2
 ```
 
 ## Configure Vault
