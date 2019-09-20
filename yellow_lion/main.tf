@@ -166,7 +166,7 @@ resource "docker_container" "grafana" {
   count    = var.vaultron_telemetry_count
   name     = "vaultron-vgrafana"
   image    = docker_image.grafana[0].latest
-  env      = ["GF_INSTANCE_NAME=Vaultron", "GF_SECURITY_ADMIN_PASSWORD=vaultron", "GF_ALLOW_SIGN_UP=false", "GF_DISABLE_GRAVATAR=true", "GF_ALLOW_ORG_CREATE=false", "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource", "GF_SERVER_PROTOCOL=https", "GF_SERVER_CERT_FILE=/etc/ssl/certs/grafana.crt", "GF_SERVER_CERT_KEY=/etc/ssl/certs/grafana.key"]
+  env      = ["GF_INSTANCE_NAME=Vaultron", "GF_DEFAULT_THEME=light", "GF_SECURITY_ADMIN_PASSWORD=vaultron", "GF_ALLOW_SIGN_UP=false", "GF_DISABLE_GRAVATAR=true", "GF_ALLOW_ORG_CREATE=false", "GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource", "GF_SERVER_PROTOCOL=https", "GF_SERVER_CERT_FILE=/etc/ssl/certs/grafana.crt", "GF_SERVER_CERT_KEY=/etc/ssl/certs/grafana.key"]
   must_run = true
 
   capabilities {
