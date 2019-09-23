@@ -13,11 +13,11 @@ if [ -z "$SKYDOME" ]; then
 fi
 . $SKYDOME
 
-program="$(basename "$0")"
+PROGRAM="$(basename "$0")"
 
 if [ $# -eq 0 ]
   then
-    msg alert "Usage: ${program} <number_of_encryption_operations>"
+    msg alert "Usage: ${PROGRAM} <number_of_encryption_operations>"
     exit 1
 fi
 
@@ -25,7 +25,7 @@ TRANSITIZE=$(openssl rand -hex 4)
 
 check_transit() {
   check_cli_cap
-  if [ "$vault_cli_cap" -eq "1" ]; then
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
     V_AUTH_CMD="vault secrets list"
   else
     V_AUTH_CMD="vault mounts"

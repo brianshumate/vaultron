@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# shellcheck disable=SC1090,SC1091,SC1117,SC2059,SC2086,SC2089,SC2090,SC2154
+
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+PROGRAM="$(basename "$0")"
+SCRIPT_PATH="./examples/tests"
+
+load_gen() {
+    msg info "Starting 1000 Transit Secrets Engine encryptions ..."
+    "$SCRIPT_PATH/"transitize 1000 >/dev/null 2>&1 &
+    msg info "Generating 1000 KV Secrets Engine secrets ..."
+    "$SCRIPT_PATH"/gen_kv_secrets -c=1000 -p=vaultron-kv  >/dev/null 2>&1 &
+    msg info "Read policy 1000 times ..."
+    for i in {1..1000}; do vault policy read wildcard  >/dev/null 2>&1; done &
+    msg info "Generating 1000 AppRole logins ..."
+    "$SCRIPT_PATH"/app_rulez1000 >/dev/null 2>&1 &
+    msg info "Generating 1000 AppRole logins ..."
+    "$SCRIPT_PATH"/app_rulez 1000 >/dev/null 2>&1 &
+    msg info "Generating 1000 batch tokens ..."
+    for i in {1..1000}; do vault token create -type=batch -policy=wildcard -ttl="100${i}s"  >/dev/null 2>&1; done &
+    msg success "All load generation tasks started ..."
+}
+
+msg greeting "Generating load against Vaultron ..."
+
+load_gen

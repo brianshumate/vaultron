@@ -68,7 +68,7 @@ objectClass: simpleSecurityObject
 objectClass: organizationalRole
 cn: admin
 description: LDAP administrator
-userPassword:: e1NTSEF9OEoya2N4RmVzN3Y5dXJwaEdvWCt5VUxuajcrSW1DVEQ=
+userPassword:: e1NTSEF9c0lSN2loOGJ3dFU4QnFJZFBCd3NheFZITVQ0MW9Tc2E=
 
 # search result
 search: 2
@@ -78,7 +78,13 @@ result: 0 Success
 # numEntries: 2
 ```
 
-If you get an error, then double check the container name, and ensure it is running with `docker ps -a`.
+If you encounter an error, try double checking the container name and ensuring it is running with:
+
+```
+$ docker ps -f name=vaultron-openldap --format "table {{.Names}}\t{{.Status}}"
+NAMES               STATUS
+vaultron-openldap   Up About a minute
+```
 
 You should also be able to use `ldapsearch` directly on the host:
 
@@ -91,14 +97,13 @@ $ ldapsearch \
   -w vaultron
 ```
 
-## Add Basic Config
+## Add Basic Configuration
 
-You can add a basic configuration with user and groups from the file `vaultron.ldif`:
+You can add a basic configuration with user and groups from the file `vaultron.ldif`. When prompted, the password is: vaultron
 
 ```
 $ ldapadd -cxWD "cn=admin,dc=vaultron,dc=waves" -f vaultron.ldif
 Enter LDAP Password:
-# pssst, it's: vaultron
 adding new entry "ou=groups,dc=vaultron,dc=waves"
 
 adding new entry "ou=users,dc=vaultron,dc=waves"
@@ -110,20 +115,14 @@ adding new entry "cn=akira,ou=users,dc=vaultron,dc=waves"
 
 ## Configure Vault
 
-Vaultron already enables the LDAP auth method as `vaultron-ldap`:
+If you use `blazing_sword`, Vaultron enables the LDAP auth method as `vaultron-ldap`:
 
 ```
-$ vault auth list
-Path                  Type        Accessor                  Description
-----                  ----        --------                  -----------
-token/                token       auth_token_43d79f4c       token based credentials
-vaultron-approle/     approle     auth_approle_b27b182f     Vaultron example AppRole auth method
-vaultron-cert/        cert        auth_cert_241a03ca        Vaultron example X.509 certificate auth method
-vaultron-ldap/        ldap        auth_ldap_bdb558f7        Vaultron example LDAP auth method
-vaultron-userpass/    userpass    auth_userpass_c48213b7    Vaultron example Username and password auth method
+$ vault auth list | grep ldap
+vaultron-ldap/        ldap        auth_ldap_013a8338        Vaultron example LDAP auth method
 ```
 
-Configure it using the Docker internal host IP address and initial settings like this:
+Configure it using the Docker internal host IP address for the _vaultron-openldap_ container and some initial settings like this:
 
 ```
 $ vault write auth/vaultron-ldap/config \
@@ -143,7 +142,7 @@ Success! Data written to: auth/vaultron-ldap/config
 Create basic LDAP group -> policy mappings:
 
 ```
-$ vault write auth/vaultron-ldap/groups/users policies=ldap-user && \
+$ vault write auth/vaultron-ldap/groups/users policies=ldap-user, && \
   vault write auth/vaultron-ldap/groups/dev policies=ldap-dev
 Success! Data written to: auth/vaultron-ldap/groups/users
 Success! Data written to: auth/vaultron-ldap/groups/dev
@@ -175,6 +174,20 @@ token_meta_username    akira
 ## Troubleshoot
 
 
+### ldap operation failed
+
+If you encounter an error like this:
+
+```
+Error authenticating: Error making API request.
+
+URL: PUT https://127.0.0.1:8200/v1/auth/vaultron-ldap/login/akira
+Code: 400. Errors:
+
+* ldap operation failed
+```
+
+Then be sure that you imported the example `.ldif` as described in the [Add Basic Configuration](#dd_basic_configuration)
 ### connection refused
 
 If you encounter an error like this:
