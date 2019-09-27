@@ -11,12 +11,11 @@ cluster_addr = "${cluster_addr}"
 ui = true
 
 listener "tcp" {
-  address                  = "${address}"
-  cluster_address          = "${cluster_address}"
-  tls_cert_file            = "/etc/ssl/certs/vault-server.crt"
-  tls_key_file             = "/etc/ssl/vault-server.key"
-  tls_client_ca_file       = "/etc/ssl/certs/ca.pem"
-  tls_disable_client_certs = "true"
+  address            = "${address}"
+  cluster_address    = "${cluster_address}"
+  tls_cert_file      = "/etc/ssl/certs/vault-server.crt"
+  tls_key_file       = "/etc/ssl/vault-server.key"
+  tls_client_ca_file = "/etc/ssl/certs/ca.pem"
 }
 
 #storage "raft" {

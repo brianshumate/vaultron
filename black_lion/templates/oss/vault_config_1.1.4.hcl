@@ -16,10 +16,9 @@ plugin_directory = "/vault/plugins"
 # -----------------------------------------------------------------------
 
 listener "tcp" {
-  address                  = "${address}"
-  tls_cert_file            = "/etc/ssl/certs/vault-server.crt"
-  tls_key_file             = "/etc/ssl/vault-server.key"
-  tls_disable_client_certs = "true"
+  address       = "${address}"
+  tls_cert_file = "/etc/ssl/certs/vault-server.crt"
+  tls_key_file  = "/etc/ssl/vault-server.key"
 }
 
 # -----------------------------------------------------------------------
