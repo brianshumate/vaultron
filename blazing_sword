@@ -190,15 +190,9 @@ unseal_vault() {
 msg greeting "Blazing Sword! ..."
 
 # Ain't nobody got time for your stale token up in here!
-if [ -z "$VAULT_TOKEN" ]; then
-  msg notice "Existing VAULT_TOKEN detected; unset it ..."
-  if ! unset VAULT_TOKEN; then
-    msg alert "Problem with unset of existing VAULT_TOKEN environment variable!"
-  else
-    msg success "Existing VAULT_TOKEN environment variable unset!"
-  fi
-fi
+unset VAULT_TOKEN
 
+# Because what fun is a project without a little raciness?
 sleep 1
 initialize_vault
 unseal_vault

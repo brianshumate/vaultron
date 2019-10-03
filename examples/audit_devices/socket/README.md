@@ -8,9 +8,10 @@ With Vaultron, you can readily spin up a listening socket container with netcat,
 
 ```
 $ docker run \
-  -d \
-  -t \
+  --detach \
   --rm \
+  -t \
+  --ip 10.10.42.111 \
   --network=vaultron-network \
   --name=vaultron-netcat \
   subfuzion/netcat -vl 7474
@@ -23,7 +24,7 @@ Once that is running, you can add the socket based audit device to Vault like so
 ```
 $ vault audit enable \
   socket \
-  address=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-netcat):7474 \
+  address=10.10.42.111:7474 \
   socket_type=tcp
 ```
 
