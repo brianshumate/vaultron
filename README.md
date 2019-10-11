@@ -116,7 +116,7 @@ Once you have the prerequisites installed, you can use the following example to 
 You will likely be prompted for your password to add the Vaultron CA certificate to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs:
 
 ```
-$ git clone https://github.com/brianshumate/vaultron.git && \
+git clone https://github.com/brianshumate/vaultron.git && \
   cd vaultron && \
   ./form && \
   . ./ion_darts && \
@@ -134,19 +134,21 @@ Vaultron uses the latest Consul and Vault versions by default, so make sure that
 
 After doing so, it takes just 3 steps to form Vaultron:
 
-1. `$ git clone https://github.com/brianshumate/vaultron.git`
-2. `$ cd vaultron`
-3. `$ ./form`
+1. `git clone https://github.com/brianshumate/vaultron.git`
+2. `cd vaultron`
+3. `./form`
 
 When Vaultron is successfully formed, the output looks like this:
 
 ```
+[vaultron] [?] vaultron-network not present; creating ...
+[vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.1.3
-[vaultron] [i] Consul OSS version: 1.5.2
-[vaultron] [i] Terraform plan: 15 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 15 added, 0 changed, 0 destroyed.
+[vaultron] [?] Vault OSS version: 1.2.3
+[vaultron] [i] Consul OSS version: 1.6.1
+[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 18 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 
 You can now visit the Vault web UI at https://localhost:8200
@@ -171,7 +173,12 @@ You are now nearly ready to interact with Vault and Consul using their web user 
 Take a moment to verify that all of the Vaultron Docker containers are up:
 
 ```
-$ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
+docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
+```
+
+The output should look something like this example:
+
+```
 NAMES               STATUS
 vaultron-vault0     Up 8 minutes (unhealthy)
 vaultron-vault2     Up 8 minutes (unhealthy)
@@ -184,24 +191,31 @@ vaultron-consuls2   Up 8 minutes (healthy)
 vaultron-consuls1   Up 8 minutes (healthy)
 ```
 
-Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed.
+Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that's not really an issue at this time.
 
-Note also that there is a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the CLI tools with Vaultron:
+There is also a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the `consul` or `vault` CLI tools with Vaultron:
 
 ```
-$ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
-  CONSUL_HTTP_ADDR="127.0.0.1:8500" \
-  CONSUL_HTTP_SSL=true \
-  CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
-  VAULT_ADDR="https://127.0.0.1:8200" \
-  VAULT_CA_CERT="$(pwd)/black_lion/tls/ca.pem"
+export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
+       CONSUL_HTTP_ADDR="127.0.0.1:8500" \
+       CONSUL_HTTP_SSL=true \
+       CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
+       VAULT_ADDR="https://127.0.0.1:8200" \
+       VAULT_CA_CERT="$(pwd)/black_lion/tls/ca.pem"
 ```
 
 You can instead source the `ion_darts` script to do all of this for you:
 
 ```
-$ . ./ion_darts
-[^] Exported Vaultron environment variables!
+. ./ion_darts
+```
+
+which should output details like this:
+
+```
+[vaultron] [+] Exported Vaultron environment variables:
+[vaultron] [+] CONSUL_HTTP_ADDR: 127.0.0.1:8500
+[vaultron] [+] VAULT_ADDR: https://127.0.0.1:8200
 ```
 
 > **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`.
@@ -234,7 +248,7 @@ The Terraform provider modules _are also not removed_ to save on resources and t
 If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead:
 
 ```
-$ terraform destroy -state=./tfstate/terraform.tfstate
+terraform destroy -state=./tfstate/terraform.tfstate
 ```
 
 If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you. `blazing_sword` uses the additional Terraform configuration in `blazing_sword/main.tf`.
@@ -242,10 +256,10 @@ If you are already familiar with Vault, but would like to save time by rapidly i
 If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
 
 ```
-$ export CONSUL_HTTP_ADDR="127.0.0.1:8500"
-$ export CONSUL_HTTP_SSL=true
-$ export VAULT_ADDR="https://127.0.0.1:8200"
-$ export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
+       CONSUL_HTTP_SSL=true \
+       VAULT_ADDR="https://127.0.0.1:8200" \
+       CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 ```
 
 ### Advanced Example
@@ -253,14 +267,13 @@ $ export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 The following is a more advanced example of forming Vaultron; it uses a range of environment variables to define additional configuration and includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
 
 ```
-export \
-  TF_VAR_consul_custom=0 \
-  TF_VAR_vault_oss_instance_count=0 \
-  TF_VAR_vault_custom_instance_count=3 \
-  TF_VAR_vaultron_telemetry_count=1 \
-  TF_VAR_vault_server_log_level=trace \
-  TF_VAR_vault_log_format=json \
-  TF_VAR_consul_log_level=err
+export TF_VAR_consul_custom=0 \
+       TF_VAR_vault_oss_instance_count=0 \
+       TF_VAR_vault_custom_instance_count=3 \
+       TF_VAR_vaultron_telemetry_count=1 \
+       TF_VAR_vault_server_log_level=trace \
+       TF_VAR_vault_log_format=json \
+       TF_VAR_consul_log_level=err
 ```
 
 What this does line by line:
@@ -543,8 +556,11 @@ The cluster port (for the Active instance only) is also forwarded to localhost a
 Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different _OSS version_, you can export the `TF_VAR_vault_version` environment variable to override:
 
 ```
-$ export TF_VAR_vault_version=0.6.5
-$ ./form
+TF_VAR_vault_version=0.6.5 ./form
+```
+
+the output of which would then contain:
+
 ...
 [vaultron] [i] Vault OSS version: 0.6.5
 ...
@@ -553,10 +569,12 @@ $ ./form
 Similarly, to run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
 
 ```
-$ export TF_VAR_consul_version=0.7.5
-$ ./form
-# ...
-$ consul members
+TF_VAR_consul_version=0.7.5 ./form
+```
+
+After Vaultron forms, check the Consul version with `consul members`:
+
+```
 Node      Address          Status  Type    Build  Protocol  DC    Segment
 consuls0  172.17.0.2:8301  alive   server  0.7.5  2         arus  <all>
 consuls1  172.17.0.3:8301  alive   server  0.7.5  2         arus  <all>
@@ -579,27 +597,37 @@ The 3 Consul servers have DNS exposed to port 53 of their internal container add
 Additionally Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
 
 ```
-$ dig -p 8600 @localhost consul.service.consul
+dig -p 8600 @localhost consul.service.consul
+```
+
+which results in a response containing:
+
+```
 ...
 ;; ANSWER SECTION:
-consul.service.consul.  0   IN  A   172.17.0.4
-consul.service.consul.  0   IN  A   172.17.0.3
-consul.service.consul.  0   IN  A   172.17.0.2
+consul.service.consul.  0 IN  A 10.10.42.102
+consul.service.consul.  0 IN  A 10.10.42.100
+consul.service.consul.  0 IN  A 10.10.42.101
 
 ;; ADDITIONAL SECTION:
-consul.service.consul.  0   IN  TXT "consul-network-segment="
-consul.service.consul.  0   IN  TXT "consul-network-segment="
-consul.service.consul.  0   IN  TXT "consul-network-segment="
+consul.service.consul.  0 IN  TXT "consul-network-segment="
+consul.service.consul.  0 IN  TXT "consul-network-segment="
+consul.service.consul.  0 IN  TXT "consul-network-segment="
 ...
 ```
 
 or
 
 ```
-$ dig -p 8600 @localhost active.vault.service.consul
+dig -p 8600 @localhost active.vault.service.consul
+```
+
+which results in a response containing:
+
+```
 ...
 ;; ANSWER SECTION:
-active.vault.service.consul. 0  IN  A   172.17.0.7
+active.vault.service.consul. 0  IN  A 10.10.42.200
 
 ;; ADDITIONAL SECTION:
 active.vault.service.consul. 0  IN  TXT "consul-network-segment="
@@ -609,20 +637,24 @@ active.vault.service.consul. 0  IN  TXT "consul-network-segment="
 or
 
 ```
-$ dig -p 8600 @localhost vault.service.consul SRV
+dig -p 8600 @localhost vault.service.consul SRV
+```
+
+which results in a response containing:
+
 ...
 ;; ANSWER SECTION:
-vault.service.consul.   0   IN  SRV 1 1 8200 vault1.node.arus.consul.
-vault.service.consul.   0   IN  SRV 1 1 8200 vault2.node.arus.consul.
-vault.service.consul.   0   IN  SRV 1 1 8200 vault0.node.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 0a0a2ac9.addr.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 0a0a2aca.addr.arus.consul.
+vault.service.consul. 0 IN  SRV 1 1 8200 0a0a2ac8.addr.arus.consul.
 
 ;; ADDITIONAL SECTION:
-vault1.node.arus.consul. 0  IN  A   172.17.0.6
-vault1.node.arus.consul. 0  IN  TXT "consul-network-segment="
-vault2.node.arus.consul. 0  IN  A   172.17.0.5
-vault2.node.arus.consul. 0  IN  TXT "consul-network-segment="
-vault0.node.arus.consul. 0  IN  A   172.17.0.7
-vault0.node.arus.consul. 0  IN  TXT "consul-network-segment="
+0a0a2ac9.addr.arus.consul. 0  IN  A 10.10.42.201
+consulc1.node.arus.consul. 0  IN  TXT "consul-network-segment="
+0a0a2aca.addr.arus.consul. 0  IN  A 10.10.42.202
+consulc2.node.arus.consul. 0  IN  TXT "consul-network-segment="
+0a0a2ac8.addr.arus.consul. 0  IN  A 10.10.42.200
+consulc0.node.arus.consul. 0  IN  TXT "consul-network-segment="
 ...
 ```
 
@@ -632,10 +664,10 @@ or
 $ dig -p 8600 @localhost consuls0.node.consul
 ...
 ;; ANSWER SECTION:
-consuls0.node.consul.   0   IN  A   172.17.0.2
+consuls0.node.consul. 0 IN  A 10.10.42.100
 
 ;; ADDITIONAL SECTION:
-consuls0.node.consul.   0   IN  TXT "consul-network-segment="
+consuls0.node.consul. 0 IN  TXT "consul-network-segment="
 ...
 ```
 

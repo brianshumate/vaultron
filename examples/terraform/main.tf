@@ -343,7 +343,7 @@ resource "vault_policy" "ldap_user" {
 
   policy = <<EOT
 // Vaultron example policy: "ldap-user"
-path "vaultron-kv/*" {
+path "vaultron-kv/ldap-user/*" {
   capabilities = ["create", "update", "read", "list"]
 }
 EOT
@@ -354,7 +354,7 @@ resource "vault_policy" "ldap_dev" {
 
   policy = <<EOT
 // Vaultron example policy: "ldap-dev"
-path "vaultron-kv/*" {
+path "vaultron-kv/ldap-dev/*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
 EOT
