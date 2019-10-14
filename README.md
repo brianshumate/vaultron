@@ -561,6 +561,7 @@ TF_VAR_vault_version=0.6.5 ./form
 
 the output of which would then contain:
 
+```
 ...
 [vaultron] [i] Vault OSS version: 0.6.5
 ...
@@ -642,6 +643,7 @@ dig -p 8600 @localhost vault.service.consul SRV
 
 which results in a response containing:
 
+```
 ...
 ;; ANSWER SECTION:
 vault.service.consul. 0 IN  SRV 1 1 8200 0a0a2ac9.addr.arus.consul.
