@@ -53,7 +53,7 @@
     + [Where's My Vault Data?](#wheres-my-vault-data)
     + [What About Logs?](#what-about-logs)
     + [Telemetry Notes](#telemetry-notes)
-    + [A note about custom Binaries](#a-note-about-custom-binaries)
+    + [A Note About Custom Binaries](#a-note-about-custom-binaries)
   * [Basic Troubleshooting Questions](#basic-troubleshooting-questions)
     + [I can access the Consul UI but it states that there are no services to show](#i-can-access-the-consul-ui-but-it-states-that-there-are-no-services-to-show)
     + [Vaultron Does Not Form — Halp!](#vaultron-does-not-form--halp)
@@ -399,7 +399,7 @@ This is unfortunately both simultaneously simpler and more complex, since in mos
 
 ### Environment Variables
 
-Vaultron uses environment variables to override Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
+Vaultron uses environment variables to override some Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
 
 Here are the names and purposes of each:
 
@@ -429,7 +429,6 @@ Vault datacenter name
 
 - Default: `1`
 
-
 #### TF_VAR_vault_server_log_format (Vault v0.10.0+)
 
 A valid Vault server log format: _standard_ or _json_
@@ -438,7 +437,7 @@ A valid Vault server log format: _standard_ or _json_
 
 #### TF_VAR_vault_server_log_level
 
-A valid Vault server log level: _trace_, _debug_, _info_, _warning_, or _error_
+Server operational log level: _trace_, _debug_, _info_, _warning_, or _error_
 
 - Default: `debug`
 
@@ -490,6 +489,8 @@ Specify an alternative configuration file template in `black_lion/templates/cust
 
 #### TF_VAR_use_consul_oss
 
+This cannot currently be changed as Vaultron always uses Consul OSS.
+
 - Default: `1`
 
 #### TF_VAR_consul_recursor_1
@@ -498,13 +499,11 @@ DNS recursor 1
 
 -Default: `1.1.1.1`
 
-
 #### TF_VAR_consul_recursor_2
 
 DNS recursor 2
 
 - Default: `1.0.0.1`
-
 
 #### TF_VAR_consul_acl_datacenter
 
@@ -512,11 +511,11 @@ Consul datacenter name
 
 - Default: `arus`
 
-
 #### TF_VAR_consul_data_dir
 
-- Default: `/consul/data`
+Consul data directory path
 
+- Default: `/consul/data`
 
 #### TF_VAR_consul_oss
 
@@ -530,16 +529,17 @@ Number of Consul OSS containers
 
 - Default: `3`
 
-
 #### TF_VAR_consul_oss
 
-- Default: `0`
+(NOT YET IMPLEMENTED): Whether to use Consul OSS
 
+- Default: `0`
 
 #### TF_VAR_consul_custom_instance_count
 
-- Default: `0`
+(NOT YET IMPLEMENTED): Consul custom instance count
 
+- Default: `0`
 
 ### Published Ports
 
@@ -800,7 +800,7 @@ Once signed in, you can access the example **Vault** dashboard; you'll need to i
 
 See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/blob/master/examples/telemetry/README.md) documentation for more details on this setup.
 
-### A note about custom Binaries
+### A Note About Custom Binaries
 
 Vaultron installs the official open source Vault binaries through the official Docker container images, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables prior to forming Vaultron:
 
@@ -811,10 +811,8 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 ```
 
 > **NOTE**: When using custom binaries in this way the binary must be for Linux/AMD64 as that is the platform for the containers, also Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version so keep that in mind as well.
-
-One disadvantage of the current custom binary scheme is that it chooses a simplest approach to introducing the `vault` binary by changing the path from which `vault` is executed. This breaks the preferred dedicated user model such that the process is executed by the _root_ user instead of the _vault_ user, so please keep this in mind when using custom binaries.
-
-All OSS containers do execute _vault_ as the _vault_ user.
+>
+> All OSS containers do execute _vault_ as the _vault_ user as designed, but one major disadvantage of the current custom binary scheme is that it chooses a simplest approach to introducing the `vault` binary by changing the path from which `vault` is executed. This breaks the preferred dedicated user model such that the process is executed by the _root_ user instead of the _vault_ user, so please keep this in mind when using custom binaries.
 
 ## Basic Troubleshooting Questions
 
@@ -1022,8 +1020,8 @@ $ ./form
 Other things that can help include:
 
 - Unset all related Vaultron `TF_VAR_*` environment variables
-- Closing Terminal session/tarting with a fresh Terminal session
-- Using the latest release version from GitHub.
+- Close terminal session/start with a fresh terminal session
+- Use the latest release version from GitHub
 
 Note that the GitHub Master branch strives to remain relatively stable, but a release is usually preferred.
 
