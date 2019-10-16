@@ -94,6 +94,8 @@ Terraform assembles individual pieces to form Vaultron from the official [Vault 
 
 ### Prerequisites
 
+> **NOTE macOS Catalina users see this issue**: https://github.com/hashicorp/terraform/issues/23033#issuecomment-542302933
+
 > **NOTE**: **Vaultron only supports Terraform version 0.12.0 and beyond** and is incompatible with previous Terraform versions.
 
 Install the following on the system where you will form Vaultron:
