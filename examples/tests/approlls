@@ -46,11 +46,18 @@ gen_role() {
   if ! vault write \
     auth/approle/role/$APPROLE \
     policies=sudo,vaultron-dev \
-    secret_id_ttl=2160h \
-    token_bound_cidrs="10.10.42.0/24" \
-    token_ttl=360h \
-    token_max_ttl=420h \
-    token_type="batch"; then
+    bind_secret_id=true \
+    local_secret_ids=false \
+    secret_id_ttl=0 \
+    secret_id_num_uses=50 \
+    secret_id_bound_cidrs="0.0.0.0/0" \
+    token_bound_cidrs="0.0.0.0/0" \
+    token_ttl=1h \
+    token_max_ttl=1h30m \
+    token_explicit_max_ttl=0s \
+    token_num_uses=0 \
+    token_period=0s \
+    token_no_default_policy=false; then
       msg alert "Failed to generate the $APPROLE AppRole role!"
       exit 1
   fi
