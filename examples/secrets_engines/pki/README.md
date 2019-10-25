@@ -246,7 +246,7 @@ Vaultron uses a private Docker network with predictable address space and we wil
 
 ## Vault Server
 
-Let's make certificates for the Vault servers; we'll use a 21000h/875 day TTL for all of them:
+Let's make certificates for the Vault servers; we'll use a 19800h/825 day TTL for all of them:
 
 ```
 $ vault write \
@@ -254,7 +254,7 @@ $ vault write \
   common_name=vaults0.node.arus.consul \
   alt_names=active.vault.service.consul,standby.vault.service.consul,vault.service.consul,vaults0.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.200" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="vault-server-0.crt"} /RSA/ {out="vault-server-0.key"} { print > out }'
@@ -266,7 +266,7 @@ $ vault write \
   common_name=vaults1.node.arus.consul \
   alt_names=vaults1.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.201" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="vault-server-1.crt"} /RSA/ {out="vault-server-1.key"} { print > out }'
@@ -278,7 +278,7 @@ $ vault write \
   common_name=vaults2.node.arus.consul \
   alt_names=vaults2.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.202" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="vault-server-2.crt"} /RSA/ {out="vault-server-2.key"} { print > out }'
@@ -286,14 +286,14 @@ $ vault write \
 
 ## Consul Servers
 
-Let's make certificates for the Consul servers; we'll use a 21000h/875 day TTL for all of them:
+Let's make certificates for the Consul servers; we'll use a 19800h/825 day TTL for all of them:
 
 ```
 $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consuls0.node.arus.consul \
   alt_names=consul.service.consul,consuls0.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.100" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-server-0.crt"} /RSA/ {out="consul-server-0.key"} { print > out }'
@@ -304,7 +304,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consuls1.node.arus.consul \
   alt_names=consul.service.consul,consuls1.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.101" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-server-1.crt"} /RSA/ {out="consul-server-1.key"} { print > out }'
@@ -315,7 +315,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consuls2.node.arus.consul \
   alt_names=consul.service.consul,consuls2.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.102" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-server-2.crt"} /RSA/ {out="consul-server-2.key"} { print > out }'
@@ -323,13 +323,13 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
 
 ## Consul Clients
 
-Let's make certificates for the Consul clients; we'll use a 21000h/875 day TTL for all of them:
+Let's make certificates for the Consul clients; we'll use a 19800h/825 day TTL for all of them:
 
 ```
 $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consulc0.node.arus.consul \
   alt_names=consul.service.consul,consulc0.node.consul,server.arus.consul,localhost \
-  ip_sans="127.0.0.1,10.10.42.40" \ttl=21000h \
+  ip_sans="127.0.0.1,10.10.42.40" \ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-client-0.crt"} /RSA/ {out="consul-client-0.key"} { print > out }'
@@ -340,7 +340,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consulc1.node.arus.consul \
   alt_names=consul.service.consul,consulc1.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.41" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-client-1.crt"} /RSA/ {out="consul-client-1.key"} { print > out }'
@@ -351,7 +351,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=consulc2.node.arus.consul \
   alt_names=consul.service.consul,consulc2.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.42" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="consul-client-2.crt"} /RSA/ {out="consul-client-2.key"} { print > out }'
@@ -364,7 +364,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=grafana.node.arus.consul \
   alt_names=grafana.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.220" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="grafana.crt"} /RSA/ {out="grafana.key"} { print > out }'
@@ -377,7 +377,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=ldap.node.arus.consul \
   alt_names=ldap.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.221" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="ldap.crt"} /RSA/ {out="ldap.key"} { print > out }'
@@ -390,7 +390,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=mongodb.node.arus.consul \
   alt_names=mongodb.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.222" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="mongodb.crt"} /RSA/ {out="mongodb.key"} { print > out }'
@@ -403,7 +403,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=mysql.node.arus.consul \
   alt_names=mysql.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.223" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="mysql.crt"} /RSA/ {out="mysql.key"} { print > out }'
@@ -416,7 +416,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=postgresql.node.arus.consul \
   alt_names=postgresql.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.224" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="postgresql.crt"} /RSA/ {out="postgresql.key"} { print > out }'
@@ -429,7 +429,7 @@ $ vault write vaultron-int-pki/issue/vaultron-int \
   common_name=prometheus.node.arus.consul \
   alt_names=prometheus.node.consul,server.arus.consul,localhost \
   ip_sans="127.0.0.1,10.10.42.225" \
-  ttl=21000h \
+  ttl=19800h \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="prometheus.crt"} /RSA/ {out="prometheus.key"} { print > out }'

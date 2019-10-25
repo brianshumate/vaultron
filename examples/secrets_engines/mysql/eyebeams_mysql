@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # This script is used to setup a MySQL Docker container
-# for Vaultron secret engine use
+# for Vaultron secrets engine use
 #
 # shellcheck disable=SC1090,SC1091,SC2059
 
@@ -25,6 +25,10 @@ msg greeting "Engage Eye Beams for MySQL!"
 
 launch_docker_container() {
 docker run --name vaultron-mysql \
+  --detach \
+  --rm \
+  --ip 10.10.42.223 \
+  --network vaultron-network \
   -e MYSQL_ROOT_PASSWORD=vaultron \
   -p 3306:3306 \
   -d mysql:latest > /dev/null 2>&1
@@ -40,9 +44,9 @@ fi
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-mysql)"
 
-if ! $SECRETS_LIST_CMD | grep 'vaultron-database' > /dev/null 2>&1; then
+if ! $SECRETS_LIST_CMD -ns=foooo | grep 'vaultron-database' > /dev/null 2>&1; then
   msg info "Enable Database secrets engine ..."
-  if $SECRETS_ENABLE_CMD -path=vaultron-database database > /dev/null 2>&1; then
+  if $SECRETS_ENABLE_CMD -ns=foooo -path=vaultron-database database  > /dev/null 2>&1; then
     msg complete "Enabled Database secrets engine!"
   else
     msg alert "Cannot enable Database secrets engine!"
@@ -58,10 +62,10 @@ while [ "$MYSQL_READY" = "1" ]; do
 done
 
 msg info "Configure MySQL Secrets Engine ..."
-if vault write vaultron-database/config/mysql \
+if vault write -ns=foooo vaultron-database/config/mysql \
   plugin_name=mysql-database-plugin \
   connection_url="root:vaultron@tcp($MYSQL_CONTAINER_IP:3306)/" \
-  allowed_roles="vaultron-mysql-readonly" > /dev/null 2>&1; then
+  allowed_roles="vaultron-mysql-readonly"  > /dev/null 2>&1; then
   msg complete "Configured MySQL Secrets Engine!"
 else
     msg alert "Cannot configure MySQL Secrets Engine!"
@@ -69,7 +73,7 @@ else
 fi
 
 msg info "Configure MySQL vaultron-read-only role ..."
-if vault write vaultron-database/roles/vaultron-mysql-readonly \
+if vault write -ns=foooo vaultron-database/roles/vaultron-mysql-readonly \
     db_name=mysql \
     creation_statements="CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';GRANT SELECT ON *.* TO '{{name}}'@'%';" \
     default_ttl="1h" \
@@ -81,4 +85,4 @@ else
 fi
 
 msg complete "MySQL secrets engine enabled! Use the following command to get a MySQL credential:"
-msg complete "vault read vaultron-database/creds/vaultron-mysql-readonly"
+msg complete "vault read -ns=foooo vaultron-database/creds/vaultron-mysql-readonly"

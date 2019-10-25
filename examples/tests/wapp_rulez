@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+#
+# wapp_rulez
+#
+# Enable an AppRole role, then sequentially create N AppRole tokens from it
+#
+# Role name: wapprulez-$WAPPRULEZ
+#
+# shellcheck disable=SC1090,SC1091,SC1117,SC2059,SC2086,SC2089,SC2090,SC2154
+
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+program="$(basename "$0")"
+
+if [ $# -eq 0 ]
+  then
+    msg alert "Usage: ${program} <number_of_tokens>"
+    exit 1
+fi
+
+WAPPRULEZ=$(openssl rand -hex 4)
+
+check_approle() {
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    V_AUTH_CMD="vault auth list"
+  else
+    V_AUTH_CMD="vault auth -methods"
+  fi
+  if ! $V_AUTH_CMD | grep approle > /dev/null 2>&1; then
+    msg alert "No AppRole Auth Method detected! Be sure to enable AppRole!"
+    exit 1
+  else
+    msg info "AppRole Auth Method is enabled - creating role ..."
+  fi
+}
+
+# NB: The tokens are bound to the Docker CIDR
+gen_role() {
+  msg info "Generating wapprulez-$WAPPRULEZ role ..."
+  if ! vault write \
+    auth/vaultron-approle/role/wapprulez-$WAPPRULEZ \
+    policies=wildcard \
+    secret_id_ttl=2m \
+    token_num_uses=5 \
+    token_ttl=1m \
+    token_max_ttl=2m\
+    token_period=0 \
+    secret_id_num_uses=9999999 \
+    > /dev/null 2>&1; then
+      msg alert "Failed to generate the wapprulez-$WAPPRULEZ AppRole!"
+      exit 1
+  fi
+  msg info "AppRole role wapprulez-$WAPPRULEZ configuration:"
+  vault read auth/vaultron-approle/role/wapprulez-$WAPPRULEZ 2> /dev/null
+  msg complete "Generated wapprulez-$WAPPRULEZ role!"
+}
+
+get_role_id() {
+  msg info "Getting wapprulez-$WAPPRULEZ role ID ..."
+  if ! vault read auth/vaultron-approle/role/wapprulez-$WAPPRULEZ/role-id | \
+    grep role_id | awk '{print $2}' > /dev/null 2>&1; then
+      msg alert "Failed to get wapprulez-$WAPPRULEZ role ID!"
+      exit 1
+  fi
+  ROLE_ID=$(vault read auth/vaultron-approle/role/wapprulez-$WAPPRULEZ/role-id | grep role_id | awk '{print $2}')
+  msg complete "Got wapprulez-$WAPPRULEZ role ID: $ROLE_ID"
+}
+
+get_secret_id() {
+  #vault write -f auth/vaultron-approle/role/wapprulez/secret-id
+  msg info "Getting wapprulez-$WAPPRULEZ secret ID ..."
+  if ! vault write -f auth/vaultron-approle/role/wapprulez-$WAPPRULEZ/secret-id | \
+    grep -w secret_id | awk '{print $2}' > /dev/null 2>&1; then
+      msg alert "Failed to get wapprulez-$WAPPRULEZ secret ID!"
+      exit 1
+  fi
+  SECRET_ID=$(vault write -f auth/vaultron-approle/role/wapprulez-$WAPPRULEZ/secret-id | grep -w secret_id | awk '{print $2}')
+  msg complete "Got wapprulez-$WAPPRULEZ secret ID: $SECRET_ID"
+}
+
+gen_token() {
+  msg secret "Generating $1 AppRole tokens: "
+  printf '[vaultron] [@] '
+  for _ in $(seq "$1"); do
+    if ! vault write auth/vaultron-approle/login \
+      role_id="$ROLE_ID" \
+      secret_id="$SECRET_ID" >> ./tmp/wapprulez-$WAPPRULEZ.log 2>&1; then
+      printf "${txtred}e${txtrst}"
+    else
+      printf "${txtgrn}.${txtrst}"
+  fi
+  done
+  printf "$txtrst\n"
+}
+
+check_vault
+check_approle
+gen_role
+get_role_id
+get_secret_id
+if ! gen_token "$@"; then
+  errors=$((errors + $?));
+  msg "Problem generating AppRole tokens!";
+  exit $errors
+else
+  msg complete "Generated $1 AppRole tokens; logged in ./tmp/wapprulez-$WAPPRULEZ.log"
+fi

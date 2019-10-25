@@ -31,7 +31,7 @@ Success! Data written to: vaultron-root-pki/config/urls
 
 ### Configure Role
 
-This Root CA role provides for generating certificates with a **1750 day lifespan**:
+This Root CA role provides for generating certificates with a maximum **1750 day lifespan**:
 
 ```
 $ vault write vaultron-root-pki/roles/vaultron-consul-root \

@@ -66,7 +66,7 @@ Success! Data written to: vaultron-database/roles/mongodb-readonly
 Retrieve a read-only MongoDB database credential:
 
 ```
-$ vault read vaultron-database/creds/mongodb-readonly
+$ vault read vaultron-database/creds/vaultron-role
 Key                Value
 ---                -----
 lease_id           vaultron-database/creds/mongodb-readonly/oJ7Me3gsNTzE25GVFu76nwyp
