@@ -1,8 +1,10 @@
 ## NEXT
 
+- Vault v1.2.4
 - Update Yellow Lion / telemetry / dashboard / etc.
 - Update Black Lion custom template
 - Update Agent guide
+- Use 825d TTLs in server TLS material (Hi, Catalina!)
 - Update documentation
 
 ## v3.2.0
