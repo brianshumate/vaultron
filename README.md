@@ -999,6 +999,20 @@ custom/vault: Mach-O 64-bit executable x86_64
 
 If this is the case, please replace the `vault` binary with the Linux AMD64 version.
 
+### server gave HTTP response to HTTPS client
+
+If you encounter an error like this when attempting to run `blazing_sword`:
+
+```
+Error initializing: Put https://127.0.0.1:8200/v1/sys/init: http: server gave HTTP response to HTTPS client
+[vaultron] [!] Cannot initialize Vault!
+[vaultron] [!]
+```
+
+Ensure that you do not have another `vault` process which was already listening at 127.0.0.1:8220 when you formed Vaultron.
+
+Often this is caused by a `-dev` mode instance of Vault running on the Docker host.
+
 ### Some Other Undefined Problem!
 
 Have you tried turning it off an on again?
