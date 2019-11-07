@@ -1,4 +1,4 @@
-## NEXT
+## 3.2.1
 
 - Vault v1.2.4
 - Update Yellow Lion / telemetry / dashboard / etc.
