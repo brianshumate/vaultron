@@ -1013,6 +1013,16 @@ Ensure that you do not have another `vault` process which was already listening 
 
 Often this is caused by a `-dev` mode instance of Vault running on the Docker host.
 
+### Error: Unable to read Docker image into resource: Unable to pull image
+
+If you encounter an error like the following:
+
+```
+Error: Unable to read Docker image into resource: Unable to pull image vault:1.2.4: error pulling image vault:1.2.4: Error response from daemon: manifest for vault:1.2.4 not found: manifest unknown: manifest unknown
+```
+
+Then it is likely that the docker image for the version of Vault (in this example 1.2.4) is not yet published to DockerHub. You'll have to try again when the image becomes available.
+
 ### Some Other Undefined Problem!
 
 Have you tried turning it off an on again?
