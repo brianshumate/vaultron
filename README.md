@@ -147,10 +147,10 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [?] Vault OSS version: 1.2.3
-[vaultron] [i] Consul OSS version: 1.6.1
+[vaultron] [i] Vault OSS version: 1.3.0
+[vaultron] [i] Consul OSS version: 1.6.2
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 18 added, 0 changed, 0 destroyed.
+[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 
 You can now visit the Vault web UI at https://localhost:8200
@@ -193,7 +193,7 @@ vaultron-consuls2   Up 8 minutes (healthy)
 vaultron-consuls1   Up 8 minutes (healthy)
 ```
 
-Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that's not really an issue at this time.
+Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that's not really a problem that they appear as _unhealthy_ at this time.
 
 There is also a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the `consul` or `vault` CLI tools with Vaultron:
 
@@ -220,7 +220,7 @@ which should output details like this:
 [vaultron] [+] VAULT_ADDR: https://127.0.0.1:8200
 ```
 
-> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`.
+> **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`. If you do not do this, your browser(s) will complain about the certificates presented by the Consul or Vault servers.
 
 See the **TLS by Default** section for more details on handling the Vaultron Certificate Authority certificate.
 
