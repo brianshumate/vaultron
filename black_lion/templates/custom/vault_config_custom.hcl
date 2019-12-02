@@ -18,10 +18,10 @@ listener "tcp" {
   tls_client_ca_file = "/etc/ssl/certs/ca.pem"
 }
 
-#storage "raft" {
+# storage "raft" {
 #  path = "/vault"
 #  node_id = "${node_id}"
-#}
+# }
 
 storage "consul" {
   address            = "${consul_address}:8500"
@@ -44,14 +44,8 @@ plugin_directory = "/vault/plugins"
 #     The following are for testing/debugging of Vaultron itself only
 
 # telemetry {
-#   # prometheus_retention_time = "30s"
-#   # Below is for prometheus only
-#   # disable_hostname          = false
-#   dogstatsd_addr   = "10.10.42.219:8125"
-#   disable_hostname = true
-# }
-
-# telemetry {
-#   dogstatsd_addr   = "172.17.0.2:8125"
-#   disable_hostname = true
+# dogstatsd_addr   = "172.17.0.2:8125"
+# prometheus_retention_time = "30s"
+# Below is for prometheus only
+# disable_hostname = false
 # }

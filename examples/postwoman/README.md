@@ -35,11 +35,16 @@ Finally, before using Postwoman, configure Vault's CORS settings to specify the 
 ```
 vault write /sys/config/cors \
   allowed_origins="http://localhost:3000,http://10.10.42.4:3000"
+```
+
+The output should resemble:
+
+```
 Success! Data written to: sys/config/cors
 ```
 
-Then you can open the Postwoman UI at http://localhost:3000 and begin using it to communicate with Vaultron.
+Then, you can open the Postwoman UI at http://localhost:3000 and begin using it to communicate with Vaultron.
 
-Here's a quick example demonstrating [/sys/health]():
+Here's a quick example demonstrating [/sys/health](https://www.vaultproject.io/api/system/health.html):
 
 ![](https://raw.githubusercontent.com/brianshumate/vaultron/master/share/postwoman-sys-health.png)
