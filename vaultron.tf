@@ -12,12 +12,12 @@ terraform {
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "1.3.1"
+  default = "1.3.2"
 }
 
 # Set TF_VAR_consul_version to set this
 variable "consul_version" {
-  default = "1.6.2"
+  default = "1.6.3"
 }
 
 # -----------------------------------------------------------------------
