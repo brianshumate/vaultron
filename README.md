@@ -102,8 +102,8 @@ Install the following on the system where you will form Vaultron:
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.1.0.4
-  - Engine version: 19.03.4
+  - Tested with version 2.1.0.5
+  - Engine version: 19.03.5
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul/1.5.2/)
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
@@ -111,7 +111,7 @@ Install the following on the system where you will form Vaultron:
 - [Vault](https://www.vaultproject.io/)
   - [OSS vault binaries](https://releases.hashicorp.com/vault/1.1.3/)
 
-### Quickest Start for macOS
+### Quickest Start (for macOS only)
 
 Once you have the prerequisites installed, you can use the following example to form Vaultron and open the the Vault web UI in your browser on macOS.
 
@@ -130,9 +130,9 @@ git clone https://github.com/brianshumate/vaultron.git && \
 
 > **NOTE**: The `blazing_sword` script persists unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
-### Quick Start for Linux or macOS
+### Quick Start (for Linux or macOS)
 
-Vaultron uses the latest Consul and Vault versions by default, so make sure that you have also installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally, and that you have have [Docker](https://docs.docker.com/install/) installed as well.
+Vaultron uses the latest Consul and Vault OSS versions by default, so make sure that you have also installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally, and that you have have [Docker](https://docs.docker.com/install/) installed as well.
 
 After doing so, it takes just 3 steps to form Vaultron:
 
@@ -147,8 +147,8 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.3.0
-[vaultron] [i] Consul OSS version: 1.6.2
+[vaultron] [i] Vault OSS version: 1.3.2
+[vaultron] [i] Consul OSS version: 1.6.3
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
