@@ -166,7 +166,7 @@ resource "docker_container" "vault_oss_server" {
 
   networks_advanced {
     name         = "vaultron-network"
-    ipv4_address = "${format("10.10.42.20%d", count.index)}"
+    ipv4_address = format("10.10.42.20%d", count.index)
   }
 
   volumes {
@@ -306,7 +306,7 @@ resource "docker_container" "vault_custom_server" {
 
   networks_advanced {
     name         = "vaultron-network"
-    ipv4_address = "${format("10.10.42.20%d", count.index)}"
+    ipv4_address = format("10.10.42.20%d", count.index)
   }
 
   volumes {

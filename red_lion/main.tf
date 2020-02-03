@@ -519,7 +519,7 @@ resource "docker_container" "consul_oss_client" {
 
   networks_advanced {
     name         = "vaultron-network"
-    ipv4_address = "${format("10.10.42.4%d", count.index)}"
+    ipv4_address = format("10.10.42.4%d", count.index)
   }
 
   upload {
