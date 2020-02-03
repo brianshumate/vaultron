@@ -1,3 +1,10 @@
+## 3.2.4
+
+- Vault v1.3.2
+- Consul v1.6.3
+- Remove interpolation to prevent warnings (thanks @fprimex)
+- Updated documentation
+
 ## 3.2.3
 
 - Vault v1.3.1
