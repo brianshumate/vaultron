@@ -193,3 +193,4 @@ rm -f "${plan_file}"
 msg success "Vaultron formed!"
 tput setaf 7
 form_message
+tput sgr0

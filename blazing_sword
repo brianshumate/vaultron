@@ -207,4 +207,4 @@ if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
 
-printf $TXTRST
+tput sgr0

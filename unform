@@ -104,8 +104,11 @@ errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then
   msg alert "Vaultron unformed (with $errors errors)!"
+  tput sgr0
 else
   msg boom "Vaultron unformed!"
+  tput sgr0
 fi
 
+tput sgr0
 exit $errors
