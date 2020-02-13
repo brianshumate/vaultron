@@ -154,10 +154,6 @@ resource "docker_container" "consuls0" {
 
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
-  labels = {
-    robot = "vaultron"
-  }
-
   must_run   = true
   name       = "vaultron-consuls0"
   hostname   = "consuls0"
@@ -290,10 +286,6 @@ resource "docker_container" "consuls1" {
 
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
-  labels = {
-    robot = "vaultron"
-  }
-
   must_run   = true
   name       = "vaultron-consuls1"
   hostname   = "consuls1"
@@ -369,10 +361,6 @@ resource "docker_container" "consuls2" {
   ]
 
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
-
-  labels = {
-    robot = "vaultron"
-  }
 
   must_run   = true
   name       = "vaultron-consuls2"
@@ -500,10 +488,6 @@ resource "docker_container" "consul_oss_client" {
   env = ["CONSUL_ALLOW_PRIVILEGED_PORTS=", "CONSUL_HTTP_SSL=true"]
 
   must_run = true
-
-  labels = {
-    robot = "vaultron"
-  }
 
   capabilities {
     add = ["NET_ADMIN", "SYS_ADMIN", "SYS_PTRACE", "SYSLOG"]
