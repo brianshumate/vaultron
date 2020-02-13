@@ -1,3 +1,9 @@
+## 3.2.5
+
+- Consul 1.7.0
+- Fix Terraform issue with labels
+- Update documentation
+
 ## 3.2.4
 
 - Vault v1.3.2
