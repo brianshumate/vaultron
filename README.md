@@ -310,9 +310,9 @@ Speed:         ★★★★★
 
 Here are some slightly more serious notes and questions about what Vaultron is and how it can work for you.
 
-### Basic Architecture Overview
-
 Vaultron is only currently tested to function on Linux and macOS, but here is basically what you are getting by default:
+
+### Basic Architecture Overview for Consul Storage
 
 ```
 +------------+--------------------------------------------------+------------+
@@ -418,6 +418,17 @@ Vault OSS version to use
 Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions.
 
 - Default: latest OSS version
+- Acceptable values:
+  - A valid Consul OSS version string, for example "1.6.3"
+
+#### TF_VAR_storage_flavor
+
+Vaultron can use integrated Raft storage or Consul storage; use this variable to specify the desired storage.
+
+- Default: raft
+- Acceptable values:
+  - consul
+  - raft
 
 #### TF_VAR_datacenter_name
 
