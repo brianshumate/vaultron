@@ -92,9 +92,6 @@ resource "docker_container" "statsd_graphite" {
     protocol = "tcp"
   }
 
-  labels = {
-    robot = "vaultron"
-  }
 }
 
 # -----------------------------------------------------------------------
@@ -176,10 +173,6 @@ resource "docker_container" "grafana" {
   networks_advanced {
     name         = "vaultron-network"
     ipv4_address = "10.10.42.220"
-  }
-
-  labels = {
-    robot = "vaultron"
   }
 
   volumes {

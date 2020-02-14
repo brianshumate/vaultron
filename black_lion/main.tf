@@ -146,10 +146,6 @@ resource "docker_container" "vault_oss_server" {
   dns        = var.consul_server_ips
   dns_search = ["consul"]
 
-  labels = {
-    robot = "vaultron"
-  }
-
   must_run = true
 
   capabilities {
@@ -285,10 +281,6 @@ resource "docker_container" "vault_custom_server" {
   domainname = "consul"
   dns        = var.consul_server_ips
   dns_search = ["consul"]
-
-  labels = {
-    robot = "vaultron"
-  }
 
   must_run = true
 
