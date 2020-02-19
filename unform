@@ -17,9 +17,12 @@ if [ -z "$(command -v terraform)" ]; then
   exit 1
 fi
 
+check_flavor
 check_docker
 
 msg greeting "Unform Vaultron ..."
+
+cd "flavors/$TF_VAR_flavor"
 
 if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."
@@ -29,19 +32,21 @@ fi
 # ownership of consul/vault folders to avoid failure with Terraform destroy
 # NB: This occurs on Docker on Linux but not Docker for Mac
 #     This should be resolved by using SKIP_CHOWN now as well
-if [ "$(uname)" = "Linux" ]; then
-  if ! [ -w consul/consuls0 ]; then
-    msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
-    msg notice "You could be prompted by sudo for your user password to make this change ..."
-    if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" consul; then
-      msg alert "Failed to change ownership of consul data to $VAULTRON_USER:$VAULTRON_GROUP"
-      msg alert "Manual cleanup of consul folder contents required:"
-      ls -lha consul/
-    fi
-    if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" vault; then
-      msg alert "Failed to change ownership of vault data to $VAULTRON_USER:$VAULTRON_GROUP"
-      msg alert "Manual cleanup of vault folder contents required:"
-      ls -lha vault/
+if [ "$TF_VAR_flavor" = "consul" ]; then
+  if [ "$(uname)" = "Linux" ]; then
+    if ! [ -w consul/consuls0 ]; then
+      msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
+      msg notice "You could be prompted by sudo for your user password to make this change ..."
+      if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" consul; then
+        msg alert "Failed to change ownership of consul data to $VAULTRON_USER:$VAULTRON_GROUP"
+        msg alert "Manual cleanup of consul folder contents required:"
+        ls -lha consul/
+      fi
+      if ! sudo chown -R "$VAULTRON_USER:$VAULTRON_GROUP" vault; then
+        msg alert "Failed to change ownership of vault data to $VAULTRON_USER:$VAULTRON_GROUP"
+        msg alert "Manual cleanup of vault folder contents required:"
+        ls -lha vault/
+      fi
     fi
   fi
 fi
@@ -60,21 +65,26 @@ fi
 #   msg success "Docker private network vaultron-network removed"
 # fi
 
+
 # Remove Consul client data
-rm -rf ./consul/consulc0
-errors=$((errors + $?))
-rm -rf ./consul/consulc1
-errors=$((errors + $?))
-rm -rf ./consul/consulc2
-errors=$((errors + $?))
+if [ "$TF_VAR_flavor" = "consul" ]; then
+  rm -rf ./consul/consulc0
+  errors=$((errors + $?))
+  rm -rf ./consul/consulc1
+  errors=$((errors + $?))
+  rm -rf ./consul/consulc2
+  errors=$((errors + $?))
+fi
 
 # Remove Consul server data
-rm -rf ./consul/consuls0
-errors=$((errors + $?))
-rm -rf ./consul/consuls1
-errors=$((errors + $?))
-rm -rf ./consul/consuls2
-errors=$((errors + $?))
+if [ "$TF_VAR_flavor" = "consul" ]; then
+  rm -rf ./consul/consuls0
+  errors=$((errors + $?))
+  rm -rf ./consul/consuls1
+  errors=$((errors + $?))
+  rm -rf ./consul/consuls2
+  errors=$((errors + $?))
+fi
 
 # Remove Vault server data
 rm -rf ./vault/vault0
@@ -111,4 +121,7 @@ else
 fi
 
 tput sgr0
+
+cd ../..
+
 exit $errors

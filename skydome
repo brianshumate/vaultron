@@ -81,6 +81,22 @@ fi
 }
 
 # -----------------------------------------------------------------------
+# Check for desired Vaultron flavor and default to Consul if none set
+# -----------------------------------------------------------------------
+check_flavor() {
+  if [ -z "$TF_VAR_flavor" ]; then
+    TF_VAR_flavor=consul
+  else
+    if [ "$TF_VAR_flavor" != "raft" ]; then
+      msg alert "Cannot use flavor $TF_VAR_flavor"
+      exit 1
+    else
+      TF_VAR_flavor="$TF_VAR_flavor"
+    fi
+  fi
+}
+
+# -----------------------------------------------------------------------
 # Check for Docker proc and socket and bail out if either is absent
 # -----------------------------------------------------------------------
 check_docker() {

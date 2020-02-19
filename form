@@ -83,7 +83,7 @@ check_existing_vaultron_containers() {
 # TerraFORM Vaultron!
 check_consul_version() {
   if [ -n "$TF_VAR_consul_version" ]; then
-    USER_CONSUL_CONFIG="./red_lion/templates/oss/consul_oss_server_config_${TF_VAR_consul_version}.hcl";
+    USER_CONSUL_CONFIG="../../red_lion/templates/oss/consul_oss_server_config_${TF_VAR_consul_version}.hcl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
        msg alert "Vaultron cannot form; sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}!";
        unset TF_VAR_consul_version;
@@ -94,7 +94,7 @@ check_consul_version() {
 
 check_vault_version() {
   if [ -n "$TF_VAR_vault_version" ]; then
-    USER_VAULT_CONFIG="./black_lion/templates/oss/vault_config_${TF_VAR_vault_version}.hcl";
+    USER_VAULT_CONFIG="../../black_lion/templates/oss/vault_config_${TF_VAR_vault_version}.hcl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
        msg alert "Vaultron cannot form; sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}!";
        unset TF_VAR_vault_version;
@@ -105,8 +105,8 @@ check_vault_version() {
 
 check_custom_binary() {
   if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-    if [ ! -f ./custom/"$1" ]; then
-      msg alert "Vaultron cannot form; custom binary specified, but ./custom/$1 was not found!"
+    if [ ! -f ../../custom/"$1" ]; then
+      msg alert "Vaultron cannot form; custom binary specified, but ../../custom/$1 was not found!"
       exit 1
     fi
   fi
@@ -131,6 +131,11 @@ if [ -z "$(command -v terraform)" ]; then
 fi
 
 # Preflight checks
+check_flavor
+
+# SAVOR THE FLAVOR!
+cd "flavors/$TF_VAR_flavor"
+
 check_docker
 check_and_create_vaultron_private_network
 check_custom_binary vault
@@ -155,7 +160,10 @@ export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 check_vault_version
-check_consul_version
+
+if [ "$TF_VAR_flavor" = "consul" ]; then
+  check_consul_version
+fi
 
 if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
   # we won't be needing this...
@@ -165,7 +173,8 @@ else
   msg info "Vault OSS version: ${TF_VAR_vault_version}"
 fi
 
-if [ -n "$TF_VAR_consul_custom" ]; then
+if [ "$TF_VAR_flavor" = "consul" ]; then
+  if [ -n "$TF_VAR_consul_custom" ]; then
   if [ "$TF_VAR_consul_custom" -gt 0 ]; then
     msg info "Consul version: custom binary"
   else
@@ -173,6 +182,7 @@ if [ -n "$TF_VAR_consul_custom" ]; then
   fi
 else
   msg info "Consul OSS version: ${TF_VAR_consul_version}"
+fi
 fi
 
 plan_file=./tfstate/vaultron-$(date -u "+%Y-%m-%dT%H:%M:%SZ").plan
@@ -194,3 +204,5 @@ msg success "Vaultron formed!"
 tput setaf 7
 form_message
 tput sgr0
+
+cd ../..

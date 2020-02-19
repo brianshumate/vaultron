@@ -134,7 +134,7 @@ git clone https://github.com/brianshumate/vaultron.git && \
 
 Vaultron uses the latest Consul and Vault OSS versions by default, so make sure that you have also installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally, and that you have have [Docker](https://docs.docker.com/install/) installed as well.
 
-After doing so, it takes just 3 steps to form Vaultron:
+After installing prerequisites, it takes just 3 steps to form Vaultron:
 
 1. `git clone https://github.com/brianshumate/vaultron.git`
 2. `cd vaultron`
@@ -250,8 +250,10 @@ The Terraform provider modules _are also not removed_ to save on resources and t
 If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead:
 
 ```
-terraform destroy -state=./tfstate/terraform.tfstate
+terraform destroy -state=flavors/$TF_VAR_vault_flavor/tfstate/terraform.tfstate
 ```
+
+ensure that you have set a value for `TF_VAR_vault_flavor` or replace it with the path to the flavor you are using.
 
 If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `./blazing_sword` script to do all of this for you. `blazing_sword` uses the additional Terraform configuration in `blazing_sword/main.tf`.
 
@@ -421,11 +423,13 @@ Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions
 - Acceptable values:
   - A valid Consul OSS version string, for example "1.6.3"
 
-#### TF_VAR_storage_flavor
+#### TF_VAR_vault_flavor
 
-Vaultron can use integrated Raft storage or Consul storage; use this variable to specify the desired storage.
+Vaultron can use different "flavors" for key Vault components.
 
-- Default: raft
+Currently this is limited to switching between the integrated Raft storage or Consul storage backends; use this variable to specify the desired Vault storage backend type.
+
+- Default: consul
 - Acceptable values:
   - consul
   - raft
@@ -690,6 +694,15 @@ consuls0.node.consul. 0 IN  TXT "consul-network-segment="
 
 Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
 
+Specifically, Vaultron does not follow every best practice as highlighted in the [Production Hardening](https://learn.hashicorp.com/vault/operations/production-hardening) guide (but you should always do so in production!).
+
+It does implement the following hardening practices from the guide:
+
+- End-to-End TLS: All Vaultron components use end-to-end TLS by default.
+- Single Tenancy: Vaultron uses the official Docker images for Consul and Vault, which are single-process images
+- Disable Swap: Docker image does not configure a swap device
+- Enable Auditing: A [File Audit Device](https://www.vaultproject.io/docs/audit/file/) is configured by default if `blazing_sword` is used
+
 #### Docker Container / OS
 
 To better facilitate requirements, advanced troubleshooting, and debugging, the following capabilities are added:
@@ -753,11 +766,12 @@ There's also an `examples/tls/eybeams_tls` script that will do this import for y
 
 ### Where's My Vault Data?
 
-Vault data are stored in Consul's key/value store, which in turn is written into the `consul/oss_server_*/data` directories for each of the three Consul servers.
+Vault data are stored in Consul's key/value store, which in turn is written into the `consul/consuls{0,1,2}/data` directories for each of the three Consul servers.
 
-Here is a tree showing the folder structure for a Consul server:
+Here is a tree showing the folder structure for a Consul server at `flavors/consul/consul/consuls0`:
 
 ```
+consul
 └── consul
     └── consuls0
         ├── config

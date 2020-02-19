@@ -49,6 +49,11 @@ variable "secondary_datacenter_name" {
 # Vault variables
 # -----------------------------------------------------------------------
 
+# Set TF_VAR_vault_flavor to set this
+variable "vault_flavor" {
+  default = "consul"
+}
+
 # Set TF_VAR_use_vault_oss to set this
 variable "use_vault_oss" {
   default = "1"
@@ -204,7 +209,7 @@ variable "statsd_ip" {
 # -----------------------------------------------------------------------
 
 module "telemetry" {
-  source                   = "./yellow_lion"
+  source                   = "../../yellow_lion"
   grafana_version          = var.grafana_version
   statsd_ip                = var.statsd_ip
   statsd_version           = var.statsd_version
@@ -212,7 +217,7 @@ module "telemetry" {
 }
 
 module "consul_cluster" {
-  source                       = "./red_lion"
+  source                       = "../../red_lion"
   consul_acl_datacenter        = var.consul_acl_datacenter
   consul_custom                = var.consul_custom
   consul_custom_instance_count = var.consul_custom_instance_count
@@ -229,7 +234,7 @@ module "consul_cluster" {
 }
 
 module "vaultron" {
-  source                       = "./black_lion"
+  source                       = "../../black_lion"
   datacenter_name              = var.datacenter_name
   consul_server_ips            = module.consul_cluster.consul_oss_server_ips
   consul_client_ips            = module.consul_cluster.consul_client_ips

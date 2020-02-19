@@ -35,6 +35,11 @@ variable "secondary_datacenter_name" {
 # Vault variables
 # -----------------------------------------------------------------------
 
+# Set TF_VAR_vault_flavor to set this
+variable "vault_flavor" {
+  default = "raft"
+}
+
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
   default = "1.3.2"
@@ -90,70 +95,6 @@ variable "vault_custom_config_template" {
   default = "vault_config_custom.hcl"
 }
 
-// # Set TF_VAR_vault_server_tls_disable to set this
-// variable "vault_server_tls_disable" {
-//   default = "false"
-// }
-
-# -----------------------------------------------------------------------
-# Consul variables
-# -----------------------------------------------------------------------
-
-# Set TF_VAR_consul_log_level to set this
-variable "consul_log_level" {
-  default = "debug"
-}
-
-# Set TF_VAR_use_consul_oss to set this
-variable "use_consul_oss" {
-  default = "1"
-}
-
-# Set TF_VAR_consul_ent_id to set this
-variable "consul_ent_id" {
-  default = ""
-}
-
-# Set TF_VAR_consul_recursor_1 to set this
-variable "consul_recursor_1" {
-  default = "1.1.1.1"
-}
-
-# Set TF_VAR_consul_recursor_2 to set this
-variable "consul_recursor_2" {
-  default = "1.0.0.1"
-}
-
-# Set TF_VAR_consul_acl_datacenter to set this
-variable "consul_acl_datacenter" {
-  default = "arus"
-}
-
-# Set TF_VAR_consul_data_dir to set this
-variable "consul_data_dir" {
-  default = "/consul/data"
-}
-
-# Set TF_VAR_consul_oss to set this
-variable "consul_oss" {
-  default = "1"
-}
-
-# Set TF_VAR_consul_oss_instance_count to set this
-variable "consul_oss_instance_count" {
-  default = "3"
-}
-
-# Set TF_VAR_consul_oss to set this
-variable "consul_custom" {
-  default = "0"
-}
-
-# Set TF_VAR_consul_custom_instance_count to set this
-variable "consul_custom_instance_count" {
-  default = "0"
-}
-
 # -----------------------------------------------------------------------
 # Telemetry variables
 # -----------------------------------------------------------------------
@@ -179,18 +120,6 @@ variable "statsd_ip" {
 }
 
 # -----------------------------------------------------------------------
-# Vaultron private network
-# -----------------------------------------------------------------------
-
-# resource "docker_network" "private_network" {
-#   name       = "vaultron-network"
-#   attachable = true
-#   ipam_config {
-#     subnet = "10.10.42.0/24"
-#   }
-# }
-
-# -----------------------------------------------------------------------
 # Module definitions
 # -----------------------------------------------------------------------
 
@@ -202,29 +131,9 @@ module "telemetry" {
   vaultron_telemetry_count = var.vaultron_telemetry_count
 }
 
-module "consul_cluster" {
-  source                       = "./red_lion"
-  consul_acl_datacenter        = var.consul_acl_datacenter
-  consul_custom                = var.consul_custom
-  consul_custom_instance_count = var.consul_custom_instance_count
-  consul_data_dir              = var.consul_data_dir
-  consul_ent_id                = var.consul_ent_id
-  consul_log_level             = var.consul_log_level
-  consul_recursor_1            = var.consul_recursor_1
-  consul_recursor_2            = var.consul_recursor_2
-  consul_oss                   = var.consul_oss
-  consul_oss_instance_count    = var.consul_oss_instance_count
-  consul_version               = var.consul_version
-  datacenter_name              = var.datacenter_name
-  use_consul_oss               = var.use_consul_oss
-}
-
 module "vaultron" {
   source                       = "./black_lion"
   datacenter_name              = var.datacenter_name
-  consul_server_ips            = module.consul_cluster.consul_oss_server_ips
-  consul_client_ips            = module.consul_cluster.consul_client_ips
-  disable_clustering           = var.disable_clustering
   use_vault_oss                = var.use_vault_oss
   vault_cluster_name           = var.vault_cluster_name
   vault_custom_config_template = var.vault_custom_config_template

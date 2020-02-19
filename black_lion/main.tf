@@ -13,6 +13,10 @@ terraform {
 # Vault variables
 # -----------------------------------------------------------------------
 
+variable "vault_flavor" {
+  default = "consul"
+}
+
 variable "datacenter_name" {
 }
 
@@ -71,7 +75,7 @@ resource "docker_image" "vault" {
 }
 
 # -----------------------------------------------------------------------
-# Vault OSS server configuration
+# Vault OSS server BASE configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_config" {
@@ -96,7 +100,27 @@ data "template_file" "vault_config" {
 }
 
 # -----------------------------------------------------------------------
-# TLS configuration
+# Vault server STORAGE configuration for OSS
+# -----------------------------------------------------------------------
+
+data "template_file" "vault_oss_storage_config" {
+  count = var.vault_oss_instance_count
+  template = file(
+    "${path.module}/templates/storage/${var.vault_flavor}.hcl",
+  )
+
+  vars = {
+    consul_address     = element(var.consul_client_ips, count.index)
+    vault_path         = var.vault_path
+    cluster_name       = var.vault_cluster_name
+    disable_clustering = var.disable_clustering
+    service_tags       = "vaultron"
+    node_id            = "vaultron-vault-${count.index}"
+  }
+}
+
+# -----------------------------------------------------------------------
+# Vault OSS TLS configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "ca_bundle" {
@@ -186,6 +210,11 @@ resource "docker_container" "vault_oss_server" {
   }
 
   upload {
+    content = element(data.template_file.vault_oss_storage_config.*.rendered, count.index)
+    file    = "/vault/config/storage.hcl"
+  }
+
+  upload {
     content = data.template_file.telemetry_config.rendered
     file    = var.vaultron_telemetry_count ? "/vault/config/telemetry.hcl" : "/tmp/telemetry.hcl"
   }
@@ -217,7 +246,7 @@ resource "docker_container" "vault_oss_server" {
 # -----------------------------------------------------------------------
 
 # -----------------------------------------------------------------------
-# TLS configuration
+# Vault CUSTOM TLS configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_tls_cert" {
@@ -235,7 +264,7 @@ data "template_file" "vault_custom_tls_key" {
 }
 
 # -----------------------------------------------------------------------
-# Vault Custom binary configuration
+# Vault CUSTOM binary BASE configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_config" {
@@ -253,7 +282,6 @@ data "template_file" "vault_custom_config" {
     consul_address     = element(var.consul_client_ips, count.index)
     datacenter         = var.datacenter_name
     log_level          = var.vault_server_log_level
-    node_id            = uuid()
     vault_path         = var.vault_path
     cluster_name       = var.vault_cluster_name
     disable_clustering = var.disable_clustering
@@ -262,6 +290,26 @@ data "template_file" "vault_custom_config" {
     tls_key            = "/vault/config/vault-server.key"
     service_tags       = "vaultron"
     ui                 = true
+  }
+}
+
+# -----------------------------------------------------------------------
+# Vault CUSTOM server STORAGE configuration
+# -----------------------------------------------------------------------
+
+data "template_file" "vault_custom_storage_config" {
+  count = var.vault_oss_instance_count
+  template = file(
+    "${path.module}/templates/storage/${var.vault_flavor}.hcl",
+  )
+
+  vars = {
+    consul_address     = element(var.consul_client_ips, count.index)
+    vault_path         = var.vault_path
+    cluster_name       = var.vault_cluster_name
+    disable_clustering = var.disable_clustering
+    service_tags       = "vaultron"
+    node_id            = "vaultron-vault-${count.index}"
   }
 }
 
@@ -332,6 +380,11 @@ resource "docker_container" "vault_custom_server" {
       count.index,
     )
     file = "/vault/config/main.hcl"
+  }
+
+  upload {
+    content = element(data.template_file.vault_custom_storage_config.*.rendered, count.index)
+    file    = "/vault/config/storage.hcl"
   }
 
   upload {

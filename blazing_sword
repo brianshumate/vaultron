@@ -21,7 +21,7 @@
 
 # Check for the existence of a temporary key material file
 check_vault_file() {
-  for file in ./vault/vault_*.tmp; do
+  for file in "$TF_VAR_flavor"/vault/vault_*.tmp; do
     if [ -e "$file" ]; then
         msg info "Existing Vault file detected; pass filename as first argument and it will be used for unsealing."
         exit 0
@@ -106,7 +106,7 @@ initialize_vault() {
     INIT_CMD="vault init -key-shares=1  -key-threshold=1"
   fi
   msg info "Initializing Vault ..."
-  VAULT_DAT="./vault/vault_DEV_ONLY-$(date +%s).tmp"
+  VAULT_DAT="$TF_VAR_flavor/vault/vault_DEV_ONLY-$(date +%s).tmp"
   # Tidy control characters from initialization output before writing
   if output="$($INIT_CMD)"; then
     echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"

@@ -10,15 +10,5 @@ listener "tcp" {
   tls_key_file    = "/etc/ssl/vault-server.key"
 }
 
-storage "consul" {
-  address            = "${consul_address}:8500"
-  scheme             = "https"
-  tls_ca_file        = "/etc/ssl/certs/ca.pem"
-  token              = "b4c0ffee-3b77-04af-36d6-738b697872e6"
-  path               = "vault/"
-  disable_clustering = "${disable_clustering}"
-  service_tags       = "${service_tags}"
-}
-
 # Plugin path
 plugin_directory = "/vault/plugins"

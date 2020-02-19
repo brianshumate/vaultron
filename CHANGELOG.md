@@ -1,3 +1,9 @@
+## NEXT
+
+- Introducing flavors
+- Add support for integrated Raft storage
+- Update documentation
+
 ## 3.2.5
 
 - Consul 1.7.0
