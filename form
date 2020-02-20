@@ -134,7 +134,7 @@ fi
 check_flavor
 
 # SAVOR THE FLAVOR!
-cd "flavors/$TF_VAR_flavor"
+cd "flavors/$TF_VAR_vault_flavor"
 
 check_docker
 check_and_create_vaultron_private_network
@@ -153,15 +153,17 @@ if ! init; then
   exit 1
 fi
 
-CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
-CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
+if [ "$TF_VAR_vault_flavor" = "consul" ]; then
+  CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
+  export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
+fi
 
-export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
+CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 check_vault_version
 
-if [ "$TF_VAR_flavor" = "consul" ]; then
+if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   check_consul_version
 fi
 
@@ -173,7 +175,13 @@ else
   msg info "Vault OSS version: ${TF_VAR_vault_version}"
 fi
 
-if [ "$TF_VAR_flavor" = "consul" ]; then
+if [ "$TF_VAR_vault_flavor" = "raft" ]; then
+  msg info "Vault flavor: raft storage backed"
+  else
+  msg info "Vault flavor: consul storage backed"
+fi
+
+if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   if [ -n "$TF_VAR_consul_custom" ]; then
   if [ "$TF_VAR_consul_custom" -gt 0 ]; then
     msg info "Consul version: custom binary"

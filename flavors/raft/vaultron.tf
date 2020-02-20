@@ -124,7 +124,7 @@ variable "statsd_ip" {
 # -----------------------------------------------------------------------
 
 module "telemetry" {
-  source                   = "./yellow_lion"
+  source                   = "../../yellow_lion"
   grafana_version          = var.grafana_version
   statsd_ip                = var.statsd_ip
   statsd_version           = var.statsd_version
@@ -132,7 +132,7 @@ module "telemetry" {
 }
 
 module "vaultron" {
-  source                       = "./black_lion"
+  source                       = "../../black_lion"
   datacenter_name              = var.datacenter_name
   use_vault_oss                = var.use_vault_oss
   vault_cluster_name           = var.vault_cluster_name
@@ -143,8 +143,13 @@ module "vaultron" {
   vault_path                   = var.vault_path
   vault_server_log_format      = var.vault_server_log_format
   vault_server_log_level       = var.vault_server_log_level
+  vault_flavor                 = var.vault_flavor
   vault_version                = var.vault_version
   vaultron_telemetry_count     = var.vaultron_telemetry_count
   statsd_ip                    = module.telemetry.statsd_ip
+  # sigh, this is sad... will fix later
+  consul_server_ips  = ["10.10.42.200", "10.10.42.201", "10.10.42.202"]
+  consul_client_ips  = ["10.10.42.200", "10.10.42.201", "10.10.42.202"]
+  disable_clustering = false
 }
 
