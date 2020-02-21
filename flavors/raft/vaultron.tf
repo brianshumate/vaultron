@@ -70,6 +70,11 @@ variable "vault_path" {
   default = "vault"
 }
 
+# Set TF_VAR_vault_raft_path to set this
+variable "vault_raft_path" {
+  default = "/vault/data"
+}
+
 # Set TF_VAR_vault_cluster_name to set this
 variable "vault_cluster_name" {
   default = "vaultron"
@@ -141,6 +146,7 @@ module "vaultron" {
   vault_ent_id                 = var.vault_ent_id
   vault_oss_instance_count     = var.vault_oss_instance_count
   vault_path                   = var.vault_path
+  vault_raft_path              = var.vault_raft_path
   vault_server_log_format      = var.vault_server_log_format
   vault_server_log_level       = var.vault_server_log_level
   vault_flavor                 = var.vault_flavor

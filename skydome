@@ -87,13 +87,14 @@ check_flavor() {
   if [ -z "$TF_VAR_vault_flavor" ]; then
     TF_VAR_vault_flavor=consul
   else
-    if [ "$TF_VAR_vault_flavor" != "raft" ]; then
-      msg alert "Cannot use flavor $TF_VAR_vault_flavor"
+    if [ "$TF_VAR_vault_flavor" != "consul" ]; then
+      if [ "$TF_VAR_vault_flavor" != "raft" ]; then
+        msg alert "Cannot use flavor $TF_VAR_vault_flavor"
       exit 1
-    else
-      export TF_VAR_vault_flavor="$TF_VAR_vault_flavor"
+      fi
     fi
   fi
+  # export TF_VAR_vault_flavor="$TF_VAR_vault_flavor"
 }
 
 # -----------------------------------------------------------------------

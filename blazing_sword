@@ -32,11 +32,11 @@ check_vault_file() {
 # Authenticate with initial root token
 auth_root() {
   check_cli_cap
-  get_initial_root_token "${VAULT_DAT}"
+  get_initial_root_token "$1"
   if [ "$VAULT_CLI_CAP" -eq "1" ]; then
-    LOGIN_CMD="vault login $INITIAL_ROOT_TOKEN"
+    local LOGIN_CMD="vault login $INITIAL_ROOT_TOKEN"
   else
-    LOGIN_CMD="vault auth $INITIAL_ROOT_TOKEN"
+    local LOGIN_CMD="vault auth $INITIAL_ROOT_TOKEN"
   fi
   msg info "Authenticating with initial root token ..."
   if ! $LOGIN_CMD > /dev/null 2>&1; then
@@ -88,28 +88,48 @@ enabled() {
 # Get unseal key
 get_unseal_key() {
   msg info "Get unseal key ..."
-  k0=$(grep 'Unseal Key 1' "${VAULT_DAT}" | awk '{print $NF}')
+  k0=$(grep 'Unseal Key 1' "$1" | awk '{print $NF}')
 }
 
-# Get the initial root token
+# Get recovery key
+get_recovery_key() {
+  msg info "Get recovery key ..."
+  k1=$(grep 'Recovery Key 1' "$1" | awk '{print $NF}')
+}
+
+# Get initial root token
 get_initial_root_token() {
-  msg info "Get initial root token ..."
-  INITIAL_ROOT_TOKEN=$(grep 'Initial Root Token' "${1}" | awk '{print $NF}')
+  INITIAL_ROOT_TOKEN=$(grep 'Initial Root Token' "$1" | awk '{print $NF}')
 }
 
 # Initialize Vault and save temporary unseal keys and root token
 initialize_vault() {
   check_cli_cap
   if [ "$VAULT_CLI_CAP" -eq "1" ]; then
-    INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
+    local INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
   else
-    INIT_CMD="vault init -key-shares=1  -key-threshold=1"
+    local INIT_CMD="vault init -key-shares=1  -key-threshold=1"
   fi
   msg info "Initializing Vault ..."
-  VAULT_DAT="$TF_VAR_vault_flavor/vault/vault_DEV_ONLY-$(date +%s).tmp"
   # Tidy control characters from initialization output before writing
   if output="$($INIT_CMD)"; then
-    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"
+    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT0_DAT}"
+  else
+    msg alert "Cannot initialize Vault!"
+    msg alert "$output"
+    exit 1
+  fi
+   msg complete "Vault initialized!"
+}
+
+# Initialize Vault Raft standby and save temporary unseal keys and root token
+initialize_vault_raft_standby() {
+  local VAULT_ADDR="https://127.0.0.1:82${1}0"
+  local INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
+  msg info "Initializing Vault ..."
+  # Tidy control characters from initialization output before writing
+  if output="$($INIT_CMD)"; then
+    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "$2"
   else
     msg alert "Cannot initialize Vault!"
     msg alert "$output"
@@ -152,16 +172,16 @@ vault_active_info() {
   fi
 }
 
-# Unseal Vault
-unseal_vault() {
+# Unseal Vault for Consul
+unseal_vault_consul() {
   check_cli_cap
   if [ "$VAULT_CLI_CAP" -eq "1" ]; then
-    UNSEAL_CMD="vault operator unseal"
+    local UNSEAL_CMD="vault operator unseal"
   else
-    UNSEAL_CMD="vault unseal"
+    local UNSEAL_CMD="vault unseal"
   fi
   msg info "Unsealing Vault ..."
-  get_unseal_key
+  get_unseal_key $VAULT0_DAT
 
   if ! VAULT_ADDR="https://localhost:8200" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
@@ -171,7 +191,7 @@ unseal_vault() {
   fi
 
   if ! VAULT_ADDR="https://localhost:8210" \
-    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0"; then
     msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
@@ -187,24 +207,89 @@ unseal_vault() {
   msg complete "Vault unsealed!"
 }
 
+# Unseal Vault for raft
+unseal_vault_raft() {
+  check_cli_cap
+  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
+    local UNSEAL_CMD="vault operator unseal"
+  else
+    local UNSEAL_CMD="vault unseal"
+  fi
+  msg info "Unsealing Vault ..."
+  get_unseal_key $1
+
+  if ! VAULT_ADDR="https://localhost:82${2}0" \
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    msg alert "Cannot unseal Vault!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  msg complete "Vault unsealed!"
+}
+
 msg greeting "Blazing Sword! ..."
+
+VAULT0_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
+VAULT_RAFT_PRIMARY_ADDR=https://10.10.42.200:8200
 
 # Ain't nobody got time for your stale token up in here!
 unset VAULT_TOKEN
 
 # Because what fun is a project without a little raciness?
-sleep 1
-initialize_vault
-unseal_vault
-auth_root
+sleep 1s
+
+# Consul flavor
+if [ "$TF_VAR_vault_flavor" = "consul" ]; then
+initialize_vault 0
+unseal_vault_consul
+auth_root "${VAULT_DAT}"
 enable_all
 status
 enabled
 vault_active_info
 consul_leader_info
+fi
+
+# Raft flavor
+if [ "$TF_VAR_vault_flavor" = "raft" ]; then
+initialize_vault 0
+unseal_vault_raft "${VAULT0_DAT}" 0
+
+msg info "Await Vault post unseal setup (10 seconds) ..."
+sleep 10s
+
+get_initial_root_token $VAULT0_DAT && \
+
+msg info "Raft flavored storage: Join Vault 1 ..."
+get_initial_root_token $VAULT0_DAT && \
+VAULT_ADDR="https://127.0.0.1:8210" \
+VAULT_TOKEN="${INITIAL_ROOT_TOKEN}" \
+vault operator raft join $VAULT_RAFT_PRIMARY_ADDR  > /dev/null 2>&1
+
+unseal_vault_raft $VAULT0_DAT 1  > /dev/null 2>&1
+
+msg info "Raft flavored storage: Join Vault 2 ..."
+get_initial_root_token $VAULT0_DAT && \
+VAULT_ADDR="https://127.0.0.1:8220" \
+VAULT_TOKEN="${INITIAL_ROOT_TOKEN}" \
+vault operator raft join $VAULT_RAFT_PRIMARY_ADDR  > /dev/null 2>&1
+
+unseal_vault_raft $VAULT0_DAT 2  > /dev/null 2>&1
+
+auth_root "${VAULT0_DAT}"
+# enable_all
+
+status
+# enabled
+vault_active_info
+
+fi
 
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
+
+unset VAULT_TOKEN
 
 tput sgr0

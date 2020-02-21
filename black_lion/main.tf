@@ -31,6 +31,9 @@ variable "vault_ent_id" {
 variable "vault_path" {
 }
 
+variable "vault_raft_path" {
+}
+
 variable "vault_cluster_name" {
 }
 
@@ -111,6 +114,7 @@ data "template_file" "vault_oss_storage_config" {
   vars = {
     consul_address     = element(var.consul_client_ips, count.index)
     vault_path         = var.vault_path
+    vault_raft_path    = var.vault_raft_path
     cluster_name       = var.vault_cluster_name
     disable_clustering = var.disable_clustering
     service_tags       = "vaultron"
@@ -191,6 +195,11 @@ resource "docker_container" "vault_oss_server" {
   volumes {
     host_path      = "${path.cwd}/vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
+  }
+
+  volumes {
+    host_path      = "${path.cwd}/vault/vault${count.index}/data"
+    container_path = "/vault/data"
   }
 
   volumes {
@@ -297,7 +306,7 @@ data "template_file" "vault_custom_config" {
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_storage_config" {
-  count = var.vault_oss_instance_count
+  count = var.vault_custom_instance_count
   template = file(
     "${path.module}/templates/storage/${var.vault_flavor}.hcl",
   )
@@ -305,6 +314,7 @@ data "template_file" "vault_custom_storage_config" {
   vars = {
     consul_address     = element(var.consul_client_ips, count.index)
     vault_path         = var.vault_path
+    vault_raft_path    = var.vault_raft_path
     cluster_name       = var.vault_cluster_name
     disable_clustering = var.disable_clustering
     service_tags       = "vaultron"
@@ -349,7 +359,7 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "${path.cwd}/custom/"
+    host_path      = "${path.cwd}/../../custom/"
     container_path = "/vault/custom"
   }
 
@@ -359,13 +369,13 @@ resource "docker_container" "vault_custom_server" {
   }
 
   volumes {
-    host_path      = "${path.cwd}/vault/vault${count.index}/config"
-    container_path = "/vault/config"
+    host_path      = "${path.cwd}/vault/vault${count.index}/data"
+    container_path = "/vault/data"
   }
 
   volumes {
-    host_path      = "${path.cwd}/vault/vault${count.index}/data"
-    container_path = "/vault/data"
+    host_path      = "${path.cwd}/vault/vault${count.index}/config"
+    container_path = "/vault/config"
   }
 
   volumes {
@@ -374,15 +384,12 @@ resource "docker_container" "vault_custom_server" {
   }
 
   upload {
-    content = element(
-      data.template_file.vault_custom_config.*.rendered,
-      count.index,
-    )
-    file = "/vault/config/main.hcl"
+    content = data.template_file.vault_custom_config.*.rendered[count.index]
+    file    = "/vault/config/main.hcl"
   }
 
   upload {
-    content = element(data.template_file.vault_custom_storage_config.*.rendered, count.index)
+    content = data.template_file.vault_custom_storage_config.*.rendered[count.index]
     file    = "/vault/config/storage.hcl"
   }
 

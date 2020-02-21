@@ -466,9 +466,16 @@ A valid Consul log level: _trace_, _debug_, _info_, _warn_, or _err_
 
 #### TF_VAR_vault_path
 
-Set `path` value for storage stanza
+Set `path` value for Consul storage stanza
 
 - Default: `vault`
+
+
+#### TF_VAR_vault_raft_path
+
+Set `path` value for Raft storage stanza
+
+- Default: `/vault/data`
 
 #### TF_VAR_vault_cluster_name
 
