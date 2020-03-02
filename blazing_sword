@@ -93,7 +93,7 @@ get_unseal_key() {
 
 # Get recovery key
 get_recovery_key() {
-  msg info "Get recovery key ..."
+  msg info "Get recovery ..."
   k1=$(grep 'Recovery Key 1' "$1" | awk '{print $NF}')
 }
 
@@ -113,7 +113,7 @@ initialize_vault() {
   msg info "Initializing Vault ..."
   # Tidy control characters from initialization output before writing
   if output="$($INIT_CMD)"; then
-    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT0_DAT}"
+    echo "$output" | awk '{gsub(/\033\[[0-9]+m/,""); print}' > "${VAULT_DAT}"
   else
     msg alert "Cannot initialize Vault!"
     msg alert "$output"
@@ -172,7 +172,7 @@ vault_active_info() {
   fi
 }
 
-# Unseal Vault for Consul
+# Unseal Vault (with Consul storage)
 unseal_vault_consul() {
   check_cli_cap
   if [ "$VAULT_CLI_CAP" -eq "1" ]; then
@@ -181,109 +181,113 @@ unseal_vault_consul() {
     local UNSEAL_CMD="vault unseal"
   fi
   msg info "Unsealing Vault ..."
-  get_unseal_key $VAULT0_DAT
-
+  get_unseal_key $VAULT_DAT
   if ! VAULT_ADDR="https://localhost:8200" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Cannot unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
-
   if ! VAULT_ADDR="https://localhost:8210" \
     $UNSEAL_CMD "$k0"; then
     msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
-
   if ! VAULT_ADDR="https://localhost:8220" \
     $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Cannot unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
   fi
-
   msg complete "Vault unsealed!"
 }
 
-# Unseal Vault for raft
-unseal_vault_raft() {
-  check_cli_cap
-  if [ "$VAULT_CLI_CAP" -eq "1" ]; then
-    local UNSEAL_CMD="vault operator unseal"
-  else
-    local UNSEAL_CMD="vault unseal"
+# Join Raft primary
+join_raft_primary() {
+  msg info "Raft flavored storage: Join primary ..."
+  get_initial_root_token $VAULT_DAT
+  local VAULT_ADDR="https://127.0.0.1:82${1}0"
+  local VAULT_TOKEN="$INITIAL_ROOT_TOKEN"
+  if ! vault operator raft join $VAULT_RAFT_PRIMARY_ADDR > /dev/null 2>&1; then
+    msg alert "Cannot join Vault ${1}!"
+    errors=$((errors + $?))
+    exit $errors
   fi
-  msg info "Unsealing Vault ..."
-  get_unseal_key $1
+  msg complete "Raft flavored storage: Joined primary!"
+}
 
-  if ! VAULT_ADDR="https://localhost:82${2}0" \
-    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+# Unseal Vault (with raft storage)
+unseal_vault_raft() {
+  msg info "Unsealing Vault $1 ..."
+  get_unseal_key $VAULT_DAT
+  if ! VAULT_ADDR="https://localhost:82${1}0" \
+    vault operator unseal "$k0" > /dev/null 2>&1; then
     msg alert "Cannot unseal Vault!"
     errors=$((errors + $?))
     exit $errors
   fi
-
   msg complete "Vault unsealed!"
 }
 
 msg greeting "Blazing Sword! ..."
 
-VAULT0_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
+VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
 VAULT_RAFT_PRIMARY_ADDR=https://10.10.42.200:8200
 
-# Ain't nobody got time for your stale token up in here!
+# Ain't nobody got time for your stale token!
 unset VAULT_TOKEN
 
-# Because what fun is a project without a little raciness?
-sleep 1s
-
-# Consul flavor
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-initialize_vault 0
-unseal_vault_consul
-auth_root "${VAULT_DAT}"
-enable_all
-status
-enabled
-vault_active_info
-consul_leader_info
+# Check for Vault
+if ! timeout 5 bash -c "</dev/tcp/localhost/8200" > /dev/null 2>&1; then
+  msg alert "Cannot connect to Vault"
+  msg info "Make sure to ./form Vaultron before trying blazing_sword"
+  exit 1
 fi
 
-# Raft flavor
+# -----------------------------------------------------------------------
+# Consul storage flavor
+# -----------------------------------------------------------------------
+
+if [ "$TF_VAR_vault_flavor" = "consul" ]; then
+  initialize_vault 0
+  unseal_vault_consul
+  auth_root "${VAULT_DAT}"
+  enable_all
+  status
+  enabled
+  vault_active_info
+  consul_leader_info
+fi
+
+# -----------------------------------------------------------------------
+# Raft storage flavor
+# -----------------------------------------------------------------------
+
 if [ "$TF_VAR_vault_flavor" = "raft" ]; then
-initialize_vault 0
-unseal_vault_raft "${VAULT0_DAT}" 0
-
-msg info "Await Vault post unseal setup (10 seconds) ..."
-sleep 10s
-
-get_initial_root_token $VAULT0_DAT && \
-
-msg info "Raft flavored storage: Join Vault 1 ..."
-get_initial_root_token $VAULT0_DAT && \
-VAULT_ADDR="https://127.0.0.1:8210" \
-VAULT_TOKEN="${INITIAL_ROOT_TOKEN}" \
-vault operator raft join $VAULT_RAFT_PRIMARY_ADDR  > /dev/null 2>&1
-
-unseal_vault_raft $VAULT0_DAT 1  > /dev/null 2>&1
-
-msg info "Raft flavored storage: Join Vault 2 ..."
-get_initial_root_token $VAULT0_DAT && \
-VAULT_ADDR="https://127.0.0.1:8220" \
-VAULT_TOKEN="${INITIAL_ROOT_TOKEN}" \
-vault operator raft join $VAULT_RAFT_PRIMARY_ADDR  > /dev/null 2>&1
-
-unseal_vault_raft $VAULT0_DAT 2  > /dev/null 2>&1
-
-auth_root "${VAULT0_DAT}"
-# enable_all
-
-status
-# enabled
-vault_active_info
-
+  initialize_vault 0
+  unseal_vault_raft 0
+  msg info "Await Vault post unseal setup (10 seconds) ..."
+  sleep 10s
+  join_raft_primary 1
+  msg info "Raft flavored storage: Unseal Vault 1 ..."
+  if ! unseal_vault_raft 1; then
+    msg alert "Cannot unseal Vault 1!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+  join_raft_primary 2
+  msg info "Raft flavored storage: Unseal Vault 2 ..."
+  if ! unseal_vault_raft 2  > /dev/null 2>&1; then
+    msg alert "Cannot unseal Vault 2!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+  auth_root "${VAULT_DAT}"
+  enable_all
+  status
+  enabled
+  vault_active_info
 fi
 
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then

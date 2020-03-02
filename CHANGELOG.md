@@ -1,6 +1,9 @@
 ## NEXT
 
+- Vault v1.4.0
 - Introducing flavors
+  - Reorganize locations for configuration and data
+  - Consistent use of data volume for Raft and Filesystem storage backends
 - Add support for integrated Raft storage
 - Update documentation
 

@@ -6,6 +6,16 @@ terraform {
   required_version = ">= 0.12"
 }
 
+
+# -----------------------------------------------------------------------
+# Version variables
+# -----------------------------------------------------------------------
+
+# Set TF_VAR_vault_version to set this
+variable "vault_version" {
+  default = "1.3.2"
+}
+
 # -----------------------------------------------------------------------
 # Global variables
 # -----------------------------------------------------------------------
@@ -38,11 +48,6 @@ variable "secondary_datacenter_name" {
 # Set TF_VAR_vault_flavor to set this
 variable "vault_flavor" {
   default = "raft"
-}
-
-# Set TF_VAR_vault_version to set this
-variable "vault_version" {
-  default = "1.3.2"
 }
 
 # Set TF_VAR_use_vault_oss to set this
