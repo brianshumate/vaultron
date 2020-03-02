@@ -91,12 +91,6 @@ get_unseal_key() {
   k0=$(grep 'Unseal Key 1' "$1" | awk '{print $NF}')
 }
 
-# Get recovery key
-get_recovery_key() {
-  msg info "Get recovery ..."
-  k1=$(grep 'Recovery Key 1' "$1" | awk '{print $NF}')
-}
-
 # Get initial root token
 get_initial_root_token() {
   INITIAL_ROOT_TOKEN=$(grep 'Initial Root Token' "$1" | awk '{print $NF}')
@@ -207,9 +201,7 @@ unseal_vault_consul() {
 join_raft_primary() {
   msg info "Raft flavored storage: Join primary ..."
   get_initial_root_token $VAULT_DAT
-  local VAULT_ADDR="https://127.0.0.1:82${1}0"
-  local VAULT_TOKEN="$INITIAL_ROOT_TOKEN"
-  if ! vault operator raft join $VAULT_RAFT_PRIMARY_ADDR > /dev/null 2>&1; then
+  if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR > /dev/null 2>&1; then
     msg alert "Cannot join Vault ${1}!"
     errors=$((errors + $?))
     exit $errors
@@ -231,6 +223,8 @@ unseal_vault_raft() {
 }
 
 msg greeting "Blazing Sword! ..."
+
+check_flavor
 
 VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
 VAULT_RAFT_PRIMARY_ADDR=https://10.10.42.200:8200
@@ -271,7 +265,7 @@ if [ "$TF_VAR_vault_flavor" = "raft" ]; then
   sleep 10s
   join_raft_primary 1
   msg info "Raft flavored storage: Unseal Vault 1 ..."
-  if ! unseal_vault_raft 1; then
+  if ! unseal_vault_raft 1 > /dev/null 2>&1; then
     msg alert "Cannot unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
