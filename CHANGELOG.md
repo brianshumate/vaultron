@@ -1,4 +1,4 @@
-## NEXT
+## 3.3.0
 
 - Vault v1.4.0
 - Introducing flavors
