@@ -224,6 +224,9 @@ unseal_vault_raft() {
 
 msg greeting "Blazing Sword! ..."
 
+# in case this is called immediately after form...
+sleep 2s
+
 check_flavor
 
 VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"

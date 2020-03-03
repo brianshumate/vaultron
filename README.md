@@ -7,13 +7,15 @@
   * [Why?](#why)
   * [How?](#how)
     + [Prerequisites](#prerequisites)
-    + [Quickest Start for macOS](#quickest-start-for-macos)
-    + [Quick Start for Linux or macOS](#quick-start-for-linux-or-macos)
+    + [Quickest Start (for macOS only)](#quickest-start-for-macos-only)
+    + [Quick Start (for Linux or macOS)](#quick-start-for-linux-or-macos)
     + [What's Next?](#whats-next)
       - [Ten Things You Can do After Vaultron is Formed](#ten-things-you-can-do-after-vaultron-is-formed)
-    + [Advanced Example](#advanced-example)
+    + [Advanced Examples](#advanced-examples)
+      - [OSS Raft Storage Example](#oss-raft-storage-example)
+      - [Full Stack Example with Custom Binary & Telemetry Enabled](#full-stack-example-with-custom-binary--telemetry-enabled)
   * [What's in the Box?](#whats-in-the-box)
-    + [Basic Architecture Overview](#basic-architecture-overview)
+    + [Basic Architecture Overview for Consul Storage](#basic-architecture-overview-for-consul-storage)
       - [Vault Servers](#vault-servers)
       - [Consul Servers](#consul-servers)
       - [Consul Clients](#consul-clients)
@@ -22,12 +24,14 @@
     + [Environment Variables](#environment-variables)
       - [TF_VAR_vault_version](#tf_var_vault_version)
       - [TF_VAR_consul_version](#tf_var_consul_version)
+      - [TF_VAR_vault_flavor](#tf_var_vault_flavor)
       - [TF_VAR_datacenter_name](#tf_var_datacenter_name)
       - [TF_VAR_use_vault_oss](#tf_var_use_vault_oss)
       - [TF_VAR_vault_server_log_format (Vault v0.10.0+)](#tf_var_vault_server_log_format-vault-v0100)
       - [TF_VAR_vault_server_log_level](#tf_var_vault_server_log_level)
       - [TF_VAR_consul_log_level](#tf_var_consul_log_level)
       - [TF_VAR_vault_path](#tf_var_vault_path)
+      - [TF_VAR_vault_raft_path](#tf_var_vault_raft_path)
       - [TF_VAR_vault_cluster_name](#tf_var_vault_cluster_name)
       - [TF_VAR_disable_clustering](#tf_var_disable_clustering)
       - [TF_VAR_vault_oss_instance_count](#tf_var_vault_oss_instance_count)
@@ -65,6 +69,8 @@
     + [Something, Something — Storage HA Problem!](#something-something--storage-ha-problem)
     + [Unsupported Versions?](#unsupported-versions)
     + [syntax error: unexpected end of file (expecting ")")](#syntax-error-unexpected-end-of-file-expecting-)
+    + [server gave HTTP response to HTTPS client](#server-gave-http-response-to-https-client)
+    + [Error: Unable to read Docker image into resource: Unable to pull image](#error-unable-to-read-docker-image-into-resource-unable-to-pull-image)
     + [Some Other Undefined Problem!](#some-other-undefined-problem)
   * [Resources](#resources)
   * [Who?](#who)
@@ -147,8 +153,8 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [i] Vault flavor: consul storage backed
 [vaultron] [i] Vault OSS version: 1.3.2
-[vaultron] [i] Consul OSS version: 1.6.3
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
@@ -266,9 +272,44 @@ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
        CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
 ```
 
-### Advanced Example
+### Advanced Examples
 
-The following is a more advanced example of forming Vaultron; it uses a range of environment variables to define additional configuration and includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
+The following are more advanced examples of forming Vaultron using a range of environment variables to define additional configuration.
+
+#### OSS Raft Storage Example
+
+This example simply uses Raft storage and a higher logging level:
+
+```
+export TF_VAR_vault_flavor=raft \
+       TF_VAR_vault_server_log_level=info
+```
+
+What this does line by line:
+
+- Enable the Raft storage flavor to use Raft storage instead of Consul
+- Set Vault log level to info instead of debug
+
+It is worth noting that when you `form` Vaultron, output will resemble this example:
+
+```plaintext
+./form
+[vaultron] [=] Form Vaultron! ...
+[vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [?] Vault version: custom binary
+[vaultron] [i] Vault flavor: raft storage backed
+[vaultron] [i] Terraform plan: 4 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 4 added, 0 changed, 0 destroyed.
+[vaultron] [+] Vaultron formed!
+```
+
+Note the **Vault flavor: raft storage backed** part.
+
+When Vaultron forms this way, all Vault servers are started and ready, but not yet initialized, joined or unsealed. You need to do this manually or use `blazing_sword` to do it (and a lot more) for you.
+
+#### Full Stack Example with Custom Binary & Telemetry Enabled
+
+This example includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
 
 ```
 export TF_VAR_consul_custom=0 \
@@ -282,7 +323,8 @@ export TF_VAR_consul_custom=0 \
 
 What this does line by line:
 
-- Enable zero custom Consul instances (custom Consul binary feature not available yet)
+- Enable zero custom Consul instances
+  - custom Consul binary feature not yet available yet
 - Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder
 - Enable the statsd/Graphite/Grafana telemetry container
 - Set Vault log level to _trace_
@@ -423,7 +465,7 @@ Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions
 - Acceptable values:
   - A valid Consul OSS version string, for example "1.6.3"
 
-#### TF_VAR_vault_flavor
+#### TF_VAR_vault_flavor (Vault v1.4.0+)
 
 Vaultron can use different "flavors" for key Vault components.
 
@@ -431,69 +473,100 @@ Currently this is limited to switching between the integrated Raft storage or Co
 
 - Default: consul
 - Acceptable values:
-  - consul
-  - raft
+  - `consul`
+  - `raft`
 
 #### TF_VAR_datacenter_name
 
 Vault datacenter name
 
 - Default: `arus`
+- Acceptable values:
+  - _alphanumeric string_
 
 #### TF_VAR_use_vault_oss
 
 `1` to use OSS Vault binaries from releases.hashicorp.com or `0` when using custom binaries
 
 - Default: `1`
+- Acceptable values:
+  - `0`
+  - `1`
 
 #### TF_VAR_vault_server_log_format (Vault v0.10.0+)
 
-A valid Vault server log format: _standard_ or _json_
+A valid Vault server log format
 
 - Default: `standard`
+- Acceptable values:
+  - `json`
+  - `standard`
 
 #### TF_VAR_vault_server_log_level
 
-Server operational log level: _trace_, _debug_, _info_, _warning_, or _error_
+Server operational log level
 
 - Default: `debug`
+- Acceptable values:
+  - `trace`
+  - `debug`
+  - `info`
+  - `warning`
+  - `error`
 
 #### TF_VAR_consul_log_level
 
-A valid Consul log level: _trace_, _debug_, _info_, _warn_, or _err_
+A valid Consul log level
 
 - Default: `debug`
+- Acceptable values:
+  - `trace`
+  - `debug`
+  - `info`
+  - `warn`
+  - `err`
 
 #### TF_VAR_vault_path
 
 Set `path` value for Consul storage stanza
 
 - Default: `vault`
+- Acceptable values:
+  - _alphanumeric string_
 
-
-#### TF_VAR_vault_raft_path
+#### TF_VAR_vault_raft_path (Vault v1.4.0+)
 
 Set `path` value for Raft storage stanza
 
 - Default: `/vault/data`
+- Acceptable values:
+  - _alphanumeric string_
 
 #### TF_VAR_vault_cluster_name
 
 Cluster name
 
 - Default: `vaultron`
+- Acceptable values:
+  - _alphanumeric string_
 
 #### TF_VAR_disable_clustering
 
 Disable Consul HA clustering
 
 - Default `false`
+- Acceptable values:
+  - `true`
+  - `false`
 
 #### TF_VAR_vault_oss_instance_count
 
 Number of Vault OSS containers
 
 - Default: `3`
+- Acceptable values:
+  - `0`
+  - `3`
 
 > NOTE: You must also set `TF_VAR_vault_custom_instance_count=0` when setting this.
 
@@ -502,6 +575,9 @@ Number of Vault OSS containers
 Number of Vault custom containers
 
 - Default: `0`
+- Acceptable values:
+  - `0`
+  - `3`
 
 > NOTE: You must also set `TF_VAR_vault_oss_instance_count=0` when setting this.
 
@@ -510,12 +586,17 @@ Number of Vault custom containers
 Specify an alternative configuration file template in `black_lion/templates/custom`
 
 - Default: `vault_config_custom.hcl`
+- Acceptable values:
+  - _valid filename to HCL configuration file_
 
 #### TF_VAR_use_consul_oss
 
 This cannot currently be changed as Vaultron always uses Consul OSS.
 
 - Default: `1`
+- Acceptable values:
+  - `0`
+  - `1`
 
 #### TF_VAR_consul_recursor_1
 
@@ -546,24 +627,17 @@ Consul data directory path
 `1` to use OSS Vault binaries from releases.hashicorp.com (currently only option)
 
 - Default: `1`
+- Acceptable values:
+  - `1`
 
 #### TF_VAR_consul_oss_instance_count
 
 Number of Consul OSS containers
 
 - Default: `3`
-
-#### TF_VAR_consul_oss
-
-(NOT YET IMPLEMENTED): Whether to use Consul OSS
-
-- Default: `0`
-
-#### TF_VAR_consul_custom_instance_count
-
-(NOT YET IMPLEMENTED): Consul custom instance count
-
-- Default: `0`
+- Acceptable values:
+  - `0`
+  - `3`
 
 ### Published Ports
 
