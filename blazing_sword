@@ -183,7 +183,7 @@ unseal_vault_consul() {
     exit $errors
   fi
   if ! VAULT_ADDR="https://localhost:8210" \
-    $UNSEAL_CMD "$k0"; then
+    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
     msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors

@@ -847,6 +847,10 @@ There's also an `examples/tls/eybeams_tls` script that will do this import for y
 
 ### Where's My Vault Data?
 
+Your Vault data resides in different physical locations based on the chosen storage flavor.
+
+#### Vault Data in Consul
+
 Vault data are stored in Consul's key/value store, which in turn is written into the `consul/consuls{0,1,2}/data` directories for each of the three Consul servers.
 
 Here is a tree showing the folder structure for a Consul server at `flavors/consul/consul/consuls0`:
@@ -868,6 +872,8 @@ consul
                 ├── local.snapshot
                 └── remote.snapshot
 ```
+
+#### Vault Data in Raft
 
 ### What About Logs?
 
