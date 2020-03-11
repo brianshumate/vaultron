@@ -36,18 +36,18 @@ fi
 #     This should be resolved by using SKIP_CHOWN now as well
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   if [ "$(uname)" = "Linux" ]; then
-    if ! [ -w flavor/"${TF_VAR_vault_flavor}"/consul/consuls0 ]; then
-      msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
+    if ! [ -w "${PWD}"/consul/consuls0 ]; then
+      msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to ${VAULTRON_USER}:${VAULTRON_GROUP} ..."
       msg notice "You could be prompted by sudo for your user password to make this change ..."
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" flavor/"${TF_VAR_vault_flavor}"/consul; then
-        msg alert "Failed to change ownership of consul data to $VAULTRON_USER:$VAULTRON_GROUP"
+      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/consul; then
+        msg alert "Failed to change ownership of consul data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
         msg alert "Manual cleanup of consul folder contents required:"
-        ls -lha consul/
+        ls -lha "${PWD}"/consul/
       fi
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" flavor/"${TF_VAR_vault_flavor}"/vault; then
-        msg alert "Failed to change ownership of vault data to $VAULTRON_USER:$VAULTRON_GROUP"
+      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/vault; then
+        msg alert "Failed to change ownership of vault data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
         msg alert "Manual cleanup of vault folder contents required:"
-        ls -lha vault/
+        ls -lha "${PWD}"/vault/
       fi
     fi
   fi
