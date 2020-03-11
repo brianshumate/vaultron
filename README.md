@@ -1,6 +1,6 @@
 # Vaultron
 
-![Diagram of a Vaultron cluster with Consul storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron.png?raw=true)
+![Diagram of a Vaultron cluster with Consul storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-consul-flavor.png?raw=true)
 
 _Diagram of a Vaultron cluster with Consul storage flavor_
 
