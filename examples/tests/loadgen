@@ -28,6 +28,8 @@ load_gen() {
     msg success "All load generation tasks started ..."
 }
 
+check_vault
+
 msg greeting "Generating load against Vaultron ..."
 
 load_gen

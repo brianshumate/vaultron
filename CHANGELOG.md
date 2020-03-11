@@ -4,7 +4,9 @@
 - Introducing flavors
   - Reorganize locations for configuration and data
   - Consistent use of data volume for Raft and Filesystem storage backends
-- Add support for integrated Raft storage
+- Add Vault Integrated Storage (Raft) flavor
+- Add Vault Consul Storage flavor
+- Update scripts with more helpfulness in error outputs
 - Update documentation
 
 ## 3.2.5

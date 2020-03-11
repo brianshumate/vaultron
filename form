@@ -133,8 +133,37 @@ fi
 # Preflight checks
 check_flavor
 
+# Need > 1.4.0 for Raft storage ... presume latest version if empty value
+if [ -n "$TF_VAR_vault_version" ]; then
+  MINIMUM_RAFT_VERSION="1.4.0"
+  LOWEST_VAULT_VERSION=$(printf "$TF_VAR_vault_version\n$MINIMUM_RAFT_VERSION" \
+                       | sort -t "." -n -k1,1 -k2,2 -k3,3 -k4,4 \
+                       | head -n 1)
+  if [ "$LOWEST_VAULT_VERSION" != "$MINIMUM_RAFT_VERSION" ]; then
+    msg alert "Vault version $TF_VAR_vault_version does not support Raft storage backend. (need version $MINIMUM_RAFT_VERSION+)"
+    msg info "Please export 'TF_VAR_vault_version' with a value of 1.4.0 or higher."
+    exit 1
+  fi
+
+  if [ "$TF_VAR_vault_flavor" = "raft" ]; then
+    if [ "$TF_VAR_vault_custom_instance_count" = 0 ]; then
+      if [ "$TF_VAR_vault_oss_instance_count" != 5 ]; then
+      msg alert "Cannot form Vaultron Raft storage flavor with incorrect instance count."
+      msg info "Please 'export TF_VAR_vault_oss_instance_count=5' and try again."
+      exit 1
+      fi
+    fi
+    if [ "$TF_VAR_vault_oss_instance_count" = 0 ]; then
+      if [ "$TF_VAR_vault_custom_instance_count" != 5 ]; then
+      msg alert "Cannot form Vaultron Raft storage flavor with incorrect instance count."
+      msg info "Please 'export TF_VAR_vault_custom_instance_count=5' and try again."
+      exit 1
+      fi
+    fi
+  fi
+fi
 # SAVOR THE FLAVOR!
-cd "flavors/$TF_VAR_vault_flavor"
+cd "flavors/$TF_VAR_vault_flavor" || msg alert "This should not be!"
 
 check_docker
 check_and_create_vaultron_private_network

@@ -23,6 +23,8 @@ create_kv() {
     done
 }
 
+check_vault
+
 for n in foo bar baz qux; do
     msg info "PUT keys in ${CONSUL_HTTP_ADDR}/v1/kv/${n}/"
     create_kv "${n}";

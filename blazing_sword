@@ -199,19 +199,19 @@ unseal_vault_consul() {
 
 # Join Raft primary
 join_raft_primary() {
-  msg info "Raft flavored storage: Join primary ..."
+  msg info "Raft flavored storage: Join ${1} to primary ..."
   get_initial_root_token $VAULT_DAT
   if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR > /dev/null 2>&1; then
     msg alert "Cannot join Vault ${1}!"
     errors=$((errors + $?))
     exit $errors
   fi
-  msg complete "Raft flavored storage: Joined primary!"
+  msg complete "Raft flavored storage: Joined ${1} to primary!"
 }
 
 # Unseal Vault (with raft storage)
 unseal_vault_raft() {
-  msg info "Unsealing Vault $1 ..."
+  msg info "Unsealing Vault ${1} ..."
   get_unseal_key $VAULT_DAT
   if ! VAULT_ADDR="https://localhost:82${1}0" \
     vault operator unseal "$k0" > /dev/null 2>&1; then
@@ -224,7 +224,7 @@ unseal_vault_raft() {
 
 msg greeting "Blazing Sword! ..."
 
-# in case this is called immediately after form...
+# in case we are called immediately after form...
 sleep 2s
 
 check_flavor
@@ -232,15 +232,10 @@ check_flavor
 VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
 VAULT_RAFT_PRIMARY_ADDR=https://10.10.42.200:8200
 
+check_vault
+
 # Ain't nobody got time for your stale token!
 unset VAULT_TOKEN
-
-# Check for Vault
-if ! timeout 5 bash -c "</dev/tcp/localhost/8200" > /dev/null 2>&1; then
-  msg alert "Cannot connect to Vault"
-  msg info "Make sure to ./form Vaultron before trying blazing_sword"
-  exit 1
-fi
 
 # -----------------------------------------------------------------------
 # Consul storage flavor
@@ -266,20 +261,39 @@ if [ "$TF_VAR_vault_flavor" = "raft" ]; then
   unseal_vault_raft 0
   msg info "Await Vault post unseal setup (10 seconds) ..."
   sleep 10s
+
   join_raft_primary 1
   msg info "Raft flavored storage: Unseal Vault 1 ..."
-  if ! unseal_vault_raft 1 > /dev/null 2>&1; then
+  if ! unseal_vault_raft 1; then
     msg alert "Cannot unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
+
   join_raft_primary 2
   msg info "Raft flavored storage: Unseal Vault 2 ..."
-  if ! unseal_vault_raft 2  > /dev/null 2>&1; then
+  if ! unseal_vault_raft 2; then
     msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
+
+  join_raft_primary 3
+  msg info "Raft flavored storage: Unseal Vault 3 ..."
+  if ! unseal_vault_raft 3; then
+    msg alert "Cannot unseal Vault 3!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
+  join_raft_primary 4
+  msg info "Raft flavored storage: Unseal Vault 4 ..."
+  if ! unseal_vault_raft 4; then
+    msg alert "Cannot unseal Vault 4!"
+    errors=$((errors + $?))
+    exit $errors
+  fi
+
   auth_root "${VAULT_DAT}"
   enable_all
   status
@@ -290,6 +304,10 @@ fi
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
+
+# -----------------------------------------------------------------------
+# Fin
+# -----------------------------------------------------------------------
 
 unset VAULT_TOKEN
 

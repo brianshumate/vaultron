@@ -63,6 +63,8 @@ write() {
   return "$retval"
 }
 
+check_vault
+
 if write; then
   msg info "Write 1 OK";
 else

@@ -11,10 +11,8 @@
 
 . ./skydome
 
-# ChromeOS Linux VM environment
+# ChromeOS Linux CrosVM environment
 crosvm_env() {
-	# CONSUL_CONTAINER_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-consuls0 )
-	# VAULT_CONTAINER_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0 )
 	ETH0IP="$(/sbin/ifconfig eth0 | grep -w 'inet' | awk '{print $2}')"
 	CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem"
 	CONSUL_HTTP_ADDR="$ETH0IP:8500"
@@ -53,7 +51,6 @@ default_env() {
 	msg success "CONSUL_HTTP_ADDR: $CONSUL_HTTP_ADDR"
 	msg success "VAULT_ADDR: $VAULT_ADDR"
 }
-
 
 if [ -n "$SOMMELIER_VERSION" ]; then
 	crosvm_env

@@ -244,7 +244,7 @@ use_csr_sans                          true
 
 Vaultron uses a private Docker network with predictable address space and we will issue a certificate per container with the loopback IP, static IP as an IP SANs value.
 
-## Vault Server
+## Vault Servers
 
 Let's make certificates for the Vault servers; we'll use a 19800h/825 day TTL for all of them:
 
@@ -282,6 +282,30 @@ $ vault write \
   -format=json \
   | jq -r '.data.certificate + "\n" + .data.private_key' \
   | awk '/CERTIFICATE/ {out="vault-server-2.crt"} /RSA/ {out="vault-server-2.key"} { print > out }'
+```
+
+```
+$ vault write \
+  vaultron-int-pki/issue/vaultron-int \
+  common_name=vaults3.node.arus.consul \
+  alt_names=vaults3.node.consul,server.arus.consul,localhost \
+  ip_sans="127.0.0.1,10.10.42.203" \
+  ttl=19800h \
+  -format=json \
+  | jq -r '.data.certificate + "\n" + .data.private_key' \
+  | awk '/CERTIFICATE/ {out="vault-server-3.crt"} /RSA/ {out="vault-server-3.key"} { print > out }'
+```
+
+```
+$ vault write \
+  vaultron-int-pki/issue/vaultron-int \
+  common_name=vaults4.node.arus.consul \
+  alt_names=vaults4.node.consul,server.arus.consul,localhost \
+  ip_sans="127.0.0.1,10.10.42.204" \
+  ttl=19800h \
+  -format=json \
+  | jq -r '.data.certificate + "\n" + .data.private_key' \
+  | awk '/CERTIFICATE/ {out="vault-server-4.crt"} /RSA/ {out="vault-server-4.key"} { print > out }'
 ```
 
 ## Consul Servers

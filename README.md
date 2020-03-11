@@ -24,14 +24,14 @@
     + [Environment Variables](#environment-variables)
       - [TF_VAR_vault_version](#tf_var_vault_version)
       - [TF_VAR_consul_version](#tf_var_consul_version)
-      - [TF_VAR_vault_flavor](#tf_var_vault_flavor)
+      - [TF_VAR_vault_flavor (Vault v1.4.0+)](#tf_var_vault_flavor-vault-v140)
       - [TF_VAR_datacenter_name](#tf_var_datacenter_name)
       - [TF_VAR_use_vault_oss](#tf_var_use_vault_oss)
       - [TF_VAR_vault_server_log_format (Vault v0.10.0+)](#tf_var_vault_server_log_format-vault-v0100)
       - [TF_VAR_vault_server_log_level](#tf_var_vault_server_log_level)
       - [TF_VAR_consul_log_level](#tf_var_consul_log_level)
       - [TF_VAR_vault_path](#tf_var_vault_path)
-      - [TF_VAR_vault_raft_path](#tf_var_vault_raft_path)
+      - [TF_VAR_vault_raft_path (Vault v1.4.0+)](#tf_var_vault_raft_path-vault-v140)
       - [TF_VAR_vault_cluster_name](#tf_var_vault_cluster_name)
       - [TF_VAR_disable_clustering](#tf_var_disable_clustering)
       - [TF_VAR_vault_oss_instance_count](#tf_var_vault_oss_instance_count)
@@ -44,8 +44,6 @@
       - [TF_VAR_consul_data_dir](#tf_var_consul_data_dir)
       - [TF_VAR_consul_oss](#tf_var_consul_oss)
       - [TF_VAR_consul_oss_instance_count](#tf_var_consul_oss_instance_count)
-      - [TF_VAR_consul_oss](#tf_var_consul_oss-1)
-      - [TF_VAR_consul_custom_instance_count](#tf_var_consul_custom_instance_count)
     + [Published Ports](#published-ports)
     + [Changing Vault OSS and Consul OSS Versions](#changing-vault-oss-and-consul-oss-versions)
     + [Consul DNS](#consul-dns)
@@ -55,6 +53,8 @@
       - [TLS by Default](#tls-by-default)
         * [Vault PKI Secrets Engine Based TLS Configuration](#vault-pki-secrets-engine-based-tls-configuration)
     + [Where's My Vault Data?](#wheres-my-vault-data)
+      - [Vault Data in Consul](#vault-data-in-consul)
+      - [Vault Data in Raft](#vault-data-in-raft)
     + [What About Logs?](#what-about-logs)
     + [Telemetry Notes](#telemetry-notes)
     + [A Note About Custom Binaries](#a-note-about-custom-binaries)
@@ -75,6 +75,8 @@
   * [Resources](#resources)
   * [Who?](#who)
   * [Special Thanks](#special-thanks)
+
+![](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
 
 ## What?
 
@@ -282,12 +284,14 @@ This example simply uses Raft storage and a higher logging level:
 
 ```
 export TF_VAR_vault_flavor=raft \
+       TF_VAR_vault_oss_instance_count=5 \
        TF_VAR_vault_server_log_level=info
 ```
 
 What this does line by line:
 
 - Enable the Raft storage flavor to use Raft storage instead of Consul
+- Set the Vault OSS server instance count to 5; this is required for Raft storage.
 - Set Vault log level to info instead of debug
 
 It is worth noting that when you `form` Vaultron, output will resemble this example:
@@ -567,8 +571,9 @@ Number of Vault OSS containers
 - Acceptable values:
   - `0`
   - `3`
+  - `5`
 
-> NOTE: You must also set `TF_VAR_vault_custom_instance_count=0` when setting this.
+> NOTE: You must also set `TF_VAR_vault_custom_instance_count=0` when setting this. You must also use a value of '5' when using the Raft storage flavor.
 
 #### TF_VAR_vault_custom_instance_count
 
@@ -578,8 +583,9 @@ Number of Vault custom containers
 - Acceptable values:
   - `0`
   - `3`
+  - `5`
 
-> NOTE: You must also set `TF_VAR_vault_oss_instance_count=0` when setting this.
+> NOTE: You must also set `TF_VAR_vault_oss_instance_count=0` when setting this. You must also use a value of '5' when using the Raft storage flavor.
 
 #### TF_VAR_vault_custom_config_template
 

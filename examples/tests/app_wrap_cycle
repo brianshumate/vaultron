@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1090,2086
 
+HERE="$(pwd)"
+SKYDOME="$(while [ "$HERE" != "/" ] ; do HERE=$(dirname "$HERE"); find "$HERE" -maxdepth 1 -name skydome; done)"
+if [ -z "$SKYDOME" ]; then
+  SKYDOME=./skydome
+fi
+. $SKYDOME
+
+check_vault
+
 if ! vault list auth/vaultron-approle/role/ | grep -w "my-role" > /dev/null 2>&1; then
   if ! vault write auth/vaultron-approle/role/my-role \
     secret_id_ttl=10m \
