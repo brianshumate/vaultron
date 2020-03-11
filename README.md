@@ -1,6 +1,8 @@
 # Vaultron
 
-![](https://github.com/brianshumate/vaultron/blob/master/share/vaultron.png?raw=true)
+![Vaultron with Consul storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron.png?raw=true)
+
+_Vaultron with Consul storage flavor_
 
 - [Vaultron](#vaultron)
   * [What?](#what)
@@ -76,7 +78,9 @@
   * [Who?](#who)
   * [Special Thanks](#special-thanks)
 
-![](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
+![Vaultron with Raft storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
+
+_Vaultron with Consul storage flavor_
 
 ## What?
 
