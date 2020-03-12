@@ -61,10 +61,8 @@ if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   errors=$((errors + $?))
   rm -rf ./consul/consulc2
   errors=$((errors + $?))
-fi
 
 # Remove Consul server data
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   rm -rf ./consul/consuls0
   errors=$((errors + $?))
   rm -rf ./consul/consuls1
