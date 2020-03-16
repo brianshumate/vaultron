@@ -2,6 +2,9 @@
 # Vaultron CUSTOM base configuration
 #----------------------------------------------------------------------------
 
+# for debug only
+# raw_storage_endpoint = true
+
 # disable_performance_standby = true
 
 api_addr     = "${api_addr}"

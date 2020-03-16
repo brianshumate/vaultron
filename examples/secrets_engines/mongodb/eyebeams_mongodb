@@ -35,12 +35,13 @@ start_docker_container() {
 }
 
 if ! docker ps -a | grep vaultron-mongodb > /dev/null 2>&1; then
-msg info "Start MongoDB Docker container ..."
+msg info "Run MongoDB Docker container ..."
   if ! start_docker_container; then
     msg alert "Problem Starting MongoDB Docker container!"
     exit 1
   else
-    msg complete "Started MongoDB Docker container!"
+    msg complete "MongoDB Docker container running!"
+    msg info "$(docker ps -f name=vaultron-mysql --format "table {{.Names}}\t{{.Status}}")"
   fi
 fi
 
@@ -71,7 +72,7 @@ if vault write vaultron-database/config/mongodb \
   connection_url="mongodb://$MONGODB_CONTAINER_IP:27017/admin?ssl=false" > /dev/null 2>&1; then
   msg complete "Configured MongoDB database Secrets Engine!"
 else
-    msg alert "Problem configuring MongoDB database Secrets Engine!"
+    msg alert "Cannot configure MongoDB database Secrets Engine!"
     exit 1
 fi
 
@@ -83,7 +84,7 @@ if vault write vaultron-database/roles/vaultron-role \
   max_ttl="24h" > /dev/null 2>&1; then
   msg complete "Configured MongoDB role!"
 else
-    msg alert "Problem configuring MongoDB vaultron-role role"
+    msg alert "Cannot configure MongoDB vaultron-role role"
     exit 1
 fi
 

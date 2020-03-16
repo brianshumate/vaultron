@@ -23,24 +23,24 @@ fi
 
 msg greeting "Engage Eye Beams for MySQL!"
 
-launch_docker_container() {
-docker run --name vaultron-mysql \
-  --detach \
-  --rm \
-  --ip 10.10.42.223 \
-  --network vaultron-network \
-  -e MYSQL_ROOT_PASSWORD=vaultron \
-  -p 3306:3306 \
-  -d mysql:latest > /dev/null 2>&1
+run_docker_container() {
+  if ! docker run --name vaultron-mysql \
+    --detach \
+    --rm \
+    --ip 10.10.42.223 \
+    --network vaultron-network \
+    -e MYSQL_ROOT_PASSWORD=vaultron \
+    -p 3306:3306 \
+    -d mysql:latest > /dev/null 2>&1; then
+    msg alert "Cannot run MySQL Docker container!"
+    exit 1
+  else
+    msg complete "MySQL Docker container running!"
+fi
 }
 
-msg info "Launch MySQL Docker container ..."
-if ! launch_docker_container; then
-  msg alert "Cannot start MySQL Docker container!"
-  exit 1
-else
-  msg complete "Started MySQL Docker container!"
-fi
+msg info "Run MySQL Docker container ..."
+run_docker_container
 
 MYSQL_CONTAINER_IP="$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-mysql)"
 

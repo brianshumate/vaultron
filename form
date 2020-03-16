@@ -140,7 +140,7 @@ if [ -n "$TF_VAR_vault_version" ]; then
                        | sort -t "." -n -k1,1 -k2,2 -k3,3 -k4,4 \
                        | head -n 1)
   if [ "$LOWEST_VAULT_VERSION" != "$MINIMUM_RAFT_VERSION" ]; then
-    msg alert "Vault version $TF_VAR_vault_version does not support Raft storage backend. (need version $MINIMUM_RAFT_VERSION+)"
+    msg alert "Vault version $TF_VAR_vault_version does not support the Integrated Storage backend. (need version $MINIMUM_RAFT_VERSION+)"
     msg info "Please export 'TF_VAR_vault_version' with a value of 1.4.0 or higher."
     exit 1
   fi
@@ -148,14 +148,14 @@ if [ -n "$TF_VAR_vault_version" ]; then
   if [ "$TF_VAR_vault_flavor" = "raft" ]; then
     if [ "$TF_VAR_vault_custom_instance_count" = 0 ]; then
       if [ "$TF_VAR_vault_oss_instance_count" != 5 ]; then
-      msg alert "Cannot form Vaultron Raft storage flavor with incorrect instance count."
+      msg alert "Cannot form Vaultron Integrated Storage flavor with incorrect instance count."
       msg info "Please 'export TF_VAR_vault_oss_instance_count=5' and try again."
       exit 1
       fi
     fi
     if [ "$TF_VAR_vault_oss_instance_count" = 0 ]; then
       if [ "$TF_VAR_vault_custom_instance_count" != 5 ]; then
-      msg alert "Cannot form Vaultron Raft storage flavor with incorrect instance count."
+      msg alert "Cannot form Vaultron Integrated Storage flavor with incorrect instance count."
       msg info "Please 'export TF_VAR_vault_custom_instance_count=5' and try again."
       exit 1
       fi
@@ -205,9 +205,9 @@ else
 fi
 
 if [ "$TF_VAR_vault_flavor" = "raft" ]; then
-  msg info "Vault flavor: raft storage backed"
+  msg info "Vault flavor: Integrated storage backed"
   else
-  msg info "Vault flavor: consul storage backed"
+  msg info "Vault flavor: Consul storage backed"
 fi
 
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then

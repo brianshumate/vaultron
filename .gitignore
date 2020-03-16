@@ -19,9 +19,11 @@ flavors/*/consulc2
 flavors/*/consuls0
 flavors/*/consuls1
 flavors/*/consuls2
+flavors/raft/vault/vault0
 flavors/raft/vault/vault1
 flavors/raft/vault/vault2
 flavors/raft/vault/vault3
+flavors/raft/vault/vault4
 custom/consul*
 custom/vault*
 data/migration
