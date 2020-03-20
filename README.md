@@ -81,7 +81,7 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
 
 ![Diagram of a Vaultron cluster with integrated storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
 
-_Diagram of a Vaultron cluster with integrated storage flavor_
+_Diagram of a Vaultron cluster with integrated storage (Raft) flavor_
 
 ## What?
 
@@ -99,7 +99,7 @@ Some of the more popular uses of Vaultron are:
 - Evaluating specific Vault features
 - Issue reproduction and troubleshooting
 - Testing
-- ‼️ **NOT FOR PRODUCTION** ‼️
+- ‼️ **NOT PRODUCTION** ‼️
 
 ## How?
 
@@ -115,7 +115,7 @@ Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.1.0.5
+  - Tested with version 2.2.0.3
   - Engine version: 19.03.5
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
@@ -130,7 +130,7 @@ Install the following on your Docker host where you will form Vaultron.
 
 Once you have the prerequisites installed, you can use the following example to form Vaultron and open the the Vault web UI in your browser on macOS.
 
-You will likely be prompted for your password to add the Vaultron CA certificate to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs.
+You will likely be prompted for your password to add the Vaultron CA certificate from `etc/tls/ca.pem` to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs.
 
 ```
 git clone https://github.com/brianshumate/vaultron.git && \
@@ -143,7 +143,7 @@ git clone https://github.com/brianshumate/vaultron.git && \
   open https://localhost:8200
 ```
 
-> **NOTE**: The `blazing_sword` script persists unseal keys and initial root authentication token to a file in the `vault` folder named like `./vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: `blazing_sword` persists the unseal key and initial root token to a file in the `vault` folder named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start (for Linux or macOS)
 
@@ -370,6 +370,8 @@ Vaultron is only currently tested to function on Linux and macOS, but here is ba
 
 ### Basic Architecture Overview for Consul Storage
 
+This diagram depicts basic Vaultron Consul storage based cluster architecture.
+
 ```
 +------------+--------------------------------------------------+------------+
 |            |              Yellow Lion (optional)              |            |
@@ -411,7 +413,7 @@ Vaultron is only currently tested to function on Linux and macOS, but here is ba
 +----------------------------------------------------------------------------+
 ```
 
-Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_:
+Vaultron using Consul storage consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_:
 
 #### Vault Servers
 
@@ -432,6 +434,7 @@ Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 
   - Docker private network IP: 10.10.42.102
 
 #### Consul Clients
+
 - `vaultron-consulc0`
   - Docker private network IP: 10.10.42.40
 - `vaultron-consulc1`
@@ -444,10 +447,12 @@ Vaultron consists of 3 Vault server containers, 3 Consul client containers, and 
 An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details. It uses the following IPs:
 
 #### statsd
+
 - `vaultron-vstatsd`
   - Docker private network IP: 10.10.42.219
 
 #### Grafana
+
 - `vaultron-vgrafana`
   - Docker private network IP: 10.10.42.220
 
@@ -705,9 +710,9 @@ Also note that if the OSS version of Consul or Vault you want to use does not ha
 
 ### Consul DNS
 
-The 3 Consul servers have DNS exposed to port 53 of their internal container addresses, and the Consul clients and Vault sever containers are configured to use those Consul servers for DNS as well.
+When using the Consul storage flavor of Vaultron, the 3 Consul servers have DNS exposed to port 53 of their internal container addresses, and the Consul clients and Vault sever containers are configured to use those Consul servers for DNS lookups.
 
-Additionally Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
+Additionally, Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
 
 ```
 dig -p 8600 @localhost consul.service.consul
@@ -785,13 +790,11 @@ consuls0.node.consul. 0 IN  TXT "consul-network-segment="
 ...
 ```
 
-### Security Configuration?
+### Best Practices and Security Configuration?
 
-Given the intended use cases for this project, the working solution that results when Vaultron is formed is essentially a blank canvas that emphasizes immediate unhindered usability over security.
+Given the intended use cases for this project, the working solution that results when Vaultron is formed is not in accordance with all production best practices. Specifically, Vaultron does not follow every best practice as highlighted in the [Production Hardening guide](https://learn.hashicorp.com/vault/operations/production-hardening), but **you should always strive to implement all best practice recommendations when operating Vault in production!**
 
-Specifically, Vaultron does not follow every best practice as highlighted in the [Production Hardening](https://learn.hashicorp.com/vault/operations/production-hardening) guide (but you should always do so in production!).
-
-It does implement the following hardening practices from the guide:
+Vaultron implement the following specific hardening practices from the guide:
 
 - End-to-End TLS: All Vaultron components use end-to-end TLS by default.
 - Single Tenancy: Vaultron uses the official Docker images for Consul and Vault, which are single-process images
@@ -800,7 +803,7 @@ It does implement the following hardening practices from the guide:
 
 #### Docker Container / OS
 
-To better facilitate requirements, advanced troubleshooting, and debugging, the following capabilities are added:
+To better facilitate requirements like advanced troubleshooting and debugging, the following capabilities are added to the specified containers:
 
 - Vault containers:
   - `IPC_LOCK`
@@ -808,6 +811,7 @@ To better facilitate requirements, advanced troubleshooting, and debugging, the 
   - `SYS_ADMIN`
   - `SYS_PTRACE`
   - `SYSLOG`
+
 - Consul containers:
   - `NET_ADMIN`
   - `SYS_ADMIN`
@@ -865,7 +869,7 @@ Your Vault data resides in different physical locations based on the chosen stor
 
 #### Vault Data in Consul
 
-Vault data are stored in Consul's key/value store, which in turn is written into the `consul/consuls{0,1,2}/data` directories for each of the three Consul servers.
+Vault data stored in Consul's key/value store are written to the filesystem in the `flavors/consul/consul/consuls{0,1,2}/data` directories for each of the three Consul servers.
 
 Here is a tree showing the folder structure for a Consul server at `flavors/consul/consul/consuls0`:
 
@@ -887,7 +891,26 @@ consul
                 └── remote.snapshot
 ```
 
-#### Vault Data in Raft
+#### Vault Data in Integrated Storage
+
+If you use the Integrated Storage, your data is persisted to disk via the internal BoltDB implementation. In turn, these data can be found on the filesystem under in `flavors/raft/vault/vault{0,1,2}/data` directories for each of the 5 Vault servers.
+
+For example, here is a tree view of the data for the _vault0_ server:
+
+```
+└── vault
+    ├── vault0
+    ├── audit_log
+    │   └── audit.log
+    ├── config
+    │   ├── main.hcl
+    │   └── storage.hcl
+    └── data
+        ├── raft
+        │   ├── raft.db
+        │   └── snapshots
+        └── vault.db
+```
 
 ### What About Logs?
 

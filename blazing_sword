@@ -229,7 +229,7 @@ sleep 2s
 
 check_flavor
 
-VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault0/vault_DEV_ONLY-$(date +%s).tmp"
+VAULT_DAT="$PWD/flavors/$TF_VAR_vault_flavor/vault/vault_DEV_ONLY-$(date +%s).tmp"
 VAULT_RAFT_PRIMARY_ADDR=https://10.10.42.200:8200
 
 check_vault
