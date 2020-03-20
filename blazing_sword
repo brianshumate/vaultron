@@ -2,7 +2,7 @@
 # =======================================================================
 #           ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
 #
-# blazing_sword.sh
+# blazing_sword
 #
 # Automatically starts and pre-populates Vault cluster for use in development
 # or other evaluation style use cases:

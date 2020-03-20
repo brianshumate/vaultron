@@ -36,6 +36,7 @@ run_docker_container() {
     exit 1
   else
     msg complete "MySQL Docker container running!"
+    msg info "$(docker ps -f name=vaultron-mysql --format "table {{.Names}}\t{{.Status}}"| tail -n +2)"
 fi
 }
 

@@ -19,11 +19,13 @@ fi
 
 check_flavor
 
+TF_VAR_vault_flavor=$TF_VAR_vault_flavor
+
 check_docker
 
-msg greeting "Unform Vaultron ..."
-
 cd "flavors/$TF_VAR_vault_flavor" || exit 1
+
+msg greeting "Unform Vaultron ..."
 
 if ! destroy; then
   msg alert "Terraform destroy failed, infrastructure may still exist."

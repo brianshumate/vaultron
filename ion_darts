@@ -11,44 +11,64 @@
 
 . ./skydome
 
+TF_VAR_vault_flavor=$TF_VAR_vault_flavor
+
 # ChromeOS Linux CrosVM environment
 crosvm_env() {
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	ETH0IP="$(/sbin/ifconfig eth0 | grep -w 'inet' | awk '{print $2}')"
 	CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem"
 	CONSUL_HTTP_ADDR="$ETH0IP:8500"
 	CONSUL_HTTP_SSL=true
 	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+    fi
+
 	VAULT_ADDR="https://$ETH0IP:8200"
 	VAULT_CACERT="$(pwd)/black_lion/tls/ca.pem"
+
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	export \
 	CONSUL_CACERT \
 	CONSUL_HTTP_ADDR \
 	CONSUL_HTTP_SSL \
-	CONSUL_HTTP_TOKEN \
-	VAULT_ADDR \
+	CONSUL_HTTP_TOKEN;
+    fi
+
+	export VAULT_ADDR \
 	VAULT_CACERT
+
 	msg success "Exported Vaultron environment variables:"
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	msg success "CONSUL_HTTP_ADDR: $CONSUL_HTTP_ADDR"
+    fi
 	msg success "VAULT_ADDR: $VAULT_ADDR"
 }
 
 # All others
 default_env() {
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem"
 	CONSUL_HTTP_ADDR="127.0.0.1:8500"
 	CONSUL_HTTP_SSL=true
 	CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+    fi
 	VAULT_ADDR="https://127.0.0.1:8200"
 	VAULT_CACERT="$(pwd)/black_lion/tls/ca.pem"
+
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	export \
 	CONSUL_CACERT \
 	CONSUL_HTTP_ADDR \
 	CONSUL_HTTP_SSL \
-	CONSUL_HTTP_TOKEN \
-	VAULT_ADDR \
+	CONSUL_HTTP_TOKEN;
+    fi
+
+	export VAULT_ADDR \
 	VAULT_CACERT
 	msg success "Exported Vaultron environment variables:"
+	if [ "$TF_VAR_vault_flavor" != "raft" ]; then
 	msg success "CONSUL_HTTP_ADDR: $CONSUL_HTTP_ADDR"
+    fi
 	msg success "VAULT_ADDR: $VAULT_ADDR"
 }
 

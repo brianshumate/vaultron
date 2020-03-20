@@ -23,7 +23,8 @@ fi
 
 msg greeting "Engage Eye Beams for MongoDB! ..."
 
-start_docker_container() {
+run_docker_container() {
+  msg info "Run MongoDB Docker container ..."
   docker run \
     --detach \
     --rm \
@@ -35,13 +36,12 @@ start_docker_container() {
 }
 
 if ! docker ps -a | grep vaultron-mongodb > /dev/null 2>&1; then
-msg info "Run MongoDB Docker container ..."
-  if ! start_docker_container; then
+  if ! run_docker_container; then
     msg alert "Problem Starting MongoDB Docker container!"
     exit 1
   else
     msg complete "MongoDB Docker container running!"
-    msg info "$(docker ps -f name=vaultron-mysql --format "table {{.Names}}\t{{.Status}}")"
+    msg info "$(docker ps -f name=vaultron-mongodb --format "table {{.Names}}\t{{.Status}}"| tail -n +2)"
   fi
 fi
 

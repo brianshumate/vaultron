@@ -1,8 +1,12 @@
 #!/bin/sh
 # =======================================================================
+#           ‼️ PLEASE DO NOT USE VAULTRON IN PRODUCTION ‼️
+#
+# lion_torches
+#
 # This script is the nuclear option; it removes all traces of Vaultron
 # created data so that the user can start over. It does not invoke
-# Terraform and instead uses OS and docker commands only
+# Terraform and instead uses only OS and docker commands.
 #
 # shellcheck disable=SC1091
 # =======================================================================
@@ -20,7 +24,9 @@ msg greeting "Lion Torches removing all Vaultron generated data ..."
 
 cd "flavors/$TF_VAR_vault_flavor" || echo "Cannot select flavor" && exit 1
 
-if ! docker stop vaultron-vault
+#if ! docker stop vaultron-\*
+#fi
+
 # If we cannot write to the Consul data, alert user and attempt to change
 # ownership of consul/vault folders to avoid failure with Terraform destroy
 # NB: This occurs on Docker on Linux but not Docker for Mac

@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------
 
 # for debug only
-# raw_storage_endpoint = true
+raw_storage_endpoint = true
 
 # disable_performance_standby = true
 
