@@ -14,6 +14,7 @@
 # =======================================================================
 
 export VAULTRON_TMP="$PWD/tmp"
+export VAULTRON_LIFECYCLE_LOG="$PWD/log/vaultron_lifecycle.log"
 
 VAULTRON_USER="$(id -un)"
 VAULTRON_GROUP="$(id -gn)"
@@ -106,7 +107,7 @@ check_docker() {
     msg alert "Docker process not detected; cannot form Vaultron."
     exit 1
   else
-    if ! docker ps > /dev/null 2>&1; then
+    if ! docker ps >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
       msg alert "Cannot connect to Docker daemon; cannot form Vaultron."
       exit 1
     fi
@@ -121,20 +122,20 @@ check_docker() {
 # Basic connectivity check
 # -----------------------------------------------------------------------
 check_vault() {
-  if command nc -h > /dev/null 2>&1; then
-    if ! nc -z localhost 8200 > /dev/null 2>&1; then
+  if command nc -h >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
+    if ! nc -z localhost 8200 >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
       msg alert "Cannot connect to Vault at $VAULT_ADDR."
       msg info "Make sure to ./form Vaultron before trying blazing_sword."
       exit 1
     fi
-  elif command timeout > /dev/null 2>&1; then
-    if ! timeout 5 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
+  elif command timeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
+    if ! timeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
       msg alert "Cannot connect to Vault at $VAULT_ADDR."
       msg info "Make sure to ./form Vaultron before trying blazing_sword."
       exit 1
     fi
-  elif command gtimeout > /dev/null 2>&1; then
-    if ! gtimeout 5 bash -c '</dev/tcp/localhost/8200' > /dev/null 2>&1; then
+  elif command gtimeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
+    if ! gtimeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
       msg alert "Cannot connect to Vault at $VAULT_ADDR."
       msg info "Make sure to ./form Vaultron before trying blazing_sword."
       exit 1

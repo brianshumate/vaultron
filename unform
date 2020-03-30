@@ -111,6 +111,7 @@ if [ $errors -gt 0 ]; then
   msg info "You can manually clean up Vaultron with lion_torches."
   tput sgr0
 else
+  rm -f "$VAULTRON_LIFECYCLE_LOG" > /dev/null 2>&1
   msg boom "Vaultron unformed!"
   tput sgr0
 fi

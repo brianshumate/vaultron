@@ -123,6 +123,7 @@ Install the following on your Docker host where you will form Vaultron.
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/)
 - [Vault](https://www.vaultproject.io/)
+  - [Install Vault](https://learn.hashicorp.com/vault/getting-started/install)
   - [OSS vault binaries](https://releases.hashicorp.com/vault/)
   - Vaultron's Docker image uses the latest Vault OSS version by default; you should have the latest `vault` binary installed on your Docker host
 
@@ -132,8 +133,8 @@ Once you have the prerequisites installed, you can use the following example to 
 
 You will likely be prompted for your password to add the Vaultron CA certificate from `etc/tls/ca.pem` to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs.
 
-```
-git clone https://github.com/brianshumate/vaultron.git && \
+```shell
+$ git clone https://github.com/brianshumate/vaultron.git && \
   cd vaultron && \
   ./form && \
   . ./ion_darts && \
@@ -143,21 +144,21 @@ git clone https://github.com/brianshumate/vaultron.git && \
   open https://localhost:8200
 ```
 
-> **NOTE**: `blazing_sword` persists the unseal key and initial root token to a file in the `vault` folder named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: The `form` script writes all stdout and stderr to the `log/vaultron_lifecycle.log` file and `blazing_sword` persists the unseal key and initial root token to a file in the `vault` folder named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start (for Linux or macOS)
 
 Vaultron uses the latest Consul and Vault OSS versions by default, so make sure that you have also installed the latest binaries for [Consul](https://releases.hashicorp.com/consul/), [Vault](https://releases.hashicorp.com/vault/), and [Terraform](https://releases.hashicorp.com/terraform/) locally, and that you have have [Docker](https://docs.docker.com/install/) installed as well.
 
-After installing prerequisites, it takes just 3 steps to form Vaultron:
+After installing prerequisites, it takes just 3 steps to form Vaultron.
 
 1. `git clone https://github.com/brianshumate/vaultron.git`
 2. `cd vaultron`
 3. `./form`
 
-When Vaultron is successfully formed, the output looks like this:
+When Vaultron is successfully formed, the output looks like this example.
 
-```
+```plaintext
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
@@ -167,33 +168,34 @@ When Vaultron is successfully formed, the output looks like this:
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
+```
 
-You can now visit the Vault web UI at https://localhost:8200
+You can now visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
 
-or visit the Consul web UI at https://localhost:8500
+You can also interact with vault and consul CLI utilities after exporting the following environment variables in your shell.
 
-You can also interact with vault and consul CLI utilities after
-exporting the following environment variables in your shell:
+```shell
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
+         CONSUL_HTTP_SSL=true \
+         CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
+         VAULT_ADDR="https://127.0.0.1:8200"
+```
 
-export CONSUL_HTTP_ADDR="127.0.0.1:8500"
-export CONSUL_HTTP_SSL=true
-export VAULT_ADDR="https://127.0.0.1:8200"
-export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+or use the `ion_darts` script to do it for you.
 
-or use this command to do it for you:
-
-. ./ion_darts
+```shell
+$ . ./ion_darts
 ```
 
 You are now nearly ready to interact with Vault and Consul using their web user interfaces, command line interfaces, or HTTP APIs.
 
 Take a moment to verify that all of the Vaultron Docker containers are up:
 
-```
-docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
+```shell
+$ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
 ```
 
-The output should look something like this example:
+The output should look something like this example.
 
 ```plaintext
 NAMES               STATUS
@@ -208,9 +210,9 @@ vaultron-consuls2   Up 8 minutes (healthy)
 vaultron-consuls1   Up 8 minutes (healthy)
 ```
 
-Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that's not really a problem that they appear as _unhealthy_ at this time.
+Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that is actually expected at this time.
 
-There is also a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the `consul` or `vault` CLI tools with Vaultron:
+There is also a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the `consul` or `vault` CLI tools with Vaultron.
 
 ```shell
 $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
@@ -221,13 +223,13 @@ $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
        VAULT_CA_CERT="$(pwd)/black_lion/tls/ca.pem"
 ```
 
-You can instead source the `ion_darts` script to do all of this for you:
+You can instead source the `ion_darts` script to do all of this for you.
 
 ```
 . ./ion_darts
 ```
 
-which should output details like this:
+which should output details like this example.
 
 ```plaintext
 [vaultron] [+] Exported Vaultron environment variables:
@@ -262,7 +264,7 @@ The Docker private network is not removed for reasons detailed elsewhere in this
 
 The Terraform provider modules _are also not removed_ to save on resources and time involved in re-downloading them.
 
-If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead:
+If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead.
 
 ```shell
 $ terraform destroy \
@@ -273,10 +275,10 @@ Ensure that you have set a value for `TF_VAR_vault_flavor` or replace it with th
 
 If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `blazing_sword` script to do all of this for you. `blazing_sword` uses the additional Terraform configuration in `blazing_sword/main.tf`.
 
-If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances:
+If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances.
 
-```
-export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
+```shell
+$ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
        CONSUL_HTTP_SSL=true \
        VAULT_ADDR="https://127.0.0.1:8200" \
        CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
@@ -288,7 +290,7 @@ The following are more advanced examples of forming Vaultron using a range of en
 
 #### OSS Integrated Storage Example
 
-This example uses the integrated storage ("raft") backend, and a higher logging level:
+This example uses the integrated storage ("raft") backend, and a higher logging level.
 
 ```shell
 $ export TF_VAR_vault_flavor=raft \
@@ -302,7 +304,7 @@ What this does line by line:
 - Set the Vault OSS server instance count to 5; this is required for Raft storage.
 - Set Vault log level to info instead of debug
 
-It is worth noting that when you `form` Vaultron, output will resemble this example:
+It is worth noting that when you `form` Vaultron, output will resemble this example.
 
 ```shell
 $ ./form
@@ -318,6 +320,24 @@ $ ./form
 Note the **Vault flavor: raft storage backed** part.
 
 When Vaultron forms this way, all Vault servers are started and ready, but not yet initialized, joined or unsealed. You need to do this manually or use `blazing_sword` to do it (and a lot more) for you.
+
+Once the cluster is ready, use [`vault operator raft list-peers`]() to learn about cluster health and leadership.
+
+```shell
+$ vault operator raft list-peers
+```
+
+**Example output:**
+
+```plaintext
+Node                Address              State       Voter
+----                -------              -----       -----
+vaultron-vault-0    10.10.42.200:8201    leader      true
+vaultron-vault-1    10.10.42.201:8201    follower    true
+vaultron-vault-2    10.10.42.202:8201    follower    true
+vaultron-vault-3    10.10.42.203:8201    follower    true
+vaultron-vault-4    10.10.42.204:8201    follower    true
+```
 
 #### Full Stack Example with Custom Binary & Telemetry Enabled
 
@@ -345,7 +365,7 @@ What this does line by line:
 
 ## What's in the Box?
 
-Whimsical Vaultron technical specification quick reference card:
+Whimsical Vaultron technical specification quick reference card.
 
 ```
 Name:          Vaultron
@@ -372,7 +392,7 @@ Vaultron is only currently tested to function on Linux and macOS, but here is ba
 
 This diagram depicts basic Vaultron Consul storage based cluster architecture.
 
-```
+```plaintext
 +------------+--------------------------------------------------+------------+
 |            |              Yellow Lion (optional)              |            |
 | __     __  |    +-----------------------------------------+   |            |
@@ -413,47 +433,47 @@ This diagram depicts basic Vaultron Consul storage based cluster architecture.
 +----------------------------------------------------------------------------+
 ```
 
-Vaultron using Consul storage consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_:
+Vaultron using Consul storage consists of 3 Vault server containers, 3 Consul client containers, and 3 Consul server containers which run in a Docker private network called _vaultron-network_.
 
 #### Vault Servers
 
-- `vaultron-vault0`
+- **vaultron-vault0**
   - Docker private network IP: 10.10.42.200
-- `vaultron-vault1`
+- **vaultron-vault1**
   - Docker private network IP: 10.10.42.201
-- `vaultron-vault2`
+- **vaultron-vault2**
   - Docker private network IP: 10.10.42.202
 
 #### Consul Servers
 
-- `vaultron-consuls0`
+- **vaultron-consuls0**
   - Docker private network IP: 10.10.42.100
-- `vaultron-consuls1`
+- **vaultron-consuls1**
   - Docker private network IP: 10.10.42.101
-- `vaultron-consuls2`
+- **vaultron-consuls2**
   - Docker private network IP: 10.10.42.102
 
 #### Consul Clients
 
-- `vaultron-consulc0`
+- **vaultron-consulc0**
   - Docker private network IP: 10.10.42.40
-- `vaultron-consulc1`
+- **vaultron-consulc1**
   - Docker private network IP: 10.10.42.41
-- `vaultron-consulc2`
+- **vaultron-consulc2**
   - Docker private network IP: 10.10.42.42
 
 > NOTE: The `form` script creates the attachable Docker private network _vaultron-network_ with a subnet of 10.10.42.0/24 if it is not found to already be present. It is not removed by `unform` however, as other containers that are not part of Vaultron could be using it even when Vaultron's containers are stopped or removed.
 
-An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details. It uses the following IPs:
+An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details. It uses the following IP addresses.
 
 #### statsd
 
-- `vaultron-vstatsd`
+- **vaultron-vstatsd**
   - Docker private network IP: 10.10.42.219
 
 #### Grafana
 
-- `vaultron-vgrafana`
+- **vaultron-vgrafana**
   - Docker private network IP: 10.10.42.220
 
 Vault servers connect directly to the Consul clients, which in turn connect to the Consul server cluster. In this configuration, Vault is using Consul for both storage and high availability functionality.
@@ -670,29 +690,29 @@ The cluster port (for the Active instance only) is also forwarded to localhost a
 
 ### Changing Vault OSS and Consul OSS Versions
 
-Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different _OSS version_, you can export the `TF_VAR_vault_version` environment variable to override:
+Vaultron runs the `:latest` official Vault Docker container image, but if you would prefer to run a different _OSS version_, you can export the `TF_VAR_vault_version` environment variable to override.
 
-```
-TF_VAR_vault_version=0.6.5 ./form
+```shell
+$ TF_VAR_vault_version=0.6.5 ./form
 ```
 
 the output of which would then contain:
 
-```
+```plaintext
 ...
 [vaultron] [i] Vault OSS version: 0.6.5
 ...
 ```
 
-Similarly, to run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this:
+Similarly, to run a different version of the Consul container, set the `TF_VAR_consul_version` environment variable like this example.
 
-```
-TF_VAR_consul_version=0.7.5 ./form
+```shell
+$ TF_VAR_consul_version=0.7.5 ./form
 ```
 
-After Vaultron forms, check the Consul version with `consul members`:
+After Vaultron forms, check the Consul version with `consul members`.
 
-```
+```plaintext
 Node      Address          Status  Type    Build  Protocol  DC    Segment
 consuls0  172.17.0.2:8301  alive   server  0.7.5  2         arus  <all>
 consuls1  172.17.0.3:8301  alive   server  0.7.5  2         arus  <all>

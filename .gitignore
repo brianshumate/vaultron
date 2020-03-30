@@ -47,3 +47,4 @@ hc*.json
 payload.json
 role_id.txt
 secret_id.txt
+vaultron_lifecycle.log

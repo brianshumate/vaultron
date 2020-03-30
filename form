@@ -77,9 +77,9 @@ check_existing_vault() {
 
 # Check for existing Vaultron private network and create if missing
 check_and_create_vaultron_private_network() {
-if ! docker network ls | grep vaultron-network > /dev/null 2>&1; then
+if ! docker network ls | grep vaultron-network >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
   msg notice "vaultron-network not present; creating ..."
-  if ! docker network create --attachable  --subnet "10.10.42.0/24" vaultron-network > /dev/null 2>&1; then
+  if ! docker network create --attachable  --subnet "10.10.42.0/24" vaultron-network >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot create vaultron-network; Vaultron cannot form without private network!"
     exit 1
   fi
@@ -89,7 +89,7 @@ fi
 
 # Check for existing Vaultron containers
 check_existing_vaultron_containers() {
-  if docker ps -a | grep 'vaultron-{vault,consul}' > /dev/null 2>&1; then
+  if docker ps -a | grep 'vaultron-{vault,consul}' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Vaultron cannot form; there are Vaultron specific Vault or Consul containers currently running or stopped"
     msg info "Please unform existing Vaultron or use docker stop and docker rm to manually"
     msg info "clean up the containers shown here:"

@@ -39,7 +39,7 @@ auth_root() {
     local LOGIN_CMD="vault auth $INITIAL_ROOT_TOKEN"
   fi
   msg info "Authenticating with initial root token ..."
-  if ! $LOGIN_CMD > /dev/null 2>&1; then
+  if ! $LOGIN_CMD >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Could not authenticate with initial root token!"
     exit 1
   else
@@ -51,12 +51,12 @@ auth_root() {
 enable_all() {
   msg info "Enabling audit device, auth methods, secrets engines, and policies ..."
   cd examples/terraform || exit 1
-  rm -rf .terraform > /dev/null 2>&1
-  rm -f terraform.tfstate > /dev/null 2>&1
-  rm -f vault.plan > /dev/null 2>&1
-  terraform init > /dev/null 2>&1 && \
-  terraform plan -out vault.plan > /dev/null 2>&1 && \
-  terraform apply "vault.plan" > /dev/null 2>&1
+  rm -rf .terraform >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+  rm -f terraform.tfstate >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+  rm -f vault.plan >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+  terraform init >> "$VAULTRON_LIFECYCLE_LOG" 2>&1 && \
+  terraform plan -out vault.plan >> "$VAULTRON_LIFECYCLE_LOG" 2>&1 && \
+  terraform apply "vault.plan" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
   msg success "Audit device, auth methods, secrets engines, and policies enabled!"
 }
 
@@ -141,7 +141,7 @@ status() {
 
 # Note about statsd server for Telemetry
 telemetry_info() {
-  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vstatsd) > /dev/null 2>&1; then
+  if VSTATSD_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vstatsd) >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg info "Telemetry: statsd address: $VSTATSD_ADDR"
   else
     msg alert "Cannot determine statsd address!"
@@ -150,7 +150,7 @@ telemetry_info() {
 
 # Consul leader container info
 consul_leader_info() {
-  if CONSUL_LEADER_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-consuls0) > /dev/null 2>&1; then
+  if CONSUL_LEADER_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-consuls0) >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg info "Consul leader address: $CONSUL_LEADER_ADDR"
   else
     msg alert "Cannot determine Consul leader address!"
@@ -159,7 +159,7 @@ consul_leader_info() {
 
 # Initial Vault active container info
 vault_active_info() {
-  if VAULT_ACTIVE_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0) > /dev/null 2>&1; then
+  if VAULT_ACTIVE_ADDR=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' vaultron-vault0) >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg info "Active Vault address: $VAULT_ACTIVE_ADDR"
   else
     msg alert "Cannot determine active Vault address!"
@@ -177,19 +177,19 @@ unseal_vault_consul() {
   msg info "Unsealing Vault ..."
   get_unseal_key $VAULT_DAT
   if ! VAULT_ADDR="https://localhost:8200" \
-    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot unseal Vault 1!"
     errors=$((errors + $?))
     exit $errors
   fi
   if ! VAULT_ADDR="https://localhost:8210" \
-    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot unseal Vault 2!"
     errors=$((errors + $?))
     exit $errors
   fi
   if ! VAULT_ADDR="https://localhost:8220" \
-    $UNSEAL_CMD "$k0" > /dev/null 2>&1; then
+    $UNSEAL_CMD "$k0" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot unseal Vault 3!"
     errors=$((errors + $?))
     exit $errors
@@ -201,7 +201,7 @@ unseal_vault_consul() {
 join_raft_primary() {
   msg info "Raft flavored storage: Join ${1} to primary ..."
   get_initial_root_token $VAULT_DAT
-  if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR > /dev/null 2>&1; then
+  if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot join Vault ${1}!"
     errors=$((errors + $?))
     exit $errors
@@ -214,7 +214,7 @@ unseal_vault_raft() {
   msg info "Unsealing Vault ${1} ..."
   get_unseal_key $VAULT_DAT
   if ! VAULT_ADDR="https://localhost:82${1}0" \
-    vault operator unseal "$k0" > /dev/null 2>&1; then
+    vault operator unseal "$k0" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
     msg alert "Cannot unseal Vault!"
     errors=$((errors + $?))
     exit $errors
