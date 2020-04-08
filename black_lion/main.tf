@@ -77,7 +77,7 @@ resource "docker_image" "vault" {
 }
 
 # -----------------------------------------------------------------------
-# Vault OSS server BASE configuration
+# Vault OSS server base configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_config" {
@@ -102,7 +102,7 @@ data "template_file" "vault_config" {
 }
 
 # -----------------------------------------------------------------------
-# Vault server STORAGE configuration for OSS
+# Vault OSS server storage configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_oss_storage_config" {
@@ -250,11 +250,11 @@ resource "docker_container" "vault_oss_server" {
 }
 
 # -----------------------------------------------------------------------
-# Vault Custom binary (for Enterprise / source builds / etc.)
+# Vault custom binary (for Enterprise / source builds / etc.)
 # -----------------------------------------------------------------------
 
 # -----------------------------------------------------------------------
-# Vault CUSTOM TLS configuration
+# Vault custom TLS configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_tls_cert" {
@@ -272,7 +272,7 @@ data "template_file" "vault_custom_tls_key" {
 }
 
 # -----------------------------------------------------------------------
-# Vault CUSTOM binary BASE configuration
+# Vault custom binary base configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_config" {
@@ -302,7 +302,7 @@ data "template_file" "vault_custom_config" {
 }
 
 # -----------------------------------------------------------------------
-# Vault CUSTOM server STORAGE configuration
+# Vault custom server storage configuration
 # -----------------------------------------------------------------------
 
 data "template_file" "vault_custom_storage_config" {
@@ -323,7 +323,7 @@ data "template_file" "vault_custom_storage_config" {
 }
 
 # -----------------------------------------------------------------------
-# Vault Custom binary servers
+# Vault custom binary servers
 # -----------------------------------------------------------------------
 
 resource "docker_container" "vault_custom_server" {

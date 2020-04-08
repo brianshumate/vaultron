@@ -42,8 +42,9 @@ check_instance_count() {
     if [ -z "$TF_VAR_vault_custom_instance_count" ] || [ "$TF_VAR_vault_custom_instance_count" -eq 0 ]; then
       export TF_VAR_vault_oss_instance_count=3
     fi
-    if [ "$TF_VAR_vault_custom_instance_count" -ge 0 ]; then
-      if [ "$TF_VAR_vault_custom_instance_count" != 3 ]; then
+    if [ -n "$TF_VAR_vault_custom_instance_count" ]; then
+      msg notice "DEBUG: $TF_VAR_vault_custom_instance_count"
+      if [ "$TF_VAR_vault_custom_instance_count" -gt 3 ]; then
         msg alert "Incorrect number of Custom Vault servers ($TF_VAR_vault_custom_instance_count) specified"
         msg info "Try 'export TF_VAR_vault_custom_instance_count=3' instead."
         exit 1
@@ -133,10 +134,12 @@ check_vault_version() {
 }
 
 check_custom_binary() {
-  if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
-    if [ ! -f ./custom/"$1" ]; then
-      msg alert "Vaultron cannot form; custom binary specified, but ./custom/$1 was not found!"
-      exit 1
+  if [ -n "$TF_VAR_vault_custom_instance_count" ]; then
+    if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+      if [ ! -f ./custom/"$1" ]; then
+        msg alert "Vaultron cannot form; custom binary specified, but ./custom/$1 was not found!"
+        exit 1
+      fi
     fi
   fi
 }
@@ -236,11 +239,13 @@ export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 check_vault_version
 
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  check_consul_version
+if [ -n "$TF_VAR_vault_custom_instance_count" ]; then
+  if [ "$TF_VAR_vault_flavor" = "consul" ]; then
+    check_consul_version
+  fi
 fi
 
-if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
+if [ -n "$TF_VAR_vault_custom_instance_count" ] && [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
   # we won't be needing this...
   unset TF_VAR_vault_version
   msg notice "Vault version: custom binary"

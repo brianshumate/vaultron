@@ -1,6 +1,7 @@
 #!/bin/sh
 # =======================================================================
 # Basic Vaultron lifecycle functionality tests
+# NB: This only properly tests a default OSS cluster with Consul storage.
 #
 # 1.  Test ./unform
 # 2.  Test ./form
@@ -39,34 +40,34 @@ if ! ./form; then
 fi
 
 for i in 0 1 2; do
-    if ! [ -d "consul/consuls$i" ]; then
+    if ! [ -d "./flavors/consul/consul/consuls$i" ]; then
         echo "${txtred}[e] Missing directory consul/consuls$i after forming!${txtrst}";
         exit 1
     fi
-    if ! [ -d "consul/consulc$i" ]; then
+    if ! [ -d "./flavors/consul/consul/consulc$i" ]; then
         echo "${txtred}[e] Missing directory consul/consulc$i after forming!${txtrst}";
         exit 1
     fi
-    if ! [ -d "vault/vault$i" ]; then
+    if ! [ -d "./flavors/consul/vault/vault$i" ]; then
         echo "${txtred}[e] Missing directory consul/vault$i after forming!${txtrst}";
         exit 1
     fi
 done
 
-if [ ! -f "tfstate/terraform.tfstate" ]; then
+if [ ! -f "./flavors/consul/tfstate/terraform.tfstate" ]; then
     echo "${txtred}[e] No Terraform state generated after forming:${txtrst}"
     echo "${txtred}tfstate/terraform.tfstate${txtrst}"
     exit 1
 fi
 
-if [ ! -d ".terraform" ]; then
+if [ ! -d "./flavors/consul/.terraform" ]; then
     echo "${txtred}[e] No Terraform configuration directory after forming:${txtrst}"
     echo "${txtred}.terraform${txtrst}"
     exit 1
 fi
 
 for l in init plan apply; do
-    if [ -z "$(find log -type f -name "tf-*-$l.log")" ]; then
+    if [ -z "$(find ./flavors/consul/log -type f -name "tf-*-$l.log")" ]; then
         echo "${txtred}[e] Should be at least one log file of the form:${txtrst}"
         echo "${txtred}log/tf-*-$l.log${txtrst}"
         exit 1
@@ -88,28 +89,28 @@ if ! ./unform; then
     exit 1
 fi
 
-if [ -f "tfstate/terraform.tfstate" ]; then
+if [ -f "./flavors/consul/tfstate/terraform.tfstate" ]; then
     echo "${txtred}[e] Terraform state file still present after unforming!${txtrst}"
     exit 1
 fi
 
 for i in 0 1 2; do
-    if [ -d "consul/consuls$i" ]; then
+    if [ -d "./flavors/consul/consul/consuls$i" ]; then
         echo "${txtred}[e] Directory consul/consuls$i still present after unforming!${txtrst}"
         exit 1
     fi
-    if [ -d "consul/consulc$i" ]; then
+    if [ -d "./flavors/consul/consul/consulc$i" ]; then
         echo "${txtred}[e] Directory consul/consulc$i still present after unforming!${txtrst}"
         exit 1
     fi
-    if [ -d "vault/vault$i" ]; then
+    if [ -d "./flavors/consul/vault/vault$i" ]; then
         echo "${txtred}[e] Directory consul/vault$i still present after unforming!${txtrst}"
         exit 1
     fi
 done
 
-if [ -z "$(find log -type f -name "tf-*-destroy.log")" ]; then
+if [ -z "$(find ./flavors/consul/log -type f -name "tf-*-destroy.log")" ]; then
     echo "${txtred}[e] Should be at least one log file after destroy of the form:${txtrst}"
-    echo "${txtred}log/tf-*-destroy.log${txtrst}"
+    echo "${txtred}./flavors/consul/log/tf-*-destroy.log${txtrst}"
     exit 1
 fi

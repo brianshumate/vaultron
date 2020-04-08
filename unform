@@ -10,6 +10,8 @@
 
 . ./skydome
 
+export TF_VAR_vault_flavor
+
 # Preflight checks
 if [ -z "$(command -v terraform)" ]; then
   msg alert "Vaultron cannot unform! Could not locate terraform command."
@@ -17,13 +19,11 @@ if [ -z "$(command -v terraform)" ]; then
   exit 1
 fi
 
-check_flavor
-
-TF_VAR_vault_flavor=$TF_VAR_vault_flavor
-
 check_docker
 
-cd "flavors/$TF_VAR_vault_flavor" || exit 1
+# SAVOR THE FLAVOR!
+check_installed_flavor
+cd "flavors/$TF_VAR_vault_flavor" || msg alert "This should not be!"
 
 msg greeting "Unform Vaultron ..."
 
@@ -103,7 +103,7 @@ rm -rf ./.terraform/modules
 errors=$((errors + $?))
 rm -f ./.terraform/terraform.tfstate*
 errors=$((errors + $?))
-rm -rf ./log/*
+rm -rf ./log/*init.log ./log/*plan.log ./log/*apply.log
 errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then

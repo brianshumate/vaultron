@@ -6,14 +6,13 @@ terraform {
   required_version = ">= 0.12"
 }
 
-
 # -----------------------------------------------------------------------
 # Version variables
 # -----------------------------------------------------------------------
 
 # Set TF_VAR_vault_version to set this
 variable "vault_version" {
-  default = "1.3.3"
+  default = "1.3.4"
 }
 
 # -----------------------------------------------------------------------
@@ -130,6 +129,16 @@ variable "statsd_ip" {
 }
 
 # -----------------------------------------------------------------------
+# Sidecar variables
+# -----------------------------------------------------------------------
+
+# Set TF_VAR_vaultron_sidecar_instance_count to set this
+variable "vaultron_sidecar_instance_count" {
+  default = "0"
+}
+
+
+# -----------------------------------------------------------------------
 # Module definitions
 # -----------------------------------------------------------------------
 
@@ -140,6 +149,10 @@ module "telemetry" {
   statsd_version           = var.statsd_version
   vaultron_telemetry_count = var.vaultron_telemetry_count
 }
+
+#module "sidecar" {
+#  source = "../../blue_lion"
+#}
 
 module "vaultron" {
   source                       = "../../black_lion"
@@ -158,9 +171,8 @@ module "vaultron" {
   vault_version                = var.vault_version
   vaultron_telemetry_count     = var.vaultron_telemetry_count
   statsd_ip                    = module.telemetry.statsd_ip
-  # sigh, this is sad... will fix later
+  # XXX: sad... will fix later
   consul_server_ips  = ["10.10.42.200", "10.10.42.201", "10.10.42.202"]
   consul_client_ips  = ["10.10.42.200", "10.10.42.201", "10.10.42.202"]
   disable_clustering = false
 }
-

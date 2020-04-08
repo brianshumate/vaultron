@@ -99,6 +99,23 @@ check_flavor() {
 }
 
 # -----------------------------------------------------------------------
+# Check installed Vaultron flavor based on presence of the tfstate
+# -----------------------------------------------------------------------
+check_installed_flavor() {
+  if ls flavors/consul/tfstate/terraform.tfstate > /dev/null 2>&1; then
+    export TF_VAR_vault_flavor=consul;
+  else
+    if ls flavors/raft/tfstate/terraform.tfstate > /dev/null 2>&1; then
+      export TF_VAR_vault_flavor=raft;
+  else
+    msg alert "Cannot determine the installed Vaultron flavor!"
+    msg info "Please use lion_torches to clean up instead."
+    fi
+  fi
+  # msg info "Detected $TF_VAR_vault_flavor flavor installed."
+}
+
+# -----------------------------------------------------------------------
 # Check for Docker proc and socket and bail out if either is absent
 # -----------------------------------------------------------------------
 check_docker() {

@@ -224,7 +224,6 @@ unseal_vault_raft() {
 
 msg greeting "Blazing Sword! ..."
 
-# in case we are called immediately after form...
 sleep 2s
 
 check_flavor
@@ -299,6 +298,7 @@ if [ "$TF_VAR_vault_flavor" = "raft" ]; then
   status
   enabled
   vault_active_info
+  vault operator raft list-peers
 fi
 
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then

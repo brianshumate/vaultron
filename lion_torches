@@ -20,12 +20,21 @@ TF_VAR_vault_flavor=$TF_VAR_vault_flavor || TF_VAR_vault_flavor=consul
 
 check_docker
 
-msg greeting "Lion Torches removing all Vaultron generated data ..."
+msg greeting "Lion Torches activated ..."
+
+msg info "Removing all Vaultron generated data ..."
 
 cd "flavors/$TF_VAR_vault_flavor" || echo "Cannot select flavor" && exit 1
 
-#if ! docker stop vaultron-\*
-#fi
+# The nuclear options for Vaultron's imminent demise
+
+if ! for d in $(docker ps -a | grep vaultron | cut -d ' ' -f 1); \
+  do docker stop "$d"; docker rm "$d"; done;
+then
+  msg alert "Cannot remove Docker containers!"
+  msg info "Use 'docker ps -a' to identify, stop, and remove all vaultron containers."
+  exit 1
+fi
 
 # If we cannot write to the Consul data, alert user and attempt to change
 # ownership of consul/vault folders to avoid failure with Terraform destroy
@@ -52,32 +61,46 @@ fi
 
 # Remove Consul client data
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  rm -rf ./consul/consulc0
+  rm -rf ./flavors/consul/consul/consulc0
   errors=$((errors + $?))
-  rm -rf ./consul/consulc1
+  rm -rf ./flavors/consul/consul/consulc1
   errors=$((errors + $?))
-  rm -rf ./consul/consulc2
+  rm -rf ./flavors/consul/consul/consulc2
   errors=$((errors + $?))
 fi
 
 # Remove Consul server data
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  rm -rf ./consul/consuls0
+  rm -rf ./flavors/consul/consul/consuls0
   errors=$((errors + $?))
-  rm -rf ./consul/consuls1
+  rm -rf ./flavors/consul/consul/consuls1
   errors=$((errors + $?))
-  rm -rf ./consul/consuls2
+  rm -rf ./flavors/consul/consul/consuls2
   errors=$((errors + $?))
 fi
 
-# Remove Vault server data
-rm -rf ./vault/vault0
+# Remove Vault server data for Consul storage
+rm -rf ./flavors/consul/vault/vault0
 errors=$((errors + $?))
-rm -rf ./vault/vault1
+rm -rf ./flavors/consul/vault/vault1
 errors=$((errors + $?))
-rm -rf ./vault/vault2
+rm -rf ./flavors/consul/vault/vault2
 errors=$((errors + $?))
-rm -f ./vault/vault_DEV_ONLY*.tmp
+rm -f ./flavors/consul/vault/vault0/vault_DEV_ONLY*.tmp
+errors=$((errors + $?))
+
+# Remove Vault server data for Integrated Storage
+rm -rf ./flavors/raft/vault/vault0
+errors=$((errors + $?))
+rm -rf ./flavors/raft/vault/vault1
+errors=$((errors + $?))
+rm -rf ./flavors/raft/vault/vault2
+errors=$((errors + $?))
+rm -rf ./flavors/raft/vault/vault3
+errors=$((errors + $?))
+rm -rf ./flavors/raft/vault/vault4
+errors=$((errors + $?))
+rm -f ./flavors/raft/vault/vault0/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
 # Remove Telemetry data
@@ -85,15 +108,29 @@ rm -rf ./yellow_lion/grafana_data
 errors=$((errors + $?))
 
 # Remove Terraform state, plans, backend configuration, and logs
-rm -f ./tfstate/terraform.tfstate*
+
+## Consul
+rm -f ./flavors/consul/tfstate/terraform.tfstate*
 errors=$((errors + $?))
-rm -f ./tfstate/vaultron*.plan
+rm -f ./flavors/consul/tfstate/vaultron*.plan
+errors=$((errors + $?))
+rm -rf ./flavors/consul/.terraform/modules
+errors=$((errors + $?))
+rm -f ./flavors/consul/.terraform/terraform.tfstate*
+errors=$((errors + $?))
+rm -rf ./flavors/consul/log/*
+errors=$((errors + $?))
+
+## Raft
+rm -f ./flavors/raft/tfstate/terraform.tfstate*
+errors=$((errors + $?))
+rm -f ./flavors/raft/tfstate/vaultron*.plan
 errors=$((errors + $?))
 rm -rf ./.terraform/modules
 errors=$((errors + $?))
-rm -f ./.terraform/terraform.tfstate*
+rm -f ./flavors/raft/.terraform/terraform.tfstate*
 errors=$((errors + $?))
-rm -rf ./log/*
+rm -rf ./flavors/raft/log/*
 errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then
