@@ -1,12 +1,11 @@
-## NEXT
+## 3.4.0
 
 - Vault v1.4.0
-- Introducing flavors
+- Introduce flavors
   - Reorganize locations for configuration and data
   - Consistent use of data volume for Raft and Filesystem storage backends
 - Add Vault Integrated Storage (Raft) flavor
 - Add Vault Consul Storage flavor
-- Castle of Lions
 - Update documentation
 
 ## 3.3.0
