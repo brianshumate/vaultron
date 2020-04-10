@@ -20,10 +20,3 @@ listener "tcp" {
   tls_cert_file = "/etc/ssl/certs/vault-server.crt"
   tls_key_file  = "/etc/ssl/vault-server.key"
 }
-
-# -----------------------------------------------------------------------
-# Optional cloud seal configuration
-# -----------------------------------------------------------------------
-
-# GCPKMS
-

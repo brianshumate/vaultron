@@ -25,8 +25,13 @@ listener "tcp" {
 plugin_directory = "/vault/plugins"
 
 # -----------------------------------------------------------------------
-# Enable Prometheus metrics by default (eventually)
+# Enable Prometheus metrics by default
 # -----------------------------------------------------------------------
+
+# telemetry {
+#   prometheus_retention_time = "30s"
+#   disable_hostname          = false
+# }
 
 # NB: The telemetry is actually controlled in `extras/vault_telemetry.hcl`
 #     The following are for testing/debugging of Vaultron itself only

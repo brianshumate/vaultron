@@ -310,14 +310,14 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 $ ./form
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [?] Vault version: custom binary
-[vaultron] [i] Vault flavor: raft storage backed
-[vaultron] [i] Terraform plan: 4 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 4 added, 0 changed, 0 destroyed.
+[vaultron] [i] Vault OSS version: 1.4.0
+[vaultron] [i] Vault flavor: Integrated storage backed
+[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
 ```
 
-Note the **Vault flavor: raft storage backed** part.
+Note the **Vault flavor: Integrated storage backed** part.
 
 When Vaultron forms this way, all Vault servers are started and ready, but not yet initialized, joined or unsealed. You need to do this manually or use `blazing_sword` to do it (and a lot more) for you.
 

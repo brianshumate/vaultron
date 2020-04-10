@@ -65,7 +65,6 @@ msg() {
 # -----------------------------------------------------------------------
 # Basic CLI capabilities check (for renaming from <= v0.9.1 and v0.9.1+)
 # -----------------------------------------------------------------------
-
 check_cli_cap() {
   VAULT_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
   VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f1)"
