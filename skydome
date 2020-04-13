@@ -54,10 +54,10 @@ msg() {
             printf "%s%s [?] %s %s\\n" "$TXTYLW" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         alert)
-            printf "%s%s [!] %s %s\\n" "$TXTRED" "$MSGSRC" "$MSGTXT" "$TXTRST"
+            >&2 printf "%s%s [!] %s %s\\n" "$TXTRED" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
         *)
-            printf "%s%s [@] %s %s\\n" "$TXTCYA" "$MSGSRC" "$MSGTXT" "$TXTRST"
+            >&2 printf "%s%s [@] %s %s\\n" "$TXTCYA" "$MSGSRC" "$MSGTXT" "$TXTRST"
             ;;
     esac
 }
