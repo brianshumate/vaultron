@@ -49,14 +49,14 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
     + [Published Ports](#published-ports)
     + [Changing Vault OSS and Consul OSS Versions](#changing-vault-oss-and-consul-oss-versions)
     + [Consul DNS](#consul-dns)
-    + [Security Configuration?](#security-configuration)
+    + [Best Practices and Security Configuration?](#best-practices-and-security-configuration)
       - [Docker Container / OS](#docker-container--os)
       - [Consul ACLs by Default](#consul-acls-by-default)
       - [TLS by Default](#tls-by-default)
         * [Vault PKI Secrets Engine Based TLS Configuration](#vault-pki-secrets-engine-based-tls-configuration)
     + [Where's My Vault Data?](#wheres-my-vault-data)
       - [Vault Data in Consul](#vault-data-in-consul)
-      - [Vault Data in Raft](#vault-data-in-raft)
+      - [Vault Data in Integrated Storage](#vault-data-in-integrated-storage)
     + [What About Logs?](#what-about-logs)
     + [Telemetry Notes](#telemetry-notes)
     + [A Note About Custom Binaries](#a-note-about-custom-binaries)
@@ -78,20 +78,19 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
   * [Who?](#who)
   * [Special Thanks](#special-thanks)
 
-
 ![Diagram of a Vaultron cluster with integrated storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
 
 _Diagram of a Vaultron cluster with integrated storage (Raft) flavor_
 
 ## What?
 
-**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.12.0+ required) to build a tiny cluster of [Consul](https://www.consul.io/)-backed and highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
+**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.12.0+ required) to build a tiny cluster of highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
 > **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on using Vault itself**.
 
 ## Why?
 
-It's a reasonably useful Vault & Consul environment deployed on your macOS or Linux computer _in a about 1 minute_.
+It's a reasonably useful Vault environment deployed on your macOS or Linux computer _in a about 1 minute_.
 
 Some of the more popular uses of Vaultron are:
 
@@ -104,6 +103,8 @@ Some of the more popular uses of Vaultron are:
 ## How?
 
 Terraform assembles individual pieces to form Vaultron from the official [Vault Docker image](https://hub.docker.com/_/vault/) and [Consul Docker image](https://hub.docker.com/_/consul/).
+
+Consul is used for storage by default, but there is also an integrated storage formula for [Raft storage](https://www.vaultproject.io/docs/configuration/storage/raft) as well. Consult the [Advanced Examples](#Advanced-Examples) section for more details on using the Raft storage flavor.
 
 ### Prerequisites
 
