@@ -43,7 +43,7 @@ check_instance_count() {
       export TF_VAR_vault_oss_instance_count=3
     fi
     if [ -n "$TF_VAR_vault_custom_instance_count" ]; then
-      msg notice "DEBUG: $TF_VAR_vault_custom_instance_count"
+      # msg notice "DEBUG: $TF_VAR_vault_custom_instance_count"
       if [ "$TF_VAR_vault_custom_instance_count" -gt 3 ]; then
         msg alert "Incorrect number of Custom Vault servers ($TF_VAR_vault_custom_instance_count) specified"
         msg info "Try 'export TF_VAR_vault_custom_instance_count=3' instead."
