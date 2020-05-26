@@ -116,8 +116,8 @@ Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.2.0.3
-  - Engine version: 19.03.5
+  - Tested with version 2.3.0.2
+  - Engine version: 19.03.8
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
   - Vaultron's Docker image uses the latest Consul OSS version by default; you should have the latest `consul` binary installed on your Docker host
@@ -165,7 +165,7 @@ When Vaultron is successfully formed, the output looks like this example.
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
 [vaultron] [i] Vault flavor: consul storage backed
-[vaultron] [i] Vault OSS version: 1.3.2
+[vaultron] [i] Vault OSS version: 1.4.2
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed!
@@ -311,7 +311,7 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 $ ./form
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.4.0
+[vaultron] [i] Vault OSS version: 1.4.2
 [vaultron] [i] Vault flavor: Integrated storage backed
 [vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.

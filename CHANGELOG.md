@@ -1,3 +1,9 @@
+## 3.4.2
+
+- Vault v1.4.2
+- Remove Consul DNS as container DNS source
+- Update documentation
+
 ## 3.4.1
 
 - Vault v1.4.1

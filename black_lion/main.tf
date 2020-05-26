@@ -167,11 +167,15 @@ resource "docker_container" "vault_oss_server" {
 
   env = ["SKIP_CHOWN", "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201", "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200", "VAULT_LOG_FORMAT=${var.vault_server_log_format}"]
 
-  command    = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
-  hostname   = format("vaults%d", count.index)
-  domainname = "consul"
-  dns        = var.consul_server_ips
-  dns_search = ["consul"]
+  command  = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
+  hostname = format("vaults%d", count.index)
+
+  # XXX: this is causing issues and probably is not used/doesn't help
+  #      it cannot be used as-is in raft flavor so commenting out for now
+  #      and revisiting later...
+  # domainname = "consul"
+  # dns        = var.consul_server_ips
+  # dns_search = ["consul"]
 
   must_run = true
 
@@ -333,11 +337,15 @@ resource "docker_container" "vault_custom_server" {
 
   env = ["SKIP_CHOWN", "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201", "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200", "VAULT_LOG_FORMAT=${var.vault_server_log_format}"]
 
-  command    = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
-  hostname   = format("vaults%d", count.index)
-  domainname = "consul"
-  dns        = var.consul_server_ips
-  dns_search = ["consul"]
+  command  = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
+  hostname = format("vaults%d", count.index)
+
+  # XXX: this is causing issues and probably is not used/doesn't help
+  #      it cannot be used as-is in raft flavor so commenting out for now
+  #      and revisiting later...
+  # domainname = "consul"
+  # dns        = var.consul_server_ips
+  # dns_search = ["consul"]
 
   must_run = true
 
