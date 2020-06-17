@@ -116,7 +116,7 @@ Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.3.0.2
+  - Tested with version 2.3.0.3
   - Engine version: 19.03.8
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
@@ -132,7 +132,7 @@ Install the following on your Docker host where you will form Vaultron.
 
 Once you have the prerequisites installed, you can use the following example to form Vaultron and open the the Vault web UI in your browser on macOS.
 
-You will likely be prompted for your password to add the Vaultron CA certificate from `etc/tls/ca.pem` to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs.
+You will most likely be prompted for your password to add the Vaultron CA certificate from `etc/tls/ca.pem` to the System Keychain. This will prevent TLS errors about an untrusted CA certificate when using the Consul and Vault web UIs.
 
 ```shell
 $ git clone https://github.com/brianshumate/vaultron.git && \
@@ -730,6 +730,8 @@ This changes the OSS version only; when using a custom Vault binary, the binary 
 Also note that if the OSS version of Consul or Vault you want to use does not have an official Docker image available, you'll encounter an error.
 
 ### Consul DNS
+
+> **NOTE:** The following applies only to the Consul storage flavor.
 
 When using the Consul storage flavor of Vaultron, the 3 Consul servers have DNS exposed to port 53 of their internal container addresses, and the Consul clients and Vault sever containers are configured to use those Consul servers for DNS lookups.
 

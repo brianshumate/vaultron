@@ -104,7 +104,7 @@ check_consul_version() {
   if [ -n "$TF_VAR_consul_version" ]; then
     USER_CONSUL_CONFIG="../../red_lion/templates/oss/consul_oss_server_config_${TF_VAR_consul_version}.hcl";
     if [ ! -f "$USER_CONSUL_CONFIG" ]; then
-       msg alert "Vaultron cannot form; sorry, Vaultron does not support Consul version: ${TF_VAR_consul_version}!";
+       msg alert "Vaultron cannot form; sorry, Vaultron does not support Consul version ${TF_VAR_consul_version}!";
        unset TF_VAR_consul_version;
        kill -INT $$
     fi
@@ -126,7 +126,7 @@ check_vault_version() {
   if [ -n "$TF_VAR_vault_version" ]; then
     USER_VAULT_CONFIG="../../black_lion/templates/oss/vault_config_${TF_VAR_vault_version}.hcl";
     if [ ! -f "$USER_VAULT_CONFIG" ]; then
-       msg alert "Vaultron cannot form; sorry, Vaultron does not support Vault version: ${TF_VAR_vault_version}!";
+       msg alert "Vaultron cannot form; sorry, Vaultron does not support Vault version ${TF_VAR_vault_version}!";
        unset TF_VAR_vault_version;
        kill -INT $$
     fi
