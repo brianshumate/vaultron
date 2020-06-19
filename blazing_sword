@@ -19,6 +19,10 @@
 
 . ./skydome
 
+export MSGSRC="[blazing_sword]"
+
+begin="$(date +%s)"
+
 # Check for the existence of a temporary key material file
 check_vault_file() {
   for file in "$TF_VAR_vault_flavor"/vault/vault_*.tmp; do
@@ -304,6 +308,12 @@ fi
 if [ "$TF_VAR_vaultron_telemetry_count" = "1" ]; then
   telemetry_info
 fi
+
+end="$(date +%s)"
+runtime=$((end-begin))
+
+echo
+msg success "Blazing sword complete in ${runtime}s."
 
 # -----------------------------------------------------------------------
 # Fin

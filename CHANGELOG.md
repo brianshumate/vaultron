@@ -1,3 +1,7 @@
+## NEXT
+
+- Updates to scripts
+
 ## 3.4.3
 
 - Consul 1.7.4

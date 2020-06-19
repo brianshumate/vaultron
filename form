@@ -8,6 +8,8 @@
 
 . ./skydome
 
+begin="$(date +%s)"
+
 if [ ! -d "$VAULTRON_TMP" ]; then
   if ! mkdir -p "$VAULTRON_TMP" 2>/dev/null; then
     msg alert "Vaultron cannot form; cannot create temporary directory: $VAULTRON_TMP!"
@@ -18,9 +20,9 @@ fi
 form_message() {
 cat << 'EOF'
 
-You can now visit the Vault web UI at https://localhost:8200
+The Vault UI is available at https://localhost:8200
 
-or visit the Consul web UI at https://localhost:8500
+The Consul UI is available at https://localhost:8500
 
 You can also interact with vault and consul CLI utilities after
 exporting the following environment variables in your shell:
@@ -50,6 +52,9 @@ check_instance_count() {
         exit 1
       fi
     fi
+  fi
+  if [ -z "$TF_VAR_vault_custom_instance_count" ]; then
+    TF_VAR_vault_custom_instance_count=0
   fi
   if [ "$TF_VAR_vault_flavor" = "raft" ] && [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]; then
     if [ "$TF_VAR_vault_custom_instance_count" != 5 ]; then
@@ -286,7 +291,11 @@ if ! apply "${plan_file}"; then
 fi
 
 rm -f "${plan_file}"
-msg success "Vaultron formed!"
+
+end="$(date +%s)"
+runtime=$((end-begin))
+
+msg success "Vaultron formed in ${runtime}s."
 tput setaf 7
 form_message
 tput sgr0
