@@ -504,6 +504,18 @@ Consul OSS version to use; currently Vaultron can use _only_ Consul OSS versions
 - Acceptable values:
   - A valid Consul OSS version string, for example "1.6.3"
 
+#### TF_VAR_docker_host
+
+The [host](https://www.terraform.io/docs/providers/docker/index.html#host) value expressed as a protocol and address. (the equivalent of `DOCKER_HOST`)
+
+- Default: `unix:///var/run/docker.sock`
+
+Here is an example featuring a TCP host.
+
+```
+TF_VAR_docker_host=tcp://docker:2345
+```
+
 #### TF_VAR_vault_flavor (Vault v1.4.0+)
 
 Vaultron can use different "flavors" for key Vault components.

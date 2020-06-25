@@ -1,6 +1,9 @@
-## NEXT
+## 3.4.4
 
-- Updates to scripts
+- Consul v1.8.0
+- Configurable DOCKER_HOST TF variable
+- Updates scripts
+- Update documentation
 
 ## 3.4.3
 

@@ -10,14 +10,14 @@ terraform {
 # Version variables
 # -----------------------------------------------------------------------
 
-# Set TF_VAR_vault_version to set this
+# Set TF_VAR_vault_version to override this
 variable "vault_version" {
   default = "1.4.2"
 }
 
-# Set TF_VAR_consul_version to set this
+# Set TF_VAR_consul_version to override this
 variable "consul_version" {
-  default = "1.7.4"
+  default = "1.8.0"
 }
 
 # -----------------------------------------------------------------------
@@ -30,86 +30,96 @@ terraform {
   }
 }
 
-# "This is fine"
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
+# Set TF_VAR_docker_host to override this
+# tcp with hostname example:
+# export TF_VAR_docker_host="tcp://docker:2345"
+variable "docker_host" {
+  default = "unix:///var/run/docker.sock"
 }
 
-# Set TF_VAR_datacenter_name to set this
+# Set TF_VAR_datacenter_name to override this
 variable "datacenter_name" {
   default = "arus"
 }
 
-# Set TF_VAR_secondary_datacenter_name to set this
+# Set TF_VAR_secondary_datacenter_name to override this
 variable "secondary_datacenter_name" {
   default = "sura"
+}
+
+# -----------------------------------------------------------------------
+# Global configuration
+# -----------------------------------------------------------------------
+
+provider "docker" {
+  host = var.docker_host
 }
 
 # -----------------------------------------------------------------------
 # Vault variables
 # -----------------------------------------------------------------------
 
-# Set TF_VAR_vault_flavor to set this
+# Set TF_VAR_vault_flavor to override this
 variable "vault_flavor" {
   default = "consul"
 }
 
-# Set TF_VAR_use_vault_oss to set this
+# Set TF_VAR_use_vault_oss to override this
 variable "use_vault_oss" {
   default = "1"
 }
 
-# Set TF_VAR_vault_ent_id to set this
+# Set TF_VAR_vault_ent_id to override this
 variable "vault_ent_id" {
   default = "vault:latest"
 }
 
-# Set TF_VAR_vault_server_log_format to set this
+# Set TF_VAR_vault_server_log_format to override this
 variable "vault_server_log_format" {
   default = "standard"
 }
 
-# Set TF_VAR_vault_server_log_level to set this
+# Set TF_VAR_vault_server_log_level to override this
 variable "vault_server_log_level" {
   default = "debug"
 }
 
-# Set TF_VAR_vault_path to set this
+# Set TF_VAR_vault_path to override this
 variable "vault_path" {
   default = "vault"
 }
 
-# Set TF_VAR_vault_raft_path to set this
+# Set TF_VAR_vault_raft_path to override this
 variable "vault_raft_path" {
   default = "/vault/data"
 }
 
-# Set TF_VAR_vault_cluster_name to set this
+# Set TF_VAR_vault_cluster_name to override this
 variable "vault_cluster_name" {
   default = "vaultron"
 }
 
-# Set TF_VAR_disable_clustering to set this
+# Set TF_VAR_disable_clustering to override this
 variable "disable_clustering" {
   default = "false"
 }
 
-# Set TF_VAR_vault_oss_instance_count to set this
+# Set TF_VAR_vault_oss_instance_count to override this
 variable "vault_oss_instance_count" {
   default = "3"
 }
 
-# Set TF_VAR_vault_custom_instance_count to set this
+# Set TF_VAR_vault_custom_instance_count to override this
 variable "vault_custom_instance_count" {
   default = "0"
 }
 
-# Set TF_VAR_vault_custom_config_template to set this
+# Set TF_VAR_vault_custom_config_template to override this
 variable "vault_custom_config_template" {
   default = "vault_config_custom.hcl"
 }
 
-// # Set TF_VAR_vault_server_tls_disable to set this
+// # Set TF_VAR_vault_server_tls_disable to override this
 // variable "vault_server_tls_disable" {
 //   default = "false"
 // }
@@ -118,57 +128,57 @@ variable "vault_custom_config_template" {
 # Consul variables
 # -----------------------------------------------------------------------
 
-# Set TF_VAR_consul_log_level to set this
+# Set TF_VAR_consul_log_level to override this
 variable "consul_log_level" {
   default = "debug"
 }
 
-# Set TF_VAR_use_consul_oss to set this
+# Set TF_VAR_use_consul_oss to override this
 variable "use_consul_oss" {
   default = "1"
 }
 
-# Set TF_VAR_consul_ent_id to set this
+# Set TF_VAR_consul_ent_id to override this
 variable "consul_ent_id" {
   default = ""
 }
 
-# Set TF_VAR_consul_recursor_1 to set this
+# Set TF_VAR_consul_recursor_1 to override this
 variable "consul_recursor_1" {
   default = "1.1.1.1"
 }
 
-# Set TF_VAR_consul_recursor_2 to set this
+# Set TF_VAR_consul_recursor_2 to override this
 variable "consul_recursor_2" {
   default = "1.0.0.1"
 }
 
-# Set TF_VAR_consul_acl_datacenter to set this
+# Set TF_VAR_consul_acl_datacenter to override this
 variable "consul_acl_datacenter" {
   default = "arus"
 }
 
-# Set TF_VAR_consul_data_dir to set this
+# Set TF_VAR_consul_data_dir to override this
 variable "consul_data_dir" {
   default = "/consul/data"
 }
 
-# Set TF_VAR_consul_oss to set this
+# Set TF_VAR_consul_oss to override this
 variable "consul_oss" {
   default = "1"
 }
 
-# Set TF_VAR_consul_oss_instance_count to set this
+# Set TF_VAR_consul_oss_instance_count to override this
 variable "consul_oss_instance_count" {
   default = "3"
 }
 
-# Set TF_VAR_consul_oss to set this
+# Set TF_VAR_consul_oss to override this
 variable "consul_custom" {
   default = "0"
 }
 
-# Set TF_VAR_consul_custom_instance_count to set this
+# Set TF_VAR_consul_custom_instance_count to override this
 variable "consul_custom_instance_count" {
   default = "0"
 }
@@ -177,22 +187,22 @@ variable "consul_custom_instance_count" {
 # Telemetry variables
 # -----------------------------------------------------------------------
 
-# Set TF_VAR_vaultron_telemetry_count to set this (either 0 or 1)
+# Set TF_VAR_vaultron_telemetry_count to override this (either 0 or 1)
 variable "vaultron_telemetry_count" {
   default = "0"
 }
 
-# Set TF_VAR_grafana_version to set this
+# Set TF_VAR_grafana_version to override this
 variable "grafana_version" {
   default = "latest"
 }
 
-# Set TF_VAR_statsd_version to set this
+# Set TF_VAR_statsd_version to override this
 variable "statsd_version" {
   default = "latest"
 }
 
-# Set TF_VAR_statsd_ip to set this
+# Set TF_VAR_statsd_ip to override this
 variable "statsd_ip" {
   default = "127.0.0.1"
 }
