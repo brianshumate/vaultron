@@ -18,7 +18,9 @@ check_flavor
 
 TF_VAR_vault_flavor=$TF_VAR_vault_flavor || TF_VAR_vault_flavor=consul
 
-check_docker
+if [ "$VAULTRON_KATACODA" = "false" ]; then
+  check_docker
+fi
 
 msg greeting "Lion Torches activated ..."
 

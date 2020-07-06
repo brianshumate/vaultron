@@ -19,7 +19,9 @@ if [ -z "$(command -v terraform)" ]; then
   exit 1
 fi
 
-check_docker
+if [ "$VAULTRON_KATACODA" = "false" ]; then
+  check_docker
+fi
 
 # SAVOR THE FLAVOR!
 check_installed_flavor

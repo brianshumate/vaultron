@@ -18,7 +18,12 @@ export VAULTRON_LIFECYCLE_LOG="$PWD/log/vaultron_lifecycle.log"
 
 VAULTRON_USER="$(id -un)"
 VAULTRON_GROUP="$(id -gn)"
-export VAULTRON_USER VAULTRON_GROUP
+VAULTRON_KATACODA=false
+export VAULTRON_USER VAULTRON_GROUP VAULTRON_KATACODA
+
+if [ "$HOME" = "/home/scrapbook" ]; then
+  export VAULTRON_KATACODA=true
+fi
 
 # Colors because the world is a colorful place 🌎
 TXTBLU="$(tput setaf 4)"
@@ -81,6 +86,21 @@ fi
 }
 
 # -----------------------------------------------------------------------
+# Check for signs of execution in a Katakoda environment
+# -----------------------------------------------------------------------
+check_katakoda() {
+  if [ "$(hostname)" = "host01" ]; then
+    if [ "$(hostname)" = "host01" ]; then
+      # This is probably Katakoda host01
+      msg info "Detected Katakoda environment."
+      printf 1
+    fi
+  else
+    printf 0
+  fi
+}
+
+# -----------------------------------------------------------------------
 # Check for desired Vaultron flavor and default to Consul if none set
 # -----------------------------------------------------------------------
 check_flavor() {
@@ -94,7 +114,6 @@ check_flavor() {
       fi
     fi
   fi
-  # export TF_VAR_vault_flavor="$TF_VAR_vault_flavor"
 }
 
 # -----------------------------------------------------------------------

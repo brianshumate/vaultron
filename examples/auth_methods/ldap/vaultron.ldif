@@ -28,4 +28,4 @@ objectClass: top
 cn: vaultron
 sn: vaultron
 memberOf: cn=dev,ou=groups,dc=vaultron,dc=waves
-userPassword: kogane
+userPassword: /6fuVOr3icKqw/0m

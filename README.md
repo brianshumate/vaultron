@@ -164,7 +164,7 @@ When Vaultron is successfully formed, the output looks like this example.
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.4.2
+[vaultron] [i] Vault OSS version: 1.4.3
 [vaultron] [i] Vault flavor: Consul storage backed
 [vaultron] [i] Consul OSS version: 1.7.4
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.

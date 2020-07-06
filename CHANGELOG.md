@@ -1,3 +1,8 @@
+## 3.4.5
+
+- Vault v1.4.3
+- Katacoda awareness circuit
+
 ## 3.4.4
 
 - Consul v1.8.0

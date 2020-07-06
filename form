@@ -209,7 +209,9 @@ check_flavor
 check_instance_count
 check_raft_version
 check_telemetry
-check_docker
+if [ "$(check_katakoda)" = "0" ]; then
+  check_docker
+fi
 check_and_create_vaultron_private_network
 check_custom_binary vault
 check_required_binaries
