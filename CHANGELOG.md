@@ -1,3 +1,9 @@
+## 3.5.0
+
+- Vault 1.5.0
+- Update scripts
+- Update documentation
+
 ## 3.4.5
 
 - Vault v1.4.3

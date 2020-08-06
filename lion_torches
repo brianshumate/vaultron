@@ -25,8 +25,13 @@ fi
 msg greeting "Lion Torches activated ..."
 
 msg info "Removing all Vaultron generated data ..."
+msg info "Target flavor: $TF_VAR_vault_flavor storage backend; export TF_VAR_vault_flavor to override."
 
-cd "flavors/$TF_VAR_vault_flavor" || echo "Cannot select flavor" && exit 1
+if ! cd ./flavors/"$TF_VAR_vault_flavor"
+  then
+    msg error "Cannot select flavor."
+    exit 1
+fi
 
 # The nuclear options for Vaultron's imminent demise
 
@@ -44,18 +49,18 @@ fi
 #     This should be resolved by using SKIP_CHOWN now as well
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then
   if [ "$(uname)" = "Linux" ]; then
-    if ! [ -w flavor/"${TF_VAR_vault_flavor}"/consul/consuls0 ]; then
+    if ! [ -w ./consul/consuls0 ]; then
       msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to $VAULTRON_USER:$VAULTRON_GROUP ..."
       msg notice "You could be prompted by sudo for your user password to make this change ..."
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" flavor/"${TF_VAR_vault_flavor}"/consul; then
+      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" ./consul; then
         msg alert "Failed to change ownership of consul data to $VAULTRON_USER:$VAULTRON_GROUP"
         msg alert "Manual cleanup of consul folder contents required:"
-        ls -lha consul/
+        ls -lha ./consul/
       fi
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" flavor/"${TF_VAR_vault_flavor}"/vault; then
+      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" ./vault; then
         msg alert "Failed to change ownership of vault data to $VAULTRON_USER:$VAULTRON_GROUP"
         msg alert "Manual cleanup of vault folder contents required:"
-        ls -lha vault/
+        ls -lha ./vault/
       fi
     fi
   fi
@@ -63,88 +68,77 @@ fi
 
 # Remove Consul client data
 if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  rm -rf ./flavors/consul/consul/consulc0
+  msg info "Removing Consul storage data ..."
+  rm -rf ./consul/consulc0
   errors=$((errors + $?))
-  rm -rf ./flavors/consul/consul/consulc1
+  rm -rf ./consul/consulc1
   errors=$((errors + $?))
-  rm -rf ./flavors/consul/consul/consulc2
+  rm -rf ./consul/consulc2
   errors=$((errors + $?))
+  rm -rf ./consul/consuls0
+  errors=$((errors + $?))
+  rm -rf ./consul/consuls1
+  errors=$((errors + $?))
+  rm -rf ./consul/consuls2
+  errors=$((errors + $?))
+  # Remove Vault server data for Consul storage
+  rm -rf ./vault/vault0
+  errors=$((errors + $?))
+  rm -rf ./vault/vault1
+  errors=$((errors + $?))
+  rm -rf ./vault/vault2
+  errors=$((errors + $?))
+  rm -f ./vault/vault0/vault_DEV_ONLY*.tmp
+  errors=$((errors + $?))
+  msg success "Removed Consul storage data."
 fi
-
-# Remove Consul server data
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  rm -rf ./flavors/consul/consul/consuls0
-  errors=$((errors + $?))
-  rm -rf ./flavors/consul/consul/consuls1
-  errors=$((errors + $?))
-  rm -rf ./flavors/consul/consul/consuls2
-  errors=$((errors + $?))
-fi
-
-# Remove Vault server data for Consul storage
-rm -rf ./flavors/consul/vault/vault0
-errors=$((errors + $?))
-rm -rf ./flavors/consul/vault/vault1
-errors=$((errors + $?))
-rm -rf ./flavors/consul/vault/vault2
-errors=$((errors + $?))
-rm -f ./flavors/consul/vault/vault0/vault_DEV_ONLY*.tmp
-errors=$((errors + $?))
 
 # Remove Vault server data for Integrated Storage
-rm -rf ./flavors/raft/vault/vault0
-errors=$((errors + $?))
-rm -rf ./flavors/raft/vault/vault1
-errors=$((errors + $?))
-rm -rf ./flavors/raft/vault/vault2
-errors=$((errors + $?))
-rm -rf ./flavors/raft/vault/vault3
-errors=$((errors + $?))
-rm -rf ./flavors/raft/vault/vault4
-errors=$((errors + $?))
-rm -f ./flavors/raft/vault/vault0/vault_DEV_ONLY*.tmp
-errors=$((errors + $?))
+if [ "$TF_VAR_vault_flavor" = "raft" ]; then
+  msg info "Removing integrated storage (Raft) data ..."
+  rm -rf ./vault/vault0
+  errors=$((errors + $?))
+  rm -rf ./vault/vault1
+  errors=$((errors + $?))
+  rm -rf ./vault/vault2
+  errors=$((errors + $?))
+  rm -rf ./vault/vault3
+  errors=$((errors + $?))
+  rm -rf ./vault/vault4
+  errors=$((errors + $?))
+  rm -f ./vault/vault0/vault_DEV_ONLY*.tmp
+  errors=$((errors + $?))
+  msg info "Removed integrated storage (Raft) data."
+fi
 
 # Remove Telemetry data
+msg info "Removing telemetry data."
 rm -rf ./yellow_lion/grafana_data
 errors=$((errors + $?))
+msg info "Removed telemetry data."
 
 # Remove Terraform state, plans, backend configuration, and logs
-
-## Consul
-rm -f ./flavors/consul/tfstate/terraform.tfstate*
+rm -f ./tfstate/terraform.tfstate*
 errors=$((errors + $?))
-rm -f ./flavors/consul/tfstate/vaultron*.plan
-errors=$((errors + $?))
-rm -rf ./flavors/consul/.terraform/modules
-errors=$((errors + $?))
-rm -f ./flavors/consul/.terraform/terraform.tfstate*
-errors=$((errors + $?))
-rm -rf ./flavors/consul/log/*
-errors=$((errors + $?))
-
-## Raft
-rm -f ./flavors/raft/tfstate/terraform.tfstate*
-errors=$((errors + $?))
-rm -f ./flavors/raft/tfstate/vaultron*.plan
+rm -f ./tfstate/vaultron*.plan
 errors=$((errors + $?))
 rm -rf ./.terraform/modules
 errors=$((errors + $?))
-rm -f ./flavors/raft/.terraform/terraform.tfstate*
+rm -f ./.terraform/terraform.tfstate*
 errors=$((errors + $?))
-rm -rf ./flavors/raft/log/*
+rm -rf ./log/*
 errors=$((errors + $?))
 
 if [ $errors -gt 0 ]; then
-  msg alert "Vaultron unformed (with $errors errors)!"
+  msg alert "Vaultron destroyed (with $errors errors)!"
   tput sgr0
 else
-  msg boom "Vaultron unformed!"
+  msg boom "Vaultron destroyed!"
   tput sgr0
 fi
 
 tput sgr0
 
-cd ../..
+cd - > /dev/null 2>&1 || return
 
 exit $errors

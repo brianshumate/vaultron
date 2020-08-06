@@ -5,35 +5,36 @@
 _Diagram of a Vaultron cluster with Consul storage flavor_
 
 - [Vaultron](#vaultron)
-  * [What?](#what)
-  * [Why?](#why)
-  * [How?](#how)
-    + [Prerequisites](#prerequisites)
-    + [Quickest Start (for macOS only)](#quickest-start-for-macos-only)
-    + [Quick Start (for Linux or macOS)](#quick-start-for-linux-or-macos)
-    + [What's Next?](#whats-next)
+  - [What?](#what)
+  - [Why?](#why)
+  - [How?](#how)
+    - [Prerequisites](#prerequisites)
+    - [Quickest Start (for macOS only)](#quickest-start-for-macos-only)
+    - [Quick Start (for Linux or macOS)](#quick-start-for-linux-or-macos)
+    - [What's Next?](#whats-next)
       - [Ten Things You Can do After Vaultron is Formed](#ten-things-you-can-do-after-vaultron-is-formed)
-    + [Advanced Examples](#advanced-examples)
+    - [Advanced Examples](#advanced-examples)
       - [OSS Integrated Storage Example](#oss-integrated-storage-example)
       - [Full Stack Example with Custom Binary & Telemetry Enabled](#full-stack-example-with-custom-binary--telemetry-enabled)
-  * [What's in the Box?](#whats-in-the-box)
-    + [Basic Architecture Overview for Consul Storage](#basic-architecture-overview-for-consul-storage)
+  - [What's in the Box?](#whats-in-the-box)
+    - [Basic Architecture Overview for Consul Storage](#basic-architecture-overview-for-consul-storage)
       - [Vault Servers](#vault-servers)
       - [Consul Servers](#consul-servers)
       - [Consul Clients](#consul-clients)
       - [statsd](#statsd)
       - [Grafana](#grafana)
-    + [Environment Variables](#environment-variables)
+    - [Environment Variables](#environment-variables)
       - [TF_VAR_vault_version](#tf_var_vault_version)
       - [TF_VAR_consul_version](#tf_var_consul_version)
-      - [TF_VAR_vault_flavor (Vault v1.4.0+)](#tf_var_vault_flavor-vault-v140)
+      - [TF_VAR_docker_host](#tf_var_docker_host)
+      - [TF_VAR_vault_flavor (Vault v1.4.0-)](#tf_var_vault_flavor-vault-v140)
       - [TF_VAR_datacenter_name](#tf_var_datacenter_name)
       - [TF_VAR_use_vault_oss](#tf_var_use_vault_oss)
-      - [TF_VAR_vault_server_log_format (Vault v0.10.0+)](#tf_var_vault_server_log_format-vault-v0100)
+      - [TF_VAR_vault_server_log_format (Vault v0.10.0-)](#tf_var_vault_server_log_format-vault-v0100)
       - [TF_VAR_vault_server_log_level](#tf_var_vault_server_log_level)
       - [TF_VAR_consul_log_level](#tf_var_consul_log_level)
       - [TF_VAR_vault_path](#tf_var_vault_path)
-      - [TF_VAR_vault_raft_path (Vault v1.4.0+)](#tf_var_vault_raft_path-vault-v140)
+      - [TF_VAR_vault_raft_path (Vault v1.4.0-)](#tf_var_vault_raft_path-vault-v140)
       - [TF_VAR_vault_cluster_name](#tf_var_vault_cluster_name)
       - [TF_VAR_disable_clustering](#tf_var_disable_clustering)
       - [TF_VAR_vault_oss_instance_count](#tf_var_vault_oss_instance_count)
@@ -46,37 +47,37 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
       - [TF_VAR_consul_data_dir](#tf_var_consul_data_dir)
       - [TF_VAR_consul_oss](#tf_var_consul_oss)
       - [TF_VAR_consul_oss_instance_count](#tf_var_consul_oss_instance_count)
-    + [Published Ports](#published-ports)
-    + [Changing Vault OSS and Consul OSS Versions](#changing-vault-oss-and-consul-oss-versions)
-    + [Consul DNS](#consul-dns)
-    + [Best Practices and Security Configuration?](#best-practices-and-security-configuration)
+    - [Published Ports](#published-ports)
+    - [Changing Vault OSS and Consul OSS Versions](#changing-vault-oss-and-consul-oss-versions)
+    - [Consul DNS](#consul-dns)
+    - [Best Practices and Security Configuration?](#best-practices-and-security-configuration)
       - [Docker Container / OS](#docker-container--os)
       - [Consul ACLs by Default](#consul-acls-by-default)
       - [TLS by Default](#tls-by-default)
-        * [Vault PKI Secrets Engine Based TLS Configuration](#vault-pki-secrets-engine-based-tls-configuration)
-    + [Where's My Vault Data?](#wheres-my-vault-data)
+        - [Vault PKI Secrets Engine Based TLS Configuration](#vault-pki-secrets-engine-based-tls-configuration)
+    - [Where's My Vault Data?](#wheres-my-vault-data)
       - [Vault Data in Consul](#vault-data-in-consul)
       - [Vault Data in Integrated Storage](#vault-data-in-integrated-storage)
-    + [What About Logs?](#what-about-logs)
-    + [Telemetry Notes](#telemetry-notes)
-    + [A Note About Custom Binaries](#a-note-about-custom-binaries)
-  * [Basic Troubleshooting Questions](#basic-troubleshooting-questions)
-    + [I can access the Consul UI but it states that there are no services to show](#i-can-access-the-consul-ui-but-it-states-that-there-are-no-services-to-show)
-    + [Vaultron Does Not Form — Halp!](#vaultron-does-not-form--halp)
-    + [Unknown token: 208:30 IDENT var.grafana_version](#unknown-token-20830-ident-vargrafana_version)
-    + [Vault is Orange/Failing in the Consul Web UI](#vault-is-orangefailing-in-the-consul-web-ui)
-    + [Vault Containers with Custom Binary are Exiting](#vault-containers-with-custom-binary-are-exiting)
-    + [NET::ERR_CERT_AUTHORITY_INVALID or Other TLS Errors When it Was Working?!](#neterr_cert_authority_invalid-or-other-tls-errors-when-it-was-working)
-    + [Vaultron cannot form; there are Vaultron containers currently stopped or running](#vaultron-cannot-form-there-are-vaultron-containers-currently-stopped-or-running)
-    + [Something, Something — Storage HA Problem!](#something-something--storage-ha-problem)
-    + [Unsupported Versions?](#unsupported-versions)
-    + [syntax error: unexpected end of file (expecting ")")](#syntax-error-unexpected-end-of-file-expecting-)
-    + [server gave HTTP response to HTTPS client](#server-gave-http-response-to-https-client)
-    + [Error: Unable to read Docker image into resource: Unable to pull image](#error-unable-to-read-docker-image-into-resource-unable-to-pull-image)
-    + [Some Other Undefined Problem!](#some-other-undefined-problem)
-  * [Resources](#resources)
-  * [Who?](#who)
-  * [Special Thanks](#special-thanks)
+    - [What About Logs?](#what-about-logs)
+    - [Telemetry Notes](#telemetry-notes)
+    - [A Note About Custom Binaries](#a-note-about-custom-binaries)
+  - [Basic Troubleshooting Questions](#basic-troubleshooting-questions)
+    - [I can access the Consul UI but it states that there are no services to show](#i-can-access-the-consul-ui-but-it-states-that-there-are-no-services-to-show)
+    - [Vaultron Does Not Form — Halp!](#vaultron-does-not-form--halp)
+    - [Unknown token: 208:30 IDENT var.grafana_version](#unknown-token-20830-ident-vargrafana_version)
+    - [Vault is Orange/Failing in the Consul Web UI](#vault-is-orangefailing-in-the-consul-web-ui)
+    - [Vault Containers with Custom Binary are Exiting](#vault-containers-with-custom-binary-are-exiting)
+    - [NET::ERR_CERT_AUTHORITY_INVALID or Other TLS Errors When it Was Working?!](#neterr_cert_authority_invalid-or-other-tls-errors-when-it-was-working)
+    - [Vaultron cannot form; there are Vaultron containers currently stopped or running](#vaultron-cannot-form-there-are-vaultron-containers-currently-stopped-or-running)
+    - [Something, Something — Storage HA Problem!](#something-something--storage-ha-problem)
+    - [Unsupported Versions?](#unsupported-versions)
+    - [syntax error: unexpected end of file (expecting ")")](#syntax-error-unexpected-end-of-file-expecting-)
+    - [server gave HTTP response to HTTPS client](#server-gave-http-response-to-https-client)
+    - [Error: Unable to read Docker image into resource: Unable to pull image](#error-unable-to-read-docker-image-into-resource-unable-to-pull-image)
+    - [Some Other Undefined Problem!](#some-other-undefined-problem)
+  - [Resources](#resources)
+  - [Who?](#who)
+  - [Special Thanks](#special-thanks)
 
 ![Diagram of a Vaultron cluster with integrated storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
 
@@ -108,21 +109,20 @@ Consul is used for storage by default, but there is also an integrated storage f
 
 ### Prerequisites
 
-> **NOTE macOS Catalina users see this issue**: https://github.com/hashicorp/terraform/issues/23033#issuecomment-542302933
-
 > **NOTE**: **Vaultron only supports Terraform version 0.12.0 and beyond** and is incompatible with previous Terraform versions.
 
 Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.3.0.3
-  - Engine version: 19.03.8
+  - Tested with version 2.3.0.4
+  - Engine version: 19.03.12
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
   - Vaultron's Docker image uses the latest Consul OSS version by default; you should have the latest `consul` binary installed on your Docker host
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/)
+  - **NOTE:** macOS Catalina users might need to refer to this [Terraform issue](https://github.com/hashicorp/terraform/issues/23033#issuecomment-542302933)
 - [Vault](https://www.vaultproject.io/)
   - [Install Vault](https://learn.hashicorp.com/vault/getting-started/install)
   - [OSS vault binaries](https://releases.hashicorp.com/vault/)
@@ -164,55 +164,15 @@ When Vaultron is successfully formed, the output looks like this example.
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.4.3
+[vaultron] [i] Vault OSS version: 1.5.0
 [vaultron] [i] Vault flavor: Consul storage backed
-[vaultron] [i] Consul OSS version: 1.7.4
+[vaultron] [i] Consul OSS version: 1.8.0
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 17s.
+[vaultron] [+] Vaultron formed in 11s.
 ```
 
-You can now visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
-
-You can also interact with vault and consul CLI utilities after exporting the following environment variables in your shell.
-
-```shell
-$ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
-         CONSUL_HTTP_SSL=true \
-         CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6" \
-         VAULT_ADDR="https://127.0.0.1:8200"
-```
-
-or use the `ion_darts` script to do it for you.
-
-```shell
-$ . ./ion_darts
-```
-
-You are now nearly ready to interact with Vault and Consul using their web user interfaces, command line interfaces, or HTTP APIs.
-
-Take a moment to verify that all of the Vaultron Docker containers are up:
-
-```shell
-$ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
-```
-
-The output should look something like this example.
-
-```plaintext
-NAMES               STATUS
-vaultron-vault0     Up 8 minutes (unhealthy)
-vaultron-vault2     Up 8 minutes (unhealthy)
-vaultron-vault1     Up 8 minutes (unhealthy)
-vaultron-consulc2   Up 8 minutes (healthy)
-vaultron-consulc1   Up 8 minutes (healthy)
-vaultron-consulc0   Up 8 minutes (healthy)
-vaultron-consuls0   Up 8 minutes (healthy)
-vaultron-consuls2   Up 8 minutes (healthy)
-vaultron-consuls1   Up 8 minutes (healthy)
-```
-
-Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that is actually expected at this time.
+Now you can visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
 
 There is also a message from the `form` script about setting important environment variables before executing the `vault` and `consul` CLI commands. You'll want these environment variables in your shell before trying to use the `consul` or `vault` CLI tools with Vaultron.
 
@@ -239,32 +199,57 @@ which should output details like this example.
 [vaultron] [+] VAULT_ADDR: https://127.0.0.1:8200
 ```
 
+You are now ready to use Vault (and optionally Consul) with the respective web user interfaces, command line interfaces, or HTTP APIs.
+
+Take a moment to verify that all of the Vaultron Docker containers are up:
+
+```shell
+$ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
+```
+
+The output should look something like this example.
+
+```plaintext
+NAMES               STATUS
+vaultron-vault0     Up 8 minutes (unhealthy)
+vaultron-vault2     Up 8 minutes (unhealthy)
+vaultron-vault1     Up 8 minutes (unhealthy)
+vaultron-consulc2   Up 8 minutes (healthy)
+vaultron-consulc1   Up 8 minutes (healthy)
+vaultron-consulc0   Up 8 minutes (healthy)
+vaultron-consuls0   Up 8 minutes (healthy)
+vaultron-consuls2   Up 8 minutes (healthy)
+vaultron-consuls1   Up 8 minutes (healthy)
+```
+
+Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that is actually expected at this time.
+
 > **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`. If you do not do this, your browser(s) will complain about the certificates presented by the Consul or Vault servers.
 
 See the **TLS by Default** section for more details on handling the Vaultron Certificate Authority certificate.
 
 ### What's Next?
 
-If you are new to Vault, then using Vaultron is a nice way to quickly get acquainted! Please begin by checking out the official [Vault Getting Started Guide](https://learn.hashicorp.com/vault/?track=getting-started#getting-started).
+If you are new to Vault, then using Vaultron is a nice way to quickly get acquainted! Please begin by checking out the official [Vault Getting Started Guide](https://learn.hashicorp.com/collections/vault/getting-started).
 
 #### Ten Things You Can do After Vaultron is Formed
 
-1. Initialize Vault with `vault operator init`
-2. Unseal Vault with `vault operator unseal` using 3 of the 5 unseal keys presented when you initialized Vault
-3. Authenticate to Vault with the initial root token presented during initialization
-4. After initializing and unsealing your vault, and then authenticating with the root token, you can follow along with the [Your First Secret](https://learn.hashicorp.com/vault/getting-started/first-secret) page
-5. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault servers
-6. Use the Vault web UI at [https://localhost:8200](https://localhost:8200)
-7. Use the Consul web UI at [https://localhost:8500](https://localhost:8500)
-8. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html)
-9. Check out and experiment with the examples in the `examples` folders
-10. Clean up or reset: disassemble Vaultron and clean up Vault data with `unform`
+1. Initialize Vault with [vault operator init](https://www.vaultproject.io/docs/commands/operator/init) using the default Shamir's Secret Sharing based seal.
+2. Unseal Vault with [vault operator unseal](https://www.vaultproject.io/docs/commands/operator/unseal) using 3 of the 5 unseal keys which were part of the initialization output.
+3. Authenticate to Vault with [vault login](https://www.vaultproject.io/docs/commands/login) using the initial root that was part of the initialization output.
+4. After initialization, unsealing, and login to your shiny new Vault, you can follow along with the [Your First Secret](https://learn.hashicorp.com/tutorials/vault/getting-started-first-secret?in=vault/getting-started) page
+5. Use your local `consul` and `vault` binaries in CLI mode to interact with Vault server Docker containers.
+6. Use the Vault web UI at [https://localhost:8200](https://localhost:8200).
+7. Optionally, use the Consul web UI at [https://localhost:8500](https://localhost:8500) if you chose the Consul storage flavor.
+8. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html).
+9. Check out and experiment with the examples in the `examples` folders.
+10. Clean up or reset: disassemble Vaultron and clean up Vault data with the `unform` script.
 
-> **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful!**
+> **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful when using it!**
 
-The Docker private network is not removed for reasons detailed elsewhere in this documentation.
+The Docker private network is not removed during unform for reasons detailed elsewhere in this documentation.
 
-The Terraform provider modules _are also not removed_ to save on resources and time involved in re-downloading them.
+The Terraform provider modules are also not removed to conserve resources and time involved in downloading them.
 
 If you want to tear down the containers, but preserve data, logs, and state, you can use `terraform destroy` for that instead.
 
@@ -275,9 +260,9 @@ $ terraform destroy \
 
 Ensure that you have set a value for `TF_VAR_vault_flavor` or replace it with the path to the Vaultron flavor you are using.
 
-If you are already familiar with Vault, but would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `blazing_sword` script to do all of this for you. `blazing_sword` uses the additional Terraform configuration in `blazing_sword/main.tf`.
+If you are already familiar with Vault, and would like to save time by rapidly initializing, unsealing, and enabling a wide range of authentication and secret backends, execute the `blazing_sword` script to do all of this for you. The `blazing_sword` script uses the additional Terraform configuration located in `blazing_sword/main.tf`.
 
-If you are familiar with Terraform you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances.
+If you are familiar with Terraform, you can also use Terraform commands instead, but you'll need to manually specify the `CONSUL_HTTP_ADDR` and `VAULT_ADDR` environment variables before you can access either the Consul or Vault instances.
 
 ```shell
 $ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
@@ -288,11 +273,11 @@ $ export CONSUL_HTTP_ADDR="127.0.0.1:8500" \
 
 ### Advanced Examples
 
-The following are more advanced examples of forming Vaultron using a range of environment variables to define additional configuration.
+The following are more advanced examples of forming Vaultron using some of the different environment variables to define additional configuration.
 
 #### OSS Integrated Storage Example
 
-This example uses the integrated storage ("raft") backend, and a higher logging level.
+This example uses the integrated storage ("raft") backend, and a higher logging level than the default.
 
 ```shell
 $ export TF_VAR_vault_flavor=raft \
@@ -302,9 +287,9 @@ $ export TF_VAR_vault_flavor=raft \
 
 What this does line by line:
 
-- Enable the Raft storage flavor to use Raft storage instead of Consul
+- Enable the Raft storage flavor to use Raft storage instead of Consul.
 - Set the Vault OSS server instance count to 5; this is required for Raft storage.
-- Set Vault log level to info instead of debug
+- Set Vault log level to info instead of debug.
 
 It is worth noting that when you `form` Vaultron, output will resemble this example.
 
@@ -312,18 +297,20 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 $ ./form
 [vaultron] [=] Form Vaultron! ...
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.4.2
+[vaultron] [i] Vault OSS version: 1.5.0
 [vaultron] [i] Vault flavor: Integrated storage backed
 [vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed!
+[vaultron] [+] Vaultron formed in 5s.
 ```
 
 Note the **Vault flavor: Integrated storage backed** part.
 
-When Vaultron forms this way, all Vault servers are started and ready, but not yet initialized, joined or unsealed. You need to do this manually or use `blazing_sword` to do it (and a lot more) for you.
+When Vaultron forms this way, all Vault servers are started and ready, but not yet initialized, joined to form a cluster, or unsealed.
 
-Once the cluster is ready, use [`vault operator raft list-peers`]() to learn about cluster health and leadership.
+You either need to manually do this or use the `blazing_sword` script to do it (and a lot more) for you.
+
+Once the cluster is ready, use [`vault operator raft list-peers`](https://www.vaultproject.io/docs/commands/operator/raft#list-peers) to learn about cluster health and leadership.
 
 ```shell
 $ vault operator raft list-peers
@@ -357,13 +344,13 @@ $ export TF_VAR_consul_custom=0 \
 
 What this does line by line:
 
-- Enable zero custom Consul instances
-  - custom Consul binary feature not yet available yet
-- Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder
-- Enable the statsd/Graphite/Grafana telemetry container
-- Set Vault log level to _trace_
-- Set Vault log formate to _json_
-- Set Consul log level to _err_
+- Enable zero custom Consul instances.
+  - custom Consul binary feature not yet available yet.
+- Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder.
+- Enable Yellow Lion, the statsd/Graphite/Grafana telemetry container.
+- Set Vault log level to _trace_.
+- Set Vault log formate to _json_.
+- Set Consul log level to _err_ (Error).
 
 ## What's in the Box?
 
@@ -466,14 +453,16 @@ Vaultron using Consul storage consists of 3 Vault server containers, 3 Consul cl
 
 > NOTE: The `form` script creates the attachable Docker private network _vaultron-network_ with a subnet of 10.10.42.0/24 if it is not found to already be present. It is not removed by `unform` however, as other containers that are not part of Vaultron could be using it even when Vaultron's containers are stopped or removed.
 
+#### Yellow Lion
+
 An optional telemetry gathering and graphing stack (Yellow Lion) can be enabled at runtime via environment variable; see the **Telemetry Notes** section for more details. It uses the following IP addresses.
 
-#### statsd
+##### statsd
 
 - **vaultron-vstatsd**
   - Docker private network IP: 10.10.42.219
 
-#### Grafana
+##### Grafana
 
 - **vaultron-vgrafana**
   - Docker private network IP: 10.10.42.220
@@ -484,7 +473,16 @@ This is unfortunately both simultaneously simpler and more complex, since in mos
 
 ### Environment Variables
 
-Vaultron uses environment variables to override some Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron.
+Vaultron uses environment variables to override some Terraform configuration items. You can use these to fine-tune the attributes of your own particular Vaultron configuration including, but not limited to:
+
+- Vault version
+- Storage flavor
+  - Consul storage
+    - Consul version
+  - Integrated storage (Raft)
+    - Raft storage path
+- Whether to use OSS (default) or a custom Vault binary
+- Vault operational log level
 
 Here are the names and purposes of each:
 
@@ -1259,7 +1257,7 @@ Here are some links to resources for the technologies used in this project:
 
 ## Who?
 
-Vaultron was created by [Brian Shumate](https://github.com/brianshumate) and made possible through the generous time of the good people named in [CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md)
+Vaultron was created by [Brian Shumate](https://github.com/brianshumate) and made possible through the generous contributions and time of the good people named in [CONTRIBUTORS.md](https://github.com/brianshumate/vaultron/blob/master/CONTRIBUTORS.md).
 
 ## Special Thanks
 
