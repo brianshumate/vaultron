@@ -128,6 +128,20 @@ Install the following on your Docker host where you will form Vaultron.
   - [OSS vault binaries](https://releases.hashicorp.com/vault/)
   - Vaultron's Docker image uses the latest Vault OSS version by default; you should have the latest `vault` binary installed on your Docker host
 
+> **NOTE TO CURRENT USERS**: If you have already been using Vaultron, please be aware that the project has switched its default branch to `main`; if you have a local clone and want to update it without cloning anew, use the following commands issued from within the repository directory to update your clone.
+
+
+```shell
+$ git checkout master
+$ git branch -m master main
+$ git fetch
+$ git branch --unset-upstream
+$ git branch -u origin/main
+$ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+```
+
+If you are not concerned with any content in your existing cloned repository directory, simply remove it and clone the vaultron repository again.
+
 ### Quickest Start (for macOS only)
 
 Once you have the prerequisites installed, you can use the following example to form Vaultron and open the the Vault web UI in your browser on macOS.
@@ -145,7 +159,7 @@ $ git clone https://github.com/brianshumate/vaultron.git && \
   open https://localhost:8200
 ```
 
-> **NOTE**: The `form` script writes all stdout and stderr to the `log/vaultron_lifecycle.log` file and `blazing_sword` persists the unseal key and initial root token to a file in the `vault` folder named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
+> **NOTE**: The `form` script writes all stdout and stderr to the `log/vaultron_lifecycle.log` file and `blazing_sword` persists the unseal key and initial root token to a file in the `vault` directory named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
 
 ### Quick Start (for Linux or macOS)
 
@@ -166,7 +180,7 @@ When Vaultron is successfully formed, the output looks like this example.
 [vaultron] [i] Terraform has been successfully initialized!
 [vaultron] [i] Vault OSS version: 1.5.0
 [vaultron] [i] Vault flavor: Consul storage backed
-[vaultron] [i] Consul OSS version: 1.8.0
+[vaultron] [i] Consul OSS version: 1.8.1
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed in 11s.
@@ -242,7 +256,7 @@ If you are new to Vault, then using Vaultron is a nice way to quickly get acquai
 6. Use the Vault web UI at [https://localhost:8200](https://localhost:8200).
 7. Optionally, use the Consul web UI at [https://localhost:8500](https://localhost:8500) if you chose the Consul storage flavor.
 8. Use the [Vault HTTP API](https://www.vaultproject.io/api/index.html).
-9. Check out and experiment with the examples in the `examples` folders.
+9. Check out and experiment with the examples in the `examples` directories.
 10. Clean up or reset: disassemble Vaultron and clean up Vault data with the `unform` script.
 
 > **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful when using it!**
@@ -346,7 +360,7 @@ What this does line by line:
 
 - Enable zero custom Consul instances.
   - custom Consul binary feature not yet available yet.
-- Enable 3 custom binary based Vault instances which use the binary you place into the `custom` folder.
+- Enable 3 custom binary based Vault instances which use the binary you place into the `custom` directory.
 - Enable Yellow Lion, the statsd/Graphite/Grafana telemetry container.
 - Set Vault log level to _trace_.
 - Set Vault log formate to _json_.
@@ -905,7 +919,7 @@ Your Vault data resides in different physical locations based on the chosen stor
 
 Vault data stored in Consul's key/value store are written to the filesystem in the `flavors/consul/consul/consuls{0,1,2}/data` directories for each of the three Consul servers.
 
-Here is a tree showing the folder structure for a Consul server at `flavors/consul/consul/consuls0`:
+Here is a tree showing the directory structure for a Consul server at `flavors/consul/consul/consuls0`:
 
 ```
 consul

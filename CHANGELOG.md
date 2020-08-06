@@ -1,6 +1,7 @@
 ## 3.5.0
 
-- Vault 1.5.0
+- Vault v1.5.0
+- Consul v1.8.1
 - Update scripts
 - Update documentation
 
@@ -18,7 +19,7 @@
 
 ## 3.4.3
 
-- Consul 1.7.4
+- Consul v1.7.4
 - Update documentation
 
 ## 3.4.2
