@@ -226,7 +226,7 @@ unseal_vault_raft() {
   msg complete "Vault unsealed!"
 }
 
-msg greeting "Blazing Sword! ..."
+msg greeting "Blazing Sword!"
 
 sleep 2s
 
@@ -302,6 +302,8 @@ if [ "$TF_VAR_vault_flavor" = "raft" ]; then
   status
   enabled
   vault_active_info
+  msg info "Current cluster status:"
+  echo
   vault operator raft list-peers
 fi
 

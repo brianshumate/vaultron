@@ -226,7 +226,7 @@ check_existing_vault
 cd "flavors/$TF_VAR_vault_flavor" || msg alert "This should not be!"
 
 # TerraFORM Vaultron!
-msg greeting "Form Vaultron! ..."
+msg greeting "Form Vaultron!"
 
 tflogdir
 

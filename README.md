@@ -176,7 +176,7 @@ When Vaultron is successfully formed, the output looks like this example.
 ```plaintext
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron! ...
+[vaultron] [=] Form Vaultron!
 [vaultron] [i] Terraform has been successfully initialized!
 [vaultron] [i] Vault OSS version: 1.5.0
 [vaultron] [i] Vault flavor: Consul storage backed
@@ -309,13 +309,15 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 
 ```shell
 $ ./form
-[vaultron] [=] Form Vaultron! ...
-[vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.5.0
-[vaultron] [i] Vault flavor: Integrated storage backed
-[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 5s.
+[vaultron] [?] vaultron-network not present; creating ... 
+[vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24 
+[vaultron] [=] Form Vaultron! 
+[vaultron] [i] Terraform has been successfully initialized! 
+[vaultron] [i] Vault OSS version: 1.5.0 
+[vaultron] [i] Vault flavor: Integrated storage backed 
+[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed. 
+[vaultron] [+] Vaultron formed in 17s.
 ```
 
 Note the **Vault flavor: Integrated storage backed** part.
@@ -1236,7 +1238,7 @@ $ ./unform
 
 ```
 $ ./form
-[vaultron] [=] Form Vaultron! ...
+[vaultron] [=] Form Vaultron!
 ...
 ```
 
