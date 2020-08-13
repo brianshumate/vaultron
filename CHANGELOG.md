@@ -1,3 +1,7 @@
+## NEXT
+
+- Consul v1.8.3
+
 ## 3.5.0
 
 - Vault v1.5.0
