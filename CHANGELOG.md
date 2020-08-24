@@ -1,6 +1,9 @@
-## NEXT
+## 3.5.2
 
+- Vault v1.5.2
 - Consul v1.8.3
+- Update scripts
+- Update documentation
 
 ## 3.5.0
 
