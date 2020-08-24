@@ -13,14 +13,16 @@
 export TF_VAR_vault_flavor
 
 # Preflight checks
-if [ -z "$(command -v terraform)" ]; then
-  msg alert "Vaultron cannot unform! Could not locate terraform command."
-  msg info "Get Terraform from: https://www.terraform.io/downloads.html"
-  exit 1
+if [ -z "$(command -v terraform)" ]
+  then
+    msg alert "Vaultron cannot unform! Could not locate terraform command."
+    msg info "Get Terraform from: https://www.terraform.io/downloads.html"
+    exit 1
 fi
 
-if [ "$VAULTRON_KATACODA" = "false" ]; then
-  check_docker
+if [ "$VAULTRON_KATACODA" = "false" ]
+  then
+    check_docker
 fi
 
 # SAVOR THE FLAVOR!
@@ -29,50 +31,55 @@ cd "flavors/$TF_VAR_vault_flavor" || msg alert "This should not be!"
 
 msg greeting "Unform Vaultron ..."
 
-if ! destroy; then
-  msg alert "Terraform destroy failed, infrastructure may still exist."
-  msg info "You can manually clean up Vaultron with lion_torches."
+if ! destroy
+  then
+    msg alert "Terraform destroy failed, infrastructure may still exist."
+    msg info "You can manually clean up Vaultron with lion_torches."
 fi
 
 # If we cannot write to the Consul data, alert user and attempt to change
 # ownership of consul/vault folders to avoid failure with Terraform destroy
 # NB: This occurs on Docker on Linux but not Docker for Mac
 #     This should be resolved by using SKIP_CHOWN now as well
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  if [ "$(uname)" = "Linux" ]; then
-    if ! [ -w "${PWD}"/consul/consuls0 ]; then
-      msg notice "Consul data not writable; attempting to change ownership of consul & vault folders to ${VAULTRON_USER}:${VAULTRON_GROUP} ..."
-      msg notice "You could be prompted by sudo for your user password to make this change ..."
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/consul; then
-        msg alert "Failed to change ownership of consul data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
-        msg alert "Manual cleanup of consul folder contents required:"
-        ls -lha "${PWD}"/consul/
-      fi
-      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/vault; then
-        msg alert "Failed to change ownership of vault data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
-        msg alert "Manual cleanup of vault folder contents required:"
-        ls -lha "${PWD}"/vault/
+if [ "$TF_VAR_vault_flavor" = "consul" ]
+  then
+    if [ "$(uname)" = "Linux" ]
+      then
+        if ! [ -w "${PWD}"/consul/consuls0 ]
+          then
+            msg notice "Consul data not writable- attempting to change ownership of consul & vault folders to ${VAULTRON_USER}:${VAULTRON_GROUP} ..."
+            msg notice "You could be prompted by sudo for your user password to make this change ..."
+            if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/consul
+              then
+                msg alert "Failed to change ownership of consul data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
+                msg alert "Manual cleanup of consul folder contents required:"
+                ls -lha "${PWD}"/consul/
+            fi
+      if ! sudo chown -R "${VAULTRON_USER}":"${VAULTRON_GROUP}" "${PWD}"/vault
+        then
+          msg alert "Failed to change ownership of vault data to ${VAULTRON_USER}:${VAULTRON_GROUP}"
+          msg alert "Manual cleanup of vault folder contents required:"
+          ls -lha "${PWD}"/vault/
       fi
     fi
   fi
 fi
 
-# Remove Consul client data
-if [ "$TF_VAR_vault_flavor" = "consul" ]; then
-  rm -rf ./consul/consulc0
-  errors=$((errors + $?))
-  rm -rf ./consul/consulc1
-  errors=$((errors + $?))
-  rm -rf ./consul/consulc2
-  errors=$((errors + $?))
-
-# Remove Consul server data
-  rm -rf ./consul/consuls0
-  errors=$((errors + $?))
-  rm -rf ./consul/consuls1
-  errors=$((errors + $?))
-  rm -rf ./consul/consuls2
-  errors=$((errors + $?))
+# Remove Consul client & server data
+if [ "$TF_VAR_vault_flavor" = "consul" ]
+  then
+    rm -rf ./consul/consulc0
+    errors=$((errors + $?))
+    rm -rf ./consul/consulc1
+    errors=$((errors + $?))
+    rm -rf ./consul/consulc2
+    errors=$((errors + $?))
+    rm -rf ./consul/consuls0
+    errors=$((errors + $?))
+    rm -rf ./consul/consuls1
+    errors=$((errors + $?))
+    rm -rf ./consul/consuls2
+    errors=$((errors + $?))
 fi
 
 # Remove Vault server data
@@ -85,11 +92,12 @@ errors=$((errors + $?))
 rm -f ./vault/vault_DEV_ONLY*.tmp
 errors=$((errors + $?))
 
-if [ "$TF_VAR_vault_flavor" = "raft" ]; then
-  rm -rf ./vault/vault3
-  errors=$((errors + $?))
-  rm -rf ./vault/vault4
-  errors=$((errors + $?))
+if [ "$TF_VAR_vault_flavor" = "raft" ]
+  then
+    rm -rf ./vault/vault3
+    errors=$((errors + $?))
+    rm -rf ./vault/vault4
+    errors=$((errors + $?))
 fi
 
 # Remove Telemetry data
@@ -108,14 +116,15 @@ errors=$((errors + $?))
 rm -rf ./log/*init.log ./log/*plan.log ./log/*apply.log
 errors=$((errors + $?))
 
-if [ $errors -gt 0 ]; then
-  msg alert "Vaultron unformed (with $errors errors)!"
-  msg info "You can manually clean up Vaultron with lion_torches."
-  tput sgr0
-else
-  rm -f "$VAULTRON_LIFECYCLE_LOG" > /dev/null 2>&1
-  msg boom "Vaultron unformed!"
-  tput sgr0
+if [ $errors -gt 0 ]
+  then
+    msg alert "Vaultron unformed (with $errors errors)!"
+    msg info "You can manually clean up Vaultron with lion_torches."
+    tput sgr0
+  else
+    rm -f "$VAULTRON_LIFECYCLE_LOG" > /dev/null 2>&1
+    msg boom "Vaultron unformed!"
+    tput sgr0
 fi
 
 tput sgr0

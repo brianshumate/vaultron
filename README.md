@@ -1222,6 +1222,20 @@ Error: Unable to read Docker image into resource: Unable to pull image vault:1.2
 
 Then it is likely that the docker image for the version of Vault (in this example 1.2.4) is not yet published to DockerHub. You'll have to try again when the image becomes available.
 
+### [: : integer expression expected
+
+If you are executing the `form` script and encounter an error containing `[: : integer expression expected` followed by a long series of errors, please examine your environment variable values:
+
+```shell
+$ printenv | grep TF_VAR
+TF_VAR_vault_flavor=raft
+TF_VAR_vault_custom_instance_count=5
+TF_VAR_vault_oss_instance_count=0
+TF_VAR_vault_server_log_level=info
+```
+
+Ensure that there are no empty values (use `0`) following the `=` for any variable.
+
 ### Some Other Undefined Problem!
 
 Have you tried turning it off an on again?

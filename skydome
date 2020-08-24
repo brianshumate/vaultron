@@ -1,7 +1,7 @@
 #!/bin/sh
 # =======================================================================
 # This script contains common functions and is sourced by the
-# the other Vaultron scripts; there's nothing useful in here to run directly.
+# the other Vaultron scripts- there's nothing useful in here to run directly.
 #
 # shellcheck disable=SC2059
 # ^
@@ -21,8 +21,9 @@ VAULTRON_GROUP="$(id -gn)"
 VAULTRON_KATACODA=false
 export VAULTRON_USER VAULTRON_GROUP VAULTRON_KATACODA
 
-if [ "$HOME" = "/home/scrapbook" ]; then
-  export VAULTRON_KATACODA=true
+if [ "$HOME" = "/home/scrapbook" ]
+  then
+    export VAULTRON_KATACODA=true
 fi
 
 # Colors because the world is a colorful place 🌎
@@ -73,14 +74,16 @@ msg() {
 check_cli_cap() {
   VAULT_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2)"
   VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f1)"
-  if [ "$VAULT_MIN_VERSION" = "1" ]; then
-    export VAULT_CLI_CAP="1"
+  if [ "$VAULT_MIN_VERSION" = "1" ]
+    then
+      export VAULT_CLI_CAP="1"
 else
   VAULT_MIN_VERSION="$(vault version | awk '{print $2}' | cut -d 'v' -f2 | cut -d '.' -f2)"
-  if [ "$VAULT_VERSION" = "0.9.1" ] || [ "$VAULT_MIN_VERSION" -lt "9" ]; then
-    export VAULT_CLI_CAP="0"
-  else
-    export VAULT_CLI_CAP="1"
+  if [ "$VAULT_VERSION" = "0.9.1" ] || [ "$VAULT_MIN_VERSION" -lt "9" ]
+    then
+      export VAULT_CLI_CAP="0"
+    else
+      export VAULT_CLI_CAP="1"
   fi
 fi
 }
@@ -89,14 +92,16 @@ fi
 # Check for signs of execution in a Katakoda environment
 # -----------------------------------------------------------------------
 check_katakoda() {
-  if [ "$(hostname)" = "host01" ]; then
-    if [ "$(hostname)" = "host01" ]; then
-      # This is probably Katakoda host01
-      msg info "Detected Katakoda environment."
-      printf 1
-    fi
-  else
-    printf 0
+  if [ "$(hostname)" = "host01" ]
+    then
+      if [ "$(hostname)" = "host01" ]
+        then
+          # This is probably Katakoda host01
+          msg info "Detected Katakoda environment."
+          printf 1
+      fi
+    else
+      printf 0
   fi
 }
 
@@ -104,15 +109,19 @@ check_katakoda() {
 # Check for desired Vaultron flavor and default to Consul if none set
 # -----------------------------------------------------------------------
 check_flavor() {
-  if [ -z "$TF_VAR_vault_flavor" ]; then
-    TF_VAR_vault_flavor=consul
-  else
-    if [ "$TF_VAR_vault_flavor" != "consul" ]; then
-      if [ "$TF_VAR_vault_flavor" != "raft" ]; then
-        msg alert "Cannot use flavor $TF_VAR_vault_flavor"
-      exit 1
+  if [ -z "$TF_VAR_vault_flavor" ]
+    then
+      TF_VAR_vault_flavor=consul
+    else
+      if [ "$TF_VAR_vault_flavor" != "consul" ]
+        then
+          if [ "$TF_VAR_vault_flavor" != "raft" ]
+            then
+              msg alert "Cannot use flavor $TF_VAR_vault_flavor"
+              msg info "Currently supported flavors are: \"consul\", \"raft\""
+              exit 1
+          fi
       fi
-    fi
   fi
 }
 
@@ -120,14 +129,16 @@ check_flavor() {
 # Check installed Vaultron flavor based on presence of the tfstate
 # -----------------------------------------------------------------------
 check_installed_flavor() {
-  if ls flavors/consul/tfstate/terraform.tfstate > /dev/null 2>&1; then
-    export TF_VAR_vault_flavor=consul;
-  else
-    if ls flavors/raft/tfstate/terraform.tfstate > /dev/null 2>&1; then
-      export TF_VAR_vault_flavor=raft;
-  else
-    msg alert "Cannot determine the installed Vaultron flavor!"
-    msg info "Please use lion_torches to clean up instead."
+  if ls flavors/consul/tfstate/terraform.tfstate > /dev/null 2>&1
+    then
+      export TF_VAR_vault_flavor=consul
+    else
+    if ls flavors/raft/tfstate/terraform.tfstate > /dev/null 2>&1
+      then
+        export TF_VAR_vault_flavor=raft
+      else
+        msg alert "Cannot determine the installed Vaultron flavor!"
+        msg info "Please use lion_torches to clean up instead."
     fi
   fi
   # msg info "Detected $TF_VAR_vault_flavor flavor installed."
@@ -138,18 +149,21 @@ check_installed_flavor() {
 # -----------------------------------------------------------------------
 check_docker() {
   DOCK_PROC_COUNT="$(pgrep docker | wc -l)"
-  if [ "$DOCK_PROC_COUNT" -lt 1 ]; then
-    msg alert "Docker daemon process not detected; cannot form Vaultron."
-    exit 1
-  else
-    if ! docker ps >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-      msg alert "Cannot connect to Docker daemon; cannot form Vaultron."
+  if [ "$DOCK_PROC_COUNT" -lt 1 ]
+    then
+      msg alert "Docker daemon process not detected- cannot form Vaultron."
       exit 1
-    fi
+    else
+      if ! docker ps >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+        then
+          msg alert "Cannot connect to Docker daemon- cannot form Vaultron."
+          exit 1
+      fi
   fi
-  if ! [ -S /var/run/docker.sock ]; then
-    msg alert "Docker socket not detected; cannot form Vaultron."
-    exit 1
+  if ! [ -S /var/run/docker.sock ]
+    then
+      msg alert "Docker socket not detected- cannot form Vaultron."
+      exit 1
   fi
 }
 
@@ -157,24 +171,30 @@ check_docker() {
 # Basic connectivity check
 # -----------------------------------------------------------------------
 check_vault() {
-  if command nc -h >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-    if ! nc -z localhost 8200 >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-      msg alert "Cannot connect to Vault at $VAULT_ADDR."
-      msg info "Make sure to ./form Vaultron before trying blazing_sword."
-      exit 1
-    fi
-  elif command timeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-    if ! timeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-      msg alert "Cannot connect to Vault at $VAULT_ADDR."
-      msg info "Make sure to ./form Vaultron before trying blazing_sword."
-      exit 1
-    fi
-  elif command gtimeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-    if ! gtimeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
-      msg alert "Cannot connect to Vault at $VAULT_ADDR."
-      msg info "Make sure to ./form Vaultron before trying blazing_sword."
-      exit 1
-    fi
+  if command nc -h >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+    then
+      if ! nc -z localhost 8200 >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+        then
+          msg alert "Cannot connect to Vault at $VAULT_ADDR."
+          msg info "Make sure to ./form Vaultron before trying blazing_sword."
+          exit 1
+      fi
+  elif command timeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+    then
+      if ! timeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+        then
+          msg alert "Cannot connect to Vault at $VAULT_ADDR."
+          msg info "Make sure to ./form Vaultron before trying blazing_sword."
+          exit 1
+      fi
+  elif command gtimeout >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+    then
+      if ! gtimeout 5 bash -c '</dev/tcp/localhost/8200' >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+        then
+          msg alert "Cannot connect to Vault at $VAULT_ADDR."
+          msg info "Make sure to ./form Vaultron before trying blazing_sword."
+          exit 1
+      fi
   fi
 }
 
@@ -203,14 +223,16 @@ tfmsg() {
             exit
         }')"
 
-    if [ -n "$tfmsg_out" ]; then
+    if [ -n "$tfmsg_out" ]
+      then
         msg "$(echo "$tfmsg_out" | head -1)" \
-                "$(echo "$tfmsg_out" | tail -1)"
+            "$(echo "$tfmsg_out" | tail -1)"
     fi
 }
 
 tflogdir() {
-    if ! [ -d ./log ]; then
+    if ! [ -d ./log ]
+      then
         mkdir ./log
     fi
 }
