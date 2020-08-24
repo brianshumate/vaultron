@@ -1,6 +1,6 @@
 # Vaultron
 
-![Diagram of a Vaultron cluster with Consul storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-consul-flavor.png?raw=true)
+![Diagram of a Vaultron cluster with Consul storage flavor](https://github.com/brianshumate/vaultron/blob/main/share/vaultron-consul-flavor.png?raw=true)
 
 _Diagram of a Vaultron cluster with Consul storage flavor_
 
@@ -79,7 +79,7 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
   - [Who?](#who)
   - [Special Thanks](#special-thanks)
 
-![Diagram of a Vaultron cluster with integrated storage flavor](https://github.com/brianshumate/vaultron/blob/master/share/vaultron-raft-flavor.png?raw=true)
+![Diagram of a Vaultron cluster with integrated storage flavor](https://github.com/brianshumate/vaultron/blob/main/share/vaultron-raft-flavor.png?raw=true)
 
 _Diagram of a Vaultron cluster with integrated storage (Raft) flavor_
 
