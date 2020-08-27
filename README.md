@@ -551,7 +551,7 @@ TF_VAR_docker_host=tcp://docker:2345
 
 Vaultron can use different "flavors" for key Vault components.
 
-Currently this is limited to switching between the integrated Raft storage or Consul storage backends; use this variable to specify the desired Vault storage backend type.
+Currently this is limited to switching between the integrated Raft storage or Consul storage backends; use this variable to specify the desired Vault storage backend type. Setting this will also set the correct number of Vault or Consul servers as appropriate.
 
 - Default: consul
 - Acceptable values:
@@ -643,27 +643,23 @@ Disable Consul HA clustering
 
 #### TF_VAR_vault_oss_instance_count
 
-Number of Vault OSS containers
+Number of Vault OSS containers; you should not need to set this as it is set automatically when you choose a flavor with `TF_VAR_vault_flavor`.
 
 - Default: `3`
 - Acceptable values:
-  - `0`
-  - `3`
-  - `5`
-
-> NOTE: You must also set `TF_VAR_vault_custom_instance_count=0` when setting this. You must also use a value of '5' when using the Raft storage flavor.
+  - `0` when using a custom binary
+  - `3` when using OSS and Consul storage backend
+  - `5` when using OSS and Raft storage backend
 
 #### TF_VAR_vault_custom_instance_count
 
-Number of Vault custom containers
+Number of Vault custom containers; set this only when using a custom Linux/ADM64 `vault` binary placed in the `custom` directory.
 
 - Default: `0`
 - Acceptable values:
-  - `0`
-  - `3`
-  - `5`
-
-> NOTE: You must also set `TF_VAR_vault_oss_instance_count=0` when setting this. You must also use a value of '5' when using the Raft storage flavor.
+  - `0` when using OSS
+  - `3` when using a custom binary and Consul storage backend
+  - `5` when using a custom binary and Raft storage backend
 
 #### TF_VAR_vault_custom_config_template
 
@@ -675,7 +671,7 @@ Specify an alternative configuration file template in `black_lion/templates/cust
 
 #### TF_VAR_use_consul_oss
 
-This cannot currently be changed as Vaultron always uses Consul OSS.
+This should not currently be changed as Vaultron only supports Consul OSS.
 
 - Default: `1`
 - Acceptable values:
