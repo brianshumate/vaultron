@@ -2,8 +2,9 @@
 # Vaultron custom configuration FILE BACKEND
 #----------------------------------------------------------------------------
 
-cluster_name = "${cluster_name}"
-ui           = true
+cluster_name     = "${cluster_name}"
+ui               = true
+disable_mlock    = "${disable_mlock}"
 
 listener "tcp" {
   address                  = "${address}"

@@ -87,7 +87,11 @@ _Diagram of a Vaultron cluster with integrated storage (Raft) flavor_
 
 **Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.12.0+ required) to build a tiny cluster of highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
+----
+
 > **NOTE**: While every effort is made to document Vaultron here in this file, you should **always consult the [official Vault documentation](https://www.vaultproject.io/docs/)** and **[Learn resources](https://learn.hashicorp.com/vault/) for the latest and complete documentation on using Vault itself**.
+
+----
 
 ## Why?
 
@@ -115,12 +119,13 @@ Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Tested with version 2.3.0.4
-  - Engine version: 19.03.12
+  - Last tested with version 2.3.0.4
+  - Last tested with Engine version: 19.03.12
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
   - Vaultron's Docker image uses the latest Consul OSS version by default; you should have the latest `consul` binary installed on your Docker host
 - [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
+  - Last tested with version 0.13.1
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/)
   - **NOTE:** macOS Catalina users might need to refer to this [Terraform issue](https://github.com/hashicorp/terraform/issues/23033#issuecomment-542302933)
 - [Vault](https://www.vaultproject.io/)
@@ -128,8 +133,11 @@ Install the following on your Docker host where you will form Vaultron.
   - [OSS vault binaries](https://releases.hashicorp.com/vault/)
   - Vaultron's Docker image uses the latest Vault OSS version by default; you should have the latest `vault` binary installed on your Docker host
 
-> **NOTE TO CURRENT USERS**: If you have already been using Vaultron, please be aware that the project has switched its default branch to `main`; if you have a local clone and want to update it without cloning anew, use the following commands issued from within the repository directory to update your clone.
+----
 
+> **NOTE TO CURRENT USERS**: If you have already been using the **Vaultron source repository**, please be aware that the project has switched its default branch name to `main`; if you have a local clone and want to update it without cloning anew, use the following commands issued from within the repository directory to update your clone. If you only download zip file releases, then this will not affect you.
+
+----
 
 ```shell
 $ git checkout master
@@ -159,7 +167,11 @@ $ git clone https://github.com/brianshumate/vaultron.git && \
   open https://localhost:8200
 ```
 
+----
+
 > **NOTE**: The `form` script writes all stdout and stderr to the `log/vaultron_lifecycle.log` file and `blazing_sword` persists the unseal key and initial root token to a file in the `vault` directory named like `./flavors/"$TF_VAR_vault_flavor"/vault/vault_1500766014.tmp`. If this behavior makes you feel some type of way, you are welcome at any time to put Vaultron down and pick up another toy project instead.
+
+----
 
 ### Quick Start (for Linux or macOS)
 
@@ -238,7 +250,11 @@ vaultron-consuls1   Up 8 minutes (healthy)
 
 Note that the Vault containers are `(unhealthy)` because they are not yet initialized and unsealed so that is actually expected at this time.
 
+----
+
 > **NOTE**: Before accessing the Vault or Consul web UIs you should add the Vaultron Certificate Authority (CA) certificate to your OS trust store. It is located under the root of this project at `etc/tls/ca.pem`. If you do not do this, your browser(s) will complain about the certificates presented by the Consul or Vault servers.
+
+----
 
 See the **TLS by Default** section for more details on handling the Vaultron Certificate Authority certificate.
 
@@ -259,7 +275,11 @@ If you are new to Vault, then using Vaultron is a nice way to quickly get acquai
 9. Check out and experiment with the examples in the `examples` directories.
 10. Clean up or reset: disassemble Vaultron and clean up Vault data with the `unform` script.
 
+----
+
 > **NOTE: The `unform` script attempts to remove most data generated while using Vaultron, including the existing Vault data, logs, and Terraform state — be careful when using it!**
+
+----
 
 The Docker private network is not removed during unform for reasons detailed elsewhere in this documentation.
 
@@ -295,28 +315,26 @@ This example uses the integrated storage ("raft") backend, and a higher logging 
 
 ```shell
 $ export TF_VAR_vault_flavor=raft \
-       TF_VAR_vault_oss_instance_count=5 \
        TF_VAR_vault_server_log_level=info
 ```
 
 What this does line by line:
 
 - Enable the Raft storage flavor to use Raft storage instead of Consul.
-- Set the Vault OSS server instance count to 5; this is required for Raft storage.
 - Set Vault log level to info instead of debug.
 
 It is worth noting that when you `form` Vaultron, output will resemble this example.
 
 ```shell
 $ ./form
-[vaultron] [?] vaultron-network not present; creating ... 
-[vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24 
-[vaultron] [=] Form Vaultron! 
-[vaultron] [i] Terraform has been successfully initialized! 
-[vaultron] [i] Vault OSS version: 1.5.0 
-[vaultron] [i] Vault flavor: Integrated storage backed 
-[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy. 
-[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed. 
+[vaultron] [?] vaultron-network not present; creating ...
+[vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
+[vaultron] [=] Form Vaultron!
+[vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [i] Vault OSS version: 1.5.0
+[vaultron] [i] Vault flavor: Integrated storage backed
+[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed in 17s.
 ```
 
@@ -346,11 +364,10 @@ vaultron-vault-4    10.10.42.204:8201    follower    true
 
 #### Full Stack Example with Custom Binary & Telemetry Enabled
 
-This example includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
+This example uses Consul storage, uses a custom Vault binary, and includes the statsd + Graphite + Grafana telemetry stack container to visualize Vault telemetry.
 
 ```shell
-$ export TF_VAR_consul_custom=0 \
-    TF_VAR_vault_oss_instance_count=0 \
+$ export TF_VAR_vault_flavor=consul \
     TF_VAR_vault_custom_instance_count=3 \
     TF_VAR_vaultron_telemetry_count=1 \
     TF_VAR_vault_server_log_level=trace \
@@ -1011,9 +1028,13 @@ $ export TF_VAR_vault_oss_instance_count=0 \
 ./form
 ```
 
+----
+
 > **NOTE**: When using custom binaries in this way the binary must be for Linux/AMD64 as that is the platform for the containers, also Vaultron ignores the value of `TF_VAR_vault_version` since the binary itself determines the version so keep that in mind as well.
 >
 > All OSS containers do execute _vault_ as the _vault_ user as designed, but one major disadvantage of the current custom binary scheme is that it chooses a simplest approach to introducing the `vault` binary by changing the path from which `vault` is executed. This breaks the preferred dedicated user model such that the process is executed by the _root_ user instead of the _vault_ user, so please keep this in mind when using custom binaries.
+
+----
 
 ## Basic Troubleshooting Questions
 

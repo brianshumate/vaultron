@@ -114,6 +114,12 @@ variable "vault_custom_config_template" {
   default = "vault_config_custom.hcl"
 }
 
+# Set TF_VAR_vault_disable_mlock to override this
+# NB: mlock should not be enabled when using Raft based integrated storage
+variable "vault_disable_mlock" {
+  default = true
+}
+
 # -----------------------------------------------------------------------
 # Telemetry variables
 # -----------------------------------------------------------------------
@@ -171,6 +177,7 @@ module "vaultron" {
   vault_cluster_name           = var.vault_cluster_name
   vault_custom_config_template = var.vault_custom_config_template
   vault_custom_instance_count  = var.vault_custom_instance_count
+  vault_disable_mlock          = var.vault_disable_mlock
   vault_ent_id                 = var.vault_ent_id
   vault_oss_instance_count     = var.vault_oss_instance_count
   vault_path                   = var.vault_path

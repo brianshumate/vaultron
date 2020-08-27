@@ -4,14 +4,13 @@
 
 # for debug only
 # raw_storage_endpoint = true
-
 # disable_performance_standby = true
 
-api_addr     = "${api_addr}"
-cluster_addr = "${cluster_addr}"
-# cluster_name = "${cluster_name}"
-
-ui = true
+api_addr         = "${api_addr}"
+cluster_addr     = "${cluster_addr}"
+# cluster_name   = "${cluster_name}"
+disable_mlock    = "${disable_mlock}"
+ui               = true
 
 listener "tcp" {
   address            = "${address}"

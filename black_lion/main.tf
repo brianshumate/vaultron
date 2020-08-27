@@ -40,6 +40,9 @@ variable "vault_cluster_name" {
 variable "disable_clustering" {
 }
 
+variable "vault_disable_mlock" {
+}
+
 variable "vault_server_log_format" {
 }
 
@@ -93,6 +96,7 @@ data "template_file" "vault_config" {
     cluster_address    = "${format("10.10.42.20%d", count.index)}:8201"
     consul_address     = element(var.consul_client_ips, count.index)
     datacenter         = var.datacenter_name
+    disable_mlock      = var.vault_disable_mlock
     log_level          = var.vault_server_log_level
     vault_path         = var.vault_path
     cluster_name       = var.vault_cluster_name
@@ -297,6 +301,7 @@ data "template_file" "vault_custom_config" {
     vault_path         = var.vault_path
     cluster_name       = var.vault_cluster_name
     disable_clustering = var.disable_clustering
+    disable_mlock      = var.vault_disable_mlock
     statsd_ip          = var.statsd_ip
     tls_cert           = "/vault/config/vault-server.crt"
     tls_key            = "/vault/config/vault-server.key"

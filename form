@@ -41,62 +41,43 @@ EOF
 }
 
 check_instance_count() {
-  # Consul related variable checks
-  if [ "$TF_VAR_vault_flavor" = "consul" ]
-    then
-      export TF_VAR_consul_oss_instance_count=3
-      if [ -z "$TF_VAR_vault_custom_instance_count" ] || \
-         [ "$TF_VAR_vault_custom_instance_count" -eq 0 ]
-           then
-             export TF_VAR_vault_oss_instance_count=3
-      fi
-  if [ -n "$TF_VAR_vault_custom_instance_count" ]
-    then
-      # msg notice "DEBUG: $TF_VAR_vault_custom_instance_count"
-      if [ "$TF_VAR_vault_custom_instance_count" -gt 3 ]
-        then
-          msg alert "Incorrect number of Custom Vault servers ($TF_VAR_vault_custom_instance_count) specified"
-          msg info "Try 'export TF_VAR_vault_custom_instance_count=3' instead."
-          exit 1
-      fi
-    fi
-  fi
-  if [ -z "$TF_VAR_vault_custom_instance_count" ]
-    then
-      TF_VAR_vault_custom_instance_count=0
-  fi
-  if [ "$TF_VAR_vault_flavor" = "raft" ] && \
-     [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]
-    then
-      if [ "$TF_VAR_vault_custom_instance_count" != 5 ]
-        then
-          msg alert "Incorrect number of Vault Custom servers ($TF_VAR_vault_custom_instance_count) specified for integrated storage"
-          msg info "Try 'export TF_VAR_vault_custom_instance_count=5' instead."
-         exit 1
-      fi
-  fi
-  # Vault related variable checks
-  if [ "$TF_VAR_vault_flavor" = "raft" ]
-  then
-    if [ -z "$TF_VAR_vault_oss_instance_count" ]
-      then
-        msg alert "The TF_VAR_vault_oss_instance_count is empty!"
-        msg alert "Please set it to zero (0) if using custom instances."
-        # ./lion_torches
-        exit
-    fi
-    else
-      if [ "$TF_VAR_vault_oss_instance_count" -gt 0 ]
-        then
-          if [ "$TF_VAR_vault_oss_instance_count" != 5 ]
-            then
-              msg alert "Incorrect number of Vault OSS servers ($TF_VAR_vault_oss_instance_count) specified for integrated storage"
-             msg info "Try 'export TF_VAR_vault_oss_instance_count=5' instead."
-            # ./lion_torches
-            exit 1
-          fi
-      fi
-  fi
+  # The rules:
+  #
+  # | Flavor | Valid Vault count | Valid Consul count |
+  # |--------|-------------------|--------------------|
+  # | Consul |        3          |         3          |
+  # |--------|-------------------|--------------------|
+  # | Raft   |        5          |         0          |
+  # |--------|-------------------|--------------------|
+  #
+  case "$TF_VAR_vault_flavor" in
+          consul)
+              export TF_VAR_consul_oss_instance_count=3
+              if [ -n "$TF_VAR_vault_custom_instance_count" ]
+                then
+                  export TF_VAR_vault_custom_instance_count=3 \
+                             TF_VAR_vault_oss_instance_count=0
+                else
+                  export TF_VAR_vault_custom_instance_count=0 \
+                             TF_VAR_vault_oss_instance_count=3
+              fi
+              ;;
+
+          raft)
+              export TF_VAR_consul_oss_instance_count=0
+              if [ -n "$TF_VAR_vault_custom_instance_count" ]
+                then
+                  export TF_VAR_vault_custom_instance_count=5 \
+                             TF_VAR_vault_oss_instance_count=0
+                else
+                  export TF_VAR_vault_custom_instance_count=0 \
+                             TF_VAR_vault_oss_instance_count=5
+              fi
+              ;;
+          *)
+              msg alert "Bad flavor: $1"
+              exit 1
+  esac
 }
 
 # Check for vault file in project directory
@@ -257,7 +238,7 @@ check_raft_version() {
 # -----------------------------------------------------------------------
 
 check_flavor
-check_instance_count
+check_instance_count $TF_VAR_vault_flavor
 check_raft_version
 check_telemetry
 if [ "$(check_katakoda)" = "0" ]

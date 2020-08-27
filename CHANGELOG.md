@@ -1,3 +1,12 @@
+## 3.5.3
+
+- Upgrade for Terraform 0.13 compatibility
+- Simplified required environment variable configuration for flavors & counts
+- Add vault_disable_mlock configuration
+  - Default is true for integrated storage (raft flavor)
+  - Default is false for Consul storage (consul flavor)
+- Update documentation
+
 ## 3.5.2
 
 - Vault v1.5.2

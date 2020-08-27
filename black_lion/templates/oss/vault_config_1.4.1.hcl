@@ -7,6 +7,7 @@
 api_addr         = "${api_addr}"
 cluster_name     = "${cluster_name}"
 cluster_address  = "${cluster_address}"
+disable_mlock    = "${disable_mlock}"
 log_level        = "${log_level}"
 ui               = true
 plugin_directory = "/vault/plugins"
