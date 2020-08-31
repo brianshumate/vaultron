@@ -12,7 +12,7 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.5.2"
+  default = "1.5.3"
 }
 
 # -----------------------------------------------------------------------
@@ -57,11 +57,6 @@ provider "docker" {
 # Set TF_VAR_vault_flavor to override this
 variable "vault_flavor" {
   default = "raft"
-}
-
-# Set TF_VAR_use_vault_oss to override this
-variable "use_vault_oss" {
-  default = "1"
 }
 
 # Set TF_VAR_vault_ent_id to override this
@@ -173,7 +168,6 @@ module "telemetry" {
 module "vaultron" {
   source                       = "../../black_lion"
   datacenter_name              = var.datacenter_name
-  use_vault_oss                = var.use_vault_oss
   vault_cluster_name           = var.vault_cluster_name
   vault_custom_config_template = var.vault_custom_config_template
   vault_custom_instance_count  = var.vault_custom_instance_count

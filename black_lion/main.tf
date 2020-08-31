@@ -22,9 +22,6 @@ variable "datacenter_name" {
 variable "vault_version" {
 }
 
-variable "use_vault_oss" {
-}
-
 variable "vault_ent_id" {
 }
 

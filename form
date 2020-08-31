@@ -50,6 +50,7 @@ check_instance_count() {
   # | Raft   |        5          |         0          |
   # |--------|-------------------|--------------------|
   #
+
   case "$TF_VAR_vault_flavor" in
           consul)
               export TF_VAR_consul_oss_instance_count=3
@@ -67,11 +68,14 @@ check_instance_count() {
               export TF_VAR_consul_oss_instance_count=0
               if [ -n "$TF_VAR_vault_custom_instance_count" ]
                 then
-                  export TF_VAR_vault_custom_instance_count=5 \
-                             TF_VAR_vault_oss_instance_count=0
-                else
-                  export TF_VAR_vault_custom_instance_count=0 \
+                  if [ "$TF_VAR_vault_custom_instance_count" = "0" ]
+                    then
+                      export TF_VAR_vault_custom_instance_count=0 \
                              TF_VAR_vault_oss_instance_count=5
+                    else
+                      export TF_VAR_vault_custom_instance_count=5 \
+                             TF_VAR_vault_oss_instance_count=0
+                  fi
               fi
               ;;
           *)
@@ -215,18 +219,14 @@ check_raft_version() {
           then
             if [ "$TF_VAR_vault_oss_instance_count" != 5 ]
               then
-                msg alert "Cannot form Vaultron Integrated Storage flavor with incorrect instance count."
-                msg info "Please 'export TF_VAR_vault_oss_instance_count=5' and try again."
-                exit 1
+                export TF_VAR_vault_oss_instance_count=5
             fi
         fi
     if [ "$TF_VAR_vault_oss_instance_count" = 0 ]
       then
         if [ "$TF_VAR_vault_custom_instance_count" != 5 ]
           then
-            msg alert "Cannot form Vaultron Integrated Storage flavor with incorrect instance count."
-            msg info "Please 'export TF_VAR_vault_custom_instance_count=5' and try again."
-            exit 1
+            export TF_VAR_vault_custom_instance_count=5
         fi
       fi
     fi
@@ -241,7 +241,7 @@ check_flavor
 check_instance_count $TF_VAR_vault_flavor
 check_raft_version
 check_telemetry
-if [ "$(check_katakoda)" = "0" ]
+if [ "$(check_katacoda)" = "0" ]
   then
     check_docker
 fi

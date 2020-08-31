@@ -29,7 +29,6 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
       - [TF_VAR_docker_host](#tf_var_docker_host)
       - [TF_VAR_vault_flavor (Vault v1.4.0-)](#tf_var_vault_flavor-vault-v140)
       - [TF_VAR_datacenter_name](#tf_var_datacenter_name)
-      - [TF_VAR_use_vault_oss](#tf_var_use_vault_oss)
       - [TF_VAR_vault_server_log_format (Vault v0.10.0-)](#tf_var_vault_server_log_format-vault-v0100)
       - [TF_VAR_vault_server_log_level](#tf_var_vault_server_log_level)
       - [TF_VAR_consul_log_level](#tf_var_consul_log_level)
@@ -565,15 +564,6 @@ Vault datacenter name
 - Default: `arus`
 - Acceptable values:
   - _alphanumeric string_
-
-#### TF_VAR_use_vault_oss
-
-`1` to use OSS Vault binaries from releases.hashicorp.com or `0` when using custom binaries
-
-- Default: `1`
-- Acceptable values:
-  - `0`
-  - `1`
 
 #### TF_VAR_vault_server_log_format (Vault v0.10.0+)
 

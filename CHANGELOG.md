@@ -1,3 +1,10 @@
+## 3.5.4
+
+- Vault 1.5.3
+- Fix form script
+- Remove deprecated use_vault_oss configuration
+- Update documentation
+
 ## 3.5.3
 
 - Upgrade for Terraform 0.13 compatibility

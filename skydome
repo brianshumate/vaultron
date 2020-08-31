@@ -91,7 +91,7 @@ fi
 # -----------------------------------------------------------------------
 # Check for signs of execution in a Katakoda environment
 # -----------------------------------------------------------------------
-check_katakoda() {
+check_katacoda() {
   if [ "$(hostname)" = "host01" ]
     then
       if [ "$(hostname)" = "host01" ]

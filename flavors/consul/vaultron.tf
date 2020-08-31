@@ -12,7 +12,7 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.5.2"
+  default = "1.5.3"
 }
 
 # Set TF_VAR_consul_version to override this
@@ -62,11 +62,6 @@ provider "docker" {
 # Set TF_VAR_vault_flavor to override this
 variable "vault_flavor" {
   default = "consul"
-}
-
-# Set TF_VAR_use_vault_oss to override this
-variable "use_vault_oss" {
-  default = "1"
 }
 
 # Set TF_VAR_vault_ent_id to override this
@@ -260,7 +255,6 @@ module "vaultron" {
   consul_server_ips            = module.consul_cluster.consul_oss_server_ips
   consul_client_ips            = module.consul_cluster.consul_client_ips
   disable_clustering           = var.disable_clustering
-  use_vault_oss                = var.use_vault_oss
   vault_cluster_name           = var.vault_cluster_name
   vault_custom_config_template = var.vault_custom_config_template
   vault_custom_instance_count  = var.vault_custom_instance_count
