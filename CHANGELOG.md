@@ -1,5 +1,6 @@
-## NEXT
+## 3.5.5
 
+- Vault v1.5.4
 - Consul v1.8.4
 - Update documentation
 
