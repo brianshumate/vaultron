@@ -139,11 +139,11 @@ resource "vault_mount" "vaultron_totp" {
 # Policy Resources
 # -----------------------------------------------------------------------
 
-resource "vault_policy" "vaultron_wildcard" {
-  name = "wildcard"
+resource "vault_policy" "vaultron_sudo" {
+  name = "vaultron-sudo"
 
   policy = <<EOT
-// Vaultron example policy: "vaultron-wildcard"
+// Vaultron example policy: "vaultron-sudo"
 path "*" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
