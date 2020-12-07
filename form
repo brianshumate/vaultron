@@ -56,11 +56,14 @@ check_instance_count() {
               export TF_VAR_consul_oss_instance_count=3
               if [ -n "$TF_VAR_vault_custom_instance_count" ]
                 then
-                  export TF_VAR_vault_custom_instance_count=3 \
+                  if [ "$TF_VAR_vault_custom_instance_count" != "0" ]
+                    then
+                      export TF_VAR_vault_custom_instance_count=3 \
                              TF_VAR_vault_oss_instance_count=0
-                else
-                  export TF_VAR_vault_custom_instance_count=0 \
+                    else
+                      export TF_VAR_vault_custom_instance_count=0 \
                              TF_VAR_vault_oss_instance_count=3
+                  fi
               fi
               ;;
 

@@ -1,3 +1,10 @@
+## 3.6.0
+
+- Vault v1.6.0
+- Consul v1.9.0
+- Switch to kreuzwerker/docker
+- Update documentation
+
 ## 3.5.5
 
 - Vault v1.5.4
