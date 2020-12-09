@@ -50,7 +50,6 @@ check_instance_count() {
   # | Raft   |        5          |         0          |
   # |--------|-------------------|--------------------|
   #
-
   case "$TF_VAR_vault_flavor" in
           consul)
               export TF_VAR_consul_oss_instance_count=3
@@ -241,7 +240,7 @@ check_raft_version() {
 # -----------------------------------------------------------------------
 
 check_flavor
-check_instance_count $TF_VAR_vault_flavor
+check_instance_count "$TF_VAR_vault_flavor"
 check_raft_version
 check_telemetry
 if [ "$(check_katacoda)" = "0" ]
