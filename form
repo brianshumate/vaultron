@@ -274,11 +274,11 @@ fi
 
 if [ "$TF_VAR_vault_flavor" = "consul" ]
   then
-    CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console)"
+    CURRENT_CONSUL_VERSION="$(echo "var.consul_version" | terraform console | sed 's/"//g')"
     export TF_VAR_consul_version=${TF_VAR_consul_version:-$CURRENT_CONSUL_VERSION}
 fi
 
-CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console)"
+CURRENT_VAULT_VERSION="$(echo "var.vault_version" | terraform console | sed 's/"//g')"
 export TF_VAR_vault_version=${TF_VAR_vault_version:-$CURRENT_VAULT_VERSION}
 
 check_vault_version

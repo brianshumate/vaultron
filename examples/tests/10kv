@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# 10kv - slightly random put of 10 kv secrets with +/- 12 second skew
+
+set -e
+
+put_kv () {
+  # this is a great awk-only solution that unfortunately does not
+  # work with busybox awk
+  # S="$(/usr/bin/awk '{gsub(/[^0-9]/,""); t=sprintf("%s%s", t, $0)} NR==10{print substr(t, 3, 2)%12+1; exit}' /dev/urandom)"
+  # so this oddity instead which works most places -_-
+  S="$(od -An -N1 -t u1 /dev/urandom | awk '{$1=$1; print $1 % 12; exit}')"
+  sleep "${S}"
+  vault kv put vaultron-kv-v2/kv-test-"$1" foo=bar
+}
+
+for i in 0 1 2 3 4 5 6 7 8 9; do
+  put_kv "$i";
+done

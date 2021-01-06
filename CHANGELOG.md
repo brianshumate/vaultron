@@ -1,3 +1,13 @@
+## 3.6.2
+
+- Vault version 1.6.1
+
+## 3.6.1
+
+- Update for Terraform v0.14 compatibility
+- Clean up .terraform.lock.hcl files in unform
+- Script message improvements
+
 ## 3.6.0
 
 - Vault v1.6.0

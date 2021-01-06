@@ -139,6 +139,7 @@ check_installed_flavor() {
       else
         msg alert "Cannot determine the installed Vaultron flavor!"
         msg info "Please use lion_torches to clean up instead."
+        exit 1
     fi
   fi
   # msg info "Detected $TF_VAR_vault_flavor flavor installed."
