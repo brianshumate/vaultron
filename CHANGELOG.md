@@ -1,3 +1,13 @@
+## 3.6.4
+
+- Update Docker provider
+
+## 3.6.3
+
+- Vault v1.6.2
+- Consul v1.9.2
+- Update documentation
+
 ## 3.6.2
 
 - Vault version 1.6.1
