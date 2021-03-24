@@ -1046,6 +1046,16 @@ This means that Vaultron had problems during the `terraform plan` or `terraform 
 
 Other red and equally frightening errors could occur, and these are usually accompanied by an explanation from Terraform regarding the nature of the problem.
 
+### Error: Unable to upload volume conten
+
+Errors of this form (which can reference other directory names) typically indicate a problem with the underlying Docker storage.
+
+```
+Error: Unable to upload volume content: Error response from daemon: error while creating mount source path '/home/user/src/vaultron/flavors/raft/vault/vault3/data': mkdir /home/user/src/vaultron/flavors/raft/vault/vault3: file exists
+```
+
+You can work around this issue by using the **Preferences** > **Troubleshoot** > **Clean / Purge data** from within the Docker Desktop UI or otherwise reset the Docker storage.
+
 ### Unknown token: 208:30 IDENT var.grafana_version
 
 If you encounter an error forming Vaultron like the following:

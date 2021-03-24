@@ -1,3 +1,8 @@
+## 3.7.0
+
+- Vault v1.7.0
+- Update documentation
+
 ## 3.6.4
 
 - Update Docker provider

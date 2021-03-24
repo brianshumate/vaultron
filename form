@@ -19,20 +19,36 @@ if [ ! -d "$VAULTRON_TMP" ]
     fi
 fi
 
-form_message() {
+form_message_consul() {
 cat << 'EOF'
 
 The Vault UI is available at https://localhost:8200
 
 The Consul UI is available at https://localhost:8500
 
-You can also interact with vault and consul CLI utilities after
+You can also interact with vault and consul CLI commands after
 exporting the following environment variables in your shell:
 
 export CONSUL_HTTP_ADDR="127.0.0.1:8500"
 export CONSUL_HTTP_SSL=true
 export VAULT_ADDR="https://127.0.0.1:8200"
 export CONSUL_HTTP_TOKEN="b4c0ffee-3b77-04af-36d6-738b697872e6"
+
+or use this command to do it for you:
+
+. ./ion_darts
+EOF
+}
+
+form_message_raft() {
+cat << 'EOF'
+
+The Vault UI is available at https://localhost:8200
+
+You can also interact with vault CLI command after
+exporting the following environment variable in your shell:
+
+export VAULT_ADDR="https://127.0.0.1:8200"
 
 or use this command to do it for you:
 
@@ -345,7 +361,13 @@ runtime=$((end-begin))
 
 msg success "Vaultron formed in ${runtime}s."
 tput setaf 7
-form_message
+if [ "$TF_VAR_vault_flavor" = "raft" ]
+  then
+    form_message_raft
+  else
+    form_message_consul
+fi
+
 tput sgr0
 
 cd ../..
