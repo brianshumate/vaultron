@@ -187,14 +187,14 @@ When Vaultron is successfully formed, the output looks like this example.
 ```plaintext
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron!
-[vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.6.2
-[vaultron] [i] Vault flavor: Consul storage backed
-[vaultron] [i] Consul OSS version: 1.9.2
-[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 11s.
+[vaultron] [=] Form Vaultron! 
+[vaultron] [i] Terraform has been successfully initialized! 
+[vaultron] [i] Vault OSS version: 1.7.0 
+[vaultron] [i] Vault flavor: Consul storage backed 
+[vaultron] [i] Consul OSS version: 1.9.4 
+[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed. 
+[vaultron] [+] Vaultron formed in 14s.
 ```
 
 Now you can visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
@@ -328,13 +328,13 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 $ ./form
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron!
-[vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.6.2
-[vaultron] [i] Vault flavor: Integrated storage backed
-[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 17s.
+[vaultron] [=] Form Vaultron! 
+[vaultron] [i] Terraform has been successfully initialized! 
+[vaultron] [i] Vault OSS version: 1.7.0 
+[vaultron] [i] Vault flavor: Integrated storage backed 
+[vaultron] [i] Terraform plan: 4 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform apply complete! resources: 4 added, 0 changed, 0 destroyed. 
+[vaultron] [+] Vaultron formed in 7s.
 ```
 
 Note the **Vault flavor: Integrated storage backed** part.
@@ -1046,7 +1046,7 @@ This means that Vaultron had problems during the `terraform plan` or `terraform 
 
 Other red and equally frightening errors could occur, and these are usually accompanied by an explanation from Terraform regarding the nature of the problem.
 
-### Error: Unable to upload volume conten
+### Error: Unable to upload volume content
 
 Errors of this form (which can reference other directory names) typically indicate a problem with the underlying Docker storage.
 
@@ -1054,7 +1054,7 @@ Errors of this form (which can reference other directory names) typically indica
 Error: Unable to upload volume content: Error response from daemon: error while creating mount source path '/home/user/src/vaultron/flavors/raft/vault/vault3/data': mkdir /home/user/src/vaultron/flavors/raft/vault/vault3: file exists
 ```
 
-You can work around this issue by using the **Preferences** > **Troubleshoot** > **Clean / Purge data** from within the Docker Desktop UI or otherwise reset the Docker storage.
+You can work around this issue by either restarting Docker Desktop, or by using the **Preferences** > **Troubleshoot** > **Clean / Purge data** from within the Docker Desktop UI or otherwise reset the Docker storage.
 
 ### Unknown token: 208:30 IDENT var.grafana_version
 

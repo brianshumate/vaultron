@@ -1,6 +1,7 @@
 ## 3.7.0
 
 - Vault v1.7.0
+- Consul v1.9.4
 - Update documentation
 
 ## 3.6.4
