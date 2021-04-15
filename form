@@ -257,6 +257,7 @@ check_raft_version() {
 
 check_flavor
 check_instance_count "$TF_VAR_vault_flavor"
+# msg debug "Instance count retrieved is: OSS: $TF_VAR_vault_oss_instance_count / Custom: $TF_VAR_vault_custom_instance_count"
 check_raft_version
 check_telemetry
 if [ "$(check_katacoda)" = "0" ]

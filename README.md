@@ -314,12 +314,13 @@ This example uses the integrated storage ("raft") backend, and a higher logging 
 
 ```shell
 $ export TF_VAR_vault_flavor=raft \
-       TF_VAR_vault_server_log_level=info
+    TF_VAR_vault_oss_instance_count=5 \
+    TF_VAR_vault_server_log_level=info
 ```
 
 What this does line by line:
 
-- Enable the Raft storage flavor to use Raft storage instead of Consul.
+- Enable the Raft storage flavor to use Raft storage instead of Consul and specify 5 open source edition Vault nodes.
 - Set Vault log level to info instead of debug.
 
 It is worth noting that when you `form` Vaultron, output will resemble this example.

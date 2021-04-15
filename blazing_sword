@@ -59,9 +59,11 @@ auth_root() {
 enable_all() {
   msg info "Enable audit device, auth methods, secrets engines, and policies ..."
   cd examples/terraform || exit 1
-  rm -rf .terraform >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
-  rm -f terraform.tfstate >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
-  rm -f vault.plan >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+  {
+    rm -rf .terraform
+    rm -f terraform.tfstate
+    rm -f vault.plan >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
+  }
   terraform init >> "$VAULTRON_LIFECYCLE_LOG" 2>&1 && \
   terraform plan -out vault.plan >> "$VAULTRON_LIFECYCLE_LOG" 2>&1 && \
   terraform apply "vault.plan" >> "$VAULTRON_LIFECYCLE_LOG" 2>&1
@@ -131,7 +133,7 @@ initialize_vault() {
 # Initialize Vault Raft standby and save temporary unseal keys and root token
 initialize_vault_raft_standby() {
   local VAULT_ADDR="https://127.0.0.1:82${1}0"
-  local INIT_CMD="vault operator init -key-shares=1  -key-threshold=1"
+  local INIT_CMD="vault operator init -key-shares 1 -key-threshold 1"
   msg info "Initialize Vault ..."
   # Tidy control characters from initialization output before writing
   if output="$($INIT_CMD)"
@@ -214,7 +216,7 @@ unseal_vault_consul() {
 join_raft_primary() {
   msg info "Raft flavored storage: Join ${1} to primary ..."
   get_initial_root_token $VAULT_DAT
-  if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR >> "$VAULTRON_LIFECYCLE_LOG" 2>&1; then
+  if ! VAULT_ADDR="https://127.0.0.1:82${1}0" VAULT_TOKEN="$INITIAL_ROOT_TOKEN" vault operator raft join $VAULT_RAFT_PRIMARY_ADDR; then
     msg alert "Cannot join Vault ${1}!"
     errors=$((errors + $?))
     exit $errors
