@@ -1,3 +1,8 @@
+## 3.7.1
+
+- Update form script
+- Update documentation example
+
 ## 3.7.0
 
 - Vault v1.7.0
