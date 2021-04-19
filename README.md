@@ -84,7 +84,7 @@ _Diagram of a Vaultron cluster with integrated storage (Raft) flavor_
 
 ## What?
 
-**Vaultron** uses [Terraform](https://www.terraform.io/) (version 0.12.0+ required) to build a tiny cluster of highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
+**Vaultron** uses [Terraform](https://www.terraform.io/) (**NOTE: version 0.15.0+ required**) to build a tiny cluster of highly-available [Vault](https://www.vaultproject.io/) servers for development, evaluation, and issue reproduction on [Docker](https://www.docker.com/).
 
 ----
 

@@ -266,7 +266,7 @@ plan() {
 }
 
 destroy() {
-    tfout="$(terraform destroy -force -state=./tfstate/terraform.tfstate 2>&1)"
+    tfout="$(terraform destroy -auto-approve -state=./tfstate/terraform.tfstate 2>&1)"
     echo "$tfout" > ./log/tf-"$(date -u "+%Y-%m-%dT%H:%M:%SZ")"-destroy.log
     tfmsg "$tfout"
     return $ret

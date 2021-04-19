@@ -1,3 +1,8 @@
+## 3.7.2
+
+- Require Terraform >= 0.15.0
+- Update documentation
+
 ## 3.7.1
 
 - Update form script
