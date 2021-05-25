@@ -1,3 +1,13 @@
+## 3.7.4
+
+- Vault v1.7.2
+- Update documentation
+
+## 3.7.3
+
+- Vault v1.7.1
+- Update documentation
+
 ## 3.7.2
 
 - Require Terraform >= 0.15.0
