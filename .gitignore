@@ -50,3 +50,8 @@ payload.json
 role_id.txt
 secret_id.txt
 vaultron_lifecycle.log
+
+blue_lion/
+castle_of_lions
+cidr-check.sentinel
+custom/old_vault
