@@ -187,13 +187,13 @@ When Vaultron is successfully formed, the output looks like this example.
 ```plaintext
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron! 
-[vaultron] [i] Terraform has been successfully initialized! 
-[vaultron] [i] Vault OSS version: 1.7.2
-[vaultron] [i] Vault flavor: Consul storage backed 
-[vaultron] [i] Consul OSS version: 1.9.5 
-[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy. 
-[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed. 
+[vaultron] [=] Form Vaultron!
+[vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [i] Vault OSS version: 1.7.3
+[vaultron] [i] Vault flavor: Consul storage backed
+[vaultron] [i] Consul OSS version: 1.9.5
+[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
 [vaultron] [+] Vaultron formed in 14s.
 ```
 
@@ -331,7 +331,7 @@ $ ./form
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron! 
 [vaultron] [i] Terraform has been successfully initialized! 
-[vaultron] [i] Vault OSS version: 1.7.2 
+[vaultron] [i] Vault OSS version: 1.7.3 
 [vaultron] [i] Vault flavor: Integrated storage backed 
 [vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy. 
 [vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed. 
