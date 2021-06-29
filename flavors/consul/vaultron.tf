@@ -12,12 +12,12 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.7.2"
+  default = "1.7.3"
 }
 
 # Set TF_VAR_consul_version to override this
 variable "consul_version" {
-  default = "1.9.5"
+  default = "1.9.7"
 }
 
 # -----------------------------------------------------------------------
