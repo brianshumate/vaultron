@@ -13,6 +13,10 @@ terraform {
 # Vault variables
 # -----------------------------------------------------------------------
 
+variable "vault_license" {
+
+}
+
 variable "vault_flavor" {
 }
 
@@ -336,7 +340,7 @@ resource "docker_container" "vault_custom_server" {
   count    = var.vault_custom_instance_count
   name     = "vaultron-${format("vault%d", count.index)}"
   image    = docker_image.vault.latest
-  env      = ["SKIP_CHOWN", "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201", "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200", "VAULT_LOG_FORMAT=${var.vault_server_log_format}"]
+  env      = ["SKIP_CHOWN", "VAULT_CLUSTER_ADDR=https://${format("10.10.42.20%d", count.index)}:8201", "VAULT_REDIRECT_ADDR=https://${format("10.10.42.20%d", count.index)}:8200", "VAULT_LOG_FORMAT=${var.vault_server_log_format}", "VAULT_LICENSE=${var.vault_license}"]
   command  = ["/vault/custom/vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   hostname = format("vaults%d", count.index)
   must_run = true

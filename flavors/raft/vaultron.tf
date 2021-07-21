@@ -54,6 +54,11 @@ provider "docker" {
 # Vault variables
 # -----------------------------------------------------------------------
 
+# Set TF_VAR_vault_license to override this
+variable "vault_license" {
+  default = ""
+}
+
 # Set TF_VAR_vault_flavor to override this
 variable "vault_flavor" {
   default = "raft"
@@ -180,6 +185,7 @@ module "vaultron" {
   vault_server_log_level       = var.vault_server_log_level
   vault_flavor                 = var.vault_flavor
   vault_version                = var.vault_version
+  vault_license                = var.vault_license
   vaultron_telemetry_count     = var.vaultron_telemetry_count
   statsd_ip                    = module.telemetry.statsd_ip
   # XXX: sad... will fix later
