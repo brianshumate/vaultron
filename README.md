@@ -24,6 +24,7 @@ _Diagram of a Vaultron cluster with Consul storage flavor_
       - [statsd](#statsd)
       - [Grafana](#grafana)
     - [Environment Variables](#environment-variables)
+      - [TF_VAR_vault_license](#tf_var_vault_license)
       - [TF_VAR_vault_version](#tf_var_vault_version)
       - [TF_VAR_consul_version](#tf_var_consul_version)
       - [TF_VAR_docker_host](#tf_var_docker_host)
@@ -212,8 +213,8 @@ $ export CONSUL_CACERT="$(pwd)/red_lion/tls/ca.pem" \
 
 You can instead source the `ion_darts` script to do all of this for you.
 
-```
-. ./ion_darts
+```shell
+$ . ./ion_darts
 ```
 
 which should output details like this example.
@@ -389,7 +390,7 @@ What this does line by line:
 
 Whimsical Vaultron technical specification quick reference card.
 
-```
+```plaintext
 Name:          Vaultron
 Type:          Secret Management Unit (defaults to latest Vault software)
 Builder:       Terraform
@@ -519,6 +520,14 @@ Vaultron uses environment variables to override some Terraform configuration ite
 
 Here are the names and purposes of each:
 
+#### TF_VAR_vault_license
+
+Enterprise license to use
+
+> NOTE: When using Vault Enterprise versions beyond 1.7.0 as a custom binary, you must set a valid license string as the value to ``TF_VAR_vault_license` or Vaultron will not form.
+
+- Default: none
+
 #### TF_VAR_vault_version
 
 Vault OSS version to use
@@ -543,7 +552,7 @@ The [host](https://www.terraform.io/docs/providers/docker/index.html#host) value
 
 Here is an example featuring a TCP host.
 
-```
+```plaintext
 TF_VAR_docker_host=tcp://docker:2345
 ```
 
@@ -768,13 +777,13 @@ When using the Consul storage flavor of Vaultron, the 3 Consul servers have DNS 
 
 Additionally, Consul DNS API is also published from the first Consul server at `localhost:8600`, so you can query services and nodes using DNS like so:
 
-```
-dig -p 8600 @localhost consul.service.consul
+```shell
+$ dig -p 8600 @localhost consul.service.consul
 ```
 
 which results in a response containing:
 
-```
+```plaintext
 ...
 ;; ANSWER SECTION:
 consul.service.consul.  0 IN  A 10.10.42.102
@@ -790,13 +799,13 @@ consul.service.consul.  0 IN  TXT "consul-network-segment="
 
 or
 
-```
-dig -p 8600 @localhost active.vault.service.consul
+```shell
+$ dig -p 8600 @localhost active.vault.service.consul
 ```
 
 which results in a response containing:
 
-```
+```plaintext
 ...
 ;; ANSWER SECTION:
 active.vault.service.consul. 0  IN  A 10.10.42.200
@@ -808,13 +817,13 @@ active.vault.service.consul. 0  IN  TXT "consul-network-segment="
 
 or
 
-```
-dig -p 8600 @localhost vault.service.consul SRV
+```shell
+$ dig -p 8600 @localhost vault.service.consul SRV
 ```
 
 which results in a response containing:
 
-```
+```plaintext
 ...
 ;; ANSWER SECTION:
 vault.service.consul. 0 IN  SRV 1 1 8200 0a0a2ac9.addr.arus.consul.
@@ -833,7 +842,7 @@ consulc0.node.arus.consul. 0  IN  TXT "consul-network-segment="
 
 or
 
-```
+```shell
 $ dig -p 8600 @localhost consuls0.node.consul
 ...
 ;; ANSWER SECTION:
@@ -874,7 +883,7 @@ To better facilitate requirements like advanced troubleshooting and debugging, t
 
 #### Consul ACLs by Default
 
-> **Consul ACLs with a **default allow policy** are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond**
+> Consul ACLs with a default allow policy are enabled for Vaultron v1.8.0 (using Vault v0.9.5/Consul v1.0.6) and beyond.
 
 This was chosen to allow for ease of experimentation with ACL policies and the Vault Consul Secrets Engine. It is not the same as a production installation because it makes use of a shared **acl_master_token** for ease of configuration.
 
@@ -927,7 +936,7 @@ Vault data stored in Consul's key/value store are written to the filesystem in t
 
 Here is a tree showing the directory structure for a Consul server at `flavors/consul/consul/consuls0`:
 
-```
+```plaintext
 consul
 └── consul
     └── consuls0
@@ -951,7 +960,7 @@ If you use the Integrated Storage, your data is persisted to disk via the intern
 
 For example, here is a tree view of the data for the _vault0_ server:
 
-```
+```plaintext
 └── vault
     ├── vault0
     ├── audit_log
@@ -972,8 +981,8 @@ The Docker containers are named as shown in the [Basic Architecture Overview](#b
 
 You can view operational logs for any container with `docker logs` like so:
 
-```
-docker logs vaultron-vault0
+```shell
+$ docker logs vaultron-vault0
 ```
 
 The Vault audit logs for any given _active server_ are available as:
@@ -990,13 +999,13 @@ It provides statsd, Graphite, and Grafana from the addition of two official Graf
 
 You can enable Yellow Lion by setting the value of the *TF_VAR_vaultron_telemetry_count* environment variable to **1**:
 
-```
+```shell
 $ export TF_VAR_vaultron_telemetry_count=1
 ```
 
 prior to the execution of `form`.
 
-You can then access Grafana at: https://127.0.0.1:3000/ After Vaultron is formed and login with the following credentials:
+You can then access Grafana at: `https://127.0.0.1:3000/` After Vaultron is formed and login with the following credentials:
 
 - username: `admin`
 - password: `vaultron`
@@ -1009,7 +1018,7 @@ See the [Visualizing Vault Telemetry](https://github.com/brianshumate/vaultron/b
 
 Vaultron installs the official open source Vault binaries through the official Docker container images, but if you'd prefer to use recent source builds or some other Vault binary, just drop `vault` into `custom/` and set these environment variables prior to forming Vaultron:
 
-```
+```shell
 $ export TF_VAR_vault_oss_instance_count=0 \
        TF_VAR_vault_custom_instance_count=3 \
 ./form
@@ -1033,13 +1042,13 @@ Access **Settings** in the navigation and ensure that the ACL master token is pr
 
 Instead of seeing the glorious interlocks activated, dyna-therms connected, infra-cells up, and mega-thrusters going, Vaultron fails to form and I get:
 
-```
+```plaintext
 [e] Vaultron cannot form! Check terraform apply output.
 ```
 
 or this:
 
-```
+```plaintext
 [e] Vaultron cannot form! Check terraform plan output.
 ```
 
@@ -1051,7 +1060,7 @@ Other red and equally frightening errors could occur, and these are usually acco
 
 Errors of this form (which can reference other directory names) typically indicate a problem with the underlying Docker storage.
 
-```
+```plaintext
 Error: Unable to upload volume content: Error response from daemon: error while creating mount source path '/home/user/src/vaultron/flavors/raft/vault/vault3/data': mkdir /home/user/src/vaultron/flavors/raft/vault/vault3: file exists
 ```
 
@@ -1061,7 +1070,7 @@ You can work around this issue by either restarting Docker Desktop, or by using 
 
 If you encounter an error forming Vaultron like the following:
 
-```
+```plaintext
 Error: Error parsing <path>/vaultron.tf: At 208:30: Unknown token: 208:30 IDENT var.grafana_version
 ```
 
@@ -1075,12 +1084,11 @@ Vault is expected to appear as failing in the Consul UI if you have not yet unse
 
 Unsealing Vault should solve that for you!
 
-
 ### Vault Containers with Custom Binary are Exiting
 
 My Vault containers are exiting and the `docker logs vaultron-vault0` output resembles this:
 
-```
+```plaintext
 Using eth0 for VAULT_REDIRECT_ADDR: http://172.17.0.10:8200
 Using eth0 for VAULT_CLUSTER_ADDR: https://172.17.0.10:8201
 /vault/custom/vault: line 3: syntax error: unexpected end of file (expecting “)”)
@@ -1098,7 +1106,7 @@ Try removing the previous CA certificate (which will appear as "node.arus.consul
 
 Vaultron does not allow `form` to be used when there are already existing Vaultron Docker containers stopped or running. You can encounter an error like the following:
 
-```
+```plaintext
 [vaultron] [!] Vaultron cannot form; there are Vaultron containers currently stopped or running
 [vaultron] [i] Please unform existing Vaultron or use docker stop and docker rm to manually
 [vaultron] [i] clean up the vaultron- containers shown here:
@@ -1119,7 +1127,7 @@ If this occurs, be sure that you are not trying to `form` Vaultron while it is a
 
 If `unform` fails to clean up the containers, you will need to use `docker stop` and `docker rm` to stop and remove the containers:
 
-```
+```shell
 $ for i in {0..2}; do docker stop "vaultron-vault${i}" \
   && docker rm "vaultron-vault${i}"; \
   done
@@ -1131,7 +1139,7 @@ vaultron-vault2
 vaultron-vault2
 ```
 
-```
+```shell
 $ for i in {0..2}; do docker stop "vaultron-consuls${i}" \
   && docker rm "vaultron-consuls${i}"; \
   done
@@ -1143,7 +1151,7 @@ vaultron-consuls2
 vaultron-consuls2
 ```
 
-```
+```shell
 $ for i in {0..2}; do docker stop "vaultron-consulc${i}" \
   && docker rm "vaultron-consulc${i}"; \
   done
@@ -1161,7 +1169,7 @@ High Availability mode has been shown to work as expected, however because of th
 
 Here is simple method to watch HA mode in action using two terminal sessions:
 
-```
+```plaintext
 Terminal 1                              Terminal 2
 +-----------------------------------+   +------------------------------------+
 | VAULT_ADDR=https://localhost:8210\|   | docker stop vaultron-vault0        |
@@ -1185,13 +1193,13 @@ Terminal 1                              Terminal 2
 
 If you try exporting `TF_VAR_consul_version` or `TF_VAR_vault_version` to a specific version, but get this error when you attempt to form Vaultron:
 
-```
+```plaintext
 [e] Sorry, Vaultron does not support Consul version: 0.6.4
 ```
 
 or:
 
-```
+```plaintext
 [e] Sorry, Vaultron does not support Vault version: 0.6.0
 ```
 
@@ -1201,7 +1209,7 @@ You are specifying either a non-existent version (maybe a typo?) or you are spec
 
 If Vaultron forms, but the Vault containers all exit and you observe this error when inspecting the docker logs for the Vault containers:
 
-```
+```plaintext
 /vault/custom/vault: line 3: syntax error: unexpected end of file (expecting ")")
 ```
 
@@ -1209,7 +1217,7 @@ This is likely because you have placed a macOS version of the `vault` binary in 
 
 This can be confirmed with the `file` command:
 
-```
+```shell
 $ file custom/vault
 custom/vault: Mach-O 64-bit executable x86_64
 ```
@@ -1220,7 +1228,7 @@ If this is the case, please replace the `vault` binary with the Linux AMD64 vers
 
 If you encounter an error like this when attempting to run `blazing_sword`:
 
-```
+```plaintext
 Error initializing: Put https://127.0.0.1:8200/v1/sys/init: http: server gave HTTP response to HTTPS client
 [vaultron] [!] Cannot initialize Vault!
 [vaultron] [!]
@@ -1234,7 +1242,7 @@ Often this is caused by a `-dev` mode instance of Vault running on the Docker ho
 
 If you encounter an error like the following:
 
-```
+```plaintext
 Error: Unable to read Docker image into resource: Unable to pull image vault:1.2.4: error pulling image vault:1.2.4: Error response from daemon: manifest for vault:1.2.4 not found: manifest unknown: manifest unknown
 ```
 
@@ -1262,13 +1270,13 @@ No, seriously — given the nature of this project, sometimes if you cannot reso
 
 In this case, when you're stumped and don't mind starting anew, then just `unform` and `form` Vaultron again:
 
-```
+```shell
 $ ./unform
 [vaultron] [=] Unform Vaultron ...
 [vaultron] [*] Vaultron unformed!
 ```
 
-```
+```shell
 $ ./form
 [vaultron] [=] Form Vaultron!
 ...

@@ -74,10 +74,12 @@ check_instance_count() {
                   if [ "$TF_VAR_vault_custom_instance_count" != "0" ]
                     then
                       export TF_VAR_vault_custom_instance_count=3 \
-                             TF_VAR_vault_oss_instance_count=0
+                             TF_VAR_vault_oss_instance_count=0 \
+                             TF_VAR_vault_is_custom=1
                     else
                       export TF_VAR_vault_custom_instance_count=0 \
-                             TF_VAR_vault_oss_instance_count=3
+                             TF_VAR_vault_oss_instance_count=3 \
+                             TF_VAR_vault_is_custom=0
                   fi
               fi
               ;;
@@ -89,10 +91,12 @@ check_instance_count() {
                   if [ "$TF_VAR_vault_custom_instance_count" = "0" ]
                     then
                       export TF_VAR_vault_custom_instance_count=0 \
-                             TF_VAR_vault_oss_instance_count=5
+                             TF_VAR_vault_oss_instance_count=5 \
+                             TF_VAR_vault_is_custom=1
                     else
                       export TF_VAR_vault_custom_instance_count=5 \
-                             TF_VAR_vault_oss_instance_count=0
+                             TF_VAR_vault_oss_instance_count=0 \
+                             TF_VAR_vault_is_custom=0
                   fi
               fi
               ;;
@@ -251,6 +255,20 @@ check_raft_version() {
   fi
 }
 
+check_vault_license() {
+  if [ -n "$TF_VAR_vault_custom_instance_count" ]
+    then
+      if [ "$TF_VAR_vault_custom_instance_count" -gt 0 ]
+        then
+          if [ -z "$TF_VAR_vault_license" ]
+            then
+              msg notice "Custom binary specified but no Vault license set"
+              msg info "Set license string as value of TF_VAR_vault_license environment variable if you are using an Enterprise binary."
+          fi
+      fi
+  fi
+}
+
 # -----------------------------------------------------------------------
 # Preflight checks
 # -----------------------------------------------------------------------
@@ -266,6 +284,7 @@ if [ "$(check_katacoda)" = "0" ]
 fi
 check_and_create_vaultron_private_network
 check_custom_binary vault
+check_vault_license
 check_required_binaries
 check_existing_vaultron_containers
 check_existing_vault
