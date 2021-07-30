@@ -12,12 +12,12 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.7.3"
+  default = "1.8.0"
 }
 
 # Set TF_VAR_consul_version to override this
 variable "consul_version" {
-  default = "1.9.7"
+  default = "1.10.1"
 }
 
 # -----------------------------------------------------------------------
@@ -58,6 +58,11 @@ provider "docker" {
 # -----------------------------------------------------------------------
 # Vault variables
 # -----------------------------------------------------------------------
+
+# Set TF_VAR_vault_license to override this
+variable "vault_license" {
+  default = ""
+}
 
 # Set TF_VAR_vault_flavor to override this
 variable "vault_flavor" {
@@ -260,6 +265,7 @@ module "vaultron" {
   vault_custom_instance_count  = var.vault_custom_instance_count
   vault_disable_mlock          = var.vault_disable_mlock
   vault_ent_id                 = var.vault_ent_id
+  vault_license                = var.vault_license
   vault_oss_instance_count     = var.vault_oss_instance_count
   vault_path                   = var.vault_path
   vault_raft_path              = var.vault_raft_path

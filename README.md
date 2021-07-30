@@ -119,36 +119,19 @@ Install the following on your Docker host where you will form Vaultron.
 
 - [Docker CE for Linux](https://docs.docker.com/v17.12/install/#server) **or**
 - [Docker Desktop for macOS](https://www.docker.com/products/docker-desktop)
-  - Last tested with version 2.3.0.4
-  - Last tested with Engine version: 19.03.12
+  - Last tested with version 3.5.2
+  - Last tested with Engine version: 20.10.7
 - [Consul](https://www.consul.io/)
   - [OSS consul binaries](https://releases.hashicorp.com/consul)
   - Vaultron's Docker image uses the latest Consul OSS version by default; you should have the latest `consul` binary installed on your Docker host
-- [Terraform](https://www.terraform.io/) (version 0.12.0+ required)
-  - Last tested with version 0.13.1
+- [Terraform](https://www.terraform.io/) (version 0.13.0+ required)
+  - Last tested with version 1.0.3
   - [OSS terraform binaries](https://releases.hashicorp.com/terraform/)
   - **NOTE:** macOS Catalina users might need to refer to this [Terraform issue](https://github.com/hashicorp/terraform/issues/23033#issuecomment-542302933)
 - [Vault](https://www.vaultproject.io/)
   - [Install Vault](https://learn.hashicorp.com/vault/getting-started/install)
   - [OSS vault binaries](https://releases.hashicorp.com/vault/)
   - Vaultron's Docker image uses the latest Vault OSS version by default; you should have the latest `vault` binary installed on your Docker host
-
-----
-
-> **NOTE TO CURRENT USERS**: If you have already been using the **Vaultron source repository**, please be aware that the project has switched its default branch name to `main`; if you have a local clone and want to update it without cloning anew, use the following commands issued from within the repository directory to update your clone. If you only download zip file releases, then this will not affect you.
-
-----
-
-```shell
-$ git checkout master
-$ git branch -m master main
-$ git fetch
-$ git branch --unset-upstream
-$ git branch -u origin/main
-$ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
-```
-
-If you are not concerned with any content in your existing cloned repository directory, simply remove it and clone the vaultron repository again.
 
 ### Quickest Start (for macOS only)
 
@@ -190,12 +173,12 @@ When Vaultron is successfully formed, the output looks like this example.
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron!
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.7.3
+[vaultron] [i] Vault OSS version: 1.8.0
 [vaultron] [i] Vault flavor: Consul storage backed
-[vaultron] [i] Consul OSS version: 1.9.5
+[vaultron] [i] Consul OSS version: 1.10.1
 [vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 14s.
+[vaultron] [+] Vaultron formed in 19s.
 ```
 
 Now you can visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
@@ -233,7 +216,7 @@ Take a moment to verify that all of the Vaultron Docker containers are up:
 $ docker ps -f name=vaultron --format "table {{.Names}}\t{{.Status}}"
 ```
 
-The output should look something like this example.
+The output should resemble this example.
 
 ```plaintext
 NAMES               STATUS
@@ -330,13 +313,13 @@ It is worth noting that when you `form` Vaultron, output will resemble this exam
 $ ./form
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron! 
-[vaultron] [i] Terraform has been successfully initialized! 
-[vaultron] [i] Vault OSS version: 1.7.3 
-[vaultron] [i] Vault flavor: Integrated storage backed 
-[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy. 
-[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed. 
-[vaultron] [+] Vaultron formed in 31s.
+[vaultron] [=] Form Vaultron!
+[vaultron] [i] Terraform has been successfully initialized!
+[vaultron] [i] Vault OSS version: 1.8.0
+[vaultron] [i] Vault flavor: Integrated storage backed
+[vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
+[vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
+[vaultron] [+] Vaultron formed in 8s.
 ```
 
 Note the **Vault flavor: Integrated storage backed** part.
