@@ -1,3 +1,9 @@
+## 3.8.0
+
+- Vault 1.8.0
+- Consul 1.10.1
+- Update documentation
+
 ## 3.7.5
 
 - Vault v1.7.3
