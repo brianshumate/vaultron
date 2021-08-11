@@ -5,6 +5,10 @@
 #     See README.md for more details
 # ========================================================================
 
+terraform {
+  required_version = ">= 0.13"
+}
+
 # We presume Vault at https://localhost:8200
 # and the presence of a ~/.vault-token here.
 
