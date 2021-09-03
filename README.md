@@ -171,14 +171,14 @@ When Vaultron is successfully formed, the output looks like this example.
 ```plaintext
 [vaultron] [?] vaultron-network not present; creating ...
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
-[vaultron] [=] Form Vaultron!
-[vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.8.0
-[vaultron] [i] Vault flavor: Consul storage backed
-[vaultron] [i] Consul OSS version: 1.10.1
-[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy.
-[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed.
-[vaultron] [+] Vaultron formed in 19s.
+[vaultron] [=] Form Vaultron! 
+[vaultron] [i] Terraform has been successfully initialized! 
+[vaultron] [i] Vault OSS version: 1.8.2 
+[vaultron] [i] Vault flavor: Consul storage backed 
+[vaultron] [i] Consul OSS version: 1.10.2 
+[vaultron] [i] Terraform plan: 14 to add, 0 to change, 0 to destroy. 
+[vaultron] [i] Terraform apply complete! resources: 14 added, 0 changed, 0 destroyed. 
+[vaultron] [+] Vaultron formed in 20s.
 ```
 
 Now you can visit the Vault web UI at [https://localhost:8200](https://localhost:8200) or visit the Consul web UI at [https://localhost:8500](https://localhost:8500).
@@ -315,7 +315,7 @@ $ ./form
 [vaultron] [+] Created attachable vaultron-network with subnet 10.10.42.0/24
 [vaultron] [=] Form Vaultron!
 [vaultron] [i] Terraform has been successfully initialized!
-[vaultron] [i] Vault OSS version: 1.8.0
+[vaultron] [i] Vault OSS version: 1.8.2
 [vaultron] [i] Vault flavor: Integrated storage backed
 [vaultron] [i] Terraform plan: 6 to add, 0 to change, 0 to destroy.
 [vaultron] [i] Terraform apply complete! resources: 6 added, 0 changed, 0 destroyed.
@@ -507,7 +507,7 @@ Here are the names and purposes of each:
 
 Enterprise license to use
 
-> NOTE: When using Vault Enterprise versions beyond 1.7.0 as a custom binary, you must set a valid license string as the value to ``TF_VAR_vault_license` or Vaultron will not form.
+> NOTE: When using Vault Enterprise versions beyond 1.7.0 as a custom binary, you must set a valid license string as the value to `TF_VAR_vault_license` or Vaultron will not form.
 
 - Default: none
 
