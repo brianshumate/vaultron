@@ -175,13 +175,6 @@ resource "docker_container" "vault_oss_server" {
   command  = ["vault", "server", "-log-level=${var.vault_server_log_level}", "-config=/vault/config"]
   hostname = format("vaults%d", count.index)
 
-  # XXX: this is causing issues and probably is not used/doesn't help
-  #      it cannot be used as-is in raft flavor so commenting out for now
-  #      and revisiting later...
-  # domainname = "consul"
-  # dns        = var.consul_server_ips
-  # dns_search = ["consul"]
-
   must_run = true
 
   capabilities {
@@ -204,11 +197,6 @@ resource "docker_container" "vault_oss_server" {
   volumes {
     host_path      = "${path.cwd}/vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
-  }
-
-  volumes {
-    host_path      = "${path.cwd}/vault/vault${count.index}/data"
-    container_path = "/vault/data"
   }
 
   volumes {
@@ -370,11 +358,6 @@ resource "docker_container" "vault_custom_server" {
   volumes {
     host_path      = "${path.cwd}/vault/vault${count.index}/audit_log"
     container_path = "/vault/logs"
-  }
-
-  volumes {
-    host_path      = "${path.cwd}/vault/vault${count.index}/data"
-    container_path = "/vault/data"
   }
 
   volumes {

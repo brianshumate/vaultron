@@ -163,8 +163,11 @@ check_docker() {
   fi
   if ! [ -S /var/run/docker.sock ]
     then
-      msg alert "Docker socket not detected- cannot form Vaultron."
-      exit 1
+      if [ -z $DOCKER_HOST ]
+      then
+        msg alert "Docker host or socket not detected- cannot form Vaultron."
+        exit 1
+      fi
   fi
 }
 

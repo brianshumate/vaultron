@@ -12,12 +12,12 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.9.2"
+  default = "1.9.3"
 }
 
 # Set TF_VAR_consul_version to override this
 variable "consul_version" {
-  default = "1.11.1"
+  default = "1.11.2"
 }
 
 # -----------------------------------------------------------------------
@@ -91,7 +91,7 @@ variable "vault_path" {
 
 # Set TF_VAR_vault_raft_path to override this
 variable "vault_raft_path" {
-  default = "/vault/data"
+  default = "/vault/"
 }
 
 # Set TF_VAR_vault_cluster_name to override this
@@ -166,7 +166,7 @@ variable "consul_acl_datacenter" {
 
 # Set TF_VAR_consul_data_dir to override this
 variable "consul_data_dir" {
-  default = "/consul/data"
+  default = "/consul/"
 }
 
 # Set TF_VAR_consul_oss to override this
