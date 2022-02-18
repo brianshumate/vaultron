@@ -1,4 +1,4 @@
-## 3.9.0 (UNRELEASED)
+## 3.9.0
 
 - Vault v1.9.3
 - Consul v1.11.2
