@@ -12,7 +12,7 @@ terraform {
 
 # Set TF_VAR_vault_version to override this
 variable "vault_version" {
-  default = "1.9.2"
+  default = "1.9.3"
 }
 
 # -----------------------------------------------------------------------
@@ -84,9 +84,11 @@ variable "vault_path" {
   default = "vault"
 }
 
+# Data is stored internally with container for maximum
+# flexibility with different docker daemon environments
 # Set TF_VAR_vault_raft_path to override this
 variable "vault_raft_path" {
-  default = "/vault/data"
+  default = "/vault/"
 }
 
 # Set TF_VAR_vault_cluster_name to override this

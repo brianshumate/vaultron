@@ -80,9 +80,6 @@ resource "docker_image" "consul" {
 # -----------------------------------------------------------------------
 
 data "template_file" "consul_oss_server_common_config" {
-  # XXX: why is count needed here?
-  #
-  # count    = "${var.consul_oss}"
   template = file(
     "${path.module}/templates/oss/consul_oss_server_config_${var.consul_version}.hcl",
   )
@@ -180,11 +177,6 @@ resource "docker_container" "consuls0" {
   volumes {
     host_path      = "${path.cwd}/consul/consuls0/config"
     container_path = "/consul/config"
-  }
-
-  volumes {
-    host_path      = "${path.cwd}/consul/consuls0/data"
-    container_path = "/consul/data"
   }
 
   upload {
@@ -345,8 +337,6 @@ resource "docker_container" "consuls1" {
 # -----------------------------------------------------------------------
 
 resource "docker_container" "consuls2" {
-  # XXX: Singleton resource / why count?
-  # count = "${var.consul_oss}"
   image = docker_image.consul.latest
 
   entrypoint = [

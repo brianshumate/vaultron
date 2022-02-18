@@ -1,29 +1,37 @@
+## 3.9.0
+
+- Vault v1.9.3
+- Consul v1.11.2
+- Update expired TLS certificates (thanks @daveyb)
+- Prefer local container data storage for Vault and Consul
+- Update documentation
+
 ## 3.8.4
 
-- Vault 1.9.0, 1.9.1, and 1.9.2
-- Consul 1.11.1
+- Vault v1.9.0, v1.9.1, and v1.9.2
+- Consul v1.11.1
 - Update documentation
 
 ## 3.8.3
 
-- Vault 1.8.3
-- Consul 1.10.3
+- Vault v1.8.3
+- Consul v1.10.3
 - Update documentation
 
 ## 3.8.2
 
-- Vault 1.8.2
-- Consul 1.10.2
+- Vault v1.8.2
+- Consul v1.10.2
 - Update documentation
 
 ## 3.8.1
 
-- Vault 1.8.1
+- Vault v1.8.1
 
 ## 3.8.0
 
-- Vault 1.8.0
-- Consul 1.10.1
+- Vault v1.8.0
+- Consul v1.10.1
 - Update documentation
 
 ## 3.7.5
@@ -70,7 +78,7 @@
 
 ## 3.6.2
 
-- Vault version 1.6.1
+- Vault v1.6.1
 
 ## 3.6.1
 
@@ -93,7 +101,7 @@
 
 ## 3.5.4
 
-- Vault 1.5.3
+- Vault v1.5.3
 - Fix form script
 - Remove deprecated use_vault_oss configuration
 - Update documentation
@@ -167,7 +175,7 @@
 
 ## 3.2.5
 
-- Consul 1.7.0
+- Consul v1.7.0
 - Fix Terraform issue with labels
 - Update documentation
 
